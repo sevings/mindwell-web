@@ -1,0 +1,76 @@
+body {
+    background : #EEE;
+    font-family: Arial, Helvetica, sans-serif;
+    margin : 3em auto;
+    line-height : 1.5;
+    font-size: 100%;
+    max-width : 800px;
+}
+
+.post {
+    border: 1px solid black;
+    border-color: #BBB #DDD #DDD #BBB;
+    margin : 2em;
+    padding : 2em;
+    line-height: 1.5;
+    background: white;
+}
+
+h1 span {
+    font-size : 0.5em;
+}
+
+a {
+    color : gray;
+}
+
+.image_attach {
+    text-align: center;
+}
+
+img {
+    max-width: 100%;
+}
+
+.comments {
+    color: teal;
+}
+
+.comment {
+    padding: 1em;
+    margin: 0 3em;
+    font-size: 90%;
+}
+
+.comment_author {
+    font-style: bold;
+}
+
+.source {
+    text-align: right
+}
+
+.iframely {
+    font-size: 150%;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+}
+
+.footer {
+    margin: 2em;
+}
+
+.rating {
+    margin: 1em;
+}
+
+.author {
+    margin: 1em;
+}
+
+.comments_count {
+    margin: 1em;
+}

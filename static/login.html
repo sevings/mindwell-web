@@ -1,0 +1,41 @@
+<html>
+	<head>
+		<title>Mindwell</title>
+	</head>
+	<body>
+		<form name="login" action="/login" method="post">
+			<span>Логин</span>
+			<br />
+			<input name="name" type="text" required />
+			<br />
+			<span>Пароль</span>
+			<br />
+			<input name="password" type="password" required />
+			<br />
+			<input type="submit" value="Войти" />
+		</form>
+		<form name="register" action="/register" method="post">
+			<span>Логин</span>
+			<br />
+			<input name="name" type="text" required />
+			<br />
+			<span>Адрес почты</span>
+			<br />
+			<input name="email" type="text" required />
+			<br />
+			<span>Пароль</span>
+			<br />
+			<input name="password" type="password" required />
+			<br />
+			<span>Инвайт</span>
+			<br />
+			<input name="invite" type="text" required />
+			<br />
+			<span>Пригласивший</span>
+			<br />
+			<input name="referrer" type="text" required />
+			<br />
+			<input type="submit" value="Зарегистрироваться" />
+		</form>
+	</body>
+</html>

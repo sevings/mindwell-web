@@ -1,0 +1,16 @@
+html
+    head
+        title Прямой эфир — Mindwell
+        link[rel="stylesheet"][type="text/css"][href="/static/css/live.css"]
+    body
+        each $entry in entries
+            h2 #{createdAt}
+            div.post
+                h2 #{title}
+                p #{content}
+                div.footer
+                    if isVotable == true
+                        span.rating &#10084; #{rating}
+                    if commentCount > 0
+                        span.comments_count #{commentCount} комм. 
+                    a[href="/users/" + author.name].author #{author.showName}
