@@ -3,9 +3,14 @@
         <title>{% block title %}Mindwell{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="/static/css/feed.css">
         {% block styles %}{% endblock %}
+        <script>
+            function logout() {
+                document.cookie = 'api_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+            }
+        </script>
     </head>
     <body>
-        <button onclick="document.cookie = 'api_token=;'; document.location = '/static/login.html'">Выйти</button>
+        <a href="/static/login.html" onclick="logout()">Выйти</button>
         {% for entry in entries %}
             <h2>{{ entry.createdAt }}</h2>
             <div class="post">

@@ -196,8 +196,10 @@ func liveHandler(templ *pongo2.Template) func(ctx *gin.Context) {
 		}
 
 		cookie := http.Cookie{
-			Name:  "api_token",
-			Value: "",
+			Name:    "api_token",
+			Value:   "",
+			Path:    "/",
+			Expires: time.Unix(0, 0),
 		}
 		http.SetCookie(ctx.Writer, &cookie)
 		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
