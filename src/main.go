@@ -2,31 +2,30 @@ package main
 
 import (
 	"encoding/json"
-	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"time"
 
-	"github.com/eknkc/amber"
+	"github.com/flosch/pongo2"
 )
 
 func main() {
-	templ := amber.MustCompileDir("templates", amber.DefaultDirOptions, amber.DefaultOptions)
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/index.html", indexHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/register", registerHandler)
-	http.HandleFunc("/live.html", liveHandler(templ["live"]))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
-	log.Fatal(http.ListenAndServe(":8080", nil))
-}
 
-func templateHandler(templ *template.Template) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		templ.Execute(w, nil)
+	live, err := pongo2.FromFile("templates/live.html")
+	if err != nil {
+		panic(err)
 	}
+	http.HandleFunc("/live.html", liveHandler(live))
+
+	log.Println("Listen and serve...")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -90,7 +89,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func liveHandler(templ *template.Template) func(http.ResponseWriter, *http.Request) {
+func liveHandler(templ *pongo2.Template) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token, err := r.Cookie("api_token")
 		if err != nil {
@@ -128,28 +127,6 @@ func liveHandler(templ *template.Template) func(http.ResponseWriter, *http.Reque
 			return
 		}
 
-		templ.Execute(w, live)
-	}
-}
-
-func godHandler(templ *template.Template) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		name := r.URL.Path
-		resp, err := http.Get("https://godville.net/gods/api/" + name + ".json")
-		if err != nil {
-			w.Write([]byte(err.Error()))
-		}
-		data, err := ioutil.ReadAll(resp.Body)
-		resp.Body.Close()
-		if err != nil {
-			w.Write([]byte(err.Error()))
-		}
-
-		user := map[string]interface{}{}
-		if err := json.Unmarshal([]byte(data), &user); err != nil {
-			w.Write([]byte(err.Error()))
-		}
-
-		templ.Execute(w, user)
+		templ.ExecuteWriter(pongo2.Context(live), w)
 	}
 }
