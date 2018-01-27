@@ -34,6 +34,7 @@ func main() {
 
 	tlog := mustParse("tlog")
 	router.GET("/users/:name", tlogHandler(tlog, msg))
+	router.GET("/me", meHandler(tlog, msg))
 
 	srv := &http.Server{
 		Addr:    ":8080",
@@ -101,16 +102,8 @@ func accountHandler(msgTempl *pongo2.Template, apiURL string) func(ctx *gin.Cont
 			return
 		}
 
-		jsonData, err := ioutil.ReadAll(resp.Body)
-		resp.Body.Close()
+		data, err := readJSON(ctx, resp)
 		if err != nil {
-			ctx.Writer.WriteString(err.Error())
-			return
-		}
-
-		data := map[string]interface{}{}
-		if err := json.Unmarshal([]byte(jsonData), &data); err != nil {
-			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
@@ -180,6 +173,16 @@ func readJSON(ctx *gin.Context, resp *http.Response) (map[string]interface{}, er
 	return data, nil
 }
 
+func requestMe(ctx *gin.Context) (map[string]interface{}, error) {
+	url := "http://127.0.0.1:8000/api/v1/users/me"
+	resp, err := apiRequest(ctx, "get", url)
+	if err != nil {
+		return nil, err
+	}
+
+	return readJSON(ctx, resp)
+}
+
 func liveHandler(templ *pongo2.Template) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		resp, err := apiRequest(ctx, "get", "http://127.0.0.1:8000/api/v1/entries/live")
@@ -187,23 +190,29 @@ func liveHandler(templ *pongo2.Template) func(ctx *gin.Context) {
 			return
 		}
 
-		if resp.StatusCode < 400 {
-			data, err := readJSON(ctx, resp)
-			if err == nil {
-				templ.ExecuteWriter(pongo2.Context(data), ctx.Writer)
+		if resp.StatusCode >= 400 {
+			cookie := http.Cookie{
+				Name:    "api_token",
+				Value:   "",
+				Path:    "/",
+				Expires: time.Unix(0, 0),
 			}
+			http.SetCookie(ctx.Writer, &cookie)
+			ctx.Redirect(http.StatusSeeOther, "/static/login.html")
 			return
 		}
 
-		cookie := http.Cookie{
-			Name:    "api_token",
-			Value:   "",
-			Path:    "/",
-			Expires: time.Unix(0, 0),
+		data, err := readJSON(ctx, resp)
+		if err != nil {
+			return
 		}
-		http.SetCookie(ctx.Writer, &cookie)
-		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
-		return
+
+		me, err := requestMe(ctx)
+		if err == nil {
+			data["me"] = me
+		}
+
+		templ.ExecuteWriter(pongo2.Context(data), ctx.Writer)
 	}
 }
 
@@ -241,6 +250,41 @@ func tlogHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
 		}
 
 		tlog["profile"] = user
+
+		me, err := requestMe(ctx)
+		if err == nil {
+			tlog["me"] = me
+		}
+
+		templ.ExecuteWriter(pongo2.Context(tlog), ctx.Writer)
+	}
+}
+
+func meHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		user, err := requestMe(ctx)
+		if err != nil {
+			return
+		}
+
+		id := user["id"].(json.Number)
+		url := "http://127.0.0.1:8000/api/v1/entries/users/" + string(id)
+		resp, err := apiRequest(ctx, "get", url)
+		if err != nil {
+			return
+		}
+
+		tlog, err := readJSON(ctx, resp)
+		if err != nil {
+			return
+		}
+		if resp.StatusCode >= 400 {
+			msgTempl.ExecuteWriter(pongo2.Context(tlog), ctx.Writer)
+			return
+		}
+
+		tlog["profile"] = user
+		tlog["me"] = user
 		templ.ExecuteWriter(pongo2.Context(tlog), ctx.Writer)
 	}
 }
