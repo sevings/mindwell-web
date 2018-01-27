@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"time"
 
 	"github.com/flosch/pongo2"
@@ -38,40 +37,48 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	name := r.PostFormValue("name")
-	pass := r.PostFormValue("password")
+	accountHandler(w, r, "http://127.0.0.1:8000/api/v1/account/login")
+}
 
-	form := url.Values{}
-	form.Set("name", name)
-	form.Set("password", pass)
+func registerHandler(w http.ResponseWriter, r *http.Request) {
+	accountHandler(w, r, "http://127.0.0.1:8000/api/v1/account/register")
+}
 
-	resp, err := http.PostForm("http://127.0.0.1:8000/api/v1/account/login", form)
+func accountHandler(w http.ResponseWriter, r *http.Request, apiURL string) {
+	err := r.ParseForm()
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	if resp.StatusCode >= 400 {
-		w.Write([]byte("Неверный логин или пароль"))
+	resp, err := http.PostForm(apiURL, r.PostForm)
+	if err != nil {
+		w.Write([]byte(err.Error()))
 		return
 	}
 
-	data, err := ioutil.ReadAll(resp.Body)
+	jsonData, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	user := map[string]interface{}{}
-	if err := json.Unmarshal([]byte(data), &user); err != nil {
+	data := map[string]interface{}{}
+	if err := json.Unmarshal([]byte(jsonData), &data); err != nil {
 		w.Write([]byte(err.Error()))
+		return
+	}
+
+	if resp.StatusCode >= 400 {
+		msg := data["message"].(string)
+		w.Write([]byte(msg))
 		return
 	}
 
 	//	Jan 2 15:04:05 2006 MST
 	// "1985-04-12T23:20:50.52.000+03:00"
-	account := user["account"].(map[string]interface{})
+	account := data["account"].(map[string]interface{})
 	token := account["apiKey"].(string)
 	validThru := account["validThru"].(string)
 	exp, _ := time.Parse("2006-02-01T15:04:05.000", validThru)
@@ -83,10 +90,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &cookie)
 
 	http.Redirect(w, r, "/live.html", http.StatusSeeOther)
-}
-
-func registerHandler(w http.ResponseWriter, r *http.Request) {
-
 }
 
 func liveHandler(templ *pongo2.Template) func(http.ResponseWriter, *http.Request) {
@@ -111,6 +114,11 @@ func liveHandler(templ *pongo2.Template) func(http.ResponseWriter, *http.Request
 		}
 
 		if resp.StatusCode >= 400 {
+			cookie := http.Cookie{
+				Name:  "api_token",
+				Value: "",
+			}
+			http.SetCookie(w, &cookie)
 			http.Redirect(w, r, "/static/login.html", http.StatusSeeOther)
 			return
 		}
@@ -121,6 +129,7 @@ func liveHandler(templ *pongo2.Template) func(http.ResponseWriter, *http.Request
 			w.Write([]byte(err.Error()))
 			return
 		}
+
 		live := map[string]interface{}{}
 		if err := json.Unmarshal([]byte(data), &live); err != nil {
 			w.Write([]byte(err.Error()))
