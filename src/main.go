@@ -1,30 +1,61 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"time"
+
+	"github.com/gin-gonic/gin"
 
 	"github.com/flosch/pongo2"
 )
 
 func main() {
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/index.html", indexHandler)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+
+	router := gin.Default()
+
+	router.GET("/", indexHandler)
+	router.GET("/index.html", indexHandler)
+	router.Static("/static/", "./static")
 
 	msg := mustParse("error")
 
-	http.HandleFunc("/login", loginHandler(msg))
-	http.HandleFunc("/register", registerHandler(msg))
+	router.POST("/login", loginHandler(msg))
+	router.POST("/register", registerHandler(msg))
 
 	live := mustParse("live")
-	http.HandleFunc("/live.html", liveHandler(live))
+	router.GET("/live.html", liveHandler(live))
 
-	log.Println("Listen and serve...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: router,
+	}
+
+	go func() {
+		// service connections
+		if err := srv.ListenAndServe(); err != nil {
+			log.Printf("listen: %s\n", err)
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 5 seconds.
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	log.Println("Shutdown Server ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server Shutdown:", err)
+	}
+	log.Println("Server exiting")
 }
 
 func mustParse(name string) *pongo2.Template {
@@ -35,52 +66,52 @@ func mustParse(name string) *pongo2.Template {
 	return templ
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	_, err := r.Cookie("api_token")
+func indexHandler(ctx *gin.Context) {
+	_, err := ctx.Request.Cookie("api_token")
 	if err == nil {
-		http.Redirect(w, r, "/live.html", http.StatusSeeOther)
+		ctx.Redirect(http.StatusSeeOther, "/live.html")
 	} else {
-		http.Redirect(w, r, "/static/login.html", http.StatusMovedPermanently)
+		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
 	}
 }
 
-func loginHandler(msgTempl *pongo2.Template) func(http.ResponseWriter, *http.Request) {
+func loginHandler(msgTempl *pongo2.Template) func(ctx *gin.Context) {
 	return accountHandler(msgTempl, "http://127.0.0.1:8000/api/v1/account/login")
 }
 
-func registerHandler(msgTempl *pongo2.Template) func(http.ResponseWriter, *http.Request) {
+func registerHandler(msgTempl *pongo2.Template) func(ctx *gin.Context) {
 	return accountHandler(msgTempl, "http://127.0.0.1:8000/api/v1/account/register")
 }
 
-func accountHandler(msgTempl *pongo2.Template, apiURL string) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		err := r.ParseForm()
+func accountHandler(msgTempl *pongo2.Template, apiURL string) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		err := ctx.Request.ParseForm()
 		if err != nil {
-			w.Write([]byte(err.Error()))
+			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
-		resp, err := http.PostForm(apiURL, r.PostForm)
+		resp, err := http.PostForm(apiURL, ctx.Request.PostForm)
 		if err != nil {
-			w.Write([]byte(err.Error()))
+			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
 		jsonData, err := ioutil.ReadAll(resp.Body)
 		resp.Body.Close()
 		if err != nil {
-			w.Write([]byte(err.Error()))
+			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
 		data := map[string]interface{}{}
 		if err := json.Unmarshal([]byte(jsonData), &data); err != nil {
-			w.Write([]byte(err.Error()))
+			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
 		if resp.StatusCode >= 400 {
-			msgTempl.ExecuteWriter(pongo2.Context(data), w)
+			msgTempl.ExecuteWriter(pongo2.Context(data), ctx.Writer)
 			return
 		}
 
@@ -95,30 +126,30 @@ func accountHandler(msgTempl *pongo2.Template, apiURL string) func(http.Response
 			Value:   token,
 			Expires: exp,
 		}
-		http.SetCookie(w, &cookie)
+		http.SetCookie(ctx.Writer, &cookie)
 
-		http.Redirect(w, r, "/live.html", http.StatusSeeOther)
+		ctx.Redirect(http.StatusSeeOther, "/live.html")
 	}
 }
 
-func liveHandler(templ *pongo2.Template) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		token, err := r.Cookie("api_token")
+func liveHandler(templ *pongo2.Template) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		token, err := ctx.Request.Cookie("api_token")
 		if err != nil {
-			http.Redirect(w, r, "/static/login.html", http.StatusSeeOther)
+			ctx.Redirect(http.StatusSeeOther, "/static/login.html")
 			return
 		}
 
 		req, err := http.NewRequest("get", "http://127.0.0.1:8000/api/v1/entries/live", nil)
 		if err != nil {
-			w.Write([]byte(err.Error()))
+			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
 		req.Header.Add("X-User-Key", token.Value)
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
-			w.Write([]byte(err.Error()))
+			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
@@ -127,24 +158,24 @@ func liveHandler(templ *pongo2.Template) func(http.ResponseWriter, *http.Request
 				Name:  "api_token",
 				Value: "",
 			}
-			http.SetCookie(w, &cookie)
-			http.Redirect(w, r, "/static/login.html", http.StatusSeeOther)
+			http.SetCookie(ctx.Writer, &cookie)
+			ctx.Redirect(http.StatusSeeOther, "/static/login.html")
 			return
 		}
 
 		data, err := ioutil.ReadAll(resp.Body)
 		resp.Body.Close()
 		if err != nil {
-			w.Write([]byte(err.Error()))
+			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
 		live := map[string]interface{}{}
 		if err := json.Unmarshal([]byte(data), &live); err != nil {
-			w.Write([]byte(err.Error()))
+			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
-		templ.ExecuteWriter(pongo2.Context(live), w)
+		templ.ExecuteWriter(pongo2.Context(live), ctx.Writer)
 	}
 }
