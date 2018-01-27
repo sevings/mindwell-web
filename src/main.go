@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -20,6 +19,8 @@ import (
 )
 
 func main() {
+
+	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.Default()
 
@@ -326,7 +327,6 @@ func postHandler(msgTempl *pongo2.Template) func(ctx *gin.Context) {
 		}
 		contentType := bodyWriter.FormDataContentType()
 		bodyWriter.Close()
-		fmt.Println(bodyBuf.String())
 
 		url := "http://127.0.0.1:8000/api/v1/entries/users/me"
 		req, err := http.NewRequest("post", url, bodyBuf)
