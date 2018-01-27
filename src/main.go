@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"io/ioutil"
@@ -29,7 +30,10 @@ func main() {
 	router.POST("/register", registerHandler(msg))
 
 	live := mustParse("live")
-	router.GET("/live.html", liveHandler(live))
+	router.GET("/live", liveHandler(live))
+
+	tlog := mustParse("tlog")
+	router.GET("/users/:name", tlogHandler(tlog, msg))
 
 	srv := &http.Server{
 		Addr:    ":8080",
@@ -69,7 +73,7 @@ func mustParse(name string) *pongo2.Template {
 func indexHandler(ctx *gin.Context) {
 	_, err := ctx.Request.Cookie("api_token")
 	if err == nil {
-		ctx.Redirect(http.StatusSeeOther, "/live.html")
+		ctx.Redirect(http.StatusSeeOther, "/live")
 	} else {
 		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
 	}
@@ -87,20 +91,20 @@ func accountHandler(msgTempl *pongo2.Template, apiURL string) func(ctx *gin.Cont
 	return func(ctx *gin.Context) {
 		err := ctx.Request.ParseForm()
 		if err != nil {
-			ctx.Writer.Write([]byte(err.Error()))
+			ctx.Writer.WriteString(err.Error())
 			return
 		}
 
 		resp, err := http.PostForm(apiURL, ctx.Request.PostForm)
 		if err != nil {
-			ctx.Writer.Write([]byte(err.Error()))
+			ctx.Writer.WriteString(err.Error())
 			return
 		}
 
 		jsonData, err := ioutil.ReadAll(resp.Body)
 		resp.Body.Close()
 		if err != nil {
-			ctx.Writer.Write([]byte(err.Error()))
+			ctx.Writer.WriteString(err.Error())
 			return
 		}
 
@@ -128,54 +132,113 @@ func accountHandler(msgTempl *pongo2.Template, apiURL string) func(ctx *gin.Cont
 		}
 		http.SetCookie(ctx.Writer, &cookie)
 
-		ctx.Redirect(http.StatusSeeOther, "/live.html")
+		ctx.Redirect(http.StatusSeeOther, "/live")
 	}
+}
+
+func apiRequest(ctx *gin.Context, method, url string) (*http.Response, error) {
+	token, err := ctx.Request.Cookie("api_token")
+	if err != nil {
+		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
+		return nil, err
+	}
+
+	req, err := http.NewRequest("get", url, nil)
+	if err != nil {
+		ctx.Writer.WriteString(err.Error())
+		return nil, err
+	}
+
+	req.Header.Add("X-User-Key", token.Value)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		ctx.Writer.WriteString(err.Error())
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func readJSON(ctx *gin.Context, resp *http.Response) (map[string]interface{}, error) {
+	jsonData, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	if err != nil {
+		ctx.Writer.WriteString(err.Error())
+		return nil, err
+	}
+
+	data := map[string]interface{}{}
+	decoder := json.NewDecoder(bytes.NewBuffer(jsonData))
+	decoder.UseNumber()
+	if err := decoder.Decode(&data); err != nil {
+		ctx.Writer.WriteString(err.Error())
+		ctx.Writer.WriteString("\n")
+		ctx.Writer.Write(jsonData)
+		return nil, err
+	}
+
+	return data, nil
 }
 
 func liveHandler(templ *pongo2.Template) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		token, err := ctx.Request.Cookie("api_token")
+		resp, err := apiRequest(ctx, "get", "http://127.0.0.1:8000/api/v1/entries/live")
 		if err != nil {
-			ctx.Redirect(http.StatusSeeOther, "/static/login.html")
 			return
 		}
 
-		req, err := http.NewRequest("get", "http://127.0.0.1:8000/api/v1/entries/live", nil)
-		if err != nil {
-			ctx.Writer.Write([]byte(err.Error()))
-			return
-		}
-
-		req.Header.Add("X-User-Key", token.Value)
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			ctx.Writer.Write([]byte(err.Error()))
-			return
-		}
-
-		if resp.StatusCode >= 400 {
-			cookie := http.Cookie{
-				Name:  "api_token",
-				Value: "",
+		if resp.StatusCode < 400 {
+			data, err := readJSON(ctx, resp)
+			if err == nil {
+				templ.ExecuteWriter(pongo2.Context(data), ctx.Writer)
 			}
-			http.SetCookie(ctx.Writer, &cookie)
-			ctx.Redirect(http.StatusSeeOther, "/static/login.html")
 			return
 		}
 
-		data, err := ioutil.ReadAll(resp.Body)
-		resp.Body.Close()
+		cookie := http.Cookie{
+			Name:  "api_token",
+			Value: "",
+		}
+		http.SetCookie(ctx.Writer, &cookie)
+		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
+		return
+	}
+}
+
+func tlogHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		url := "http://127.0.0.1:8000/api/v1/users/byName/" + ctx.Param("name")
+		resp, err := apiRequest(ctx, "get", url)
 		if err != nil {
-			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
-		live := map[string]interface{}{}
-		if err := json.Unmarshal([]byte(data), &live); err != nil {
-			ctx.Writer.Write([]byte(err.Error()))
+		user, err := readJSON(ctx, resp)
+		if err != nil {
+			return
+		}
+		if resp.StatusCode >= 400 {
+			msgTempl.ExecuteWriter(pongo2.Context(user), ctx.Writer)
 			return
 		}
 
-		templ.ExecuteWriter(pongo2.Context(live), ctx.Writer)
+		id := user["id"].(json.Number)
+		url = "http://127.0.0.1:8000/api/v1/entries/users/" + string(id)
+		resp, err = apiRequest(ctx, "get", url)
+		if err != nil {
+			return
+		}
+
+		tlog, err := readJSON(ctx, resp)
+		if err != nil {
+			return
+		}
+		if resp.StatusCode >= 400 {
+			msgTempl.ExecuteWriter(pongo2.Context(tlog), ctx.Writer)
+			return
+		}
+
+		tlog["profile"] = user
+		templ.ExecuteWriter(pongo2.Context(tlog), ctx.Writer)
 	}
 }

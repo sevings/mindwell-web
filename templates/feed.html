@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>{% block title %}Mindwell{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/feed.css">
+        {% block styles %}{% endblock %}
+    </head>
+    <body>
+        <button onclick="document.cookie = 'api_token=;'; document.location = '/static/login.html'">Выйти</button>
+        {% for entry in entries %}
+            <h2>{{ entry.createdAt }}</h2>
+            <div class="post">
+                <h2>{{ entry.title }}</h2>
+                {{ entry.content|safe }}
+                <div class="footer">
+                    {% if entry.isVotable %}
+                        <span class="rating">&#10084; {{ entry.rating|default: 0 }} </span>
+                    {% endif %}
+                    {% if entry.commentCount %}
+                        <span class="comments_count">{{ entry.commentCount }} комм.</span>
+                    {% endif %}
+                    <a href="/users/{{ entry.author.name }}" class="author">{{ entry.author.showName }}</a>
+                </div>
+            </div>
+        {% endfor %}
+    </body>
+</html>
