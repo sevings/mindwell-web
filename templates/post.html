@@ -1,0 +1,23 @@
+<html>
+	<head>
+        <meta charset="utf-8">
+		<title>Mindwell</title>
+	</head>
+	<body>
+        <form name="editor" action="/entries/users/me" method="post">
+            <textarea name="title" rows="2" cols="80" placeholder="Заголовок поста" autofocus></textarea>
+            <br/>
+            <textarea name="content" rows="40" cols="80" placeholder="Текст поста" required></textarea>
+            <br/>
+            Пост будет виден 
+            <select name="privacy">
+                <option value="all">всем</option>
+                <option value="followers">только подписчикам</option>
+                <option value="me">только мне</option>
+            </select> 
+            <input type="checkbox" name="isVotable" value="false"> Запретить голосование
+            <br/>
+            <input type="submit" value="Опубликовать" />
+        </form>
+    </body>
+</html>

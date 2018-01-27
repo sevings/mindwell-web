@@ -1,5 +1,6 @@
 <html>
     <head>
+        <meta charset="utf-8">
         <title>{% block title %}Mindwell{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="/static/css/feed.css">
         {% block styles %}{% endblock %}
@@ -11,7 +12,8 @@
     </head>
     <body>
         <a href="/me">{{ me.showName }}</a>
-        <a href="/live">Прямой эфир</button>
+        <a href="/live">Прямой эфир</a>
+        <a href="/post">Новая запись</a>
         <a href="/static/login.html" onclick="logout()">Выйти</a>
         <h1>{% block heading %}{% endblock %}</h1>
         {% for entry in entries %}
@@ -29,6 +31,8 @@
                     <a href="/users/{{ entry.author.name }}" class="author">{{ entry.author.showName }}</a>
                 </div>
             </div>
+        {% empty %}
+            <h3>Нет записей</h3>
         {% endfor %}
     </body>
 </html>

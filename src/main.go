@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"os/signal"
@@ -35,6 +38,11 @@ func main() {
 	tlog := mustParse("tlog")
 	router.GET("/users/:name", tlogHandler(tlog, msg))
 	router.GET("/me", meHandler(tlog, msg))
+
+	post := mustParse("post")
+	router.GET("/post", editorHandler(post))
+
+	router.POST("/entries/users/me", postHandler(msg))
 
 	srv := &http.Server{
 		Addr:    ":8080",
@@ -129,14 +137,14 @@ func accountHandler(msgTempl *pongo2.Template, apiURL string) func(ctx *gin.Cont
 	}
 }
 
-func apiRequest(ctx *gin.Context, method, url string) (*http.Response, error) {
+func apiRequest(ctx *gin.Context, method, url string, body io.Reader) (*http.Response, error) {
 	token, err := ctx.Request.Cookie("api_token")
 	if err != nil {
 		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
 		return nil, err
 	}
 
-	req, err := http.NewRequest("get", url, nil)
+	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		ctx.Writer.WriteString(err.Error())
 		return nil, err
@@ -175,7 +183,7 @@ func readJSON(ctx *gin.Context, resp *http.Response) (map[string]interface{}, er
 
 func requestMe(ctx *gin.Context) (map[string]interface{}, error) {
 	url := "http://127.0.0.1:8000/api/v1/users/me"
-	resp, err := apiRequest(ctx, "get", url)
+	resp, err := apiRequest(ctx, "get", url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +193,8 @@ func requestMe(ctx *gin.Context) (map[string]interface{}, error) {
 
 func liveHandler(templ *pongo2.Template) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		resp, err := apiRequest(ctx, "get", "http://127.0.0.1:8000/api/v1/entries/live")
+		url := "http://127.0.0.1:8000/api/v1/entries/live"
+		resp, err := apiRequest(ctx, "get", url, nil)
 		if err != nil {
 			return
 		}
@@ -219,7 +228,7 @@ func liveHandler(templ *pongo2.Template) func(ctx *gin.Context) {
 func tlogHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		url := "http://127.0.0.1:8000/api/v1/users/byName/" + ctx.Param("name")
-		resp, err := apiRequest(ctx, "get", url)
+		resp, err := apiRequest(ctx, "get", url, nil)
 		if err != nil {
 			return
 		}
@@ -235,7 +244,7 @@ func tlogHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
 
 		id := user["id"].(json.Number)
 		url = "http://127.0.0.1:8000/api/v1/entries/users/" + string(id)
-		resp, err = apiRequest(ctx, "get", url)
+		resp, err = apiRequest(ctx, "get", url, nil)
 		if err != nil {
 			return
 		}
@@ -269,7 +278,7 @@ func meHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
 
 		id := user["id"].(json.Number)
 		url := "http://127.0.0.1:8000/api/v1/entries/users/" + string(id)
-		resp, err := apiRequest(ctx, "get", url)
+		resp, err := apiRequest(ctx, "get", url, nil)
 		if err != nil {
 			return
 		}
@@ -286,5 +295,62 @@ func meHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
 		tlog["profile"] = user
 		tlog["me"] = user
 		templ.ExecuteWriter(pongo2.Context(tlog), ctx.Writer)
+	}
+}
+
+func editorHandler(templ *pongo2.Template) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		templ.ExecuteWriter(nil, ctx.Writer)
+	}
+}
+
+func postHandler(msgTempl *pongo2.Template) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		token, err := ctx.Request.Cookie("api_token")
+		if err != nil {
+			ctx.Redirect(http.StatusSeeOther, "/static/login.html")
+			return
+		}
+
+		err = ctx.Request.ParseForm()
+		if err != nil {
+			ctx.Writer.WriteString(err.Error())
+			return
+		}
+
+		bodyBuf := &bytes.Buffer{}
+		bodyWriter := multipart.NewWriter(bodyBuf)
+
+		for k, v := range ctx.Request.PostForm {
+			bodyWriter.WriteField(k, v[0])
+		}
+		contentType := bodyWriter.FormDataContentType()
+		bodyWriter.Close()
+		fmt.Println(bodyBuf.String())
+
+		url := "http://127.0.0.1:8000/api/v1/entries/users/me"
+		req, err := http.NewRequest("post", url, bodyBuf)
+		if err != nil {
+			ctx.Writer.WriteString(err.Error())
+			return
+		}
+
+		req.Header.Set("Content-Type", contentType)
+		req.Header.Add("X-User-Key", token.Value)
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			ctx.Writer.WriteString(err.Error())
+			return
+		}
+
+		if resp.StatusCode >= 400 {
+			data, err := readJSON(ctx, resp)
+			if err == nil {
+				msgTempl.ExecuteWriter(pongo2.Context(data), ctx.Writer)
+			}
+			return
+		}
+
+		ctx.Redirect(http.StatusSeeOther, "/me")
 	}
 }
