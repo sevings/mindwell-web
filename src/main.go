@@ -13,14 +13,26 @@ import (
 	"os/signal"
 	"time"
 
+	goconf "github.com/zpatrick/go-config"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/flosch/pongo2"
 )
 
 func main() {
+	config := loadConfig("config")
+	mode, err := config.String("mode")
+	if err != nil {
+		log.Println(err)
+	}
 
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(mode)
+
+	baseURL, err := config.String("base_url")
+	if err != nil {
+		log.Println(err)
+	}
 
 	router := gin.Default()
 
@@ -30,23 +42,28 @@ func main() {
 
 	msg := mustParse("error")
 
-	router.POST("/login", loginHandler(msg))
-	router.POST("/register", registerHandler(msg))
+	router.POST("/login", loginHandler(msg, baseURL))
+	router.POST("/register", registerHandler(msg, baseURL))
 
 	live := mustParse("live")
-	router.GET("/live", liveHandler(live))
+	router.GET("/live", liveHandler(live, baseURL))
 
 	tlog := mustParse("tlog")
-	router.GET("/users/:name", tlogHandler(tlog, msg))
-	router.GET("/me", meHandler(tlog, msg))
+	router.GET("/users/:name", tlogHandler(tlog, msg, baseURL))
+	router.GET("/me", meHandler(tlog, msg, baseURL))
 
 	post := mustParse("post")
 	router.GET("/post", editorHandler(post))
 
-	router.POST("/entries/users/me", postHandler(msg))
+	router.POST("/entries/users/me", postHandler(msg, baseURL))
+
+	addr, err := config.String("listen_address")
+	if err != nil {
+		println(err)
+	}
 
 	srv := &http.Server{
-		Addr:    ":8080",
+		Addr:    addr,
 		Handler: router,
 	}
 
@@ -72,6 +89,16 @@ func main() {
 	log.Println("Server exiting")
 }
 
+func loadConfig(fileName string) *goconf.Config {
+	toml := goconf.NewTOMLFile(fileName + ".toml")
+	loader := goconf.NewOnceLoader(toml)
+	config := goconf.NewConfig([]goconf.Provider{loader})
+	if err := config.Load(); err != nil {
+		log.Fatal(err)
+	}
+	return config
+}
+
 func mustParse(name string) *pongo2.Template {
 	templ, err := pongo2.FromFile("templates/" + name + ".html")
 	if err != nil {
@@ -89,12 +116,12 @@ func indexHandler(ctx *gin.Context) {
 	}
 }
 
-func loginHandler(msgTempl *pongo2.Template) func(ctx *gin.Context) {
-	return accountHandler(msgTempl, "http://127.0.0.1:8000/api/v1/account/login")
+func loginHandler(msgTempl *pongo2.Template, baseURL string) func(ctx *gin.Context) {
+	return accountHandler(msgTempl, baseURL+"/account/login")
 }
 
-func registerHandler(msgTempl *pongo2.Template) func(ctx *gin.Context) {
-	return accountHandler(msgTempl, "http://127.0.0.1:8000/api/v1/account/register")
+func registerHandler(msgTempl *pongo2.Template, baseURL string) func(ctx *gin.Context) {
+	return accountHandler(msgTempl, baseURL+"/account/register")
 }
 
 func accountHandler(msgTempl *pongo2.Template, apiURL string) func(ctx *gin.Context) {
@@ -182,8 +209,8 @@ func readJSON(ctx *gin.Context, resp *http.Response) (map[string]interface{}, er
 	return data, nil
 }
 
-func requestMe(ctx *gin.Context) (map[string]interface{}, error) {
-	url := "http://127.0.0.1:8000/api/v1/users/me"
+func requestMe(ctx *gin.Context, baseURL string) (map[string]interface{}, error) {
+	url := baseURL + "/users/me"
 	resp, err := apiRequest(ctx, "get", url, nil)
 	if err != nil {
 		return nil, err
@@ -192,9 +219,9 @@ func requestMe(ctx *gin.Context) (map[string]interface{}, error) {
 	return readJSON(ctx, resp)
 }
 
-func liveHandler(templ *pongo2.Template) func(ctx *gin.Context) {
+func liveHandler(templ *pongo2.Template, baseURL string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		url := "http://127.0.0.1:8000/api/v1/entries/live"
+		url := baseURL + "/entries/live"
 		resp, err := apiRequest(ctx, "get", url, nil)
 		if err != nil {
 			return
@@ -217,7 +244,7 @@ func liveHandler(templ *pongo2.Template) func(ctx *gin.Context) {
 			return
 		}
 
-		me, err := requestMe(ctx)
+		me, err := requestMe(ctx, baseURL)
 		if err == nil {
 			data["me"] = me
 		}
@@ -226,9 +253,9 @@ func liveHandler(templ *pongo2.Template) func(ctx *gin.Context) {
 	}
 }
 
-func tlogHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
+func tlogHandler(templ, msgTempl *pongo2.Template, baseURL string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		url := "http://127.0.0.1:8000/api/v1/users/byName/" + ctx.Param("name")
+		url := baseURL + "/users/byName/" + ctx.Param("name")
 		resp, err := apiRequest(ctx, "get", url, nil)
 		if err != nil {
 			return
@@ -244,7 +271,7 @@ func tlogHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
 		}
 
 		id := user["id"].(json.Number)
-		url = "http://127.0.0.1:8000/api/v1/entries/users/" + string(id)
+		url = baseURL + "/entries/users/" + string(id)
 		resp, err = apiRequest(ctx, "get", url, nil)
 		if err != nil {
 			return
@@ -261,7 +288,7 @@ func tlogHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
 
 		tlog["profile"] = user
 
-		me, err := requestMe(ctx)
+		me, err := requestMe(ctx, baseURL)
 		if err == nil {
 			tlog["me"] = me
 		}
@@ -270,15 +297,15 @@ func tlogHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
 	}
 }
 
-func meHandler(templ, msgTempl *pongo2.Template) func(ctx *gin.Context) {
+func meHandler(templ, msgTempl *pongo2.Template, baseURL string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		user, err := requestMe(ctx)
+		user, err := requestMe(ctx, baseURL)
 		if err != nil {
 			return
 		}
 
 		id := user["id"].(json.Number)
-		url := "http://127.0.0.1:8000/api/v1/entries/users/" + string(id)
+		url := baseURL + "/entries/users/" + string(id)
 		resp, err := apiRequest(ctx, "get", url, nil)
 		if err != nil {
 			return
@@ -305,7 +332,7 @@ func editorHandler(templ *pongo2.Template) func(ctx *gin.Context) {
 	}
 }
 
-func postHandler(msgTempl *pongo2.Template) func(ctx *gin.Context) {
+func postHandler(msgTempl *pongo2.Template, baseURL string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		token, err := ctx.Request.Cookie("api_token")
 		if err != nil {
@@ -328,7 +355,7 @@ func postHandler(msgTempl *pongo2.Template) func(ctx *gin.Context) {
 		contentType := bodyWriter.FormDataContentType()
 		bodyWriter.Close()
 
-		url := "http://127.0.0.1:8000/api/v1/entries/users/me"
+		url := baseURL + "/entries/users/me"
 		req, err := http.NewRequest("post", url, bodyBuf)
 		if err != nil {
 			ctx.Writer.WriteString(err.Error())
