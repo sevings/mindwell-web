@@ -8,6 +8,39 @@
             function logout() {
                 document.cookie = 'api_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
             }
+            function vote(id, positive) {
+                var req = new XMLHttpRequest()
+                req.onreadystatechange = updateRating
+                req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                req.open('PUT', '/entries/' + id + '/vote', true)
+                req.send('positive=' + positive)
+
+                var post = document.getElementById('post' + id)
+                var up = post.getElementsByClassName('up_vote').item(0)
+                var down = post.getElementsByClassName('down_vote').item(0)
+                up.disabled = down.disabled = true
+
+                function updateRating() {
+                    if(req.readyState != XMLHttpRequest.DONE)
+                        return
+
+                    var resp = JSON.parse(req.responseText)
+                    if(req.status != 200) {
+                        alert(resp.message)
+                        status = post.data.vote
+                        up.disabled = (status == 'pos')
+                        down.disabled = (status == 'neg')
+                        return
+                    }
+
+                    up.disabled = positive
+                    down.disabled = !positive
+
+                    var rating = post.getElementsByClassName('rating').item(0)
+                    var count = (resp.rating || 0)
+                    rating.innerHTML = (count > 0 ? '+' + count : count)
+                }
+            }
         </script>
     </head>
     <body>
@@ -18,12 +51,16 @@
         <h1>{% block heading %}{% endblock %}</h1>
         {% for entry in entries %}
             <h2>{{ entry.createdAt }}</h2>
-            <div class="post">
+            <div class="post" id="post{{entry.id}}" data-vote="{{ entry.vote }}">
                 <h2>{{ entry.title }}</h2>
                 {{ entry.content|safe }}
                 <div class="footer">
                     {% if entry.isVotable %}
-                        <span class="rating">&#10084; {{ entry.rating|default: 0 }} </span>
+                        <button class="down_vote" onclick="vote({{ entry.id }}, false)" 
+                            {% if entry.vote == "neg" || entry.vote == "my" %}disabled{% endif %}>-</button>
+                        <span class="rating">{% if entry.rating > 0 %}+{% endif %}{{ entry.rating|default: 0 }}</span>
+                        <button class="up_vote" onclick="vote({{ entry.id }}, true)" 
+                            {% if entry.vote == "pos" || entry.vote == "my" %}disabled{% endif %}>+</button>
                     {% endif %}
                     {% if entry.commentCount %}
                         <span class="comments_count">{{ entry.commentCount }} комм.</span>

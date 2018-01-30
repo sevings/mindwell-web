@@ -56,6 +56,7 @@ func main() {
 	router.GET("/post", editorHandler(post))
 
 	router.POST("/entries/users/me", postHandler(msg, baseURL))
+	router.PUT("/entries/:id/vote", entryVoteHandler(baseURL))
 
 	addr, err := config.String("listen_address")
 	if err != nil {
@@ -379,5 +380,16 @@ func postHandler(msgTempl *pongo2.Template, baseURL string) func(ctx *gin.Contex
 		}
 
 		ctx.Redirect(http.StatusSeeOther, "/me")
+	}
+}
+
+func entryVoteHandler(baseURL string) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		url := baseURL + "/entries/" + ctx.Param("id") + "/vote"
+		resp, err := apiRequest(ctx, "put", url, nil)
+		if err != nil {
+			return
+		}
+
 	}
 }
