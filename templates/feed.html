@@ -10,10 +10,9 @@
             }
             function vote(id, positive) {
                 var req = new XMLHttpRequest()
+                req.open('PUT', '/entries/' + id + '/vote?positive=' + positive, true)
                 req.onreadystatechange = updateRating
-                req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                req.open('PUT', '/entries/' + id + '/vote', true)
-                req.send('positive=' + positive)
+                req.send()
 
                 var post = document.getElementById('post' + id)
                 var up = post.getElementsByClassName('up_vote').item(0)

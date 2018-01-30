@@ -189,6 +189,45 @@ func apiRequest(ctx *gin.Context, method, url string, body io.Reader) (*http.Res
 	return resp, nil
 }
 
+func redirectApiRequest(ctx *gin.Context, url string) (*http.Response, error) {
+	token, err := ctx.Request.Cookie("api_token")
+	if err != nil {
+		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
+		return nil, err
+	}
+
+	err = ctx.Request.ParseForm()
+	if err != nil {
+		ctx.Writer.WriteString(err.Error())
+		return nil, err
+	}
+
+	bodyBuf := &bytes.Buffer{}
+	bodyWriter := multipart.NewWriter(bodyBuf)
+
+	for k, v := range ctx.Request.PostForm {
+		bodyWriter.WriteField(k, v[0])
+	}
+	contentType := bodyWriter.FormDataContentType()
+	bodyWriter.Close()
+
+	req, err := http.NewRequest(ctx.Request.Method, url, bodyBuf)
+	if err != nil {
+		ctx.Writer.WriteString(err.Error())
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", contentType)
+	req.Header.Add("X-User-Key", token.Value)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		ctx.Writer.WriteString(err.Error())
+		return nil, err
+	}
+
+	return resp, nil
+}
+
 func readJSON(ctx *gin.Context, resp *http.Response) (map[string]interface{}, error) {
 	jsonData, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
@@ -335,43 +374,13 @@ func editorHandler(templ *pongo2.Template) func(ctx *gin.Context) {
 
 func postHandler(msgTempl *pongo2.Template, baseURL string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		token, err := ctx.Request.Cookie("api_token")
+		resp, err := redirectApiRequest(ctx, baseURL+"/entries/users/me")
 		if err != nil {
-			ctx.Redirect(http.StatusSeeOther, "/static/login.html")
-			return
-		}
-
-		err = ctx.Request.ParseForm()
-		if err != nil {
-			ctx.Writer.WriteString(err.Error())
-			return
-		}
-
-		bodyBuf := &bytes.Buffer{}
-		bodyWriter := multipart.NewWriter(bodyBuf)
-
-		for k, v := range ctx.Request.PostForm {
-			bodyWriter.WriteField(k, v[0])
-		}
-		contentType := bodyWriter.FormDataContentType()
-		bodyWriter.Close()
-
-		url := baseURL + "/entries/users/me"
-		req, err := http.NewRequest("post", url, bodyBuf)
-		if err != nil {
-			ctx.Writer.WriteString(err.Error())
-			return
-		}
-
-		req.Header.Set("Content-Type", contentType)
-		req.Header.Add("X-User-Key", token.Value)
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			ctx.Writer.WriteString(err.Error())
 			return
 		}
 
 		if resp.StatusCode >= 400 {
+			ctx.Status(resp.StatusCode)
 			data, err := readJSON(ctx, resp)
 			if err == nil {
 				msgTempl.ExecuteWriter(pongo2.Context(data), ctx.Writer)
@@ -385,11 +394,22 @@ func postHandler(msgTempl *pongo2.Template, baseURL string) func(ctx *gin.Contex
 
 func entryVoteHandler(baseURL string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		url := baseURL + "/entries/" + ctx.Param("id") + "/vote"
+		url := baseURL + "/entries/" + ctx.Param("id") + "/vote?positive=" + ctx.Query("positive")
 		resp, err := apiRequest(ctx, "put", url, nil)
 		if err != nil {
 			return
 		}
 
+		jsonData, err := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		if err != nil {
+			ctx.Writer.WriteString(err.Error())
+			return
+		}
+
+		ctx.Header("Content-Type", resp.Header.Get("Content-Type"))
+		ctx.Status(resp.StatusCode)
+
+		ctx.Writer.Write(jsonData)
 	}
 }
