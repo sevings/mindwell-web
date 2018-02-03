@@ -66,6 +66,17 @@
                     {% endif %}
                     <a href="/users/{{ entry.author.name }}" class="author">{{ entry.author.showName }}</a>
                 </div>
+                {% if entry.commentsCount %}
+                    <p class="comments">
+                        {% for comment in comments %}
+                            <p class="comment">
+                                <a class="comment_author" href="/users/{{ comment.author.name }}">
+                                    {{ comment.author.showName }}
+                                </a>: comment.content
+                            </p>
+                        {% endfor %}
+                    </p>
+                {% endif %}
             </div>
         {% empty %}
             <h3>Нет записей</h3>
