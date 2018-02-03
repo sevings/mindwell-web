@@ -21,7 +21,7 @@ import (
 )
 
 func main() {
-	config := loadConfig("config")
+	config := loadConfig("web")
 	mode, err := config.String("mode")
 	if err != nil {
 		log.Println(err)
@@ -36,9 +36,12 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/", indexHandler)
-	router.GET("/index.html", indexHandler)
-	router.Static("/static/", "./static")
+	router.GET("/", rootHandler)
+
+	index := mustParse("index")
+	router.GET("/index.html", indexHandler(index))
+
+	router.Static("/assets/", "./web/assets")
 
 	msg := mustParse("error")
 
@@ -91,7 +94,7 @@ func main() {
 }
 
 func loadConfig(fileName string) *goconf.Config {
-	toml := goconf.NewTOMLFile(fileName + ".toml")
+	toml := goconf.NewTOMLFile("configs/" + fileName + ".toml")
 	loader := goconf.NewOnceLoader(toml)
 	config := goconf.NewConfig([]goconf.Provider{loader})
 	if err := config.Load(); err != nil {
@@ -101,19 +104,25 @@ func loadConfig(fileName string) *goconf.Config {
 }
 
 func mustParse(name string) *pongo2.Template {
-	templ, err := pongo2.FromFile("templates/" + name + ".html")
+	templ, err := pongo2.FromFile("web/templates/" + name + ".html")
 	if err != nil {
 		panic(err)
 	}
 	return templ
 }
 
-func indexHandler(ctx *gin.Context) {
+func rootHandler(ctx *gin.Context) {
 	_, err := ctx.Request.Cookie("api_token")
 	if err == nil {
 		ctx.Redirect(http.StatusSeeOther, "/live")
 	} else {
-		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
+		ctx.Redirect(http.StatusSeeOther, "/index.html")
+	}
+}
+
+func indexHandler(templ *pongo2.Template) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		templ.ExecuteWriter(pongo2.Context(nil), ctx.Writer)
 	}
 }
 
@@ -169,7 +178,7 @@ func accountHandler(msgTempl *pongo2.Template, apiURL string) func(ctx *gin.Cont
 func apiRequest(ctx *gin.Context, method, url string, body io.Reader) (*http.Response, error) {
 	token, err := ctx.Request.Cookie("api_token")
 	if err != nil {
-		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
+		ctx.Redirect(http.StatusSeeOther, "/index.html")
 		return nil, err
 	}
 
@@ -192,7 +201,7 @@ func apiRequest(ctx *gin.Context, method, url string, body io.Reader) (*http.Res
 func redirectApiRequest(ctx *gin.Context, url string) (*http.Response, error) {
 	token, err := ctx.Request.Cookie("api_token")
 	if err != nil {
-		ctx.Redirect(http.StatusSeeOther, "/static/login.html")
+		ctx.Redirect(http.StatusSeeOther, "/index.html")
 		return nil, err
 	}
 
@@ -275,7 +284,7 @@ func liveHandler(templ *pongo2.Template, baseURL string) func(ctx *gin.Context) 
 				Expires: time.Unix(0, 0),
 			}
 			http.SetCookie(ctx.Writer, &cookie)
-			ctx.Redirect(http.StatusSeeOther, "/static/login.html")
+			ctx.Redirect(http.StatusSeeOther, "/index.html")
 			return
 		}
 

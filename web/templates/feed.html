@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <title>{% block title %}Mindwell{% endblock %}</title>
-        <link rel="stylesheet" type="text/css" href="/static/css/feed.css">
+        <link rel="stylesheet" type="text/css" href="/assets/feed.css">
         {% block styles %}{% endblock %}
         <script>
             function logout() {
@@ -46,7 +46,7 @@
         <a href="/me">{{ me.showName }}</a>
         <a href="/live">Прямой эфир</a>
         <a href="/post">Новая запись</a>
-        <a href="/static/login.html" onclick="logout()">Выйти</a>
+        <a href="/index.html" onclick="logout()">Выйти</a>
         <h1>{% block heading %}{% endblock %}</h1>
         {% for entry in entries %}
             <h2>{{ entry.createdAt }}</h2>
