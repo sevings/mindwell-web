@@ -163,7 +163,7 @@ func accountHandler(msgTempl *pongo2.Template, apiURL string) func(ctx *gin.Cont
 		account := data["account"].(map[string]interface{})
 		token := account["apiKey"].(string)
 		validThru := account["validThru"].(string)
-		exp, _ := time.Parse("2006-02-01T15:04:05.000", validThru)
+		exp, _ := time.Parse("2006-01-02T15:04:05.999Z07:00", validThru)
 		cookie := http.Cookie{
 			Name:    "api_token",
 			Value:   token,
