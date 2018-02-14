@@ -42,6 +42,7 @@ func main() {
 	router.GET("/index.html", indexHandler(index))
 
 	router.Static("/assets/", "./web/assets")
+	router.Static("/avatars/", "../avatars")
 
 	msg := mustParse("error")
 

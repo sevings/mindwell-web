@@ -1,4 +1,9 @@
 {% extends "feed.html" %}
 {% block title %}{{ profile.showName }} в Mindwell{% endblock %}
 {% block styles %}<style type="text/css">{{ profile.design.css }}</style>{% endblock %}
-{% block heading %}{{ profile.showName }}{% endblock %}
+{% block heading %}
+    <h1>{{ profile.showName }}</h1>
+    {% if profile.avatar %}
+        <p><img src="{{ profile.avatar }}"></p>
+    {% endif %}
+{% endblock %}
