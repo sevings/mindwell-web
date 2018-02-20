@@ -3,7 +3,19 @@
 {% block styles %}<style type="text/css">{{ profile.design.css }}</style>{% endblock %}
 {% block heading %}
     <h1>{{ profile.showName }}</h1>
-    {% if profile.avatar %}
-        <p><img src="{{ profile.avatar }}"></p>
-    {% endif %}
+    {% if profile.title %}<h2>{{ profile.title }}</h2>{% endif %}
+    {% if profile.avatar %}<p><img src="{{ profile.avatar }}"></p>{% endif %}
+    {% if profile.isOnline %}<p>Сейчас онлайн</p>{% endif %}
+    <p>Карма: {{ profile.karma }}</p>
+    <p>Зарегистрирован {{ profile.createdAt }}</p>
+    <p>Последний раз был {{ profile.lastSeenAt }}</p>
+    <p>Приглашен пользователем <a href="/users/{{ profile.invitedBy.name }}">{{ profile.invitedBy.showName }}</a></p>
+    <p>Записи: {{ profile.counts.entries }}</p>
+    <p>Комментарии: {{ profile.counts.comments }}</p>
+    <p>В избранном: {{ profile.counts.favorites }}</p>
+    <p>Теги: {{ profile.counts.tags }}</p>
+    <p>Подписчики: {{ profile.counts.followers }}</p>
+    <p>Подписки: {{ profile.counts.followings }}</p>
+    <p>Заблокировно: {{ profile.counts.ignored }}</p>
+    <p>Приглашено: {{ profile.counts.invited }}</p>
 {% endblock %}
