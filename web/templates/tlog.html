@@ -6,16 +6,16 @@
     {% if profile.title %}<h2>{{ profile.title }}</h2>{% endif %}
     {% if profile.avatar %}<p><img src="{{ profile.avatar }}"></p>{% endif %}
     {% if profile.isOnline %}<p>Сейчас онлайн</p>{% endif %}
-    <p>Карма: {{ profile.karma }}</p>
+    <p>Карма: {{ profile.karma|default:0|floatformat:2 }}</p>
     <p>Зарегистрирован {{ profile.createdAt }}</p>
     <p>Последний раз был {{ profile.lastSeenAt }}</p>
     <p>Приглашен пользователем <a href="/users/{{ profile.invitedBy.name }}">{{ profile.invitedBy.showName }}</a></p>
-    <p>Записи: {{ profile.counts.entries }}</p>
-    <p>Комментарии: {{ profile.counts.comments }}</p>
-    <p>В избранном: {{ profile.counts.favorites }}</p>
-    <p>Теги: {{ profile.counts.tags }}</p>
-    <p>Подписчики: {{ profile.counts.followers }}</p>
-    <p>Подписки: {{ profile.counts.followings }}</p>
-    <p>Заблокировно: {{ profile.counts.ignored }}</p>
-    <p>Приглашено: {{ profile.counts.invited }}</p>
+    {% if profile.counts.entries %}<p>Записи: {{ profile.counts.entries }}</p>{% endif %}
+    {% if profile.counts.comments %}<p>Комментарии: {{ profile.counts.comments }}</p>{% endif %}
+    {% if profile.counts.favorites %}<p>В избранном: {{ profile.counts.favorites }}</p>{% endif %}
+    {% if profile.counts.tags %}<p>Теги: {{ profile.counts.tags }}</p>{% endif %}
+    {% if profile.counts.followers %}<p>Подписчики: {{ profile.counts.followers }}</p>{% endif %}
+    {% if profile.counts.followings %}<p>Подписки: {{ profile.counts.followings }}</p>{% endif %}
+    {% if profile.counts.ignored %}<p>Заблокировно: {{ profile.counts.ignored }}</p>{% endif %}
+    {% if profile.counts.invited %}<p>Приглашено: {{ profile.counts.invited }}</p>{% endif %}
 {% endblock %}
