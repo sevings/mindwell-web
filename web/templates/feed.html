@@ -36,7 +36,7 @@
                     down.disabled = !positive
 
                     var rating = post.getElementsByClassName('rating').item(0)
-                    var count = (resp.rating || 0)
+                    var count = (resp.votes || 0)
                     rating.innerHTML = (count > 0 ? '+' + count : count)
                 }
             }
@@ -56,10 +56,10 @@
                 <div class="footer">
                     {% if entry.isVotable %}
                         <button class="down_vote" onclick="vote({{ entry.id }}, false)" 
-                            {% if entry.vote == "neg" || entry.vote == "my" %}disabled{% endif %}>-</button>
-                        <span class="rating">{% if entry.rating > 0 %}+{% endif %}{{ entry.rating|default: 0 }}</span>
+                            {% if entry.vote == "neg" || entry.vote == "ban" %}disabled{% endif %}>-</button>
+                        <span class="rating">{% if entry.votes > 0 %}+{% endif %}{{ entry.votes|default: 0 }}</span>
                         <button class="up_vote" onclick="vote({{ entry.id }}, true)" 
-                            {% if entry.vote == "pos" || entry.vote == "my" %}disabled{% endif %}>+</button>
+                            {% if entry.vote == "pos" || entry.vote == "ban" %}disabled{% endif %}>+</button>
                     {% endif %}
                     {% if entry.commentCount %}
                         <span class="comments_count">{{ entry.commentCount }} комм.</span>
