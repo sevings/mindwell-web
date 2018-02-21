@@ -55,6 +55,7 @@ func main() {
 	tlog := mustParse("tlog")
 	router.GET("/users/:name", tlogHandler(tlog, msg, baseURL))
 	router.GET("/me", meHandler(tlog, msg, baseURL))
+	router.PUT("/me/online", meOnlineHandler(baseURL))
 
 	post := mustParse("post")
 	router.GET("/post", editorHandler(post))
@@ -421,5 +422,18 @@ func entryVoteHandler(baseURL string) func(ctx *gin.Context) {
 		ctx.Status(resp.StatusCode)
 
 		ctx.Writer.Write(jsonData)
+	}
+}
+
+func meOnlineHandler(baseURL string) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		url := baseURL + "/users/me/online"
+		resp, err := apiRequest(ctx, "put", url, nil)
+		if err != nil {
+			return
+		}
+
+		ctx.Status(resp.StatusCode)
+		ctx.Header("Cache-Control", "no-store")
 	}
 }
