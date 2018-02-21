@@ -35,7 +35,7 @@ function vote(id, positive) {
         rating.innerHTML = (count > 0 ? '+' + count : count)
 
         var rate = (resp.rating || 0)
-        rating.setAttribute("title", "Рейтинг: " + rate)
+        rating.setAttribute("title", "Рейтинг: " + Math.round(rate))
     }
 }
 

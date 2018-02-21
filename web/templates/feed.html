@@ -21,7 +21,7 @@
                     {% if entry.isVotable %}
                         <button class="down_vote" onclick="vote({{ entry.id }}, false)" 
                             {% if entry.vote == "neg" || entry.vote == "ban" %}disabled{% endif %}>-</button>
-                        <span class="rating" title="Рейтинг: {{ entry.rating|floatformat:2|default:0 }}">
+                        <span class="rating" title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
                             {% if entry.votes > 0 %}+{% endif %}{{ entry.votes|default: 0 }}</span>
                         <button class="up_vote" onclick="vote({{ entry.id }}, true)" 
                             {% if entry.vote == "pos" || entry.vote == "ban" %}disabled{% endif %}>+</button>
