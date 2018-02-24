@@ -9,6 +9,7 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"net/http/httputil"
 	"os"
 	"os/signal"
 	"time"
@@ -22,17 +23,11 @@ import (
 
 func main() {
 	config := loadConfig("web")
-	mode, err := config.String("mode")
-	if err != nil {
-		log.Println(err)
-	}
 
+	mode := config.String("mode")
 	gin.SetMode(mode)
 
-	baseURL, err := config.String("base_url")
-	if err != nil {
-		log.Println(err)
-	}
+	baseURL := config.String("base_url")
 
 	router := gin.Default()
 
@@ -42,7 +37,12 @@ func main() {
 	router.GET("/index.html", indexHandler(index))
 
 	router.Static("/assets/", "./web/assets")
-	router.Static("/avatars/", "../avatars")
+
+	avatars := config.String("avatars_path")
+	router.Static("/avatars/", avatars)
+
+	swagger := config.String("swagger_path")
+	router.Static("/help/api/", swagger)
 
 	msg := mustParse("error")
 
@@ -63,11 +63,10 @@ func main() {
 	router.POST("/entries/users/me", postHandler(msg, baseURL))
 	router.PUT("/entries/:id/vote", entryVoteHandler(baseURL))
 
-	addr, err := config.String("listen_address")
-	if err != nil {
-		println(err)
-	}
+	apiHost := config.String("api_host")
+	router.Any("/api/v1/*function", apiReverseProxy(apiHost))
 
+	addr := config.String("listen_address")
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: router,
@@ -95,14 +94,27 @@ func main() {
 	log.Println("Server exiting")
 }
 
-func loadConfig(fileName string) *goconf.Config {
+type mindwell struct {
+	conf *goconf.Config
+}
+
+func (m *mindwell) String(key string) string {
+	value, err := m.conf.String(key)
+	if err != nil {
+		panic(err)
+	}
+
+	return value
+}
+
+func loadConfig(fileName string) mindwell {
 	toml := goconf.NewTOMLFile("configs/" + fileName + ".toml")
 	loader := goconf.NewOnceLoader(toml)
 	config := goconf.NewConfig([]goconf.Provider{loader})
 	if err := config.Load(); err != nil {
 		log.Fatal(err)
 	}
-	return config
+	return mindwell{conf: config}
 }
 
 func mustParse(name string) *pongo2.Template {
@@ -435,5 +447,17 @@ func meOnlineHandler(baseURL string) func(ctx *gin.Context) {
 
 		ctx.Status(resp.StatusCode)
 		ctx.Header("Cache-Control", "no-store")
+	}
+}
+
+func apiReverseProxy(apiHost string) gin.HandlerFunc {
+	director := func(req *http.Request) {
+		req.URL.Scheme = "http"
+		req.URL.Host = apiHost
+	}
+	proxy := &httputil.ReverseProxy{Director: director}
+
+	return func(c *gin.Context) {
+		proxy.ServeHTTP(c.Writer, c.Request)
 	}
 }
