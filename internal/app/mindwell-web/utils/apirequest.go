@@ -69,7 +69,7 @@ func (api *APIRequest) setUserKey() {
 
 func (api *APIRequest) do(req *http.Request) {
 	if api.mdw.DevMode {
-		log.Print("Doing API request to " + req.URL.String())
+		log.Print(req.Method + " " + req.URL.String())
 	}
 
 	api.resp, api.err = http.DefaultTransport.RoundTrip(req)
@@ -136,7 +136,7 @@ func (api *APIRequest) copyRequest(path string) *http.Request {
 	return req
 }
 
-func (api *APIRequest) ForwardTo(path string) {
+func (api *APIRequest) MethodForwardTo(method, path string) {
 	api.setUserKey()
 	if api.err != nil {
 		return
@@ -144,9 +144,18 @@ func (api *APIRequest) ForwardTo(path string) {
 
 	req := api.copyRequest(path)
 	req.Header.Set("X-User-Key", api.uKey)
+	req.Method = method
 
 	api.do(req)
 	api.checkError()
+}
+
+func (api *APIRequest) ForwardTo(path string) {
+	api.MethodForwardTo(api.ctx.Request.Method, path)
+}
+
+func (api *APIRequest) Forward() {
+	api.ForwardTo(api.ctx.Request.URL.Path)
 }
 
 func (api *APIRequest) ForwardToNotAuthorized(path string) {
@@ -159,10 +168,6 @@ func (api *APIRequest) ForwardToNotAuthorized(path string) {
 	if api.resp.StatusCode >= 400 {
 		api.clearCookie()
 	}
-}
-
-func (api *APIRequest) Forward() {
-	api.ForwardTo(api.ctx.Request.URL.Path)
 }
 
 func (api *APIRequest) SetField(key, path string) {
@@ -255,4 +260,12 @@ func (api *APIRequest) WriteResponse() {
 	if jsonData != nil {
 		api.ctx.Writer.Write(jsonData)
 	}
+}
+
+func (api *APIRequest) Redirect(path string) {
+	if api.err != nil {
+		return
+	}
+
+	api.ctx.Redirect(http.StatusSeeOther, path)
 }

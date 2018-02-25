@@ -41,6 +41,8 @@ func main() {
 
 	router.GET("/users/:name", tlogHandler(mdw))
 	router.GET("/me", meHandler(mdw))
+	router.GET("/me/edit", meEditorHandler(mdw))
+	router.POST("/me/save", meSaverHandler(mdw))
 	router.PUT("/me/online", meOnlineHandler(mdw))
 
 	router.GET("/post", editorHandler(mdw))
@@ -141,7 +143,12 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Get("/users/byName/" + ctx.Param("name"))
-		id := api.Data()["id"].(json.Number)
+		id, ok := api.Data()["id"].(json.Number)
+		if !ok {
+			api.WriteTemplate("error")
+			return
+		}
+
 		api.ClearData()
 		path := "/entries/users/" + id.String() //! \todo get tlog by name
 		api.ForwardTo(path)
@@ -161,6 +168,22 @@ func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
+func meEditorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Get("/users/me")
+		api.WriteTemplate("edit_profile")
+	}
+}
+
+func meSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.MethodForwardTo("PUT", "/users/me")
+		api.Redirect("/me")
+	}
+}
+
 func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
@@ -172,7 +195,7 @@ func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/entries/users/me")
-		ctx.Redirect(http.StatusSeeOther, "/me")
+		api.Redirect("/me")
 	}
 }
 

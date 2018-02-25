@@ -1,0 +1,28 @@
+<html>
+	<head>
+        <meta charset="utf-8">
+		<title>Редактирование профиля в Mindwell</title>
+	</head>
+	<body>
+        <form name="editor" action="/me/save" method="post">
+            <textarea name="title" rows="2" cols="80" placeholder="Заголовок тлога" autofocus>{{ title }}</textarea><br/>
+            <span>Имя</span><input name="showName" type="text" required value="{{ showName }}"/><br /> 
+            <span>Пол</span> 
+            <select name="gender">
+                <option value="not set" {% if gender == "not set" %}selected{% endif %}>не указан</option>
+                <option value="female"{% if gender == "female" %}selected{% endif %}>женский</option>
+                <option value="male"{% if gender == "male" %}selected{% endif %}>мужской</option>
+            </select><br /> 
+            <span>Страна</span><input type="text" name="country" value="{{ country }}"><br>
+            <span>Город</span><input type="text" name="city" value="{{ city }}"><br>
+            <input type="checkbox" name="isDaylog" checked={{ isDaylog }}> Тлогодень<br /> 
+            <input type="checkbox" name="showInTops" checked={{ showInTops }}> Разрешить показывать в топах<br /> 
+            <span>Приватность тлога</span>
+            <select name="privacy">
+                <option value="all">Открыт для всех</option>
+                <option value="followers">Открыт только подписчикам</option>
+            </select> <br/>
+            <input type="submit" value="Сохранить" />
+        </form>
+    </body>
+</html>
