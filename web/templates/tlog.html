@@ -10,6 +10,7 @@
     <p>Зарегистрирован {{ profile.createdAt }}</p>
     <p>Последний раз был {{ profile.lastSeenAt }}</p>
     <p>Приглашен пользователем <a href="/users/{{ profile.invitedBy.name }}">{{ profile.invitedBy.showName }}</a></p>
+    <p>{{ profile.country}}{% if profile.city %}, {{ profile.city }}{% endif %}</p>
     {% if profile.counts.entries %}<p>Записи: {{ profile.counts.entries }}</p>{% endif %}
     {% if profile.counts.comments %}<p>Комментарии: {{ profile.counts.comments }}</p>{% endif %}
     {% if profile.counts.favorites %}<p>В избранном: {{ profile.counts.favorites }}</p>{% endif %}
