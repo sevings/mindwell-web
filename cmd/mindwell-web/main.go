@@ -41,8 +41,13 @@ func main() {
 
 	router.GET("/users/:name", tlogHandler(mdw))
 	router.GET("/me", meHandler(mdw))
+
 	router.GET("/me/edit", meEditorHandler(mdw))
 	router.POST("/me/save", meSaverHandler(mdw))
+
+	router.GET("/design", designEditorHandler(mdw))
+	router.POST("/design", designSaverHandler(mdw))
+
 	router.PUT("/me/online", meOnlineHandler(mdw))
 
 	router.GET("/post", editorHandler(mdw))
@@ -180,6 +185,22 @@ func meSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForwardTo("PUT", "/users/me")
+		api.Redirect("/me")
+	}
+}
+
+func designEditorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Get("/design")
+		api.WriteTemplate("design")
+	}
+}
+
+func designSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.MethodForwardTo("PUT", "/design")
 		api.Redirect("/me")
 	}
 }

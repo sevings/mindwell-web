@@ -1,6 +1,9 @@
 {% extends "feed.html" %}
 {% block title %}{{ profile.showName }} в Mindwell{% endblock %}
-{% block styles %}<style type="text/css">{{ profile.design.css }}</style>{% endblock %}
+{% block styles %}
+<style type="text/css">{{ profile.design.css }}</style>
+<style type="text/css">.post { background: {{ profile.design.backgroundColor }}; color: {{ profile.design.textColor }}; text-align: {{ profile.design.textAlignment }}; }</style>
+{% endblock %}
 {% block heading %}
     {% if profile.avatar %}<p><img src="{{ profile.avatar }}"></p>{% endif %}
     <h1>{{ profile.showName }}</h1>
@@ -19,5 +22,5 @@
     {% if profile.counts.followings %}<p>Подписки: {{ profile.counts.followings }}</p>{% endif %}
     {% if profile.counts.ignored %}<p>Заблокировно: {{ profile.counts.ignored }}</p>{% endif %}
     {% if profile.counts.invited %}<p>Приглашено: {{ profile.counts.invited }}</p>{% endif %}
-    {% if me.id == profile.id %}<a href="/me/edit">Редактировать</a>{% endif %}
+    {% if me.id == profile.id %}<a href="/me/edit">Редактировать</a> <a href="/design">Дизайн</a>{% endif %}
 {% endblock %}

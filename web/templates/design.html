@@ -1,0 +1,21 @@
+<html>
+	<head>
+        <meta charset="utf-8">
+		<title>Дизайн тлога в Mindwell</title>
+	</head>
+	<body>
+        <form name="editor" action="/design" method="post" enctype="multipart/form-data">
+            <span>Цвет фона</span><input type="text" name="backgroundColor" value="{{ backgroundColor }}"><br>
+            <span>Цвет текста</span><input type="text" name="textColor" value="{{ textColor }}"><br>
+            Выравнивание текста
+            <select name="textAlignment">
+                <option value="left" {% if textAlignment == "left" %}selected{% endif %}>по левому краю</option>
+                <option value="right" {% if textAlignment == "right" %}selected{% endif %}>по правому краю</option>
+                <option value="center" {% if textAlignment == "center" %}selected{% endif %}>по центру</option>
+                <option value="justify" {% if textAlignment == "justify" %}selected{% endif %}>по ширине</option>
+            </select> <br/>
+            <textarea name="css" rows="40" cols="80" placeholder="CSS">{{ css }}</textarea><br/>
+            <input type="submit" value="Сохранить" />
+        </form>
+    </body>
+</html>

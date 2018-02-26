@@ -45,7 +45,12 @@ func (api *APIRequest) ClearData() { //! \todo remove
 }
 
 func (api *APIRequest) SetData(key string, value interface{}) {
-	api.Data()[key] = value
+	data := api.Data()
+	if data == nil {
+		return
+	}
+
+	data[key] = value
 }
 
 func (api *APIRequest) setUserKey() {
@@ -101,6 +106,7 @@ func (api *APIRequest) checkError() {
 	case code == 401:
 		api.clearCookie()
 	case code >= 400:
+		log.Print(api.resp.Status)
 		api.err = http.ErrNotSupported
 		api.WriteTemplate("error")
 	}
@@ -132,6 +138,13 @@ func (api *APIRequest) copyRequest(path string) *http.Request {
 	req.URL.Host = api.mdw.ConfigString("api_host")
 	req.URL.Path = "/api/v1" + path
 	req.Close = false
+
+	// h2 := make(http.Header, len(api.ctx.Request.Header))
+	for k, vv := range api.ctx.Request.Header {
+		vv2 := make([]string, len(vv))
+		copy(vv2, vv)
+		req.Header[k] = vv2
+	}
 
 	return req
 }
@@ -175,7 +188,7 @@ func (api *APIRequest) SetField(key, path string) {
 		api.data = api.parseResponse()
 	}
 
-	if api.err != nil {
+	if api.err != nil || api.data == nil {
 		return
 	}
 
