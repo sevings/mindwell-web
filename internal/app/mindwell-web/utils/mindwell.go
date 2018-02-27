@@ -25,13 +25,13 @@ func loadConfig(fileName string) *goconf.Config {
 
 func NewMindwell() *Mindwell {
 	conf := loadConfig("web")
-	dev, err := conf.BoolOr("dev_mode", false)
+	mode, err := conf.String("mode")
 	if err != nil {
 		log.Print(err)
 	}
 
 	return &Mindwell{
-		DevMode:   dev,
+		DevMode:   mode == "debug",
 		config:    conf,
 		templates: make(map[string]*pongo2.Template),
 	}

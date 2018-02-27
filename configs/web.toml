@@ -7,5 +7,3 @@ api_host = "127.0.0.1:8000"
 swagger_path = "../yummy-server/web"
 avatars_path = "../avatars"
 assets_path = "./web/assets"
-
-dev_mode = true
