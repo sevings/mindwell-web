@@ -139,7 +139,6 @@ func (api *APIRequest) copyRequest(path string) *http.Request {
 	req.URL.Path = "/api/v1" + path
 	req.Close = false
 
-	// h2 := make(http.Header, len(api.ctx.Request.Header))
 	for k, vv := range api.ctx.Request.Header {
 		vv2 := make([]string, len(vv))
 		copy(vv2, vv)
