@@ -1,6 +1,7 @@
 {% extends "feed.html" %}
 {% block title %}{{ profile.showName }} в Mindwell{% endblock %}
 {% block styles %}
+<link rel="stylesheet" type="text/css" href="/assets/feed.css">
 {% if profile.design.css %}
 <style type="text/css">{{ profile.design.css }}</style>
 {% else %}
@@ -21,9 +22,10 @@
     {% if profile.counts.comments %}<p>Комментарии: {{ profile.counts.comments }}</p>{% endif %}
     {% if profile.counts.favorites %}<p>В избранном: {{ profile.counts.favorites }}</p>{% endif %}
     {% if profile.counts.tags %}<p>Теги: {{ profile.counts.tags }}</p>{% endif %}
-    {% if profile.counts.followers %}<p>Подписчики: {{ profile.counts.followers }}</p>{% endif %}
-    {% if profile.counts.followings %}<p>Подписки: {{ profile.counts.followings }}</p>{% endif %}
-    {% if profile.counts.ignored %}<p>Заблокировно: {{ profile.counts.ignored }}</p>{% endif %}
-    {% if profile.counts.invited %}<p>Приглашено: {{ profile.counts.invited }}</p>{% endif %}
+    {% if profile.counts.followers %}<p><a href="/users/{{ profile.name }}/followers"><p>Подписчики: {{ profile.counts.followers }}</a></p>{% endif %}
+    {% if profile.counts.followings %}<p><a href="/users/{{ profile.name }}/followings">Подписки: {{ profile.counts.followings }}</a></p>{% endif %}
+    {% if profile.counts.ignored %}<p>{% if me.id == profile.id %}<a href="/users/{{ profile.name }}/ignored">{% endif %}
+        Заблокировно: {{ profile.counts.ignored }}{% if me.id == profile.id %}</a>{% endif %}</p>{% endif %}
+    {% if profile.counts.invited %}<p><a href="/users/{{ profile.name }}/invited">Приглашено: {{ profile.counts.invited }}</a></p>{% endif %}
     {% if me.id == profile.id %}<a href="/me/edit">Редактировать</a> <a href="/design">Дизайн</a>{% endif %}
 {% endblock %}

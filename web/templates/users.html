@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block styles %}<link rel="stylesheet" type="text/css" href="/assets/users.css">{% endblock %}
+{% block title %}{{ subject.showName }}{% endblock %}
+{% block heading %}<h1>{{ relation_tr }} {{ subject.showName }}</h1>{% endblock %}
+{% block body %}
+    {% for user in users %}
+        <div class="user_block">
+            <img align=left class="avatar" src="{{ user.avatar }}"><br>
+            <a href="/users/{{ user.name }}">{{ user.showName }}</a>
+        </div><br>
+    {% empty %}
+        <h3>Список пуст</h3>
+    {% endfor %}
+{% endblock %}

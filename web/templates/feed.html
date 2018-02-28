@@ -1,50 +1,39 @@
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>{% block title %}Mindwell{% endblock %}</title>
-        <link rel="stylesheet" type="text/css" href="/assets/feed.css">
-        {% block styles %}{% endblock %}
-        <script src="/assets/feed.js"></script>
-    </head>
-    <body>
-        <a href="/me">{{ me.showName }}</a>
-        <a href="/live">Прямой эфир</a>
-        <a href="/post">Новая запись</a>
-        <a href="/index.html" onclick="logout()">Выйти</a>
-        {% block heading %}{% endblock %}
-        {% for entry in entries %}
-            <h2>{{ entry.createdAt }}</h2>
-            <div class="post" id="post{{entry.id}}" data-vote="{{ entry.vote }}">
-                <h2>{{ entry.title }}</h2>
-                {{ entry.content|safe }}
-                <div class="footer">
-                    {% if entry.isVotable %}
-                        <button class="down_vote" onclick="vote({{ entry.id }}, false)" 
-                            {% if entry.vote == "neg" || entry.vote == "ban" %}disabled{% endif %}>-</button>
-                        <span class="rating" title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
-                            {% if entry.votes > 0 %}+{% endif %}{{ entry.votes|default: 0 }}</span>
-                        <button class="up_vote" onclick="vote({{ entry.id }}, true)" 
-                            {% if entry.vote == "pos" || entry.vote == "ban" %}disabled{% endif %}>+</button>
-                    {% endif %}
-                    {% if entry.commentCount %}
-                        <span class="comments_count">{{ entry.commentCount }} комм.</span>
-                    {% endif %}
-                    <a href="/users/{{ entry.author.name }}" class="author">{{ entry.author.showName }}</a>
-                </div>
-                {% if entry.commentsCount %}
-                    <p class="comments">
-                        {% for comment in comments %}
-                            <p class="comment">
-                                <a class="comment_author" href="/users/{{ comment.author.name }}">
-                                    {{ comment.author.showName }}
-                                </a>: {{ comment.content }}
-                            </p>
-                        {% endfor %}
-                    </p>
+{% extends "base.html" %}
+{% block styles %}<link rel="stylesheet" type="text/css" href="/assets/feed.css">{% endblock %}
+{% block scripts %}<script src="/assets/feed.js"></script>{% endblock %}
+{% block body %}
+    {% for entry in entries %}
+        <h2>{{ entry.createdAt }}</h2>
+        <div class="post" id="post{{entry.id}}" data-vote="{{ entry.vote }}">
+            <h2>{{ entry.title }}</h2>
+            {{ entry.content|safe }}
+            <div class="footer">
+                {% if entry.isVotable %}
+                    <button class="down_vote" onclick="vote({{ entry.id }}, false)" 
+                        {% if entry.vote == "neg" || entry.vote == "ban" %}disabled{% endif %}>-</button>
+                    <span class="rating" title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
+                        {% if entry.votes > 0 %}+{% endif %}{{ entry.votes|default: 0 }}</span>
+                    <button class="up_vote" onclick="vote({{ entry.id }}, true)" 
+                        {% if entry.vote == "pos" || entry.vote == "ban" %}disabled{% endif %}>+</button>
                 {% endif %}
+                {% if entry.commentCount %}
+                    <span class="comments_count">{{ entry.commentCount }} комм.</span>
+                {% endif %}
+                <a href="/users/{{ entry.author.name }}" class="author">{{ entry.author.showName }}</a>
             </div>
-        {% empty %}
-            <h3>Нет записей</h3>
-        {% endfor %}
-    </body>
-</html>
+            {% if entry.commentsCount %}
+                <p class="comments">
+                    {% for comment in comments %}
+                        <p class="comment">
+                            <a class="comment_author" href="/users/{{ comment.author.name }}">
+                                {{ comment.author.showName }}
+                            </a>: {{ comment.content }}
+                        </p>
+                    {% endfor %}
+                </p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <h3>Нет записей</h3>
+    {% endfor %}
+{% endblock %}

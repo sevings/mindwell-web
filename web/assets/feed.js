@@ -1,7 +1,3 @@
-function logout() {
-    document.cookie = 'api_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-}
-
 function vote(id, positive) {
     var req = new XMLHttpRequest()
     req.open('PUT', '/entries/' + id + '/vote?positive=' + positive, true)
@@ -38,17 +34,3 @@ function vote(id, positive) {
         rating.setAttribute("title", "Рейтинг: " + Math.round(rate))
     }
 }
-
-function setOnline() {
-    function sendRequest() {
-        var req = new XMLHttpRequest()
-        req.open('PUT', '/me/online', true)
-        req.send()        
-    }
-
-    setInterval(sendRequest, 60000)
-
-    sendRequest()
-}
-
-window.onload = setOnline

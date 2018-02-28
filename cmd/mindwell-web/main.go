@@ -40,6 +40,7 @@ func main() {
 	router.GET("/live", liveHandler(mdw))
 
 	router.GET("/users/:name", tlogHandler(mdw))
+	router.GET("/users/:name/:relation", usersHandler(mdw))
 	router.GET("/me", meHandler(mdw))
 
 	router.GET("/me/edit", meEditorHandler(mdw))
@@ -160,6 +161,43 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetMe()
 		api.SetProfile()
 		api.WriteTemplate("tlog")
+	}
+}
+
+func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		path := "/users/byName/" + ctx.Param("name") + "/" + ctx.Param("relation")
+		api.ForwardTo(path)
+		api.SetMe()
+
+		relation, ok := api.Data()["relation"].(string)
+		if !ok {
+			api.WriteTemplate("error")
+			return
+		}
+
+		var tr string
+		switch {
+		case relation == "followers":
+			tr = "Подписчики"
+			break
+		case relation == "followings":
+			tr = "Подписки"
+			break
+		case relation == "requested":
+			tr = "Заявки"
+			break
+		case relation == "ignored":
+			tr = "Черный список"
+			break
+		case relation == "invited":
+			tr = "Приглашенные"
+			break
+		}
+
+		api.Data()["relation_tr"] = tr
+		api.WriteTemplate("users")
 	}
 }
 

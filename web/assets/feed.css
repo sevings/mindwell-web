@@ -1,12 +1,3 @@
-body {
-    background : #EEE;
-    font-family: Arial, Helvetica, sans-serif;
-    margin : 3em auto;
-    line-height : 1.5;
-    font-size: 100%;
-    max-width : 800px;
-}
-
 .post {
     border: 1px solid black;
     border-color: #BBB #DDD #DDD #BBB;
@@ -16,20 +7,8 @@ body {
     background: white;
 }
 
-h1 span {
-    font-size : 0.5em;
-}
-
-a {
-    color : gray;
-}
-
 .image_attach {
     text-align: center;
-}
-
-img {
-    max-width: 100%;
 }
 
 .comments {

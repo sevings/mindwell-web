@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}Mindwell{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="/assets/base.css">
+        {% block styles %}{% endblock %}
+        <script src="/assets/base.js"></script>
+        {% block scripts %}{% endblock %}
+    </head>
+    <body>
+        <a href="/me">{{ me.showName }}</a>
+        <a href="/live">Прямой эфир</a>
+        <a href="/post">Новая запись</a>
+        <a href="/index.html" onclick="logout()">Выйти</a>
+        {% block heading %}{% endblock %}
+        {% block body %}{% endblock %}
+    </body>
+</html>
