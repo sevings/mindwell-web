@@ -8,6 +8,10 @@
 <style type="text/css">.post { background: {{ profile.design.backgroundColor }}; color: {{ profile.design.textColor }}; text-align: {{ profile.design.textAlignment }}; }</style>
 {% endif %}
 {% endblock %}
+{% block scripts %}
+<script src="/assets/feed.js"></script>
+<script src="/assets/tlog.js"></script>
+{% endblock %}
 {% block heading %}
     {% if profile.avatar %}<p><img src="{{ profile.avatar }}"></p>{% endif %}
     <h1>{{ profile.showName }}</h1>
@@ -24,8 +28,31 @@
     {% if profile.counts.tags %}<p>Теги: {{ profile.counts.tags }}</p>{% endif %}
     {% if profile.counts.followers %}<p><a href="/users/{{ profile.name }}/followers"><p>Подписчики: {{ profile.counts.followers }}</a></p>{% endif %}
     {% if profile.counts.followings %}<p><a href="/users/{{ profile.name }}/followings">Подписки: {{ profile.counts.followings }}</a></p>{% endif %}
-    {% if profile.counts.ignored %}<p>{% if me.id == profile.id %}<a href="/users/{{ profile.name }}/ignored">{% endif %}
-        Заблокировно: {{ profile.counts.ignored }}{% if me.id == profile.id %}</a>{% endif %}</p>{% endif %}
+    {% if profile.counts.ignored %}<p>{% if me.id == profile.id %}<a href="/me/ignored">{% endif %}
+        Заблокировано: {{ profile.counts.ignored }}{% if me.id == profile.id %}</a>{% endif %}</p>{% endif %}
     {% if profile.counts.invited %}<p><a href="/users/{{ profile.name }}/invited">Приглашено: {{ profile.counts.invited }}</a></p>{% endif %}
-    {% if me.id == profile.id %}<a href="/me/edit">Редактировать</a> <a href="/design">Дизайн</a>{% endif %}
+    {% if me.id == profile.id %}<a href="/profile/edit">Редактировать</a> <a href="/design">Дизайн</a>{% endif %}
+    {% if me.id != profile.id %}
+        <p>
+            <button type="button" id="permit_rel" onclick="permitFriend({{ profile.id }})" {% if profile.relations.toMe != "requested" %}hidden{% endif %}>Принять заявку</button>
+            <button type="button" id="cancel_rel" onclick="cancelFriend({{ profile.id }})" {% if profile.relations.toMe != "requested" && profile.relations.toMe != "followed" || me.privacy == "all" %}hidden{% endif %}>
+                    {% if profile.relations.toMe == "followed" %}Отписать{% elif profile.relations.toMe == "requested" %}Отклонить заявку{% endif %}</button>
+            <span id="followed_rel" {% if profile.relations.toMe != "followed" %}hidden{% endif %}>Подписан на вас</span>
+            <span id="ignored_rel" {% if profile.relations.toMe != "ignored" %}hidden{% endif %}>Вы в черном списке</span>
+            <span id="none_rel" {% if profile.relations.toMe != "none" %}hidden{% endif %}>Не подписан на вас</span>
+
+            <button type="button" id="follow" onclick="followUser({{ profile.id }}, '{{ profile.privacy }}', '{{ profile.relations.toMe }}')" {% if profile.relations.fromMe != "none" || profile.relations.toMe == "ignored" %}hidden{% endif %}>
+                {% if profile.privacy == "all" %}Подписаться{% else %}Отправить заявку{% endif %}</button>
+            <button type="button" id="ignore" onclick="ignoreUser({{ profile.id }}, '{{ profile.privacy }}', '{{ profile.relations.toMe }}')" {% if profile.relations.fromMe != "none" %}hidden{% endif %}>Заблокировать</button>
+            <button type="button" id="unfollow" onclick="unfollowUser({{ profile.id }}, '{{ profile.privacy }}', '{{ profile.relations.toMe }}')" {% if profile.relations.fromMe == "none" %}hidden{% endif %}>
+                    {% if profile.relations.fromMe == "followed" %}
+                        Отписаться
+                    {% elif profile.relations.fromMe == "requested" %}
+                        Отменить заявку
+                    {% elif profile.relations.fromMe == "ignored" %}
+                        Разблокировать
+                    {% endif %}
+            </button>
+        </p>
+    {% endif %}
 {% endblock %}

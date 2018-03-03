@@ -41,10 +41,12 @@ func main() {
 
 	router.GET("/users/:name", tlogHandler(mdw))
 	router.GET("/users/:name/:relation", usersHandler(mdw))
-	router.GET("/me", meHandler(mdw))
 
-	router.GET("/me/edit", meEditorHandler(mdw))
-	router.POST("/me/save", meSaverHandler(mdw))
+	router.GET("/me", meHandler(mdw))
+	router.GET("/me/:relation", meUsersHandler(mdw))
+
+	router.GET("/profile/edit", meEditorHandler(mdw))
+	router.POST("/profile/save", meSaverHandler(mdw))
 
 	router.GET("/design", designEditorHandler(mdw))
 	router.POST("/design", designSaverHandler(mdw))
@@ -54,7 +56,15 @@ func main() {
 	router.GET("/post", editorHandler(mdw))
 
 	router.POST("/entries/users/me", postHandler(mdw))
-	router.PUT("/entries/:id/vote", entryVoteHandler(mdw))
+	router.PUT("/entries/:id/vote", proxyHandler(mdw))
+
+	router.GET("/relations/to/:id", proxyHandler(mdw))
+	router.PUT("/relations/to/:id", proxyHandler(mdw))
+	router.DELETE("/relations/to/:id", proxyHandler(mdw))
+
+	router.GET("/relations/from/:id", proxyHandler(mdw))
+	router.PUT("/relations/from/:id", proxyHandler(mdw))
+	router.DELETE("/relations/from/:id", proxyHandler(mdw))
 
 	router.Any("/api/v1/*function", apiReverseProxy(mdw))
 
@@ -201,6 +211,43 @@ func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
+func meUsersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		path := "/users/me/" + ctx.Param("relation")
+		api.ForwardTo(path)
+		api.SetMe()
+
+		relation, ok := api.Data()["relation"].(string)
+		if !ok {
+			api.WriteTemplate("error")
+			return
+		}
+
+		var tr string
+		switch {
+		case relation == "followers":
+			tr = "Подписчики"
+			break
+		case relation == "followings":
+			tr = "Подписки"
+			break
+		case relation == "requested":
+			tr = "Заявки"
+			break
+		case relation == "ignored":
+			tr = "Черный список"
+			break
+		case relation == "invited":
+			tr = "Приглашенные"
+			break
+		}
+
+		api.Data()["relation_tr"] = tr
+		api.WriteTemplate("users")
+	}
+}
+
 func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
@@ -258,7 +305,7 @@ func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func entryVoteHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func proxyHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
