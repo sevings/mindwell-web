@@ -180,33 +180,6 @@ func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		path := "/users/byName/" + ctx.Param("name") + "/" + ctx.Param("relation")
 		api.ForwardTo(path)
 		api.SetMe()
-
-		relation, ok := api.Data()["relation"].(string)
-		if !ok {
-			api.WriteTemplate("error")
-			return
-		}
-
-		var tr string
-		switch {
-		case relation == "followers":
-			tr = "Подписчики"
-			break
-		case relation == "followings":
-			tr = "Подписки"
-			break
-		case relation == "requested":
-			tr = "Заявки"
-			break
-		case relation == "ignored":
-			tr = "Черный список"
-			break
-		case relation == "invited":
-			tr = "Приглашенные"
-			break
-		}
-
-		api.Data()["relation_tr"] = tr
 		api.WriteTemplate("users")
 	}
 }
@@ -217,33 +190,6 @@ func meUsersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		path := "/users/me/" + ctx.Param("relation")
 		api.ForwardTo(path)
 		api.SetMe()
-
-		relation, ok := api.Data()["relation"].(string)
-		if !ok {
-			api.WriteTemplate("error")
-			return
-		}
-
-		var tr string
-		switch {
-		case relation == "followers":
-			tr = "Подписчики"
-			break
-		case relation == "followings":
-			tr = "Подписки"
-			break
-		case relation == "requested":
-			tr = "Заявки"
-			break
-		case relation == "ignored":
-			tr = "Черный список"
-			break
-		case relation == "invited":
-			tr = "Приглашенные"
-			break
-		}
-
-		api.Data()["relation_tr"] = tr
 		api.WriteTemplate("users")
 	}
 }

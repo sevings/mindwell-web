@@ -1,7 +1,21 @@
 {% extends "base.html" %}
 {% block styles %}<link rel="stylesheet" type="text/css" href="/assets/users.css">{% endblock %}
 {% block title %}{{ subject.showName }}{% endblock %}
-{% block heading %}<h1>{{ relation_tr }} {{ subject.showName }}</h1>{% endblock %}
+{% block heading %}
+    <h1>
+        {% if relation == "followers" %}
+            Подписчики {{ subject.showName }}
+        {% elif relation == "followings" %}
+            Подписки {{ subject.showName }}
+        {% elif relation == "requested" %}
+            Заявки {{ subject.showName }}
+        {% elif relation == "ignored" %}
+            Заблокированные пользователи
+        {% elif relation == "invited" %}
+            Приглашенные {{ subject.showName }}
+        {% endif %}
+    </h1>
+{% endblock %}
 {% block body %}
     {% for user in users %}
         <div class="user_block">
