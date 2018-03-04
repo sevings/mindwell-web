@@ -8,8 +8,9 @@
         {% block scripts %}{% endblock %}
     </head>
     <body>
-        <a href="/me">{{ me.showName }}</a>
         <a href="/live">Прямой эфир</a>
+        <a href="/friends">Подписки</a>
+        <a href="/me">{{ me.showName }}</a>
         <a href="/post">Новая запись</a>
         <a href="/index.html" onclick="logout()">Выйти</a>
         {% block heading %}{% endblock %}

@@ -38,6 +38,7 @@ func main() {
 	router.POST("/register", registerHandler(mdw))
 
 	router.GET("/live", liveHandler(mdw))
+	router.GET("/friends", friendsHandler(mdw))
 
 	router.GET("/users/:name", tlogHandler(mdw))
 	router.GET("/users/:name/:relation", usersHandler(mdw))
@@ -152,6 +153,15 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.ForwardTo("/entries/live")
 		api.SetMe()
 		api.WriteTemplate("live")
+	}
+}
+
+func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardTo("/entries/friends")
+		api.SetMe()
+		api.WriteTemplate("friends")
 	}
 }
 
