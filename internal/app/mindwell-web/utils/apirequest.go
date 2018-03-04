@@ -107,8 +107,8 @@ func (api *APIRequest) checkError() {
 		api.clearCookie()
 	case code >= 400:
 		log.Print(api.resp.Status)
-		api.err = http.ErrNotSupported
 		api.WriteTemplate("error")
+		api.err = http.ErrNotSupported
 	}
 }
 

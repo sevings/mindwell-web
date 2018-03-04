@@ -1,8 +1,3 @@
-<html>
-    <head>
-        <title>Ошибка — Mindwell</title>
-    </head>
-    <body>
-        <h1 style="text-align: center">{{ message }}</h1>
-    </body>
-</html>
+{% extends "base.html" %}
+{% block title %}Ошибка — Mindwell{% endblock %}
+{% block body %}<h1 style="text-align: center">{{ message }}</h1>{% endblock %}
