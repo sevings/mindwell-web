@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 
 	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils"
@@ -22,11 +23,13 @@ func main() {
 
 	router := gin.Default()
 
-	assets := mdw.ConfigString("assets_path")
-	router.Static("/assets/", assets)
-
 	avatars := mdw.ConfigString("avatars_path")
 	router.Static("/avatars/", avatars)
+
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
+
+	assets := mdw.ConfigString("assets_path")
+	router.Static("/assets/", assets)
 
 	swagger := mdw.ConfigString("swagger_path")
 	router.Static("/help/api/", swagger)

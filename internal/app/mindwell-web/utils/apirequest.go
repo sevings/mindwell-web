@@ -258,6 +258,7 @@ func (api *APIRequest) WriteTemplate(name string) {
 	}
 
 	api.ctx.Header("Cache-Control", "no-store")
+	api.ctx.Header("Content-Type", "text/html; charset=utf-8")
 
 	templ.ExecuteWriter(pongo2.Context(api.Data()), api.ctx.Writer)
 }

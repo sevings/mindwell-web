@@ -5,5 +5,5 @@ base_url = "http://127.0.0.1:8000/api/v1"
 api_host = "127.0.0.1:8000"
 
 swagger_path = "../yummy-server/web"
-avatars_path = "../avatars"
+avatars_path = "../yummy-server/avatars"
 assets_path = "./web/assets"
