@@ -280,7 +280,7 @@ func meOnlineHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func apiReverseProxy(mdw *utils.Mindwell) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo(ctx.Request.URL.Path[7:])
+		api.ForwardToNoCookie(ctx.Request.URL.Path[7:])
 		api.WriteResponse()
 	}
 }

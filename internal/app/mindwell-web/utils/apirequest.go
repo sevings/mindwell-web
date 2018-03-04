@@ -84,16 +84,17 @@ func (api *APIRequest) do(req *http.Request) {
 }
 
 func (api *APIRequest) clearCookie() {
-	api.err = http.ErrNoCookie
-	cookie := http.Cookie{
+	token := &http.Cookie{
 		Name:     "api_token",
 		Value:    "",
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
 	}
-	http.SetCookie(api.ctx.Writer, &cookie)
-	api.ctx.Redirect(http.StatusSeeOther, "/index.html")
+	http.SetCookie(api.ctx.Writer, token)
+
+	api.Redirect("/index.html")
+	api.err = http.ErrNoCookie
 }
 
 func (api *APIRequest) checkError() {
@@ -180,6 +181,11 @@ func (api *APIRequest) ForwardToNotAuthorized(path string) {
 	if api.resp.StatusCode >= 400 {
 		api.clearCookie()
 	}
+}
+
+func (api *APIRequest) ForwardToNoCookie(path string) {
+	req := api.copyRequest(path)
+	api.do(req)
 }
 
 func (api *APIRequest) SetField(key, path string) {
