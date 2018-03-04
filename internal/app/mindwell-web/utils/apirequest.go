@@ -257,6 +257,8 @@ func (api *APIRequest) WriteTemplate(name string) {
 		return
 	}
 
+	api.ctx.Header("Cache-Control", "no-store")
+
 	templ.ExecuteWriter(pongo2.Context(api.Data()), api.ctx.Writer)
 }
 
@@ -272,7 +274,6 @@ func (api *APIRequest) WriteResponse() {
 		}
 	}
 
-	api.ctx.Header("Cache-Control", "no-store") //! \todo move to server
 	api.ctx.Status(api.resp.StatusCode)
 
 	if jsonData != nil {
