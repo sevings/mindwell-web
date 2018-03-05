@@ -26,40 +26,41 @@ func main() {
 	avatars := mdw.ConfigString("avatars_path")
 	router.Static("/avatars/", avatars)
 
-	router.Use(gzip.Gzip(gzip.DefaultCompression))
+	gzipped := router.Group("/")
+	gzipped.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	assets := mdw.ConfigString("assets_path")
-	router.Static("/assets/", assets)
+	gzipped.Static("/assets/", assets)
 
 	swagger := mdw.ConfigString("swagger_path")
-	router.Static("/help/api/", swagger)
+	gzipped.Static("/help/api/", swagger)
 
-	router.GET("/", rootHandler)
-	router.GET("/index.html", indexHandler(mdw))
+	gzipped.GET("/", rootHandler)
+	gzipped.GET("/index.html", indexHandler(mdw))
 
-	router.POST("/login", loginHandler(mdw))
-	router.POST("/register", registerHandler(mdw))
+	gzipped.POST("/login", loginHandler(mdw))
+	gzipped.POST("/register", registerHandler(mdw))
 
-	router.GET("/live", liveHandler(mdw))
-	router.GET("/friends", friendsHandler(mdw))
+	gzipped.GET("/live", liveHandler(mdw))
+	gzipped.GET("/friends", friendsHandler(mdw))
 
-	router.GET("/users/:name", tlogHandler(mdw))
-	router.GET("/users/:name/:relation", usersHandler(mdw))
+	gzipped.GET("/users/:name", tlogHandler(mdw))
+	gzipped.GET("/users/:name/:relation", usersHandler(mdw))
 
-	router.GET("/me", meHandler(mdw))
-	router.GET("/me/:relation", meUsersHandler(mdw))
+	gzipped.GET("/me", meHandler(mdw))
+	gzipped.GET("/me/:relation", meUsersHandler(mdw))
 
-	router.GET("/profile/edit", meEditorHandler(mdw))
-	router.POST("/profile/save", meSaverHandler(mdw))
+	gzipped.GET("/profile/edit", meEditorHandler(mdw))
+	gzipped.POST("/profile/save", meSaverHandler(mdw))
 
-	router.GET("/design", designEditorHandler(mdw))
-	router.POST("/design", designSaverHandler(mdw))
+	gzipped.GET("/design", designEditorHandler(mdw))
+	gzipped.POST("/design", designSaverHandler(mdw))
+
+	gzipped.GET("/post", editorHandler(mdw))
+	gzipped.POST("/entries/users/me", postHandler(mdw))
 
 	router.PUT("/me/online", meOnlineHandler(mdw))
 
-	router.GET("/post", editorHandler(mdw))
-
-	router.POST("/entries/users/me", postHandler(mdw))
 	router.PUT("/entries/:id/vote", proxyHandler(mdw))
 
 	router.GET("/relations/to/:id", proxyHandler(mdw))
@@ -70,7 +71,10 @@ func main() {
 	router.PUT("/relations/from/:id", proxyHandler(mdw))
 	router.DELETE("/relations/from/:id", proxyHandler(mdw))
 
-	router.Any("/api/v1/*function", apiReverseProxy(mdw))
+	router.GET("/api/v1/*function", apiReverseProxy(mdw))
+	router.POST("/api/v1/*function", apiReverseProxy(mdw))
+	router.PUT("/api/v1/*function", apiReverseProxy(mdw))
+	router.DELETE("/api/v1/*function", apiReverseProxy(mdw))
 
 	addr := mdw.ConfigString("listen_address")
 	srv := &http.Server{
