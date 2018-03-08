@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %} 
+    {% if entry.title %} {{ entry.title }} {% else %} {{ profile.showName }} в Mindwell{% endif %}    
+{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="/assets/feed.css">
+    {% if profile.design.css %}
+        <style type="text/css">{{ profile.design.css }}</style>
+    {% else %}
+        <style type="text/css">.post { background: {{ profile.design.backgroundColor }}; color: {{ profile.design.textColor }}; text-align: {{ profile.design.textAlignment }}; }</style>
+    {% endif %}
+{% endblock %}
+{% block scripts %}
+    <script src="/assets/feed.js"></script>
+{% endblock %}
+{% block body %}
+    <h2 id="post-date{{entry.id}}">{{ entry.createdAt }}</h2>
+    {% include "entry_base.html" %}
+{% endblock %}

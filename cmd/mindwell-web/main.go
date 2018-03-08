@@ -59,6 +59,7 @@ func main() {
 	gzipped.GET("/post", editorHandler(mdw))
 	gzipped.POST("/entries/users/me", postHandler(mdw))
 
+	gzipped.GET("/entries/:id", entryHandler(mdw))
 	router.DELETE("/entries/:id", proxyHandler(mdw))
 
 	router.PUT("/me/online", meOnlineHandler(mdw))
@@ -185,10 +186,9 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		}
 
 		api.ClearData()
-		path := "/entries/users/" + id.String() //! \todo get tlog by name
-		api.ForwardTo(path)
+		api.ForwardTo("/entries/users/" + id.String()) //! \todo get tlog by name
 		api.SetMe()
-		api.SetProfile()
+		api.SetField("profile", "/users/byName/"+ctx.Param("name"))
 		api.WriteTemplate("tlog")
 	}
 }
@@ -258,7 +258,7 @@ func designSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.WriteTemplate("post")
+		api.WriteTemplate("editor")
 	}
 }
 
@@ -267,6 +267,25 @@ func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/entries/users/me")
 		api.Redirect("/me")
+	}
+}
+
+func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+
+		entry := api.Data()
+		api.ClearData()
+		api.SetData("entry", entry)
+
+		if entry != nil {
+			author := entry["author"].(map[string]interface{})
+			id := author["id"].(json.Number)
+			api.SetField("profile", "/users/"+string(id))
+		}
+
+		api.WriteTemplate("entry")
 	}
 }
 

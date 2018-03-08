@@ -17,14 +17,16 @@ type APIRequest struct {
 	ctx  *gin.Context
 	err  error
 	resp *http.Response
+	read bool // whether resp is read
 	data map[string]interface{}
 	uKey string
 }
 
 func NewRequest(mdw *Mindwell, ctx *gin.Context) *APIRequest {
 	return &APIRequest{
-		mdw: mdw,
-		ctx: ctx,
+		mdw:  mdw,
+		ctx:  ctx,
+		read: false,
 	}
 }
 
@@ -47,7 +49,8 @@ func (api *APIRequest) ClearData() { //! \todo remove
 func (api *APIRequest) SetData(key string, value interface{}) {
 	data := api.Data()
 	if data == nil {
-		return
+		data = make(map[string]interface{})
+		api.data = data
 	}
 
 	data[key] = value
@@ -81,6 +84,8 @@ func (api *APIRequest) do(req *http.Request) {
 	if api.err != nil {
 		log.Print(api.err)
 	}
+
+	api.read = false
 }
 
 func (api *APIRequest) clearCookie() {
@@ -98,7 +103,7 @@ func (api *APIRequest) clearCookie() {
 }
 
 func (api *APIRequest) checkError() {
-	if api.err != nil {
+	if api.err != nil || api.resp == nil {
 		return
 	}
 
@@ -204,15 +209,12 @@ func (api *APIRequest) SetMe() {
 	api.SetField("me", "/users/me")
 }
 
-func (api *APIRequest) SetProfile() {
-	path := "/users/byName/" + api.ctx.Param("name")
-	api.SetField("profile", path)
-}
-
 func (api *APIRequest) readResponse() []byte {
-	if api.resp == nil {
+	if api.resp == nil || api.read {
 		return nil
 	}
+
+	api.read = true
 
 	var jsonData []byte
 	jsonData, api.err = ioutil.ReadAll(api.resp.Body)
