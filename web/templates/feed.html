@@ -3,7 +3,7 @@
 {% block scripts %}<script src="/assets/feed.js"></script>{% endblock %}
 {% block body %}
     {% for entry in entries %}
-        <h2>{{ entry.createdAt }}</h2>
+        <h2 id="post-date{{entry.id}}">{{ entry.createdAt }}</h2>
         <div class="post" id="post{{entry.id}}" data-vote="{{ entry.vote }}">
             <h2>{{ entry.title }}</h2>
             {{ entry.content|safe }}
@@ -21,6 +21,9 @@
                 {% endif %}
                 <a href="/users/{{ entry.author.name }}" class="author">{{ entry.author.showName }}</a>
             </div>
+            {% if entry.author.id == me.id %}
+                <button onclick="deletePost({{ entry.id }})">Удалить</button>
+            {% endif %}
             {% if entry.commentsCount %}
                 <p class="comments">
                     {% for comment in comments %}

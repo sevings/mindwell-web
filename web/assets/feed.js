@@ -34,3 +34,30 @@ function vote(id, positive) {
         rating.setAttribute("title", "Рейтинг: " + Math.round(rate))
     }
 }
+
+function deletePost(id) {
+    if(!confirm("Пост будет удален навсегда."))
+        return
+
+    var req = new XMLHttpRequest()
+    req.open('DELETE', '/entries/' + id, true)
+    req.onreadystatechange = deletePostElement
+    req.send()
+
+    function deletePostElement() {
+        if(req.readyState != XMLHttpRequest.DONE)
+            return
+
+        if(req.status != 200) {
+            var resp = JSON.parse(req.responseText)
+            alert(resp.message)
+            return
+        }
+        
+        var date = document.getElementById("post-date" + id)
+        date.remove()
+
+        var post = document.getElementById("post" + id)
+        post.remove()
+    }
+}

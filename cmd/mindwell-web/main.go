@@ -59,6 +59,8 @@ func main() {
 	gzipped.GET("/post", editorHandler(mdw))
 	gzipped.POST("/entries/users/me", postHandler(mdw))
 
+	router.DELETE("/entries/:id", proxyHandler(mdw))
+
 	router.PUT("/me/online", meOnlineHandler(mdw))
 
 	router.PUT("/entries/:id/vote", proxyHandler(mdw))

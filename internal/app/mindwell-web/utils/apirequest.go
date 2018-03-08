@@ -108,7 +108,6 @@ func (api *APIRequest) checkError() {
 		api.clearCookie()
 	case code >= 400:
 		log.Print(api.resp.Status)
-		api.WriteTemplate("error")
 		api.err = http.ErrNotSupported
 	}
 }
@@ -211,7 +210,7 @@ func (api *APIRequest) SetProfile() {
 }
 
 func (api *APIRequest) readResponse() []byte {
-	if api.err != nil || api.resp == nil {
+	if api.resp == nil {
 		return nil
 	}
 
@@ -227,7 +226,7 @@ func (api *APIRequest) readResponse() []byte {
 
 func (api *APIRequest) parseResponse() map[string]interface{} {
 	jsonData := api.readResponse()
-	if api.err != nil || len(jsonData) == 0 {
+	if len(jsonData) == 0 {
 		return nil
 	}
 
@@ -247,7 +246,9 @@ func (api *APIRequest) parseResponse() map[string]interface{} {
 }
 
 func (api *APIRequest) WriteTemplate(name string) {
-	if api.err != nil {
+	if api.err == http.ErrNotSupported {
+		name = "error"
+	} else if api.err != nil {
 		return
 	}
 
@@ -265,9 +266,6 @@ func (api *APIRequest) WriteTemplate(name string) {
 
 func (api *APIRequest) WriteResponse() {
 	jsonData := api.readResponse()
-	if api.err != nil {
-		return
-	}
 
 	for k, vv := range api.resp.Header {
 		for _, v := range vv {
@@ -284,6 +282,7 @@ func (api *APIRequest) WriteResponse() {
 
 func (api *APIRequest) Redirect(path string) {
 	if api.err != nil {
+		api.WriteTemplate("")
 		return
 	}
 
