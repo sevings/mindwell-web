@@ -35,6 +35,10 @@ func (api *APIRequest) Error() error {
 }
 
 func (api *APIRequest) Data() map[string]interface{} {
+	if api.err != nil {
+		return nil
+	}
+
 	if api.data == nil {
 		api.data = api.parseResponse()
 	}
@@ -43,10 +47,18 @@ func (api *APIRequest) Data() map[string]interface{} {
 }
 
 func (api *APIRequest) ClearData() { //! \todo remove
+	if api.err != nil {
+		return
+	}
+
 	api.data = nil
 }
 
 func (api *APIRequest) SetData(key string, value interface{}) {
+	if api.err != nil {
+		return
+	}
+
 	data := api.Data()
 	if data == nil {
 		data = make(map[string]interface{})
@@ -193,6 +205,10 @@ func (api *APIRequest) ForwardToNoCookie(path string) {
 }
 
 func (api *APIRequest) SetField(key, path string) {
+	if api.err != nil {
+		return
+	}
+
 	if api.data == nil {
 		api.data = api.parseResponse()
 	}
