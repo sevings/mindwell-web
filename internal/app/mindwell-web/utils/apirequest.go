@@ -179,6 +179,10 @@ func (api *APIRequest) MethodForwardTo(method, path string) {
 	api.checkError()
 }
 
+func (api *APIRequest) MethodForward(method string) {
+	api.MethodForwardTo(method, api.ctx.Request.URL.Path)
+}
+
 func (api *APIRequest) ForwardTo(path string) {
 	api.MethodForwardTo(api.ctx.Request.Method, path)
 }

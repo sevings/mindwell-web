@@ -57,7 +57,10 @@ func main() {
 	gzipped.POST("/design", designSaverHandler(mdw))
 
 	gzipped.GET("/post", editorHandler(mdw))
-	gzipped.POST("/entries/users/me", postHandler(mdw))
+	gzipped.POST("/entries", postHandler(mdw))
+
+	gzipped.GET("/entries/:id/edit", editorExistingHandler(mdw))
+	gzipped.POST("/entries/:id", editPostHandler(mdw))
 
 	gzipped.GET("/entries/:id", entryHandler(mdw))
 	router.DELETE("/entries/:id", proxyHandler(mdw))
@@ -270,23 +273,42 @@ func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
+func editorExistingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Get("/entries/" + ctx.Param("id"))
+		api.WriteTemplate("editor")
+	}
+}
+
+func writeEntry(api *utils.APIRequest) {
+	entry := api.Data()
+	api.ClearData()
+	api.SetData("entry", entry)
+
+	if entry != nil {
+		author := entry["author"].(map[string]interface{})
+		id := author["id"].(json.Number)
+		api.SetField("profile", "/users/"+string(id))
+	}
+
+	api.SetMe()
+	api.WriteTemplate("entry")
+}
+
+func editPostHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.MethodForward("PUT")
+		writeEntry(api)
+	}
+}
+
 func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
-
-		entry := api.Data()
-		api.ClearData()
-		api.SetData("entry", entry)
-
-		if entry != nil {
-			author := entry["author"].(map[string]interface{})
-			id := author["id"].(json.Number)
-			api.SetField("profile", "/users/"+string(id))
-		}
-
-		api.SetMe()
-		api.WriteTemplate("entry")
+		writeEntry(api)
 	}
 }
 

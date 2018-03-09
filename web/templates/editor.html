@@ -5,51 +5,24 @@
         <script src="/assets/js/jquery-3.3.1.min.js"></script>
         <script src="/assets/editor/editormd.min.js"></script>
         <script src="/assets/editor/languages/en.js"></script>
-        <script type="text/javascript">
-            $(function() {
-                var editor = editormd({
-                    id:              "editormd",
-                    path:            "/assets/editor/lib/",
-                    height:          640,
-                    placeholder:     "Текст поста",
-                    watch:           false,
-                    mode:            "markdown",
-                    name:            "content",
-                    lineNumbers:     false,
-                    indentWithTabs:  false,
-                    styleActiveLine: false,
-                    toc:             false,
-                    fontSize:        "14px",
-                    toolbarIcons :   function() {
-                        return [
-                            "undo", "redo", "|", 
-                            "bold", "del", "italic", "quote", "|", 
-                            "h3", "h4", "h5", "h6", "|", 
-                            "list-ul", "list-ol", "hr", "link", "image", "||",
-                            "watch", "fullscreen", "|",
-                            "help", "info"
-                        ]
-                    },
-                });
-            });
-        </script>
+        <script src="/assets/editor.js"></script>
 		<title>Mindwell</title>
 	</head>
 	<body>
-        <form style="margin: 3em auto; max-width: 800px;" name="editor" action="/entries/users/me" method="post">
-            <textarea name="title" style="width: 100%;" placeholder="Заголовок поста"></textarea>
+        <form style="margin: 3em auto; max-width: 800px;" name="editor" action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post">
+            <textarea name="title" style="width: 100%;" placeholder="Заголовок поста">{{ title }}</textarea>
             <div id="editormd">
-                <textarea style="display:none;" required></textarea>
+                <textarea style="display:none;" required>{{ editContent }}</textarea>
             </div>
             Пост будет виден 
             <select name="privacy">
-                <option value="all">всем</option>
+                <option value="all" {% if privacy == "all" %}selected{% endif %}>всем</option>
                 {% comment %} <option value="followers">только подписчикам</option> {% endcomment %}
-                <option value="me">только мне</option>
+                <option value="me" {% if privacy == "me" %}selected{% endif %}>только мне</option>
             </select> 
-            <input type="checkbox" name="isVotable" checked> Включить голосование
+            <input type="checkbox" name="isVotable" {% if !id || isVotable %}checked{% endif %}> Включить голосование
             <br/>
-            <input type="submit" value="Опубликовать" />
+            <input type="submit" value={% if id %}"Сохранить"{% else %}"Опубликовать"{% endif %} />
         </form>
     </body>
 </html>

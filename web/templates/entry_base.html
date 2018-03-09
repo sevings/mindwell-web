@@ -16,6 +16,7 @@
         <a href="/users/{{ entry.author.name }}" class="author">{{ entry.author.showName }}</a>
     </div>
     {% if entry.author.id == me.id %}
+        <button onclick="editPost({{entry.id }})">Редактировать</button>
         <button onclick="deletePost({{ entry.id }})">Удалить</button>
     {% endif %}
     {% if entry.commentsCount %}

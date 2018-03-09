@@ -65,3 +65,7 @@ function deletePost(id) {
         }
     }
 }
+
+function editPost(id) {
+    document.location.assign("/entries/" + id + "/edit")
+}
