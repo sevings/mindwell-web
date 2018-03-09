@@ -285,6 +285,7 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetField("profile", "/users/"+string(id))
 		}
 
+		api.SetMe()
 		api.WriteTemplate("entry")
 	}
 }

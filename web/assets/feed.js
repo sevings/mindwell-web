@@ -41,10 +41,10 @@ function deletePost(id) {
 
     var req = new XMLHttpRequest()
     req.open('DELETE', '/entries/' + id, true)
-    req.onreadystatechange = deletePostElement
+    req.onreadystatechange = onReadyStateChange
     req.send()
 
-    function deletePostElement() {
+    function onReadyStateChange() {
         if(req.readyState != XMLHttpRequest.DONE)
             return
 
@@ -53,11 +53,15 @@ function deletePost(id) {
             alert(resp.message)
             return
         }
-        
-        var date = document.getElementById("post-date" + id)
-        date.remove()
 
-        var post = document.getElementById("post" + id)
-        post.remove()
+        if(document.location.pathname == "/entries/" + id)
+            document.location.assign("/me")
+        else {
+            var date = document.getElementById("post-date" + id)
+            date.remove()
+
+            var post = document.getElementById("post" + id)
+            post.remove()
+        }
     }
 }
