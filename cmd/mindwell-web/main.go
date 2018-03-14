@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"time"
 
 	"github.com/gin-contrib/gzip"
@@ -160,22 +161,29 @@ func accountHandler(mdw *utils.Mindwell, path string) func(ctx *gin.Context) {
 	}
 }
 
-func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo("/entries/live")
-		api.SetMe()
-		api.WriteTemplate("live")
+		api.ForwardTo(apiPath)
+
+		skip, err := strconv.Atoi(ctx.Query("skip"))
+		if skip == 0 || err != nil {
+			api.SetMe()
+			api.WriteTemplate(templateName)
+		} else {
+			href := webPath + "?limit=50&skip=" + strconv.Itoa(skip+50)
+			api.SetData("next_href", href)
+			api.WriteTemplate("feed_page")
+		}
 	}
 }
 
+func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return feedHandler(mdw, "/entries/live", "/live", "live")
+}
+
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo("/entries/friends")
-		api.SetMe()
-		api.WriteTemplate("friends")
-	}
+	return feedHandler(mdw, "/entries/friends", "/friends", "friends")
 }
 
 func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
