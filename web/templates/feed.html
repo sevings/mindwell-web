@@ -6,9 +6,11 @@
     <script src="/assets/feed.js"></script>
 {% endblock %}
 {% block body %}
+<div class="feed">
     {% if entries %}
         {% include "feed_page.html" %}
     {% else %}
         <h3>Нет записей</h3>
     {% endif %}
+</div>
 {% endblock %}

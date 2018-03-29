@@ -70,7 +70,8 @@ function editPost(id) {
     document.location.assign("/entries/" + id + "/edit")
 }
 
-$("body").jscroll({
+$(".feed").jscroll({
     debug: true,
     loadingHtml: "<small>Загрузка...</small>",
+    // autoTrigger: false,
 })

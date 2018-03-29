@@ -167,12 +167,12 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string) fun
 		api.ForwardTo(apiPath)
 
 		skip, err := strconv.Atoi(ctx.Query("skip"))
+		href := webPath + "?skip=" + strconv.Itoa(skip+50)
+		api.SetData("next_href", href)
 		if skip == 0 || err != nil {
 			api.SetMe()
 			api.WriteTemplate(templateName)
 		} else {
-			href := webPath + "?limit=50&skip=" + strconv.Itoa(skip+50)
-			api.SetData("next_href", href)
 			api.WriteTemplate("feed_page")
 		}
 	}
