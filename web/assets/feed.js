@@ -71,7 +71,7 @@ function editPost(id) {
 }
 
 $(".feed").jscroll({
-    debug: true,
+    // debug: true,
     loadingHtml: "<small>Загрузка...</small>",
-    // autoTrigger: false,
+    autoTrigger: false,
 })
