@@ -9,7 +9,7 @@ function setOnline() {
         req.send()        
     }
 
-    setInterval(sendRequest, 60000)
+    setInterval(sendRequest, 300000)
 
     sendRequest()
 }
