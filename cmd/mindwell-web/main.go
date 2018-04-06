@@ -66,6 +66,8 @@ func main() {
 	gzipped.GET("/entries/:id", entryHandler(mdw))
 	router.DELETE("/entries/:id", proxyHandler(mdw))
 
+	gzipped.GET("/entries/:id/comments", commentsHandler(mdw))
+
 	router.PUT("/me/online", meOnlineHandler(mdw))
 
 	router.PUT("/entries/:id/vote", proxyHandler(mdw))
@@ -302,6 +304,15 @@ func writeEntry(api *utils.APIRequest) {
 		author := entry["author"].(map[string]interface{})
 		id := author["id"].(json.Number)
 		api.SetField("profile", "/users/"+string(id))
+
+		if cmt, ok := entry["commentCount"].(json.Number); ok {
+			count, _ := cmt.Int64()
+			if count > 5 {
+				entryID := entry["id"].(json.Number)
+				href := "/entries/" + entryID + "/comments?skip=5"
+				api.SetData("next_href", href)
+			}
+		}
 	}
 
 	api.SetMe()
@@ -321,6 +332,23 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
 		writeEntry(api)
+	}
+}
+
+func commentsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+
+		entry := api.Data()
+		api.ClearData()
+		api.SetData("entry", entry)
+
+		skip, _ := strconv.Atoi(ctx.Query("skip"))
+		href := "/entries/" + ctx.Param("id") + "/comments?skip=" + strconv.Itoa(skip+50)
+		api.SetData("next_href", href)
+
+		api.WriteTemplate("comments")
 	}
 }
 

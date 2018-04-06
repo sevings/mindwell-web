@@ -19,15 +19,9 @@
         <button onclick="editPost({{entry.id }})">Редактировать</button>
         <button onclick="deletePost({{ entry.id }})">Удалить</button>
     {% endif %}
-    {% if entry.commentsCount %}
+    {% if entry.commentCount %}
         <p class="comments">
-            {% for comment in comments %}
-                <p class="comment">
-                    <a class="comment_author" href="/users/{{ comment.author.name }}">
-                        {{ comment.author.showName }}
-                    </a>: {{ comment.content }}
-                </p>
-            {% endfor %}
+            {% include "comments.html" %}
         </p>
     {% endif %}
 </div>

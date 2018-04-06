@@ -75,3 +75,10 @@ $(".feed").jscroll({
     loadingHtml: "<small>Загрузка...</small>",
     autoTrigger: false,
 })
+
+$(".comments").jscroll({
+    // debug: true,
+    loadingHtml: "<small>Загрузка...</small>",
+    autoTrigger: false,
+    nextSelector: "a.next",
+})

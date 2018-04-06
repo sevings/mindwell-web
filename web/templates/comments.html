@@ -1,0 +1,10 @@
+{% if entry.comments %}
+    <a class="next" href="{{ next_href }}">Больше</a>
+{% endif %}
+{% for comment in entry.comments %}
+<p class="comment">
+    <a class="comment_author" href="/users/{{ comment.author.name }}">
+        {{ comment.author.showName }}
+    </a>: {{ comment.content }}
+</p>
+{% endfor %}
