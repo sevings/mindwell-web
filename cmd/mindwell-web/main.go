@@ -161,7 +161,7 @@ func accountHandler(mdw *utils.Mindwell, path string) func(ctx *gin.Context) {
 	}
 }
 
-func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string) func(ctx *gin.Context) {
+func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName, fieldKey, fieldPath string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo(apiPath)
@@ -171,6 +171,11 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string) fun
 		api.SetData("next_href", href)
 		if skip == 0 || err != nil {
 			api.SetMe()
+
+			if len(fieldKey) > 0 {
+				api.SetField(fieldKey, fieldPath)
+			}
+
 			api.WriteTemplate(templateName)
 		} else {
 			api.WriteTemplate("feed_page")
@@ -179,28 +184,27 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string) fun
 }
 
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return feedHandler(mdw, "/entries/live", "/live", "live")
+	return feedHandler(mdw, "/entries/live", "/live", "live", "", "")
 }
 
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return feedHandler(mdw, "/entries/friends", "/friends", "friends")
+	return feedHandler(mdw, "/entries/friends", "/friends", "friends", "", "")
 }
 
 func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
+		name := ctx.Param("name")
+
 		api := utils.NewRequest(mdw, ctx)
-		api.Get("/users/byName/" + ctx.Param("name"))
+		api.Get("/users/byName/" + name)
 		id, ok := api.Data()["id"].(json.Number)
 		if !ok {
 			api.WriteTemplate("error")
 			return
 		}
 
-		api.ClearData()
-		api.ForwardTo("/entries/users/" + id.String()) //! \todo get tlog by name
-		api.SetMe()
-		api.SetField("profile", "/users/byName/"+ctx.Param("name"))
-		api.WriteTemplate("tlog")
+		handle := feedHandler(mdw, "/entries/users/"+id.String(), "/users/"+name, "tlog", "profile", "/users/byName/"+name)
+		handle(ctx)
 	}
 }
 

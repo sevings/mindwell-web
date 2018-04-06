@@ -2,6 +2,6 @@
     <h2 id="post-date{{entry.id}}"><a href="/entries/{{ entry.id }}">{{ entry.createdAt }}</a></h2>
     {% include "entry_base.html" %}
 {% endfor %}
-{% if entries %}
+{% if next_href %}
     <a href="{{ next_href }}">Больше</a>
 {% endif %}
