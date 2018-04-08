@@ -306,14 +306,14 @@ func writeEntry(api *utils.APIRequest) {
 		entryID := entry["id"].(json.Number).String()
 
 		cmts := entry["comments"].(map[string]interface{})
-		if before, ok := cmts["nextBefore"].(json.Number); ok {
-			href := "/entries/" + entryID + "/comments?before=" + before.String()
+		if before, ok := cmts["nextBefore"].(string); ok {
+			href := "/entries/" + entryID + "/comments?before=" + before
 			api.SetData("next_before", href)
 		}
 
 		var afterHref string
-		if after, ok := cmts["nextAfter"].(json.Number); ok {
-			afterHref = "/entries/" + entryID + "/comments?after=" + after.String()
+		if after, ok := cmts["nextAfter"].(string); ok {
+			afterHref = "/entries/" + entryID + "/comments?after=" + after
 		} else {
 			afterHref = "/entries/" + entryID + "/comments"
 		}
@@ -354,14 +354,14 @@ func commentsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		entryID := ctx.Param("id")
 
 		if _, has := ctx.Params.Get("before"); has {
-			if before, ok := cmts["nextBefore"].(json.Number); ok {
-				href := "/entries/" + entryID + "/comments?before=" + before.String()
+			if before, ok := cmts["nextBefore"].(string); ok {
+				href := "/entries/" + entryID + "/comments?before=" + before
 				api.SetData("next_before", href)
 			}
 		} else {
 			var afterHref string
-			if after, ok := cmts["nextAfter"].(json.Number); ok {
-				afterHref = "/entries/" + entryID + "/comments?after=" + after.String()
+			if after, ok := cmts["nextAfter"].(string); ok {
+				afterHref = "/entries/" + entryID + "/comments?after=" + after
 			} else {
 				afterHref = "/entries/" + entryID + "/comments"
 			}
