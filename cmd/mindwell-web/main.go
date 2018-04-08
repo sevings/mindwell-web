@@ -145,12 +145,10 @@ func accountHandler(mdw *utils.Mindwell, path string) func(ctx *gin.Context) {
 			return
 		}
 
-		//	Jan 2 15:04:05 2006 MST
-		// "1985-04-12T23:20:50.52.000+03:00"
 		account := api.Data()["account"].(map[string]interface{})
 		token := account["apiKey"].(string)
-		validThru := account["validThru"].(string)
-		exp, _ := time.Parse("2006-01-02T15:04:05.999Z07:00", validThru)
+		validThru, _ := account["validThru"].(json.Number).Float64()
+		exp := time.Unix(int64(validThru), 0)
 		cookie := http.Cookie{
 			Name:     "api_token",
 			Value:    token,
