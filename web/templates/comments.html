@@ -1,7 +1,7 @@
-{% if entry.comments %}
-    <a class="next" href="{{ next_href }}">Больше</a>
+{% if next_before %}
+    <a class="next" href="{{ next_before }}">Больше</a>
 {% endif %}
-{% for comment in entry.comments %}
+{% for comment in entry.comments.data %}
 <p class="comment">
     <a class="comment_author" href="/users/{{ comment.author.name }}">
         {{ comment.author.showName }}

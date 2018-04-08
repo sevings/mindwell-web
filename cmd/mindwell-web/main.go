@@ -305,14 +305,21 @@ func writeEntry(api *utils.APIRequest) {
 		id := author["id"].(json.Number)
 		api.SetField("profile", "/users/"+string(id))
 
-		if cmt, ok := entry["commentCount"].(json.Number); ok {
-			count, _ := cmt.Int64()
-			if count > 5 {
-				entryID := entry["id"].(json.Number)
-				href := "/entries/" + entryID + "/comments?skip=5"
-				api.SetData("next_href", href)
-			}
+		entryID := entry["id"].(json.Number).String()
+
+		cmts := entry["comments"].(map[string]interface{})
+		if before, ok := cmts["nextBefore"].(json.Number); ok {
+			href := "/entries/" + entryID + "/comments?before=" + before.String()
+			api.SetData("next_before", href)
 		}
+
+		var afterHref string
+		if after, ok := cmts["nextAfter"].(json.Number); ok {
+			afterHref = "/entries/" + entryID + "/comments?after=" + after.String()
+		} else {
+			afterHref = "/entries/" + entryID + "/comments"
+		}
+		api.SetData("next_after", afterHref)
 	}
 
 	api.SetMe()
@@ -340,13 +347,28 @@ func commentsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
 
-		entry := api.Data()
+		cmts := api.Data()
 		api.ClearData()
+		entry := make(map[string]interface{})
+		entry["comments"] = cmts
 		api.SetData("entry", entry)
 
-		skip, _ := strconv.Atoi(ctx.Query("skip"))
-		href := "/entries/" + ctx.Param("id") + "/comments?skip=" + strconv.Itoa(skip+50)
-		api.SetData("next_href", href)
+		entryID := ctx.Param("id")
+
+		if _, has := ctx.Params.Get("before"); has {
+			if before, ok := cmts["nextBefore"].(json.Number); ok {
+				href := "/entries/" + entryID + "/comments?before=" + before.String()
+				api.SetData("next_before", href)
+			}
+		} else {
+			var afterHref string
+			if after, ok := cmts["nextAfter"].(json.Number); ok {
+				afterHref = "/entries/" + entryID + "/comments?after=" + after.String()
+			} else {
+				afterHref = "/entries/" + entryID + "/comments"
+			}
+			api.SetData("next_after", afterHref)
+		}
 
 		api.WriteTemplate("comments")
 	}
