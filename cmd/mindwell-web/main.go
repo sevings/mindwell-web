@@ -166,10 +166,13 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName, fieldKey, 
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo(apiPath)
 
-		skip, err := strconv.Atoi(ctx.Query("skip"))
+		skip, _ := strconv.Atoi(ctx.Query("skip"))
 		href := webPath + "?skip=" + strconv.Itoa(skip+50)
 		api.SetData("next_href", href)
-		if skip == 0 || err != nil {
+
+		if api.IsAjax() {
+			api.WriteTemplate("feed_page")
+		} else {
 			api.SetMe()
 
 			if len(fieldKey) > 0 {
@@ -177,8 +180,6 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName, fieldKey, 
 			}
 
 			api.WriteTemplate(templateName)
-		} else {
-			api.WriteTemplate("feed_page")
 		}
 	}
 }

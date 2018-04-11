@@ -310,3 +310,8 @@ func (api *APIRequest) Redirect(path string) {
 
 	api.ctx.Redirect(http.StatusSeeOther, path)
 }
+
+func (api *APIRequest) IsAjax() bool {
+	with := api.ctx.GetHeader("X-Requested-With")
+	return with == "XMLHttpRequest"
+}
