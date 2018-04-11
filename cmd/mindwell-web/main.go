@@ -24,16 +24,16 @@ func main() {
 
 	router := gin.Default()
 
-	avatars := mdw.ConfigString("avatars_path")
+	avatars := mdw.ConfigString("paths.avatars")
 	router.Static("/avatars/", avatars)
 
 	gzipped := router.Group("/")
 	gzipped.Use(gzip.Gzip(gzip.DefaultCompression))
 
-	assets := mdw.ConfigString("assets_path")
+	assets := mdw.ConfigString("paths.assets")
 	gzipped.Static("/assets/", assets)
 
-	swagger := mdw.ConfigString("swagger_path")
+	swagger := mdw.ConfigString("paths.swagger")
 	gzipped.Static("/help/api/", swagger)
 
 	gzipped.GET("/", rootHandler)

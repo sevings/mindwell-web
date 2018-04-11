@@ -11,6 +11,10 @@ type Mindwell struct {
 	DevMode   bool
 	config    *goconf.Config
 	templates map[string]*pongo2.Template
+	path      string
+	host      string
+	scheme    string
+	url       string
 }
 
 func loadConfig(fileName string) *goconf.Config {
@@ -23,27 +27,36 @@ func loadConfig(fileName string) *goconf.Config {
 	return config
 }
 
-func NewMindwell() *Mindwell {
-	conf := loadConfig("web")
-	mode, err := conf.String("mode")
-	if err != nil {
-		log.Print(err)
-	}
-
-	return &Mindwell{
-		DevMode:   mode == "debug",
-		config:    conf,
-		templates: make(map[string]*pongo2.Template),
-	}
-}
-
-func (m *Mindwell) ConfigString(key string) string {
-	value, err := m.config.String(key)
+func confString(conf *goconf.Config, key string) string {
+	value, err := conf.String(key)
 	if err != nil {
 		log.Print(err)
 	}
 
 	return value
+}
+
+func NewMindwell() *Mindwell {
+	conf := loadConfig("web")
+
+	mode := confString(conf, "mode")
+	path := confString(conf, "api.path")
+	host := confString(conf, "api.host")
+	scheme := confString(conf, "api.scheme")
+
+	return &Mindwell{
+		DevMode:   mode == "debug",
+		config:    conf,
+		templates: make(map[string]*pongo2.Template),
+		path:      path,
+		host:      host,
+		scheme:    scheme,
+		url:       scheme + "://" + host + path,
+	}
+}
+
+func (m *Mindwell) ConfigString(key string) string {
+	return confString(m.config, key)
 }
 
 func (m *Mindwell) Template(name string) (*pongo2.Template, error) {

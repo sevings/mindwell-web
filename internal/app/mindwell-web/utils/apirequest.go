@@ -136,7 +136,7 @@ func (api *APIRequest) Get(path string) {
 	}
 
 	var req *http.Request
-	url := api.mdw.ConfigString("base_url") + path
+	url := api.mdw.url + path
 	req, api.err = http.NewRequest("GET", url, nil)
 	if api.err != nil {
 		api.ctx.Writer.WriteString(api.err.Error())
@@ -151,9 +151,9 @@ func (api *APIRequest) Get(path string) {
 
 func (api *APIRequest) copyRequest(path string) *http.Request {
 	req := api.ctx.Request.WithContext(api.ctx.Request.Context())
-	req.URL.Scheme = "http"
-	req.URL.Host = api.mdw.ConfigString("api_host")
-	req.URL.Path = "/api/v1" + path
+	req.URL.Scheme = api.mdw.scheme
+	req.URL.Host = api.mdw.host
+	req.URL.Path = api.mdw.path + path
 	req.Close = false
 
 	for k, vv := range api.ctx.Request.Header {
