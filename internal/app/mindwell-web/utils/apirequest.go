@@ -68,6 +68,32 @@ func (api *APIRequest) SetData(key string, value interface{}) {
 	data[key] = value
 }
 
+func (api *APIRequest) SetScrollHrefs(webPath string) {
+	api.SetScrollHrefsWithData(webPath, api.Data())
+}
+
+func (api *APIRequest) SetScrollHrefsWithData(webPath string, data map[string]interface{}) {
+	_, setBefore := api.ctx.Params.Get("before")
+	_, setAfter := api.ctx.Params.Get("after")
+
+	if setBefore || setAfter == setBefore {
+		if has, ok := data["hasBefore"].(bool); has && ok {
+			if before, ok := data["nextBefore"].(json.Number); ok {
+				href := webPath + "?before=" + before.String()
+				api.SetData("beforeHref", href)
+			}
+		}
+	}
+
+	if setAfter || setAfter == setBefore {
+		afterHref := webPath
+		if after, ok := data["nextAfter"].(json.Number); ok {
+			afterHref += "?after=" + after.String()
+		}
+		api.SetData("afterHref", afterHref)
+	}
+}
+
 func (api *APIRequest) setUserKey() {
 	if api.err != nil {
 		return

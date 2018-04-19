@@ -1,5 +1,5 @@
-{% if next_before %}
-    <a class="next" href="{{ next_before }}">Больше</a>
+{% if beforeHref %}
+    <a class="next" href="{{ beforeHref }}">Больше</a>
 {% endif %}
 {% for comment in entry.comments.data %}
 <p class="comment">

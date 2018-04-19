@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
 	"time"
 
 	"github.com/gin-contrib/gzip"
@@ -161,22 +160,19 @@ func accountHandler(mdw *utils.Mindwell, path string) func(ctx *gin.Context) {
 	}
 }
 
-func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName, fieldKey, fieldPath string) func(ctx *gin.Context) {
+func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string, clbk func(*utils.APIRequest)) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo(apiPath)
-
-		skip, _ := strconv.Atoi(ctx.Query("skip"))
-		href := webPath + "?skip=" + strconv.Itoa(skip+50)
-		api.SetData("next_href", href)
+		api.SetScrollHrefs(webPath)
 
 		if api.IsAjax() {
 			api.WriteTemplate("feed_page")
 		} else {
 			api.SetMe()
 
-			if len(fieldKey) > 0 {
-				api.SetField(fieldKey, fieldPath)
+			if clbk != nil {
+				clbk(api)
 			}
 
 			api.WriteTemplate(templateName)
@@ -185,11 +181,11 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName, fieldKey, 
 }
 
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return feedHandler(mdw, "/entries/live", "/live", "live", "", "")
+	return feedHandler(mdw, "/entries/live", "/live", "live", nil)
 }
 
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return feedHandler(mdw, "/entries/friends", "/friends", "friends", "", "")
+	return feedHandler(mdw, "/entries/friends", "/friends", "friends", nil)
 }
 
 func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
@@ -204,7 +200,11 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			return
 		}
 
-		handle := feedHandler(mdw, "/entries/users/"+id.String(), "/users/"+name, "tlog", "profile", "/users/byName/"+name)
+		clbk := func(api *utils.APIRequest) {
+			api.SetField("profile", "/users/byName/"+name)
+		}
+
+		handle := feedHandler(mdw, "/entries/users/"+id.String(), "/users/"+name, "tlog", clbk)
 		handle(ctx)
 	}
 }
@@ -230,13 +230,11 @@ func meUsersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo("/entries/users/me")
-		api.SetMe()
+	clbk := func(api *utils.APIRequest) {
 		api.SetData("profile", api.Data()["me"])
-		api.WriteTemplate("tlog")
 	}
+
+	return feedHandler(mdw, "/entries/users/me", "/me", "tlog", clbk)
 }
 
 func meEditorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
@@ -305,20 +303,8 @@ func writeEntry(api *utils.APIRequest) {
 		api.SetField("profile", "/users/"+string(id))
 
 		entryID := entry["id"].(json.Number).String()
-
 		cmts := entry["comments"].(map[string]interface{})
-		if before, ok := cmts["nextBefore"].(string); ok {
-			href := "/entries/" + entryID + "/comments?before=" + before
-			api.SetData("next_before", href)
-		}
-
-		var afterHref string
-		if after, ok := cmts["nextAfter"].(string); ok {
-			afterHref = "/entries/" + entryID + "/comments?after=" + after
-		} else {
-			afterHref = "/entries/" + entryID + "/comments"
-		}
-		api.SetData("next_after", afterHref)
+		api.SetScrollHrefsWithData("/entries/"+entryID+"/comments", cmts)
 	}
 
 	api.SetMe()
@@ -353,21 +339,7 @@ func commentsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("entry", entry)
 
 		entryID := ctx.Param("id")
-
-		if _, has := ctx.Params.Get("before"); has {
-			if before, ok := cmts["nextBefore"].(string); ok {
-				href := "/entries/" + entryID + "/comments?before=" + before
-				api.SetData("next_before", href)
-			}
-		} else {
-			var afterHref string
-			if after, ok := cmts["nextAfter"].(string); ok {
-				afterHref = "/entries/" + entryID + "/comments?after=" + after
-			} else {
-				afterHref = "/entries/" + entryID + "/comments"
-			}
-			api.SetData("next_after", afterHref)
-		}
+		api.SetScrollHrefsWithData("/entries/"+entryID+"/comments", cmts)
 
 		api.WriteTemplate("comments")
 	}
