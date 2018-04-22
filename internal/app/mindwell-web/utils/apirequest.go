@@ -78,8 +78,8 @@ func (api *APIRequest) SetScrollHrefsWithData(webPath string, data map[string]in
 
 	if setBefore || setAfter == setBefore {
 		if has, ok := data["hasBefore"].(bool); has && ok {
-			if before, ok := data["nextBefore"].(json.Number); ok {
-				href := webPath + "?before=" + before.String()
+			if before, ok := data["nextBefore"].(string); ok {
+				href := webPath + "?before=" + before
 				api.SetData("beforeHref", href)
 			}
 		}
@@ -87,8 +87,8 @@ func (api *APIRequest) SetScrollHrefsWithData(webPath string, data map[string]in
 
 	if setAfter || setAfter == setBefore {
 		afterHref := webPath
-		if after, ok := data["nextAfter"].(json.Number); ok {
-			afterHref += "?after=" + after.String()
+		if after, ok := data["nextAfter"].(string); ok {
+			afterHref += "?after=" + after
 		}
 		api.SetData("afterHref", afterHref)
 	}

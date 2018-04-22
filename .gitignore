@@ -1,1 +1,2 @@
 configs/web.toml
+cmd/mindwell-web/debug
