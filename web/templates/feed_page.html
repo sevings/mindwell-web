@@ -3,5 +3,5 @@
     {% include "entry_base.html" %}
 {% endfor %}
 {% if beforeHref %}
-    <a class="next" href="{{ beforeHref }}">Больше</a>
+    <a class="next" href="#" onclick="loadFeed('{{ beforeHref }}'); return false;">Больше</a>
 {% endif %}
