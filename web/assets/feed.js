@@ -82,3 +82,13 @@ $(".comments").jscroll({
     autoTrigger: false,
     nextSelector: "a.next",
 })
+
+$("#comment-editor").ajaxForm({
+    resetForm: true,
+    success: function(data) {
+        $(".comments").append(data)
+    },
+    error: function(data) {
+        alert(data)
+    },
+})

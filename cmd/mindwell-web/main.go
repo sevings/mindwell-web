@@ -66,6 +66,7 @@ func main() {
 	router.DELETE("/entries/:id", proxyHandler(mdw))
 
 	gzipped.GET("/entries/:id/comments", commentsHandler(mdw))
+	gzipped.POST("/entries/:id/comments", postCommentHandler(mdw))
 
 	router.PUT("/me/online", meOnlineHandler(mdw))
 
@@ -341,7 +342,20 @@ func commentsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		entryID := ctx.Param("id")
 		api.SetScrollHrefsWithData("/entries/"+entryID+"/comments", cmts)
 
-		api.WriteTemplate("comments")
+		api.WriteTemplate("comments_page")
+	}
+}
+
+func postCommentHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+
+		cmt := api.Data()
+		api.ClearData()
+		api.SetData("comment", cmt)
+
+		api.WriteTemplate("comment")
 	}
 }
 

@@ -13,9 +13,10 @@
 {% block scripts %}
     <script src="/assets/js/jquery-3.3.1.min.js"></script>
     <script src="/assets/js/jquery.jscroll.js"></script>
+    <script src="/assets/js/jquery.form.min.js"></script>
     <script src="/assets/feed.js"></script>
 {% endblock %}
 {% block body %}
     <h2 id="post-date{{entry.id}}">{{ entry.createdAt }}</h2>
-    {% include "entry_base.html" %}
+    {% include "entry_full.html" %}
 {% endblock %}
