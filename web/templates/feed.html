@@ -2,11 +2,10 @@
 {% block styles %}<link rel="stylesheet" type="text/css" href="/assets/feed.css">{% endblock %}
 {% block scripts %}
     <script src="/assets/js/jquery-3.3.1.min.js"></script>
-    <script src="/assets/js/jquery.jscroll.js"></script>
     <script src="/assets/feed.js"></script>
 {% endblock %}
 {% block body %}
-<div class="feed">
+<div id="feed">
     {% if entries %}
         {% include "feed_page.html" %}
     {% else %}

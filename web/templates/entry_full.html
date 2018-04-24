@@ -1,0 +1,11 @@
+{% extends "entry_base.html" %}
+{% block comments %}
+    <div id="comments">
+        {% include "comments_page.html" %}
+    </div>
+    <br/>
+    <form id="comment-editor" action="/entries/{{entry.id}}/comments" method="post" enctype="multipart/form-data">
+        <textarea name="content" cols="80" placeholder="Комментарий" required></textarea><br/>
+        <input type="submit" value="Отправить" />
+    </form>
+{% endblock comments %}

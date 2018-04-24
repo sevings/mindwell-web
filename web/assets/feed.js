@@ -70,15 +70,40 @@ function editPost(id) {
     document.location.assign("/entries/" + id + "/edit")
 }
 
-$(".feed").jscroll({
-    // debug: true,
-    loadingHtml: "<small>Загрузка...</small>",
-    autoTrigger: false,
-})
+function loadComments(href) {
+    $.ajax({
+        url: href,
+        success: function(data) {
+            $("a.next").remove()
+            $("#comments").prepend(data)
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            alert(resp.message)
+        },
+    })
+}
 
-$(".comments").jscroll({
-    // debug: true,
-    loadingHtml: "<small>Загрузка...</small>",
-    autoTrigger: false,
-    nextSelector: "a.next",
+function loadFeed(href) {
+    $.ajax({
+        url: href,
+        success: function(data) {
+            $("a.next").remove()
+            $("#feed").append(data)
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            alert(resp.message)
+        },
+    })
+}
+
+$("#comment-editor").ajaxForm({
+    resetForm: true,
+    success: function(data) {
+        $("#comments").append(data)
+    },
+    error: function(data) {
+        alert(data)
+    },
 })

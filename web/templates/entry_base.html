@@ -19,9 +19,5 @@
         <button onclick="editPost({{entry.id }})">Редактировать</button>
         <button onclick="deletePost({{ entry.id }})">Удалить</button>
     {% endif %}
-    {% if entry.commentCount %}
-        <p class="comments">
-            {% include "comments.html" %}
-        </p>
-    {% endif %}
+    {% block comments %}{% endblock comments %}
 </div>
