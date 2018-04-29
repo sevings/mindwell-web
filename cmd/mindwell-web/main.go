@@ -9,7 +9,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 
 	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils"
@@ -23,50 +22,40 @@ func main() {
 
 	router := gin.Default()
 
-	avatars := mdw.ConfigString("paths.avatars")
-	router.Static("/avatars/", avatars)
+	router.Static("/assets/", "./web/assets/")
 
-	gzipped := router.Group("/")
-	gzipped.Use(gzip.Gzip(gzip.DefaultCompression))
+	router.GET("/", rootHandler)
+	router.GET("/index.html", indexHandler(mdw))
 
-	assets := mdw.ConfigString("paths.assets")
-	gzipped.Static("/assets/", assets)
+	router.POST("/login", loginHandler(mdw))
+	router.POST("/register", registerHandler(mdw))
 
-	swagger := mdw.ConfigString("paths.swagger")
-	gzipped.Static("/help/api/", swagger)
+	router.GET("/live", liveHandler(mdw))
+	router.GET("/friends", friendsHandler(mdw))
 
-	gzipped.GET("/", rootHandler)
-	gzipped.GET("/index.html", indexHandler(mdw))
+	router.GET("/users/:name", tlogHandler(mdw))
+	router.GET("/users/:name/:relation", usersHandler(mdw))
 
-	gzipped.POST("/login", loginHandler(mdw))
-	gzipped.POST("/register", registerHandler(mdw))
+	router.GET("/me", meHandler(mdw))
+	router.GET("/me/:relation", meUsersHandler(mdw))
 
-	gzipped.GET("/live", liveHandler(mdw))
-	gzipped.GET("/friends", friendsHandler(mdw))
+	router.GET("/profile/edit", meEditorHandler(mdw))
+	router.POST("/profile/save", meSaverHandler(mdw))
 
-	gzipped.GET("/users/:name", tlogHandler(mdw))
-	gzipped.GET("/users/:name/:relation", usersHandler(mdw))
+	router.GET("/design", designEditorHandler(mdw))
+	router.POST("/design", designSaverHandler(mdw))
 
-	gzipped.GET("/me", meHandler(mdw))
-	gzipped.GET("/me/:relation", meUsersHandler(mdw))
+	router.GET("/post", editorHandler(mdw))
+	router.POST("/entries", postHandler(mdw))
 
-	gzipped.GET("/profile/edit", meEditorHandler(mdw))
-	gzipped.POST("/profile/save", meSaverHandler(mdw))
+	router.GET("/entries/:id/edit", editorExistingHandler(mdw))
+	router.POST("/entries/:id", editPostHandler(mdw))
 
-	gzipped.GET("/design", designEditorHandler(mdw))
-	gzipped.POST("/design", designSaverHandler(mdw))
-
-	gzipped.GET("/post", editorHandler(mdw))
-	gzipped.POST("/entries", postHandler(mdw))
-
-	gzipped.GET("/entries/:id/edit", editorExistingHandler(mdw))
-	gzipped.POST("/entries/:id", editPostHandler(mdw))
-
-	gzipped.GET("/entries/:id", entryHandler(mdw))
+	router.GET("/entries/:id", entryHandler(mdw))
 	router.DELETE("/entries/:id", proxyHandler(mdw))
 
-	gzipped.GET("/entries/:id/comments", commentsHandler(mdw))
-	gzipped.POST("/entries/:id/comments", postCommentHandler(mdw))
+	router.GET("/entries/:id/comments", commentsHandler(mdw))
+	router.POST("/entries/:id/comments", postCommentHandler(mdw))
 
 	router.PUT("/me/online", meOnlineHandler(mdw))
 
@@ -79,11 +68,6 @@ func main() {
 	router.GET("/relations/from/:id", proxyHandler(mdw))
 	router.PUT("/relations/from/:id", proxyHandler(mdw))
 	router.DELETE("/relations/from/:id", proxyHandler(mdw))
-
-	router.GET("/api/v1/*function", apiReverseProxy(mdw))
-	router.POST("/api/v1/*function", apiReverseProxy(mdw))
-	router.PUT("/api/v1/*function", apiReverseProxy(mdw))
-	router.DELETE("/api/v1/*function", apiReverseProxy(mdw))
 
 	addr := mdw.ConfigString("listen_address")
 	srv := &http.Server{
@@ -371,14 +355,6 @@ func meOnlineHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/users/me/online")
-		api.WriteResponse()
-	}
-}
-
-func apiReverseProxy(mdw *utils.Mindwell) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.ForwardToNoCookie(ctx.Request.URL.Path[7:])
 		api.WriteResponse()
 	}
 }
