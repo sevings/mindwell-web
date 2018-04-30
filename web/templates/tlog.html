@@ -15,7 +15,7 @@
 <script src="/assets/tlog.js"></script>
 {% endblock %}
 {% block heading %}
-    {% if profile.avatar %}<p><img src="{{ profile.avatar }}"></p>{% endif %}
+    {% if profile.avatar %}<p><img src="{{ profile.avatar.x400 }}"></p>{% endif %}
     <h1>{{ profile.showName }}</h1>
     {% if profile.title %}<h2>{{ profile.title }}</h2>{% endif %}
     {% if profile.isOnline %}<p>Сейчас онлайн</p>{% endif %}

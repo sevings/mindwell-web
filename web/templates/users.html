@@ -19,7 +19,7 @@
 {% block body %}
     {% for user in users %}
         <div class="user_block">
-            <img align=left class="avatar" src="{{ user.avatar }}"><br>
+            <img align=left class="avatar" src="{{ user.avatar.x100 }}"><br>
             <a href="/users/{{ user.name }}">{{ user.showName }}</a>
         </div><br>
     {% empty %}
