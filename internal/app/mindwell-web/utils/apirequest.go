@@ -175,10 +175,10 @@ func (api *APIRequest) Get(path string) {
 	api.checkError()
 }
 
-func (api *APIRequest) copyRequest(path string) *http.Request {
+func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 	req := api.ctx.Request.WithContext(api.ctx.Request.Context())
 	req.URL.Scheme = api.mdw.scheme
-	req.URL.Host = api.mdw.host
+	req.URL.Host = host
 	req.URL.Path = api.mdw.path + path
 	req.Close = false
 
@@ -191,18 +191,30 @@ func (api *APIRequest) copyRequest(path string) *http.Request {
 	return req
 }
 
-func (api *APIRequest) MethodForwardTo(method, path string) {
+func (api *APIRequest) copyRequest(path string) *http.Request {
+	return api.copyRequestToHost(path, api.mdw.host)
+}
+
+func (api *APIRequest) MethodForwardToHost(method, path, host string) {
 	api.setUserKey()
 	if api.err != nil {
 		return
 	}
 
-	req := api.copyRequest(path)
+	req := api.copyRequestToHost(path, host)
 	req.Header.Set("X-User-Key", api.uKey)
 	req.Method = method
 
 	api.do(req)
 	api.checkError()
+}
+
+func (api *APIRequest) MethodForwardToImages(method, path string) {
+	api.MethodForwardToHost(method, path, api.mdw.imgHost)
+}
+
+func (api *APIRequest) MethodForwardTo(method, path string) {
+	api.MethodForwardToHost(method, path, api.mdw.host)
 }
 
 func (api *APIRequest) MethodForward(method string) {

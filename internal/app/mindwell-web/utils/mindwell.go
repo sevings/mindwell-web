@@ -15,6 +15,8 @@ type Mindwell struct {
 	host      string
 	scheme    string
 	url       string
+	imgHost   string
+	imgUrl    string
 }
 
 func loadConfig(fileName string) *goconf.Config {
@@ -44,6 +46,8 @@ func NewMindwell() *Mindwell {
 	host := confString(conf, "api.host")
 	scheme := confString(conf, "api.scheme")
 
+	imgHost := confString(conf, "images.host")
+
 	return &Mindwell{
 		DevMode:   mode == "debug",
 		config:    conf,
@@ -52,6 +56,8 @@ func NewMindwell() *Mindwell {
 		host:      host,
 		scheme:    scheme,
 		url:       scheme + "://" + host + path,
+		imgHost:   imgHost,
+		imgUrl:    scheme + "://" + imgHost + path,
 	}
 }
 
