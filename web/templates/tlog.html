@@ -2,11 +2,7 @@
 {% block title %}{{ profile.showName }} в Mindwell{% endblock %}
 {% block styles %}
 <link rel="stylesheet" type="text/css" href="/assets/feed.css">
-{% if profile.design.css %}
-<style type="text/css">{{ profile.design.css }}</style>
-{% else %}
 <style type="text/css">.post { background: {{ profile.design.backgroundColor }}; color: {{ profile.design.textColor }}; text-align: {{ profile.design.textAlignment }}; }</style>
-{% endif %}
 {% endblock %}
 {% block scripts %}
 <script src="/assets/js/jquery-3.3.1.min.js"></script>
