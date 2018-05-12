@@ -182,7 +182,10 @@ func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 	req.URL.Path = api.mdw.path + path
 	req.Close = false
 
-	for k, vv := range api.ctx.Request.Header {
+	req.Header = make(map[string][]string)
+	headers := [...]string{"Accept", "Content-Length", "Content-Type", "Host"}
+	for _, k := range headers {
+		vv := api.ctx.Request.Header[k]
 		vv2 := make([]string, len(vv))
 		copy(vv2, vv)
 		req.Header[k] = vv2
@@ -298,9 +301,8 @@ func (api *APIRequest) parseResponse() map[string]interface{} {
 		return data
 	}
 
-	api.ctx.Writer.WriteString(api.err.Error())
-	api.ctx.Writer.WriteString("\n")
-	api.ctx.Writer.Write(jsonData)
+	log.Print(api.err)
+	log.Print(string(jsonData))
 
 	return data
 }
