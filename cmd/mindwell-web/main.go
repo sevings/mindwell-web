@@ -309,6 +309,7 @@ func editPostHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForward("PUT")
+		api.SetField("comments", "/entries/"+ctx.Param("id")+"/comments")
 		writeEntry(api)
 	}
 }
