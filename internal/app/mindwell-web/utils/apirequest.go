@@ -240,8 +240,8 @@ func (api *APIRequest) ForwardToNotAuthorized(path string) {
 	}
 
 	if api.resp.StatusCode >= 400 {
-		// api.clearCookie()
 		api.WriteTemplate("error")
+		api.err = http.ErrNoCookie
 	}
 }
 
