@@ -1,7 +1,11 @@
-{% extends "base.html" %}
-{% block title %}Ошибка — Mindwell{% endblock %}
-{% block body %}
-    <h1 style="text-align: center">
-        {% if message %}{{ message }}{% else %}Кажется, что-то пошло не так…{% endif %}
-    </h1>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Ошибка — Mindwell</title>
+        <link rel="stylesheet" type="text/css" href="/assets/base.css">
+    </head>
+    <body>
+        <h1 style="text-align: center">{{ message|default:"Кажется, что-то пошло не так…" }}</h1>
+    </body>
+</html>

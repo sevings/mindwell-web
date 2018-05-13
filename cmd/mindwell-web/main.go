@@ -142,7 +142,7 @@ func accountHandler(mdw *utils.Mindwell, path string) func(ctx *gin.Context) {
 		}
 		http.SetCookie(ctx.Writer, &cookie)
 
-		ctx.Redirect(http.StatusSeeOther, "/live")
+		api.Redirect("/live")
 	}
 }
 

@@ -46,7 +46,7 @@ func (api *APIRequest) Data() map[string]interface{} {
 	return api.data
 }
 
-func (api *APIRequest) ClearData() { //! \todo remove
+func (api *APIRequest) ClearData() {
 	if api.err != nil {
 		return
 	}
@@ -136,7 +136,6 @@ func (api *APIRequest) clearCookie() {
 	}
 	http.SetCookie(api.ctx.Writer, token)
 
-	api.Redirect("/index.html")
 	api.err = http.ErrNoCookie
 }
 
@@ -149,6 +148,7 @@ func (api *APIRequest) checkError() {
 	switch {
 	case code == 401:
 		api.clearCookie()
+		api.Redirect("/index.html")
 	case code >= 400:
 		log.Print(api.resp.Status)
 		api.err = http.ErrNotSupported
@@ -240,7 +240,8 @@ func (api *APIRequest) ForwardToNotAuthorized(path string) {
 	}
 
 	if api.resp.StatusCode >= 400 {
-		api.clearCookie()
+		// api.clearCookie()
+		api.WriteTemplate("error")
 	}
 }
 
@@ -320,6 +321,10 @@ func (api *APIRequest) WriteTemplate(name string) {
 		return
 	}
 
+	if api.resp != nil {
+		api.ctx.Status(api.resp.StatusCode)
+	}
+
 	api.ctx.Header("Cache-Control", "no-store")
 	api.ctx.Header("Content-Type", "text/html; charset=utf-8")
 
@@ -344,7 +349,7 @@ func (api *APIRequest) WriteResponse() {
 
 func (api *APIRequest) Redirect(path string) {
 	if api.err != nil {
-		api.WriteTemplate("")
+		api.WriteTemplate("error")
 		return
 	}
 
