@@ -1,6 +1,6 @@
 {% if beforeHref %}
     <a class="next" href="#" onclick="loadComments('{{ beforeHref }}'); return false;">Больше</a>
 {% endif %}
-{% for comment in entry.comments.data %}
+{% for comment in data %}
     {% include "comment.html" %}
 {% endfor %}

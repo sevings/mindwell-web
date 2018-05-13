@@ -327,14 +327,8 @@ func commentsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
 
-		cmts := api.Data()
-		api.ClearData()
-		entry := make(map[string]interface{})
-		entry["comments"] = cmts
-		api.SetData("entry", entry)
-
 		entryID := ctx.Param("id")
-		api.SetScrollHrefsWithData("/entries/"+entryID+"/comments", cmts)
+		api.SetScrollHrefs("/entries/" + entryID + "/comments")
 
 		api.WriteTemplate("comments_page")
 	}

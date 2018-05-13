@@ -1,7 +1,7 @@
 {% extends "entry_base.html" %}
 {% block comments %}
     <div id="comments">
-        {% include "comments_page.html" %}
+        {% include "comments_page.html" with data = entry.comments.data %}
     </div>
     <br/>
     <form id="comment-editor" action="/entries/{{entry.id}}/comments" method="post" enctype="multipart/form-data">
