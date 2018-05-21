@@ -46,8 +46,8 @@
 
 			<a href="#" class="logo">
 				<div class="img-wrap">
-					<img src="/assets/olympus/img/logo-mindwell.jpg" alt="mindwell">
-					<img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus" class="logo-colored">
+					<img src="/assets/olympus/img/logo-mindwell-png.png" width="100" height="100" alt="mindwell">
+					<!-- <img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus" class="logo-colored"> -->
 				</div>
 				<div class="title-block">
 					<h6 class="logo-title">mindwell</h6>
@@ -97,45 +97,45 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="home" role="tabpanel" data-mh="log-tab">
 						<div class="title h6">Зарегистрироваться</div>
-						<form class="content">
+						<form class="content" name="register" action="/register" method="post">
 							<div class="row">
-								<div class="col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Имя</label>
-										<input class="form-control" placeholder="" type="text">
-									</div>
-								</div>
-								<div class="col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Фамилия</label>
-										<input class="form-control" placeholder="" type="text">
-									</div>
-								</div>
 								<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
 									<div class="form-group label-floating is-empty">
-										<label class="control-label">Email</label>
-										<input class="form-control" placeholder="" type="email">
+										<label class="control-label">Логин</label>
+										<input class="form-control" placeholder="" title="от 1 до 20 символов, латинские буквы и цифры." name="name" type="text" required />
+									</div>
+									<div class="form-group label-floating is-empty">
+										<label class="control-label">Адрес почты</label>
+										<input class="form-control" placeholder="" name="email" type="email" required />
 									</div>
 									<div class="form-group label-floating is-empty">
 										<label class="control-label">Пароль</label>
-										<input class="form-control" placeholder="" type="password">
+										<input class="form-control" placeholder="" title="не короче 6 символов." name="password" type="password" required />
+									</div>
+									<div class="form-group label-floating is-select">
+										<label class="control-label">Пол</label>
+										<select name="gender" class="selectpicker form-control">
+											<option value="not set">Не указан</option>
+											<option value="male">Мужской</option>
+											<option value="female">Женский</option>
+										</select>
+									</div>
+									<div class="form-group label-floating is-empty">
+										<label class="control-label">Инвайт</label>
+										<input class="form-control" placeholder="" name="invite" type="text" required />
+									</div>
+									<div class="form-group label-floating is-empty">
+										<label class="control-label">Пригласивший</label>
+										<input class="form-control" placeholder="" name="referrer" type="text" required />
 									</div>
 			
-									<div class="form-group date-time-picker label-floating">
+									<!-- <div class="form-group date-time-picker label-floating">
 										<label class="control-label">День рождения</label>
 										<input name="datetimepicker" value="10/24/1984" />
 										<span class="input-group-addon">
 														<svg class="olymp-calendar-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-calendar-icon"></use></svg>
 													</span>
-									</div>
-			
-									<div class="form-group label-floating is-select">
-										<label class="control-label">Пол</label>
-										<select class="selectpicker form-control">
-											<option value="MA">Мужской</option>
-											<option value="FE">Женский</option>
-										</select>
-									</div>
+									</div> -->
 			
 									<div class="remember">
 										<div class="checkbox">
@@ -146,7 +146,7 @@
 										</div>
 									</div>
 			
-                                                                        <input type = "submit" value = "Завершить регистрацию!" class="btn btn-purple btn-lg full-width" />
+                                                                        <input type ="submit" value ="Зарегистрироваться" class="btn btn-purple btn-lg full-width" />
 								</div>
 							</div>
 						</form>
