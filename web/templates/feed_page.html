@@ -1,5 +1,7 @@
 {% for entry in entries %}
-    <h2 id="post-date{{entry.id}}"><a href="/entries/{{ entry.id }}"><time datetime="{{ entry.createdAt|floatformat:0 }}"></time></a></h2>
+    <h2 id="post-date{{entry.id}}"><a href="/entries/{{ entry.id }}">
+        <time datetime="{{ entry.createdAt|floatformat:0 }}">{{ entry.createdAt|floatformat:0 }}</time>
+    </a></h2>
     {% include "entry_base.html" %}
 {% endfor %}
 {% if beforeHref %}

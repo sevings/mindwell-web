@@ -21,11 +21,15 @@ function formatDate(unix) {
     var date = new Date(unix * 1000)
     
     if(today.getMonth() == date.getMonth()) {
+        var min = date.getMinutes()
+        if(min < 10)
+            min = "0" + min
+
         if(today.getDate() == date.getDate())
-            return "Сегодня в " + date.getHours() + ":" + date.getMinutes();
+            return "Сегодня в " + date.getHours() + ":" + min;
 
         if(today.getDate() == date.getDate() + 1)
-            return "Вчера в " + date.getHours() + ":" + date.getMinutes();
+            return "Вчера в " + date.getHours() + ":" + min;
     }
 
     var str = date.getDate()
