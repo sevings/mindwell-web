@@ -18,7 +18,7 @@ $(setOnline)
 
 function formatDate(unix) {
     var today = new Date();
-    var date = new Date(unix)
+    var date = new Date(unix * 1000)
     
     if(today.getMonth() == date.getMonth()) {
         if(today.getDate() == date.getDate())
@@ -79,7 +79,7 @@ function formatDate(unix) {
 }
 
 $("time").each(function() {
-    var unix = $(this).datetime()
+    var unix = $(this).attr("datetime")
     var text = formatDate(unix)
     $(this).text(text)
 })

@@ -5,7 +5,6 @@
         <title>{% block title %}Mindwell{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="/assets/base.css">
         {% block styles %}{% endblock %}
-        <script src="/assets/base.js"></script>
     </head>
     <body>
         <a href="/live">Прямой эфир</a>
@@ -15,6 +14,9 @@
         <a href="/index.html" onclick="logout()">Выйти</a>
         {% block heading %}{% endblock %}
         {% block body %}{% endblock %}
+        <script src="/assets/js/jquery-3.3.1.min.js"></script>
+        <script src="/assets/js/jquery.form.min.js"></script>
+        <script src="/assets/base.js"></script>
         {% block scripts %}{% endblock %}
     </body>
 </html>

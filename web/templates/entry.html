@@ -11,11 +11,9 @@
     {% endif %}
 {% endblock %}
 {% block scripts %}
-    <script src="/assets/js/jquery-3.3.1.min.js"></script>
-    <script src="/assets/js/jquery.form.min.js"></script>
     <script src="/assets/feed.js"></script>
 {% endblock %}
 {% block body %}
-    <h2 id="post-date{{entry.id}}">{{ entry.createdAt }}</h2>
+    <h2 id="post-date{{entry.id}}"><time datetime="{{ entry.createdAt|floatformat:0 }}"></time></h2>
     {% include "entry_full.html" %}
 {% endblock %}

@@ -5,10 +5,8 @@
 <style type="text/css">.post { background: {{ profile.design.backgroundColor }}; color: {{ profile.design.textColor }}; text-align: {{ profile.design.textAlignment }}; }</style>
 {% endblock %}
 {% block scripts %}
-<script src="/assets/js/jquery-3.3.1.min.js"></script>
-<script src="/assets/js/jquery.jscroll.js"></script>
-<script src="/assets/feed.js"></script>
-<script src="/assets/tlog.js"></script>
+    <script src="/assets/feed.js"></script>
+    <script src="/assets/tlog.js"></script>
 {% endblock %}
 {% block heading %}
     {% if profile.avatar %}<p><img src="{{ profile.avatar.x400 }}"></p>{% endif %}
@@ -16,8 +14,8 @@
     {% if profile.title %}<h2>{{ profile.title }}</h2>{% endif %}
     {% if profile.isOnline %}<p>Сейчас онлайн</p>{% endif %}
     <p>Карма: {{ profile.karma|default:0|floatformat:2 }}</p>
-    <p>Зарегистрирован {{ profile.createdAt }}</p>
-    <p>Последний раз был {{ profile.lastSeenAt }}</p>
+    <p>Зарегистрирован <time class="lcase" datetime="{{ profile.createdAt }}"></time></p>
+    <p>Последний раз был <time class="lcase" datetime="{{ profile.lastSeenAt }}"></time></p>
     <p>Приглашен пользователем <a href="/users/{{ profile.invitedBy.name }}">{{ profile.invitedBy.showName }}</a></p>
     <p>{{ profile.country}}{% if profile.city %}, {{ profile.city }}{% endif %}</p>
     {% if profile.counts.entries %}<p>Записи: {{ profile.counts.entries }}</p>{% endif %}
