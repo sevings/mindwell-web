@@ -89,7 +89,13 @@ function loadFeed(href) {
         url: href,
         success: function(data) {
             $("a.next").remove()
-            $("#feed").append(data)
+
+            var template = document.createElement('template');
+            template.innerHTML = data;
+            var feed = template.content.childNodes;
+            formatTimeElements(feed)
+
+            $("#feed").append(feed)
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)

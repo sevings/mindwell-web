@@ -78,8 +78,12 @@ function formatDate(unix) {
     return str;
 }
 
-$("time").each(function() {
-    var unix = $(this).attr("datetime")
-    var text = formatDate(unix)
-    $(this).text(text)
-})
+function formatTimeElements(context) {
+    $("time", context).each(function() {
+        var unix = $(this).attr("datetime")
+        var text = formatDate(unix)
+        $(this).text(text)
+    })    
+}
+
+$(formatTimeElements)
