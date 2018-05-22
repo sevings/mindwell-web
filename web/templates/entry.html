@@ -9,6 +9,6 @@
     <script src="/assets/feed.js"></script>
 {% endblock %}
 {% block body %}
-    <h2 id="post-date{{entry.id}}"><time datetime="{{ entry.createdAt|floatformat:0 }}">{{ entry.createdAt|floatformat:0 }}</time></h2>
+    <h2 id="post-date{{entry.id}}"><time datetime="{{ entry.createdAt }}">{{ entry.createdAt|floatformat:0 }}</time></h2>
     {% include "entry_full.html" %}
 {% endblock %}
