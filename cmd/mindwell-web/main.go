@@ -27,6 +27,7 @@ func main() {
 	router.GET("/", rootHandler)
 	router.GET("/index.html", indexHandler(mdw))
 
+	router.GET("/logout", logoutHandler(mdw))
 	router.POST("/login", loginHandler(mdw))
 	router.POST("/register", registerHandler(mdw))
 
@@ -111,6 +112,14 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.WriteTemplate("index")
+	}
+}
+
+func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ClearCookie()
+		ctx.Redirect(http.StatusSeeOther, "/index.html")
 	}
 }
 

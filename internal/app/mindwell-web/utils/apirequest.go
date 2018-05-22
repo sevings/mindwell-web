@@ -126,7 +126,7 @@ func (api *APIRequest) do(req *http.Request) {
 	api.read = false
 }
 
-func (api *APIRequest) clearCookie() {
+func (api *APIRequest) ClearCookie() {
 	token := &http.Cookie{
 		Name:     "api_token",
 		Value:    "",
@@ -147,7 +147,7 @@ func (api *APIRequest) checkError() {
 	code := api.resp.StatusCode
 	switch {
 	case code == 401:
-		api.clearCookie()
+		api.ClearCookie()
 		api.Redirect("/index.html")
 	case code >= 400:
 		log.Print(api.resp.Status)
