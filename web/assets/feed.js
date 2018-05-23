@@ -88,7 +88,7 @@ function loadFeed(href) {
     $.ajax({
         url: href,
         success: function(data) {
-            $("a.next").remove()
+            $("a.btn-more").remove()
 
             var template = document.createElement('template');
             template.innerHTML = data;
