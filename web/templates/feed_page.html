@@ -1,5 +1,5 @@
 {% for entry in entries %}
-    <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 sorting-item">
+    <div id="post{{ entry.id }}" class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 sorting-item">
         <div class="ui-block">
             <article class="hentry post">
                 <div class="post__author author vcard inline-items">
@@ -9,9 +9,9 @@
                     <div class="author-date">
                         <a class="h6 post__author-name fn" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
                         <div class="post__date">
-                            <time class="published" datetime="{{ entry.createdAt }}">
-                                <a href="#">{{ entry.createdAt|floatformat:0 }}</a>
-                            </time>
+                            <a href="/entries/{{ entry.id }}"><time class="published" datetime="{{ entry.createdAt }}">
+                                {{ entry.createdAt|floatformat:0 }}
+                            </time></a>
                         </div>
                     </div>
             
@@ -34,31 +34,32 @@
             
                 {{ entry.content|safe}}
 
-                <a href="#" data-toggle="modal" data-target="#blog-post-popup" class="btn btn-md-2 btn-border-think c-grey btn-transparent custom-color">Показать полностью</a>
+                <!-- <a href="#" data-toggle="modal" data-target="#blog-post-popup" class="btn btn-md-2 btn-border-think c-grey btn-transparent custom-color">Показать полностью</a> -->
             
                 <div class="post-additional-info inline-items">
             
                     {% if entry.isVotable %}
-                        <div class="rating" title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
+                        <div class="post-rating" data-toggle="tooltip" data-placement="top" data-enabled="true" data-vote="{{ entry.vote }}" 
+                                title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
                             {% if entry.vote != "ban" %}
-                                <a href="#" class="post-add-icon inline-items down_vote" onclick="vote({{ entry.id }}, false);return false;" >
+                                <a href="#" class="post-add-icon inline-items" onclick="vote({{ entry.id }}, false);return false;" >
                             {% endif %}
                                 <svg class="olymp-heart-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-heart-icon"></use></svg>
-                                <span class="rating">{{ entry.votes|default:0 }}</span>
+                                <span class="post-down-count">{{ entry.votes|default:0 }}</span>
                             {% if entry.vote != "ban" %}</a>{% endif %}
                             
                             {% if entry.vote != "ban" %}
-                                <a href="#" class="post-add-icon inline-items up_vote" onclick="vote({{ entry.id }}, true);return false;" >
+                                <a href="#" class="post-add-icon inline-items" onclick="vote({{ entry.id }}, true);return false;" >
                             {% endif %}
                                 <svg class="olymp-heart-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-heart-icon"></use></svg>
-                                <span class="rating">{{ entry.votes|default:0 }}</span>
+                                <span class="post-up-count">{{ entry.votes|default:0 }}</span>
                             {% if entry.vote != "ban" %}</a>{% endif %}
                         </div>    
                     {% endif %}
             
                     <a href="#" class="post-add-icon inline-items">
                         <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
-                        <span>{{ entry.commentCount|default:0 }}</span>
+                        <span>{{ entry.commentCount }}</span>
                     </a>
             
                 </div>
@@ -67,7 +68,7 @@
     </div>
 {% endfor %}
 {% if beforeHref %}
-    <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 sorting-item">
+    <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 sorting-item feed-next">
         <a href="#" class="btn btn-control btn-more" onclick="loadFeed('{{ beforeHref }}'); return false;">
             <svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
         </a>
