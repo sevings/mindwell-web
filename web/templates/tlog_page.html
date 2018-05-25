@@ -1,0 +1,10 @@
+{% for entry in entries %}
+    {% include "entry_base.html" %}
+{% endfor %}
+{% if beforeHref %}
+    <a id="load-more-button" href="#" class="btn btn-control btn-more" data-load-link="{{ beforeHref }}" data-container="feed">
+        <svg class="olymp-three-dots-icon">
+            <use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use>
+        </svg>
+    </a>
+{% endif %}
