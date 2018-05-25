@@ -1,26 +1,3 @@
-{% comment %} <div class="post" id="post{{entry.id}}" data-vote="{{ entry.vote }}">
-    <h2>{{ entry.title }}</h2>
-    {{ entry.content|safe }}
-    <div class="footer">
-        {% if entry.isVotable %}
-            <button class="down_vote" onclick="vote({{ entry.id }}, false)" 
-                {% if entry.vote == "neg" || entry.vote == "ban" %}disabled{% endif %}>-</button>
-            <span class="rating" title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
-                {% if entry.votes > 0 %}+{% endif %}{{ entry.votes|default: 0 }}</span>
-            <button class="up_vote" onclick="vote({{ entry.id }}, true)" 
-                {% if entry.vote == "pos" || entry.vote == "ban" %}disabled{% endif %}>+</button>
-        {% endif %}
-        {% if entry.commentCount %}
-            <span class="comments_count">{{ entry.commentCount }} комм.</span>
-        {% endif %}
-        <a href="/users/{{ entry.author.name }}" class="author">{{ entry.author.showName }}</a>
-    </div>
-    {% if entry.author.id == me.id %}
-        <button onclick="editPost({{entry.id }})">Редактировать</button>
-        <button onclick="deletePost({{ entry.id }})">Удалить</button>
-    {% endif %}
-    {% block comments %}{% endblock comments %}
-</div> {% endcomment %}
 <div class="ui-block">
     <article class="hentry post">
         <div class="post__author author vcard inline-items">
@@ -85,4 +62,5 @@
     
         </div>
     </article>
+    {% block comments %}{% endblock comments %}
 </div>

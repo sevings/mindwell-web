@@ -155,14 +155,14 @@ func accountHandler(mdw *utils.Mindwell, path string) func(ctx *gin.Context) {
 	}
 }
 
-func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string, clbk func(*utils.APIRequest)) func(ctx *gin.Context) {
+func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName, ajaxTemplateName string, clbk func(*utils.APIRequest)) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo(apiPath)
 		api.SetScrollHrefs(webPath)
 
 		if api.IsAjax() {
-			api.WriteTemplate("feed_page")
+			api.WriteTemplate(ajaxTemplateName)
 		} else {
 			api.SetMe()
 
@@ -176,11 +176,11 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string, clb
 }
 
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return feedHandler(mdw, "/entries/live", "/live", "live", nil)
+	return feedHandler(mdw, "/entries/live", "/live", "live", "feed_page", nil)
 }
 
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return feedHandler(mdw, "/entries/friends", "/friends", "friends", nil)
+	return feedHandler(mdw, "/entries/friends", "/friends", "friends", "feed_page", nil)
 }
 
 func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
@@ -199,7 +199,7 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetField("profile", "/users/byName/"+name)
 		}
 
-		handle := feedHandler(mdw, "/entries/users/"+id.String(), "/users/"+name, "tlog", clbk)
+		handle := feedHandler(mdw, "/entries/users/"+id.String(), "/users/"+name, "tlog", "tlog_page", clbk)
 		handle(ctx)
 	}
 }
@@ -229,7 +229,7 @@ func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("profile", api.Data()["me"])
 	}
 
-	return feedHandler(mdw, "/entries/users/me", "/me", "tlog", clbk)
+	return feedHandler(mdw, "/entries/users/me", "/me", "tlog", "tlog_page", clbk)
 }
 
 func meEditorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
