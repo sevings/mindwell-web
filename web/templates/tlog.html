@@ -1,13 +1,89 @@
 {% extends "feed.html" %}
 {% block title %}{{ profile.showName }} в Mindwell{% endblock %}
-{% block styles %}
-<link rel="stylesheet" type="text/css" href="/assets/feed.css">
-{% endblock %}
 {% block scripts %}
     <script src="/assets/feed.js"></script>
     <script src="/assets/tlog.js"></script>
 {% endblock %}
 {% block heading %}
+<div class="container">
+	<div class="row">
+		<div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+			<div class="ui-block">
+				<div class="top-header">
+					<div class="top-header-thumb">
+						<img src="/assets/olympus/img/top-header1.jpg" alt="nature">
+					</div>
+					<div class="profile-section">
+						<div class="row">
+							<div class="col col-lg-5 col-md-5 col-sm-12 col-12">
+								<ul class="profile-menu">
+									<li>
+										<a href="/users/{{ profile.name }}" class="active">Тлог</a>
+									</li>
+								</ul>
+							</div>
+							<div class="col col-lg-5 ml-auto col-md-5 col-sm-12 col-12">
+								<ul class="profile-menu">
+                                    {% if profile.counts.followings %}
+                                        <li>
+                                            <a href="/users/{{ profile.name }}/followings">Подписки</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if profile.counts.followers %}
+                                        <li>
+                                            <a href="/users/{{ profile.name }}/followers">Подписчики</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if profile.counts.invited %}
+                                        <li>
+                                            <a href="/users/{{ profile.name }}/invited">Приглашенные</a>
+                                        </li>
+                                    {% endif %}
+								</ul>
+							</div>
+						</div>
+
+						<div class="control-block-button">
+                            {% if me.id != profile.id %}
+                                <a href="35-YourAccount-FriendsRequests.html" class="btn btn-control bg-blue">
+                                    <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
+                                </a>
+                            {% endif %}
+
+                            {% if me.id == profile.id %}
+                                <div class="btn btn-control bg-primary more">
+                                    <svg class="olymp-settings-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-settings-icon"></use></svg>
+
+                                    <ul class="more-dropdown more-with-triangle triangle-bottom-right">
+                                        <li>
+                                            <a href="#" data-toggle="modal" data-target="#update-header-photo">Обновить аватар</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" data-toggle="modal" data-target="#update-header-photo">Обновить обложку</a>
+                                        </li>
+                                        <li>
+                                            <a href="/profile/edit">Редактировать</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {% endif %}
+						</div>
+					</div>
+					<div class="top-header-author">
+						<a href="/users/{{ profile.name }}" class="author-thumb">
+							<img src="{{ profile.avatar.x100 }}" alt="{{ profile.showName }}">
+						</a>
+						<div class="author-content">
+							<a href="/users/{{ profile.name }}" class="h4 author-name">{{ profile.showName }}</a>
+							<div class="country">{{ profile.country}}{% if profile.city %}, {{ profile.city }}{% endif %}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% comment %} 
     {% if profile.avatar %}<p><img src="{{ profile.avatar.x400 }}"></p>{% endif %}
     <h1>{{ profile.showName }}</h1>
     {% if profile.title %}<h2>{{ profile.title }}</h2>{% endif %}
@@ -58,4 +134,5 @@
             </button>
         </p>
     {% endif %}
+{% endcomment %}
 {% endblock %}
