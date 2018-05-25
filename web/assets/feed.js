@@ -68,8 +68,9 @@ function loadComments(href) {
 function loadFeed(href) {
     $.ajax({
         url: href,
+        dataType: "html",
         success: function(data) {
-            $("div.feed-next").remove()
+            $(".feed-next").remove()
 
             var template = document.createElement('template');
             template.innerHTML = data;
