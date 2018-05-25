@@ -1,18 +1,17 @@
 function vote(id, positive) {
     var post = $("#post" + id)
     var rating = $(".post-rating", post)
-    if(rating.data.enabled == "true")
+    if(rating.data("enabled") == false)
         return
 
-    rating.data.enabled = "false"
+    rating.data("enabled", true)
 
-    var vote = rating.data.vote
+    var vote = rating.data("vote")
     var delVote = ((positive && vote == "pos") || (!positive && vote == "neg"))
 
     $.ajax({
-        url: "/entries/" + id + "/vote",
-        method: delVote ? "DELETE" : "POST",
-        data: { positive: positive },
+        url: "/entries/" + id + "/vote?positive=" + positive,
+        method: delVote ? "DELETE" : "PUT",
         dataType: "json",
         success: function(resp) {
             var count = (resp.votes || 0)
@@ -27,7 +26,7 @@ function vote(id, positive) {
             alert(resp.message)
         },
         complete: function() {
-            rating.data.enabled = "true"
+            rating.data("enabled", true)
         },
     })
 }
