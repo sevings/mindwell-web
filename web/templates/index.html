@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -46,12 +46,12 @@
 
 			<a href="#" class="logo">
 				<div class="img-wrap">
-					<img src="/assets/olympus/img/logo.png" alt="Olympus">
-					<img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus" class="logo-colored">
+					<img src="/assets/olympus/img/logo-mindwell.png" width="200" alt="mindwell">
+					<!-- <img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus" class="logo-colored"> -->
 				</div>
 				<div class="title-block">
-					<h6 class="logo-title">olympus</h6>
-					<div class="sub-title">SOCIAL NETWORK</div>
+					<h6 class="logo-title">mindwell</h6>
+					<div class="sub-title">Дом Мыслей</div>
 				</div>
 			</a>
 
@@ -67,11 +67,10 @@
 	<div class="row display-flex">
 		<div class="col col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
 			<div class="landing-content">
-				<h1>Welcome to the Biggest Social Network in the World</h1>
-				<p>We are the best and biggest social network with 5 billion active users all around the world. Share you
-					thoughts, write blog posts, show your favourite music via Stopify, earn badges and much more!
+				<h1>Заголовок страницы</h1>
+				<p>Добро пожаловать на сайт Mindwell. Здесь Вы можете вести свой дневник, делиться мыслями и переживаниями, рассказывать истории и общаться с другими людьми. Присоединяйтесь!
 				</p>
-				<a href="#" class="btn btn-md btn-border c-white">Register Now!</a>
+				<!-- <a href="#" class="btn btn-md btn-border c-white">Присоединяйтесь!</a> -->
 			</div>
 		</div>
 
@@ -97,64 +96,64 @@
 				<!-- Tab panes -->
 				<div class="tab-content">
 					<div class="tab-pane active" id="home" role="tabpanel" data-mh="log-tab">
-						<div class="title h6">Register to Olympus</div>
-						<form class="content">
+						<div class="title h6">Зарегистрироваться</div>
+						<form class="content" name="register" action="/register" method="post">
 							<div class="row">
-								<div class="col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">First Name</label>
-										<input class="form-control" placeholder="" type="text">
-									</div>
-								</div>
-								<div class="col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Last Name</label>
-										<input class="form-control" placeholder="" type="text">
-									</div>
-								</div>
 								<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
 									<div class="form-group label-floating is-empty">
-										<label class="control-label">Your Email</label>
-										<input class="form-control" placeholder="" type="email">
+										<label class="control-label">Логин</label>
+										<input class="form-control" placeholder="" title="от 1 до 20 символов, латинские буквы и цифры." name="name" type="text" required />
 									</div>
 									<div class="form-group label-floating is-empty">
-										<label class="control-label">Your Password</label>
-										<input class="form-control" placeholder="" type="password">
+										<label class="control-label">Адрес почты</label>
+										<input class="form-control" placeholder="" name="email" type="email" required />
+									</div>
+									<div class="form-group label-floating is-empty">
+										<label class="control-label">Пароль</label>
+										<input class="form-control" placeholder="" title="не короче 6 символов." name="password" type="password" required />
+									</div>
+									<!-- <div class="form-group label-floating is-select">
+										<label class="control-label">Пол</label>
+										<select name="gender" class="selectpicker form-control">
+											<option value="not set">Не указан</option>
+											<option value="male">Мужской</option>
+											<option value="female">Женский</option>
+										</select>
+									</div> -->
+									<div class="form-group label-floating is-empty">
+										<label class="control-label">Инвайт</label>
+										<input class="form-control" placeholder="" name="invite" type="text" required />
+									</div>
+									<div class="form-group label-floating is-empty">
+										<label class="control-label">Пригласивший</label>
+										<input class="form-control" placeholder="" name="referrer" type="text" required />
 									</div>
 			
-									<div class="form-group date-time-picker label-floating">
-										<label class="control-label">Your Birthday</label>
+									<!-- <div class="form-group date-time-picker label-floating">
+										<label class="control-label">День рождения</label>
 										<input name="datetimepicker" value="10/24/1984" />
 										<span class="input-group-addon">
 														<svg class="olymp-calendar-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-calendar-icon"></use></svg>
 													</span>
-									</div>
+									</div> -->
 			
-									<div class="form-group label-floating is-select">
-										<label class="control-label">Your Gender</label>
-										<select class="selectpicker form-control">
-											<option value="MA">Male</option>
-											<option value="FE">Female</option>
-										</select>
-									</div>
-			
-									<div class="remember">
+									<!-- <div class="remember">
 										<div class="checkbox">
 											<label>
 												<input name="optionsCheckboxes" type="checkbox">
-												I accept the <a href="#">Terms and Conditions</a> of the website
+												Я принимаю <a href="#">Условия Пользовательского Соглашения</a> 
 											</label>
 										</div>
-									</div>
+									</div> -->
 			
-                                                                        <input type = "submit" value = "Complete Registration!" class="btn btn-purple btn-lg full-width" />
+                                                                        <input type ="submit" value ="Зарегистрироваться" class="btn btn-purple btn-lg full-width" />
 								</div>
 							</div>
 						</form>
 					</div>
 			
 					<div class="tab-pane" id="profile" role="tabpanel" data-mh="log-tab">
-						<div class="title h6">Login to your Account</div>
+						<div class="title h6">Войти в аккаунт</div>
 						<form class="content" action="/login" method="post">
 							<div class="row">
 								<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
@@ -169,7 +168,7 @@
 			
 									<input class="btn btn-lg btn-primary full-width" type="submit" value="Войти" />
 			
-									<p>Don’t you have an account? <a href="#">Register Now!</a> it’s really simple and you can start enjoing all the benefits!</p>
+									<p>Еще нет аккаунта? <a href="#">Зарегистрируйся сейчас!</a> Это быстро и удобно!</p>
 								</div>
 							</div>
 						</form>
