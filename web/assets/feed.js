@@ -55,8 +55,9 @@ function loadComments(href) {
     $.ajax({
         url: href,
         success: function(data) {
-            $("a.next").remove()
-            $("#comments").prepend(data)
+            $("a.more-comments").remove()
+            var comments = formatTimeHtml(data)
+            $("#comments").prepend(comments)
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
@@ -71,12 +72,7 @@ function loadFeed(href) {
         dataType: "html",
         success: function(data) {
             $(".feed-next").remove()
-
-            var template = document.createElement('template');
-            template.innerHTML = data;
-            var feed = template.content.childNodes;
-            formatTimeElements(feed)
-
+            var feed = formatTimeHtml(data)
             $("#feed").append(feed)
         },
         error: function(req) {
@@ -86,12 +82,16 @@ function loadFeed(href) {
     })
 }
 
-$("#comment-editor").ajaxForm({
-    resetForm: true,
-    success: function(data) {
-        $("#comments").append(data)
-    },
-    error: function(data) {
-        alert(data)
-    },
+$("#post-comment").click(function() { 
+    $("#comment-editor").ajaxSubmit({
+        resetForm: true,
+        success: function(data) {
+            $("#comments").append(data)
+        },
+        error: function(data) {
+            alert(data)
+        },
+    })
+
+    return false;
 })

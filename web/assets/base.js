@@ -87,4 +87,12 @@ function formatTimeElements(context) {
     })    
 }
 
+function formatTimeHtml(html) {
+    var template = document.createElement('template');
+    template.innerHTML = html;
+    var elements = template.content.childNodes;
+    formatTimeElements(elements)
+    return elements
+}
+
 $(formatTimeElements)

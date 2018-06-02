@@ -1,5 +1,6 @@
 {% if beforeHref %}
-    <a class="next" href="#" onclick="loadComments('{{ beforeHref }}'); return false;">Больше</a>
+    <a href="#" class="more-comments" onclick="loadComments('{{ beforeHref }}'); return false;">
+        Показать больше комментариев</a>
 {% endif %}
 {% for comment in data %}
     {% include "comment.html" %}

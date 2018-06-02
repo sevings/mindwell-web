@@ -1,5 +1,16 @@
-<p class="comment">
-    <a class="comment_author" href="/users/{{ comment.author.name }}">
-        {{ comment.author.showName }}
-    </a>: {{ comment.content }}
-</p>
+<li class="comment-item">
+    <div class="post__author author vcard inline-items">
+        <img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}">
+
+        <div class="author-date">
+            <a class="h6 post__author-name fn" href="/users/{{ comment.author.name }}">{{ comment.author.showName }}</a>
+            <div class="post__date">
+                <time class="published" datetime="{{ comment.createdAt }}">
+                    {{ comment.createdAt|floatformat:0 }}
+                </time>
+            </div>
+        </div>
+    </div>
+
+    <p>{{ comment.content }}</p>
+</li>
