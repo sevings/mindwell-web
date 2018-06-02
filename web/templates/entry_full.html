@@ -3,6 +3,7 @@
     <ul id="comments" class="comments-list">
         {% include "comments_page.html" with data = entry.comments.data %}
     </ul>
+    <a name="comment-editor"></a>
     <form id="comment-editor" class="comment-form inline-items" action="/entries/{{entry.id}}/comments" method="post" enctype="multipart/form-data">
         <div class="post__author author vcard inline-items">
             <img src="{{ me.avatar.x42 }}" alt="{{ me.showName }}">

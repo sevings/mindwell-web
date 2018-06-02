@@ -32,8 +32,6 @@
     
         {{ entry.content|safe}}
 
-        <!-- <a href="#" data-toggle="modal" data-target="#blog-post-popup" class="btn btn-md-2 btn-border-think c-grey btn-transparent custom-color">Показать полностью</a> -->
-    
         <div class="post-additional-info inline-items">
     
             {% if entry.isVotable %}
@@ -55,7 +53,7 @@
                 </div>    
             {% endif %}
     
-            <a href="#" class="post-add-icon inline-items">
+            <a href="/entries/{{ entry.id }}#comment-editor" class="post-add-icon inline-items">
                 <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
                 <span>{{ entry.commentCount }}</span>
             </a>
