@@ -2,14 +2,14 @@
     <article class="hentry post">
         <div class="post__author author vcard inline-items">
             
-            <img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}">
+            <a href="/users/{{ entry.author.name }}"><img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}"></a>
 
             <div class="author-date">
                 <a class="h6 post__author-name fn" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
                 <div class="post__date">
-                    <a href="/entries/{{ entry.id }}"><time class="published" datetime="{{ entry.createdAt }}">
+                    <time class="published" datetime="{{ entry.createdAt }}">
                         {{ entry.createdAt|floatformat:0 }}
-                    </time></a>
+                    </time>
                 </div>
             </div>
     
@@ -28,7 +28,7 @@
     
         </div>
     
-        <a href="#" data-toggle="modal" data-target="#blog-post-popup" class="h2 post-title">{{ entry.title }}</a>
+        <a href="/entries/{{ entry.id }}" class="h2 post-title">{{ entry.title }}</a>
     
         {{ entry.content|safe}}
 
@@ -53,7 +53,7 @@
                 </div>    
             {% endif %}
     
-            <a href="/entries/{{ entry.id }}#comment-editor" class="post-add-icon inline-items">
+            <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items">
                 <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
                 <span>{{ entry.commentCount }}</span>
             </a>

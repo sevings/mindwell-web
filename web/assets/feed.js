@@ -86,7 +86,8 @@ $("#post-comment").click(function() {
     $("#comment-editor").ajaxSubmit({
         resetForm: true,
         success: function(data) {
-            $("#comments").append(data)
+            var cmt = formatTimeHtml(data)
+            $("#comments").append(cmt)
         },
         error: function(data) {
             alert(data)
