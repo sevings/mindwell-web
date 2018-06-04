@@ -43,6 +43,7 @@ func main() {
 	router.GET("/profile/edit", meEditorHandler(mdw))
 	router.POST("/profile/save", meSaverHandler(mdw))
 	router.POST("/profile/avatar", avatarSaverHandler(mdw))
+	router.POST("/profile/cover", coverSaverHandler(mdw))
 
 	router.GET("/design", designEditorHandler(mdw))
 	router.POST("/design", designSaverHandler(mdw))
@@ -252,6 +253,14 @@ func avatarSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForwardToImages("PUT", "/users/me/avatar")
+		api.Redirect("/me")
+	}
+}
+
+func coverSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.MethodForwardToImages("PUT", "/users/me/cover")
 		api.Redirect("/me")
 	}
 }
