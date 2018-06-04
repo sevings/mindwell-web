@@ -72,6 +72,8 @@ func main() {
 	router.PUT("/relations/from/:id", proxyHandler(mdw))
 	router.DELETE("/relations/from/:id", proxyHandler(mdw))
 
+	router.NoRoute(error404Handler(mdw))
+
 	addr := mdw.ConfigString("listen_address")
 	srv := &http.Server{
 		Addr:    addr,
@@ -378,5 +380,13 @@ func meOnlineHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/users/me/online")
 		api.WriteResponse()
+	}
+}
+
+func error404Handler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.SetData("message", "Страница, которую вы искали, перемещена или никогда не существовала.")
+		api.WriteTemplate("error")
 	}
 }
