@@ -17,10 +17,10 @@
                 <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
                     <ul class="more-dropdown">
                         <li>
-                            <a href="/entries/{{ entry.id }}/edit">Редактировать запись</a>
+                            <a href="/entries/{{ entry.id }}/edit">Редактировать</a>
                         </li>
                         <li>
-                            <a href="#" onclick="deletePost({{ entry.id }});return false;">Удалить запись</a>
+                            <a href="#" onclick="deletePost({{ entry.id }});return false;">Удалить</a>
                         </li>
                     </ul>
                 </div>
@@ -30,8 +30,8 @@
     
         <a href="/entries/{{ entry.id }}" class="h2 post-title">{{ entry.title }}</a>
     
-        {{ entry.content|safe }}
-
+        <div>{{ entry.content|safe }}</div>
+        
         <div class="post-additional-info inline-items">
     
             {% if entry.isVotable %}

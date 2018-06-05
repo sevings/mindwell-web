@@ -286,6 +286,7 @@ func designSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
+		api.SetMe()
 		api.WriteTemplate("editor")
 	}
 }
@@ -302,6 +303,7 @@ func editorExistingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Get("/entries/" + ctx.Param("id"))
+		api.SetMe()
 		api.WriteTemplate("editor")
 	}
 }
