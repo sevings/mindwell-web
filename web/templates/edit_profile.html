@@ -24,5 +24,10 @@
             </select> <br/>
             <input type="submit" value="Сохранить" />
         </form>
+        {% if !account.verified %}
+            <p id="verify-email">Адрес почты не подтвержден. <a href="#">Выслать письмо повторно.</a></p>
+        {% endif %}
+        <script src="/assets/js/jquery-3.3.1.min.js"></script>
+        <script src="/assets/edit_profile.js"></script>
     </body>
 </html>
