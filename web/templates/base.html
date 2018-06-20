@@ -1,22 +1,137 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>{% block title %}Mindwell{% endblock %}</title>
-        <link rel="stylesheet" type="text/css" href="/assets/base.css">
-        {% block styles %}{% endblock %}
-    </head>
-    <body>
-        <a href="/live">Прямой эфир</a>
-        <a href="/friends">Подписки</a>
-        <a href="/me">{{ me.showName }}</a>
-        <a href="/post">Новая запись</a>
-        <a href="/logout">Выйти</a>
-        {% block heading %}{% endblock %}
-        {% block body %}{% endblock %}
-        <script src="/assets/js/jquery-3.3.1.min.js"></script>
-        <script src="/assets/js/jquery.form.min.js"></script>
-        <script src="/assets/base.js"></script>
-        {% block scripts %}{% endblock %}
-    </body>
+<html lang="ru">
+<head>
+
+	<!-- Required meta tags always come first -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+
+	<title>{% block title %}Mindwell{% endblock %}</title>
+
+{% include "favicons.html" %}
+
+	<!-- Main Font -->
+	<script src="/assets/olympus/js/webfontloader.min.js"></script>
+	<script>
+		WebFont.load({
+			google: {
+				families: ['Roboto:300,400,500,700:latin']
+			}
+		});
+	</script>
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" type="text/css" href="/assets/olympus/Bootstrap/dist/css/bootstrap-reboot.css">
+	<link rel="stylesheet" type="text/css" href="/assets/olympus/Bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/assets/olympus/Bootstrap/dist/css/bootstrap-grid.css">
+
+	<!-- Main Styles CSS -->
+	<link rel="stylesheet" type="text/css" href="/assets/olympus/css/main.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/olympus/css/fonts.min.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/base.css">
+    {% block styles %}{% endblock %}
+
+</head>
+<body>
+    <div id="header--standard" class="header--standard header--standard-dark">
+        <div class="container">
+            <div class="header--standard-wrap">
+                <a href="/live" class="logo">
+                    <div class="img-wrap">
+                        <img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus">
+                    </div>
+                    <div class="title-block">
+                        <h6 class="logo-title">mindwell</h6>
+                        <div class="sub-title">ДОМ МЫСЛЕЙ</div>
+                    </div>
+                </a>
+    
+                <a href="#" class="open-responsive-menu js-open-responsive-menu">
+                    <svg class="olymp-menu-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-menu-icon"></use></svg>
+                </a>
+    
+                <div class="nav nav-pills nav1 header-menu">
+                    <div class="mCustomScrollbar">
+                        <ul>
+                            <ul>
+                                <li class="nav-item">
+                                    <a href="/live" class="nav-link">В эфире</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/friends" class="nav-link">Подписки</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/users/{{ me.name }}" class="nav-link">{{ me.showName }}</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/post" class="nav-link">Новая запись</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/logout" class="nav-link">Выйти</a>
+                                </li>
+                                <li class="close-responsive-menu js-close-responsive-menu">
+                                    <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+                                </li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% block heading %}{% endblock %}
+    {% block body %}{% endblock %}
+ 
+    <a class="back-to-top" href="#">
+        <img src="/assets/olympus/svg-icons/back-to-top.svg" alt="arrow" class="back-icon">
+    </a>
+
+    <!-- JS Scripts -->
+    <script src="/assets/olympus/js/jquery-3.2.1.js"></script>
+    <script src="/assets/olympus/js/jquery.appear.js"></script>
+    <script src="/assets/olympus/js/jquery.mousewheel.js"></script>
+    <script src="/assets/olympus/js/perfect-scrollbar.js"></script>
+    <script src="/assets/olympus/js/jquery.matchHeight.js"></script>
+    <script src="/assets/olympus/js/svgxuse.js"></script>
+    <script src="/assets/olympus/js/imagesloaded.pkgd.js"></script>
+    <script src="/assets/olympus/js/Headroom.js"></script>
+    <script src="/assets/olympus/js/velocity.js"></script>
+    <script src="/assets/olympus/js/ScrollMagic.js"></script>
+    <script src="/assets/olympus/js/jquery.waypoints.js"></script>
+    <script src="/assets/olympus/js/jquery.countTo.js"></script>
+    <script src="/assets/olympus/js/popper.min.js"></script>
+    <script src="/assets/olympus/js/material.min.js"></script>
+    <script src="/assets/olympus/js/bootstrap-select.js"></script>
+    <script src="/assets/olympus/js/smooth-scroll.js"></script>
+    <script src="/assets/olympus/js/selectize.js"></script>
+    <script src="/assets/olympus/js/swiper.jquery.js"></script>
+    <script src="/assets/olympus/js/moment.js"></script>
+    <script src="/assets/olympus/js/daterangepicker.js"></script>
+    <script src="/assets/olympus/js/simplecalendar.js"></script>
+    <script src="/assets/olympus/js/fullcalendar.js"></script>
+    <script src="/assets/olympus/js/isotope.pkgd.js"></script>
+    <script src="/assets/olympus/js/ajax-pagination.js"></script>
+    <script src="/assets/olympus/js/Chart.js"></script>
+    <script src="/assets/olympus/js/chartjs-plugin-deferred.js"></script>
+    <script src="/assets/olympus/js/circle-progress.js"></script>
+    <script src="/assets/olympus/js/loader.js"></script>
+    <script src="/assets/olympus/js/run-chart.js"></script>
+    <script src="/assets/olympus/js/jquery.magnific-popup.js"></script>
+    <script src="/assets/olympus/js/jquery.gifplayer.js"></script>
+    <script src="/assets/olympus/js/mediaelement-and-player.js"></script>
+    <script src="/assets/olympus/js/mediaelement-playlist-plugin.min.js"></script>
+
+    <script src="/assets/olympus/js/base-init.js"></script>
+    <script defer src="/assets/olympus/fonts/fontawesome-all.js"></script>
+
+    <script src="/assets/olympus/Bootstrap/dist/js/bootstrap.bundle.js"></script>
+
+    <script src="/assets/js/jquery.form.min.js"></script>
+    <script src="/assets/base.js"></script>
+    {% block scripts %}{% endblock %}
+
+</body>
 </html>

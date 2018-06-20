@@ -1,28 +1,54 @@
-<html>
-	<head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="/assets/editor/css/editormd.min.css" />
-        <script src="/assets/js/jquery-3.3.1.min.js"></script>
-        <script src="/assets/editor/editormd.min.js"></script>
-        <script src="/assets/editor/languages/en.js"></script>
-        <script src="/assets/editor.js"></script>
-		<title>Mindwell</title>
-	</head>
-	<body>
-        <form style="margin: 3em auto; max-width: 800px;" name="editor" action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post">
-            <textarea name="title" style="width: 100%;" placeholder="Заголовок поста">{{ title }}</textarea>
-            <div id="editormd">
-                <textarea style="display:none;" required>{{ editContent }}</textarea>
+{% extends "base.html" %}
+{% block title %}Mindwell{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="/assets/editor/css/editormd.min.css" />
+{% endblock %}
+{% block scripts %}
+    <script src="/assets/editor/editormd.min.js"></script>
+    <script src="/assets/editor/languages/en.js"></script>
+    <script src="/assets/editor.js"></script>
+{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row">
+		<div class="col col-lg-8 col-md-12 col-sm-12 col-12">
+            <div class="ui-block">
+                <div class="ui-block-content">
+                    <div class="row">
+                        <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+                            <form name="editor" action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post">
+                                <textarea name="title" style="width: 100%;" placeholder="Заголовок поста">{{ title }}</textarea>
+                                <div id="editormd">
+                                    <textarea style="display:none;" required>{{ editContent }}</textarea>
+                                </div>
+
+                                <fieldset class="form-group label-floating is-select">
+                                    <label class="control-label">Пост будет виден</label>
+                                    <select class="selectpicker form-control" name="privacy">
+                                        <option value="all" {% if privacy == "all" %}selected{% endif %}>всем</option>
+                                        {% comment %} <option value="followers">только подписчикам</option> {% endcomment %}
+                                        <option value="me" {% if privacy == "me" %}selected{% endif %}>только мне</option>
+                                    </select>
+                                </fieldset>                
+
+                                <div class="switcher-block">
+                                    <div class="h6 title">Разрешить голосование</div>
+                                    <div class="togglebutton">
+                                        <label>
+                                            <input type="checkbox" name="isVotable" {% if !id || isVotable %}checked{% endif %}>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <input type="submit" class="btn btn-primary btn-md-2" value={% if id %}"Сохранить"{% else %}"Опубликовать"{% endif %} />
+                            </form>
+                            
+                        </div>
+                    </div>
+                </div>
             </div>
-            Пост будет виден 
-            <select name="privacy">
-                <option value="all" {% if privacy == "all" %}selected{% endif %}>всем</option>
-                {% comment %} <option value="followers">только подписчикам</option> {% endcomment %}
-                <option value="me" {% if privacy == "me" %}selected{% endif %}>только мне</option>
-            </select> 
-            <input type="checkbox" name="isVotable" {% if !id || isVotable %}checked{% endif %}> Включить голосование
-            <br/>
-            <input type="submit" value={% if id %}"Сохранить"{% else %}"Опубликовать"{% endif %} />
-        </form>
-    </body>
-</html>
+        </div>
+    </div>
+</div>
+{% endblock %}

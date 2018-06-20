@@ -1,35 +1,96 @@
-{% extends "feed.html" %}
+{% extends "base.html" %}
 {% block title %}{{ profile.showName }} в Mindwell{% endblock %}
-{% block styles %}
-<link rel="stylesheet" type="text/css" href="/assets/feed.css">
-{% endblock %}
 {% block scripts %}
     <script src="/assets/feed.js"></script>
     <script src="/assets/tlog.js"></script>
 {% endblock %}
 {% block heading %}
-    {% if profile.avatar %}<p><img src="{{ profile.avatar.x400 }}"></p>{% endif %}
-    <h1>{{ profile.showName }}</h1>
-    {% if profile.title %}<h2>{{ profile.title }}</h2>{% endif %}
-    {% if profile.isOnline %}<p>Сейчас онлайн</p>{% endif %}
-    <p>Карма: {{ profile.karma|default:0|floatformat:2 }}</p>
-    <p>Зарегистрирован <time class="lcase" datetime="{{ profile.createdAt }}"></time></p>
-    <p>Последний раз был <time class="lcase" datetime="{{ profile.lastSeenAt }}"></time></p>
-    <p>Приглашен пользователем <a href="/users/{{ profile.invitedBy.name }}">{{ profile.invitedBy.showName }}</a></p>
-    <p>{{ profile.country}}{% if profile.city %}, {{ profile.city }}{% endif %}</p>
-    {% if profile.counts.entries %}<p>Записи: {{ profile.counts.entries }}</p>{% endif %}
-    {% if profile.counts.comments %}<p>Комментарии: {{ profile.counts.comments }}</p>{% endif %}
-    {% if profile.counts.favorites %}<p>В избранном: {{ profile.counts.favorites }}</p>{% endif %}
-    {% if profile.counts.tags %}<p>Теги: {{ profile.counts.tags }}</p>{% endif %}
-    {% if profile.counts.followers %}<p><a href="/users/{{ profile.name }}/followers"><p>Подписчики: {{ profile.counts.followers }}</a></p>{% endif %}
-    {% if profile.counts.followings %}<p><a href="/users/{{ profile.name }}/followings">Подписки: {{ profile.counts.followings }}</a></p>{% endif %}
-    {% if profile.counts.ignored %}<p>{% if me.id == profile.id %}<a href="/me/ignored">{% endif %}
-        Заблокировано: {{ profile.counts.ignored }}{% if me.id == profile.id %}</a>{% endif %}</p>{% endif %}
-    {% if profile.counts.invited %}<p><a href="/users/{{ profile.name }}/invited">Приглашено: {{ profile.counts.invited }}</a></p>{% endif %}
+<div class="container">
+	<div class="row">
+		<div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+			<div class="ui-block">
+				<div class="top-header">
+					<div class="top-header-thumb">
+						<img src="{{ profile.cover }}" alt="cover" width="1920" height="640">
+					</div>
+					<div class="profile-section">
+						<div class="row">
+							<div class="col col-lg-5 col-md-5 col-sm-12 col-12">
+								<ul class="profile-menu">
+									<li>
+										<a href="/users/{{ profile.name }}" class="active">Тлог</a>
+									</li>
+								</ul>
+							</div>
+							<div class="col col-lg-5 ml-auto col-md-5 col-sm-12 col-12">
+								<ul class="profile-menu">
+                                    {% if profile.counts.followings %}
+                                        <li>
+                                            <a href="/users/{{ profile.name }}/followings">Подписки</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if profile.counts.followers %}
+                                        <li>
+                                            <a href="/users/{{ profile.name }}/followers">Подписчики</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if profile.counts.invited %}
+                                        <li>
+                                            <a href="/users/{{ profile.name }}/invited">Приглашенные</a>
+                                        </li>
+                                    {% endif %}
+								</ul>
+							</div>
+						</div>
+
+						<div class="control-block-button">
+                            {% if me.id != profile.id %}
+                                <a href="35-YourAccount-FriendsRequests.html" class="btn btn-control bg-blue">
+                                    <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
+                                </a>
+                            {% endif %}
+
+                            {% if me.id == profile.id %}
+                                <div class="btn btn-control bg-primary more">
+                                    <svg class="olymp-settings-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-settings-icon"></use></svg>
+
+                                    <ul class="more-dropdown more-with-triangle triangle-bottom-right">
+                                        <li>
+                                            <a href="#" data-toggle="modal" data-target="#update-avatar">Обновить аватар</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" data-toggle="modal" data-target="#update-cover">Обновить обложку</a>
+                                        </li>
+                                        <li>
+                                            <a href="/profile/edit">Редактировать</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {% endif %}
+						</div>
+					</div>
+					<div class="top-header-author">
+						<a href="/users/{{ profile.name }}" class="author-thumb">
+							<img src="{{ profile.avatar.x124 }}" alt="{{ profile.showName }}" width="124" height="124">
+						</a>
+						<div class="author-content">
+							<a href="/users/{{ profile.name }}" class="h4 author-name">{{ profile.showName }}</a>
+							<div class="country">
+                                {% if profile.isOnline %}
+                                    Онлайн
+                                {% else %}
+                                    Был{% if profile.gender == "female" %}а{% endif %} в сети <time class="lcase" datetime="{{ profile.lastSeenAt }}">{{ profile.lastSeenAt|floatformat:0 }}</time>
+                                {% endif %}
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% comment %} 
     {% if me.id == profile.id %}
-        <a href="/profile/edit">Редактировать</a> 
-        <a href="/design">Дизайн</a>
-        <br>
         <form id="avatar-editor" action="/profile/avatar" method="post" enctype="multipart/form-data">
             <input name="file" type="file" accept="image/*" required>
             <input type="submit" value="Отправить" />
@@ -58,4 +119,178 @@
             </button>
         </p>
     {% endif %}
+{% endcomment %}
+{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row">
+		<div class="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
+			<div id="feed">
+                {% if entries %}
+                    {% include "tlog_page.html" %}
+                {% else %}
+                    <h3>Нет записей</h3>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col col-xl-3 order-xl-1 col-lg-6 order-lg-2 col-md-6 col-sm-12 col-12">
+			<div class="ui-block">
+				<div class="ui-block-title">
+					<h6 class="title">Информация</h6>
+				</div>
+				<div class="ui-block-content">
+					<ul class="widget w-personal-info">
+						<li>
+							<span class="text">{{ profile.title }}</span>
+                        </li>
+                        {% if profile.gender != "not set" %}
+                            <li>
+                                <span class="title">Пол:</span>
+                                <span class="text">{% if profile.gender == "male" %}Мужской{% else %}Женский{% endif %}</span>
+                            </li>                           
+                        {% endif %}
+                        {% if profile.ageLowerBound %}
+                            <li>
+                                <span class="title">Возраст:</span>
+                                <span class="text">{{ profile.ageLowerBound }}—{{ profile.ageUpperBound }} лет</span>
+                            </li>
+                        {% endif %}
+                        {% if profile.country %}
+                            <li>
+                                <span class="title">Страна:</span>
+                                <span class="text">{{ profile.country }}</span>
+                            </li>
+                        {% endif %}
+                        {% if profile.city %}
+                            <li>
+                                <span class="title">Город:</span>
+                                <span class="text">{{ profile.city }}</span>
+                            </li>
+                        {% endif %}
+						<li>
+							<span class="title">С нами с:</span>
+							<span class="text"><time datetime="{{ profile.createdAt }}">{{ profile.createdAt|floatformat:0 }}</time></span>
+                        </li>
+						<li>
+                            <span class="title">Приглашен{% if profile.gender == "female" %}а{% endif %}:</span>
+                            <a href="/users/{{ profile.invitedBy.name }}" class="text">{{ profile.invitedBy.showName }}</a>
+                        </li>
+						<li>
+							<span class="title">Карма:</span>
+							<span class="text">{{ profile.karma|default:0|floatformat:2 }}</span>
+                        </li>
+                        {% if profile.counts.entries %}
+                            <li>
+                                <span class="title">Записи:</span>
+                                <span class="text">{{ profile.counts.entries }}</span>
+                            </li>
+                        {% endif %}
+                        {% if profile.counts.comments %}
+                            <li>
+                                <span class="title">Комментарии:</span>
+                                <span class="text">{{ profile.counts.comments }}</span>
+                            </li>
+                        {% endif %}
+                        {% if profile.counts.favorites %}
+                            <li>
+                                <span class="title">В избранном:</span>
+                                <span class="text">{{ profile.counts.favorites }}</span>
+                            </li>
+                        {% endif %}
+                        {% if profile.counts.tags %}
+                            <li>
+                                <span class="title">Теги:</span>
+                                <span class="text">{{ profile.counts.tags }}</span>
+                            </li>
+                        {% endif %}
+                        {% if profile.counts.followers %}
+                            <li>
+                                <a href="/users/{{ profile.name }}/followers" class="title">Подписчики:</a>
+                                <a href="/users/{{ profile.name }}/followers" class="text">{{ profile.counts.followers }}</a>
+                            </li>
+                        {% endif %}
+                        {% if profile.counts.followings %}
+                            <li>
+                                <a href="/users/{{ profile.name }}/followings" class="title">Подписчики:</a>
+                                <a href="/users/{{ profile.name }}/followings" class="text">{{ profile.counts.followings }}</a>
+                            </li>
+                        {% endif %}
+                        {% if profile.counts.ignored %}
+                            <li>
+                            {% if me.id == profile.id %}
+                                <a href="/users/{{ profile.name }}/ignored" class="title">Подписчики:</a>
+                                <a href="/users/{{ profile.name }}/ignored" class="text">{{ profile.counts.ignored }}</a>
+                            {% else %}
+                                <span class="title">Подписчики:</span>
+                                <span class="text">{{ profile.counts.ignored }}</span>
+                            {% endif %}
+                            </li>
+                        {% endif %}
+                        {% if profile.counts.invited %}
+                            <li>
+                                <a href="/users/{{ profile.name }}/invited" class="title">Приглашенные:</a>
+                                <a href="/users/{{ profile.name }}/invited" class="text">{{ profile.counts.invited }}</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="update-avatar" tabindex="-1" role="dialog" aria-labelledby="update-avatar" aria-hidden="true">
+	<div class="modal-dialog window-popup edit-widget" role="document">
+		<div class="modal-content">
+			<a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+				<svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+			</a>
+
+			<div class="modal-header">
+				<h6 class="title">Загрузить новый аватар</h6>
+            </div>
+
+			<div class="modal-body">
+                <form id="avatar-editor" action="/profile/avatar" method="post" enctype="multipart/form-data">
+                    <div class="file-upload">
+                        <label for="avatar-file" class="file-upload__label">Выбрать файл</label>
+                        <input id="avatar-file" class="file-upload__input" type="file" name="file" accept="image/jpeg, image/png, image/gif" required>
+                    </div>
+                    <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
+                    <input type="submit" class="btn btn-primary btn-lg full-width" value="Загрузить" />
+                </form>
+
+		    </div>
+		</div>
+
+	</div>
+</div>
+
+<div class="modal fade" id="update-cover" tabindex="-1" role="dialog" aria-labelledby="update-cover" aria-hidden="true">
+	<div class="modal-dialog window-popup edit-widget" role="document">
+		<div class="modal-content">
+			<a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+				<svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+			</a>
+
+			<div class="modal-header">
+				<h6 class="title">Загрузить новую обложку профиля</h6>
+            </div>
+
+			<div class="modal-body">
+                <form id="cover-editor" action="/profile/cover" method="post" enctype="multipart/form-data">
+                    <div class="file-upload">
+                        <label for="cover-file" class="file-upload__label">Выбрать файл</label>
+                        <input id="cover-file" class="file-upload__input" type="file" name="file" accept="image/jpeg, image/png, image/gif" required>
+                    </div>
+                    <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
+                    <input type="submit" class="btn btn-primary btn-lg full-width" value="Загрузить" />
+                </form>
+
+		    </div>
+		</div>
+
+	</div>
+</div>
+
 {% endblock %}

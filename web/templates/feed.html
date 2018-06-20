@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% block styles %}<link rel="stylesheet" type="text/css" href="/assets/feed.css">{% endblock %}
 {% block scripts %}
     <script src="/assets/feed.js"></script>
 {% endblock %}
 {% block body %}
-<div id="feed">
-    {% if entries %}
-        {% include "feed_page.html" %}
-    {% else %}
-        <h3>Нет записей</h3>
-    {% endif %}
+<div class="container">
+	<div id="feed" class="row sorting-container" data-layout="masonry">
+        {% if entries %}
+            {% include "feed_page.html" %}
+        {% else %}
+            <h3>Нет записей</h3>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

@@ -1,11 +1,17 @@
 {% extends "entry_base.html" %}
 {% block comments %}
-    <div id="comments">
+    <a name="comments"></a>
+    <ul id="comments" class="comments-list">
         {% include "comments_page.html" with data = entry.comments.data %}
-    </div>
-    <br/>
-    <form id="comment-editor" action="/entries/{{entry.id}}/comments" method="post" enctype="multipart/form-data">
-        <textarea name="content" cols="80" placeholder="Комментарий" required></textarea><br/>
-        <input type="submit" value="Отправить" />
+    </ul>
+    <a name="comment-editor"></a>
+    <form id="comment-editor" class="comment-form inline-items" action="/entries/{{entry.id}}/comments" method="post" enctype="multipart/form-data">
+        <div class="post__author author vcard inline-items">
+            <img src="{{ me.avatar.x42 }}" alt="{{ me.showName }}">
+            <div class="form-group with-icon-right ">
+                <textarea class="form-control" name="content" placeholder="Написать комментарий…" required></textarea>
+            </div>
+        </div>
+        <button id="post-comment" class="btn btn-md-2 btn-primary">Отправить</button>
     </form>
 {% endblock comments %}

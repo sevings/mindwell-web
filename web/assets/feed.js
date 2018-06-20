@@ -1,81 +1,63 @@
 function vote(id, positive) {
-    var req = new XMLHttpRequest()
-    req.open('PUT', '/entries/' + id + '/vote?positive=' + positive, true)
-    req.onreadystatechange = updateRating
-    req.send()
+    var post = $("#post" + id)
+    var rating = $(".post-rating", post)
+    if(rating.data("enabled") == false)
+        return
 
-    var post = document.getElementById('post' + id)
-    var up = post.getElementsByClassName('up_vote').item(0)
-    var down = post.getElementsByClassName('down_vote').item(0)
-    up.disabled = down.disabled = true
+    rating.data("enabled", true)
 
-    function updateRating() {
-        if(req.readyState != XMLHttpRequest.DONE)
-            return
+    var vote = rating.data("vote")
+    var delVote = ((positive && vote == "pos") || (!positive && vote == "neg"))
 
-        var resp = JSON.parse(req.responseText)
-        if(req.status != 200) {
+    $.ajax({
+        url: "/entries/" + id + "/vote?positive=" + positive,
+        method: delVote ? "DELETE" : "PUT",
+        dataType: "json",
+        success: function(resp) {
+            var count = (resp.votes || 0)
+            $(".post-up-count", rating).text(count)
+            $(".post-down-count", rating).text(count)
+            
+            var rate = (resp.rating || 0)
+            rating.attr("title", "Рейтинг: " + Math.round(rate))
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
             alert(resp.message)
-            var status = post.data.vote
-            up.disabled = (status == 'pos')
-            down.disabled = (status == 'neg')
-            return
-        }
-
-        up.disabled = positive
-        down.disabled = !positive
-
-        var rating = post.getElementsByClassName('rating').item(0)
-
-        var count = (resp.votes || 0)
-        rating.innerHTML = (count > 0 ? '+' + count : count)
-
-        var rate = (resp.rating || 0)
-        rating.setAttribute("title", "Рейтинг: " + Math.round(rate))
-    }
+        },
+        complete: function() {
+            rating.data("enabled", true)
+        },
+    })
 }
 
 function deletePost(id) {
     if(!confirm("Пост будет удален навсегда."))
         return
 
-    var req = new XMLHttpRequest()
-    req.open('DELETE', '/entries/' + id, true)
-    req.onreadystatechange = onReadyStateChange
-    req.send()
-
-    function onReadyStateChange() {
-        if(req.readyState != XMLHttpRequest.DONE)
-            return
-
-        if(req.status != 200) {
+    $.ajax({
+        url: "/entries/" + id,
+        method: "DELETE",
+        success: function(resp) {
+            if(document.location.pathname == "/entries/" + id)
+                window.history.back();
+            else
+                $("#post" + id).remove()
+        },
+        error: function(req) {
             var resp = JSON.parse(req.responseText)
             alert(resp.message)
-            return
-        }
-
-        if(document.location.pathname == "/entries/" + id)
-            document.location.assign("/me")
-        else {
-            var date = document.getElementById("post-date" + id)
-            date.remove()
-
-            var post = document.getElementById("post" + id)
-            post.remove()
-        }
-    }
-}
-
-function editPost(id) {
-    document.location.assign("/entries/" + id + "/edit")
+        },
+    })
 }
 
 function loadComments(href) {
     $.ajax({
         url: href,
         success: function(data) {
-            $("a.next").remove()
-            $("#comments").prepend(data)
+            $("a.more-comments").remove()
+            var comments = formatTimeHtml(data)
+            $("#comments").prepend(comments)
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
@@ -87,14 +69,10 @@ function loadComments(href) {
 function loadFeed(href) {
     $.ajax({
         url: href,
+        dataType: "html",
         success: function(data) {
-            $("a.next").remove()
-
-            var template = document.createElement('template');
-            template.innerHTML = data;
-            var feed = template.content.childNodes;
-            formatTimeElements(feed)
-
+            $(".feed-next").remove()
+            var feed = formatTimeHtml(data)
             $("#feed").append(feed)
         },
         error: function(req) {
@@ -104,12 +82,17 @@ function loadFeed(href) {
     })
 }
 
-$("#comment-editor").ajaxForm({
-    resetForm: true,
-    success: function(data) {
-        $("#comments").append(data)
-    },
-    error: function(data) {
-        alert(data)
-    },
+$("#post-comment").click(function() { 
+    $("#comment-editor").ajaxSubmit({
+        resetForm: true,
+        success: function(data) {
+            var cmt = formatTimeHtml(data)
+            $("#comments").append(cmt)
+        },
+        error: function(data) {
+            alert(data)
+        },
+    })
+
+    return false;
 })

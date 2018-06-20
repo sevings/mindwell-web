@@ -1,11 +1,12 @@
 function setOnline() {
     function sendRequest() {
-        var req = new XMLHttpRequest()
-        req.open('PUT', '/me/online', true)
-        req.send()        
+        $.ajax({
+            url: "/me/online",
+            method: "PUT"
+        })    
     }
 
-    setInterval(sendRequest, 300000)
+    setInterval(sendRequest, 180000)
 
     sendRequest()
 }
@@ -84,6 +85,14 @@ function formatTimeElements(context) {
         var text = formatDate(unix)
         $(this).text(text)
     })    
+}
+
+function formatTimeHtml(html) {
+    var template = document.createElement('template');
+    template.innerHTML = html;
+    var elements = template.content.childNodes;
+    formatTimeElements(elements)
+    return elements
 }
 
 $(formatTimeElements)

@@ -1,23 +1,64 @@
-<div class="post" id="post{{entry.id}}" data-vote="{{ entry.vote }}">
-    <h2>{{ entry.title }}</h2>
-    {{ entry.content|safe }}
-    <div class="footer">
-        {% if entry.isVotable %}
-            <button class="down_vote" onclick="vote({{ entry.id }}, false)" 
-                {% if entry.vote == "neg" || entry.vote == "ban" %}disabled{% endif %}>-</button>
-            <span class="rating" title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
-                {% if entry.votes > 0 %}+{% endif %}{{ entry.votes|default: 0 }}</span>
-            <button class="up_vote" onclick="vote({{ entry.id }}, true)" 
-                {% if entry.vote == "pos" || entry.vote == "ban" %}disabled{% endif %}>+</button>
-        {% endif %}
-        {% if entry.commentCount %}
-            <span class="comments_count">{{ entry.commentCount }} комм.</span>
-        {% endif %}
-        <a href="/users/{{ entry.author.name }}" class="author">{{ entry.author.showName }}</a>
-    </div>
-    {% if entry.author.id == me.id %}
-        <button onclick="editPost({{entry.id }})">Редактировать</button>
-        <button onclick="deletePost({{ entry.id }})">Удалить</button>
-    {% endif %}
+<div class="ui-block">
+    <article class="hentry post">
+        <div class="post__author author vcard inline-items">
+            
+            <a href="/users/{{ entry.author.name }}"><img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}"></a>
+
+            <div class="author-date">
+                <a class="h6 post__author-name fn" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
+                <div class="post__date">
+                    <time class="published" datetime="{{ entry.createdAt }}">
+                        {{ entry.createdAt|floatformat:0 }}
+                    </time>
+                </div>
+            </div>
+    
+            {% if entry.author.id == me.id %}
+                <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
+                    <ul class="more-dropdown">
+                        <li>
+                            <a href="/entries/{{ entry.id }}/edit">Редактировать</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="deletePost({{ entry.id }});return false;">Удалить</a>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+    
+        </div>
+    
+        <a href="/entries/{{ entry.id }}" class="h2 post-title">{{ entry.title }}</a>
+    
+        <div>{{ entry.content|safe }}</div>
+        
+        <div class="post-additional-info inline-items">
+    
+            {% if entry.isVotable %}
+                <div class="post-rating" data-toggle="tooltip" data-placement="top" data-enabled="true" data-vote="{{ entry.vote }}" 
+                        title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
+                    {% if entry.vote != "ban" %}
+                        <a href="#" class="post-add-icon inline-items" onclick="vote({{ entry.id }}, false);return false;" >
+                    {% endif %}
+                        <svg class="olymp-heart-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-heart-icon"></use></svg>
+                        <span class="post-down-count">{{ entry.votes|default:0 }}</span>
+                    {% if entry.vote != "ban" %}</a>{% endif %}
+                    
+                    {% if entry.vote != "ban" %}
+                        <a href="#" class="post-add-icon inline-items" onclick="vote({{ entry.id }}, true);return false;" >
+                    {% endif %}
+                        <svg class="olymp-heart-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-heart-icon"></use></svg>
+                        <span class="post-up-count">{{ entry.votes|default:0 }}</span>
+                    {% if entry.vote != "ban" %}</a>{% endif %}
+                </div>    
+            {% endif %}
+    
+            <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items">
+                <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
+                <span>{{ entry.commentCount }}</span>
+            </a>
+    
+        </div>
+    </article>
     {% block comments %}{% endblock comments %}
 </div>
