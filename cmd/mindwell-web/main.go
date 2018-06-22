@@ -213,9 +213,11 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		path := "/users/byName/" + ctx.Param("name") + "/" + ctx.Param("relation")
+		name := ctx.Param("name")
+		path := "/users/byName/" + name + "/" + ctx.Param("relation")
 		api.ForwardTo(path)
 		api.SetMe()
+		api.SetField("profile", "/users/byName/"+name)
 		api.WriteTemplate("users")
 	}
 }
