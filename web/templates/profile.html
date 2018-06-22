@@ -62,7 +62,7 @@
                                             <a href="#" data-toggle="modal" data-target="#update-cover">Обновить обложку</a>
                                         </li>
                                         <li>
-                                            <a href="/profile/edit">Редактировать</a>
+                                            <a href="#" data-toggle="modal" data-target="#edit-profile">Редактировать</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -90,12 +90,6 @@
 	</div>
 </div>
 {% comment %} 
-    {% if me.id == profile.id %}
-        <form id="avatar-editor" action="/profile/avatar" method="post" enctype="multipart/form-data">
-            <input name="file" type="file" accept="image/*" required>
-            <input type="submit" value="Отправить" />
-        </form>
-    {% endif %}
     {% if me.id != profile.id %}
         <p>
             <button type="button" id="permit_rel" onclick="permitFriend({{ profile.id }})" {% if profile.relations.toMe != "requested" %}hidden{% endif %}>Принять заявку</button>
@@ -125,58 +119,117 @@
 
 {% block content %}{% endblock %}
 
-<div class="modal fade" id="update-avatar" tabindex="-1" role="dialog" aria-labelledby="update-avatar" aria-hidden="true">
-	<div class="modal-dialog window-popup edit-widget" role="document">
-		<div class="modal-content">
-			<a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
-				<svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
-			</a>
+{% if me.id == profile.id %}
+    <div class="modal fade" id="update-avatar" tabindex="-1" role="dialog" aria-labelledby="update-avatar" aria-hidden="true">
+        <div class="modal-dialog window-popup edit-widget" role="document">
+            <div class="modal-content">
+                <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                    <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+                </a>
 
-			<div class="modal-header">
-				<h6 class="title">Загрузить новый аватар</h6>
+                <div class="modal-header">
+                    <h6 class="title">Загрузить новый аватар</h6>
+                </div>
+
+                <div class="modal-body">
+                    <form id="avatar-editor" action="/profile/avatar" method="post" enctype="multipart/form-data">
+                        <div class="file-upload">
+                            <label for="avatar-file" class="file-upload__label">Выбрать файл</label>
+                            <input id="avatar-file" class="file-upload__input" type="file" name="file" accept="image/jpeg, image/png, image/gif" required>
+                        </div>
+                        <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
+                        <input type="submit" class="btn btn-primary btn-lg full-width" value="Загрузить" />
+                    </form>
+
+                </div>
             </div>
 
-			<div class="modal-body">
-                <form id="avatar-editor" action="/profile/avatar" method="post" enctype="multipart/form-data">
-                    <div class="file-upload">
-                        <label for="avatar-file" class="file-upload__label">Выбрать файл</label>
-                        <input id="avatar-file" class="file-upload__input" type="file" name="file" accept="image/jpeg, image/png, image/gif" required>
-                    </div>
-                    <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
-                    <input type="submit" class="btn btn-primary btn-lg full-width" value="Загрузить" />
-                </form>
+        </div>
+    </div>
 
-		    </div>
-		</div>
+    <div class="modal fade" id="update-cover" tabindex="-1" role="dialog" aria-labelledby="update-cover" aria-hidden="true">
+        <div class="modal-dialog window-popup edit-widget" role="document">
+            <div class="modal-content">
+                <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                    <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+                </a>
 
-	</div>
-</div>
+                <div class="modal-header">
+                    <h6 class="title">Загрузить новую обложку профиля</h6>
+                </div>
 
-<div class="modal fade" id="update-cover" tabindex="-1" role="dialog" aria-labelledby="update-cover" aria-hidden="true">
-	<div class="modal-dialog window-popup edit-widget" role="document">
-		<div class="modal-content">
-			<a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
-				<svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
-			</a>
+                <div class="modal-body">
+                    <form id="cover-editor" action="/profile/cover" method="post" enctype="multipart/form-data">
+                        <div class="file-upload">
+                            <label for="cover-file" class="file-upload__label">Выбрать файл</label>
+                            <input id="cover-file" class="file-upload__input" type="file" name="file" accept="image/jpeg, image/png, image/gif" required>
+                        </div>
+                        <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
+                        <input type="submit" class="btn btn-primary btn-lg full-width" value="Загрузить" />
+                    </form>
 
-			<div class="modal-header">
-				<h6 class="title">Загрузить новую обложку профиля</h6>
+                </div>
             </div>
 
-			<div class="modal-body">
-                <form id="cover-editor" action="/profile/cover" method="post" enctype="multipart/form-data">
-                    <div class="file-upload">
-                        <label for="cover-file" class="file-upload__label">Выбрать файл</label>
-                        <input id="cover-file" class="file-upload__input" type="file" name="file" accept="image/jpeg, image/png, image/gif" required>
-                    </div>
-                    <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
-                    <input type="submit" class="btn btn-primary btn-lg full-width" value="Загрузить" />
-                </form>
+        </div>
+    </div>
 
-		    </div>
-		</div>
+    <div class="modal fade" id="edit-profile" tabindex="-1" role="dialog" aria-labelledby="edit-profile" aria-hidden="true">
+        <div class="modal-dialog window-popup edit-widget" role="document">
+            <div class="modal-content">
+                <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                    <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+                </a>
 
-	</div>
-</div>
+                <div class="modal-header">
+                    <h6 class="title">Редактировать профиль</h6>
+                </div>
+
+                <div class="modal-body">
+                    <form name="profile-editor" action="/profile/save" method="post" enctype="multipart/form-data">
+
+                        <label class="control-label">Краткая информация</label>
+                        <textarea class="form-control" data-toggle="tooltip" data-placement="top" title="Не более 500 символов" 
+                            name="title">{{ me.title }}</textarea>
+
+                        <label class="control-label">Имя</label>
+                        <input class="form-control" data-toggle="tooltip" data-placement="top" title="Не более 20 символов" 
+                            type="text" name="showName" value="{{ me.showName }}" placeholder="{{ me.name }}" required>
+
+                        <label class="control-label">Пол</label>
+                        <select class="selectpicker form-control" name="gender">
+                            <option value="not set" {% if me.gender == "not set" %}selected{% endif %}>не указан</option>
+                            <option value="female" {% if me.gender == "female" %}selected{% endif %}>женский</option>
+                            <option value="male" {% if me.gender == "male" %}selected{% endif %}>мужской</option>
+                        </select>
+
+                        <label class="control-label">Страна</label>
+                        <input class="form-control" data-toggle="tooltip" data-placement="top" title="Не более 50 символов" 
+                            type="text" name="country" value="{{ me.country }}">
+
+                        <label class="control-label">Город</label>
+                        <input class="form-control" data-toggle="tooltip" data-placement="top" title="Не более 50 символов" 
+                            type="text" name="city" value="{{ me.city }}">
+
+                        {% comment %} <input type="checkbox" name="isDaylog" {% if isDaylog %}checked{% endif %}> Тлогодень<br /> 
+                        <input type="checkbox" name="showInTops" {% if showInTops %}checked{% endif %}> Разрешить показывать в топах<br />  {% endcomment %}
+                       
+                        <label class="control-label">Приватность тлога</label>
+                        <select class="selectpicker form-control" name="privacy">
+                            <option value="all" {% if me.privacy == "all" %}selected{% endif %}>открыт для всех</option>
+                            <option value="followers" {% if me.privacy == "followers" %}selected{% endif %}>открыт только подписчикам</option>
+                        </select>
+
+                        <input type="submit" class="btn btn-primary btn-lg full-width" value="Сохранить" />
+                    </form>
+
+                    {% if !me.account.verified %}
+                        <p id="verify-email">Адрес почты не подтвержден. <a href="#">Выслать письмо повторно.</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 
 {% endblock %}

@@ -40,7 +40,6 @@ func main() {
 	router.GET("/me", meHandler(mdw))
 	router.GET("/me/:relation", meUsersHandler(mdw))
 
-	router.GET("/profile/edit", meEditorHandler(mdw))
 	router.POST("/profile/save", meSaverHandler(mdw))
 	router.POST("/profile/avatar", avatarSaverHandler(mdw))
 	router.POST("/profile/cover", coverSaverHandler(mdw))
@@ -238,14 +237,6 @@ func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 
 	return feedHandler(mdw, "/entries/users/me", "/me", "tlog", "tlog_page", clbk)
-}
-
-func meEditorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.Get("/users/me")
-		api.WriteTemplate("edit_profile")
-	}
 }
 
 func meSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
