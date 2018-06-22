@@ -12,3 +12,7 @@ body .header--standard {
     left: 0px;
     padding: 0px;
 }
+
+.hcenter {
+    margin: auto;
+}

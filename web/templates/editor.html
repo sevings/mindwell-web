@@ -1,26 +1,33 @@
 {% extends "base.html" %}
-{% block title %}Mindwell{% endblock %}
+{% block title %}Редактор поста{% endblock %}
 {% block styles %}
     <link rel="stylesheet" href="/assets/editor/css/editormd.min.css" />
 {% endblock %}
+{% comment %}
 {% block scripts %}
     <script src="/assets/editor/editormd.min.js"></script>
     <script src="/assets/editor/languages/en.js"></script>
     <script src="/assets/editor.js"></script>
 {% endblock %}
+{% endcomment %}
 {% block body %}
 <div class="container">
 	<div class="row">
-		<div class="col col-lg-8 col-md-12 col-sm-12 col-12">
+		<div class="col col-lg-8 col-md-12 col-sm-12 col-12 hcenter">
             <div class="ui-block">
                 <div class="ui-block-content">
                     <div class="row">
                         <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 
                             <form name="editor" action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post">
-                                <textarea name="title" style="width: 100%;" placeholder="Заголовок поста">{{ title }}</textarea>
-                                <div id="editormd">
-                                    <textarea style="display:none;" required>{{ editContent }}</textarea>
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="2" cols="80" 
+                                        name="title" placeholder="Заголовок поста">{{ title }}</textarea>
+                                </div>
+
+                                <div id="editormd" class="form-group">
+                                    <textarea class="form-control" rows="20" cols="80" 
+                                        name="content" placeholder="Текст поста" required>{{ editContent }}</textarea>
                                 </div>
 
                                 <fieldset class="form-group label-floating is-select">
