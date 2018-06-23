@@ -187,11 +187,10 @@
                     <form name="profile-editor" action="/profile/save" method="post" enctype="multipart/form-data">
 
                         <label class="control-label">Краткая информация</label>
-                        <textarea class="form-control" data-toggle="tooltip" data-placement="top" title="Не более 500 символов" 
-                            name="title">{{ me.title }}</textarea>
+                        <textarea class="form-control" maxlength="500" name="title">{{ me.title }}</textarea>
 
                         <label class="control-label">Имя</label>
-                        <input class="form-control" data-toggle="tooltip" data-placement="top" title="Не более 20 символов" 
+                        <input class="form-control" maxlength="20"
                             type="text" name="showName" value="{{ me.showName }}" placeholder="{{ me.name }}" required>
 
                         <label class="control-label">Пол</label>
@@ -202,12 +201,10 @@
                         </select>
 
                         <label class="control-label">Страна</label>
-                        <input class="form-control" data-toggle="tooltip" data-placement="top" title="Не более 50 символов" 
-                            type="text" name="country" value="{{ me.country }}">
+                        <input class="form-control" maxlength="50" type="text" name="country" value="{{ me.country }}">
 
                         <label class="control-label">Город</label>
-                        <input class="form-control" data-toggle="tooltip" data-placement="top" title="Не более 50 символов" 
-                            type="text" name="city" value="{{ me.city }}">
+                        <input class="form-control" maxlength="50" type="text" name="city" value="{{ me.city }}">
 
                         {% comment %} <input type="checkbox" name="isDaylog" {% if isDaylog %}checked{% endif %}> Тлогодень<br /> 
                         <input type="checkbox" name="showInTops" {% if showInTops %}checked{% endif %}> Разрешить показывать в топах<br />  {% endcomment %}
