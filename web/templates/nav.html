@@ -1,0 +1,14 @@
+{% if hasBefore || hasAfter %}
+    <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 sorting-item">
+        <nav aria-label="Навигация по страницам">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if !hasAfter %}disabled{% endif %}">
+                    <a class="page-link" href="{{ afterHref }}">Новее</a>
+                </li>
+                <li class="page-item {% if !hasBefore %}disabled{% endif %}">
+                    <a class="page-link" href="{{ beforeHref }}">Старее</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+{% endif %}

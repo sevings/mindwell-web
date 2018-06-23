@@ -66,22 +66,6 @@ function loadComments(href) {
     })
 }
 
-function loadFeed(href) {
-    $.ajax({
-        url: href,
-        dataType: "html",
-        success: function(data) {
-            $(".feed-next").remove()
-            var feed = formatTimeHtml(data)
-            $("#feed").append(feed)
-        },
-        error: function(req) {
-            var resp = JSON.parse(req.responseText)
-            alert(resp.message)
-        },
-    })
-}
-
 $("#post-comment").click(function() { 
     $("#comment-editor").ajaxSubmit({
         resetForm: true,
