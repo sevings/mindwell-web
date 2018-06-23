@@ -8,7 +8,7 @@
     <form id="comment-editor" class="comment-form inline-items" action="/entries/{{entry.id}}/comments" method="post" enctype="multipart/form-data">
         <div class="post__author author vcard inline-items">
             <img src="{{ me.avatar.x42 }}" alt="{{ me.showName }}">
-            <div class="form-group with-icon-right ">
+            <div class="form-group">
                 <textarea class="form-control" name="content" placeholder="Написать комментарий…" required></textarea>
             </div>
         </div>
