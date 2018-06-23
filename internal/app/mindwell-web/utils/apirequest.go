@@ -333,6 +333,9 @@ func (api *APIRequest) WriteTemplate(name string) {
 
 func (api *APIRequest) WriteResponse() {
 	jsonData := api.readResponse()
+	if api.resp == nil {
+		return
+	}
 
 	for k, vv := range api.resp.Header {
 		for _, v := range vv {
