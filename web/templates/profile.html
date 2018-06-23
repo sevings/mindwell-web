@@ -18,7 +18,7 @@
 							<div class="col col-lg-5 col-md-5 col-sm-12 col-12">
 								<ul class="profile-menu">
 									<li>
-										<a href="/users/{{ profile.name }}" class="active">Тлог</a>
+										<a href="/users/{{ profile.name }}" {% if !relation %}class="active"{% endif %}>Тлог</a>
 									</li>
 								</ul>
 							</div>
@@ -26,17 +26,17 @@
 								<ul class="profile-menu">
                                     {% if profile.counts.followings %}
                                         <li>
-                                            <a href="/users/{{ profile.name }}/followings">Подписки</a>
+                                            <a href="/users/{{ profile.name }}/followings" {% if relation == "followings" %}class="active"{% endif %}>Подписки</a>
                                         </li>
                                     {% endif %}
                                     {% if profile.counts.followers %}
                                         <li>
-                                            <a href="/users/{{ profile.name }}/followers">Подписчики</a>
+                                            <a href="/users/{{ profile.name }}/followers" {% if relation == "followers" %}class="active"{% endif %}>Подписчики</a>
                                         </li>
                                     {% endif %}
                                     {% if profile.counts.invited %}
                                         <li>
-                                            <a href="/users/{{ profile.name }}/invited">Приглашенные</a>
+                                            <a href="/users/{{ profile.name }}/invited" {% if relation == "invited" %}class="active"{% endif %}>Приглашенные</a>
                                         </li>
                                     {% endif %}
 								</ul>
