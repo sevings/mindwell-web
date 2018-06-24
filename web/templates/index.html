@@ -84,12 +84,12 @@
 				<!-- Nav tabs -->
 				<ul class="nav nav-tabs" role="tablist">
 					<li class="nav-item">
-						<a class="nav-link active" data-toggle="tab" href="#home" role="tab">
+						<a class="nav-link active" data-toggle="tab" href="#login" role="tab">
 							<svg class="olymp-login-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-login-icon"></use></svg>
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#profile" role="tab">
+						<a class="nav-link" data-toggle="tab" href="#register" role="tab">
 							<svg class="olymp-register-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-register-icon"></use></svg>
 						</a>
 					</li>
@@ -97,7 +97,27 @@
 			
 				<!-- Tab panes -->
 				<div class="tab-content">
-					<div class="tab-pane active" id="home" role="tabpanel" data-mh="log-tab">
+					<div class="tab-pane active" id="login" role="tabpanel" data-mh="log-tab">
+						<div class="title h6">Войти в аккаунт</div>
+						<form class="content" action="/login" method="post">
+							<div class="row">
+								<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+									<div class="form-group label-floating is-empty">
+										<label class="control-label">Логин</label>
+										<input class="form-control" maxlength="20" type="text" name="name" required>
+									</div>
+									<div class="form-group label-floating is-empty">
+										<label class="control-label">Пароль</label>
+										<input class="form-control" type="password" name="password" required>
+									</div>
+			
+									<input class="btn btn-lg btn-primary full-width" type="submit" value="Войти" />
+								</div>
+							</div>
+						</form>
+					</div>
+
+					<div class="tab-pane" id="register" role="tabpanel" data-mh="log-tab">
 						<div class="title h6">Зарегистрироваться</div>
 						<form class="content" name="register" action="/register" method="post">
 							<div class="row">
@@ -124,26 +144,6 @@
 									</div>
 			
 									<input type ="submit" value ="Зарегистрироваться" class="btn btn-purple btn-lg full-width" />
-								</div>
-							</div>
-						</form>
-					</div>
-			
-					<div class="tab-pane" id="profile" role="tabpanel" data-mh="log-tab">
-						<div class="title h6">Войти в аккаунт</div>
-						<form class="content" action="/login" method="post">
-							<div class="row">
-								<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Логин</label>
-										<input class="form-control" maxlength="20" type="text" name="name" required>
-									</div>
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Пароль</label>
-										<input class="form-control" type="password" name="password" required>
-									</div>
-			
-									<input class="btn btn-lg btn-primary full-width" type="submit" value="Войти" />
 								</div>
 							</div>
 						</form>
