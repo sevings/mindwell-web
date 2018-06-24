@@ -25,20 +25,22 @@
 							</div>
 							<div class="col col-lg-5 ml-auto col-md-5 col-sm-12 col-12">
 								<ul class="profile-menu">
-                                    {% if profile.counts.followings %}
-                                        <li>
-                                            <a href="/users/{{ profile.name }}/followings" {% if relation == "followings" %}class="active"{% endif %}>Подписки</a>
-                                        </li>
-                                    {% endif %}
-                                    {% if profile.counts.followers %}
-                                        <li>
-                                            <a href="/users/{{ profile.name }}/followers" {% if relation == "followers" %}class="active"{% endif %}>Подписчики</a>
-                                        </li>
-                                    {% endif %}
-                                    {% if profile.counts.invited %}
-                                        <li>
-                                            <a href="/users/{{ profile.name }}/invited" {% if relation == "invited" %}class="active"{% endif %}>Приглашенные</a>
-                                        </li>
+                                    {% if profile.privacy != "followers" || profile.relations.fromMe == "followed" || me.id == profile.id%}
+                                        {% if profile.counts.followings %}
+                                            <li>
+                                                <a href="/users/{{ profile.name }}/followings" {% if relation == "followings" %}class="active"{% endif %}>Подписки</a>
+                                            </li>
+                                        {% endif %}
+                                        {% if profile.counts.followers %}
+                                            <li>
+                                                <a href="/users/{{ profile.name }}/followers" {% if relation == "followers" %}class="active"{% endif %}>Подписчики</a>
+                                            </li>
+                                        {% endif %}
+                                        {% if profile.counts.invited %}
+                                            <li>
+                                                <a href="/users/{{ profile.name }}/invited" {% if relation == "invited" %}class="active"{% endif %}>Приглашенные</a>
+                                            </li>
+                                        {% endif %}
                                     {% endif %}
                                     {% if me.id != profile.id %}
                                         <div class="more">
