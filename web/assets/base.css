@@ -2,6 +2,10 @@
     max-width: 100%;
 }
 
+.post p, .comments p {
+    color: #515365;
+}
+
 .lcase {
     text-transform: lowercase;
 }
