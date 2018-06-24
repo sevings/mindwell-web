@@ -267,7 +267,7 @@ func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
-		api.Redirect("/live")
+		api.WriteTemplate("verified")
 	}
 }
 
