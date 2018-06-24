@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 
-	<title>Mindwell дом мыслей</title>
+	<title>Mindwell — дом мыслей</title>
 
 	<!-- Required meta tags always come first -->
 	<meta charset="utf-8">
@@ -53,7 +53,7 @@
 				</div>
 				<div class="title-block">
 					<h6 class="logo-title">mindwell</h6>
-					<div class="sub-title">Дом Мыслей</div>
+					<div class="sub-title">дом мыслей</div>
 				</div>
 			</a>
 
@@ -104,51 +104,26 @@
 								<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
 									<div class="form-group label-floating is-empty">
 										<label class="control-label">Логин</label>
-										<input class="form-control" placeholder="" title="от 1 до 20 символов, латинские буквы и цифры." name="name" type="text" required />
+										<input class="form-control" maxlength="20" title="Разрешены латинские буквы и цифры" name="name" type="text" required />
 									</div>
 									<div class="form-group label-floating is-empty">
 										<label class="control-label">Адрес почты</label>
-										<input class="form-control" placeholder="" name="email" type="email" required />
+										<input class="form-control" name="email" type="email" required />
 									</div>
 									<div class="form-group label-floating is-empty">
 										<label class="control-label">Пароль</label>
-										<input class="form-control" placeholder="" title="не короче 6 символов." name="password" type="password" required />
+										<input class="form-control" title="Не менее 6 символов" name="password" type="password" required />
 									</div>
-									<!-- <div class="form-group label-floating is-select">
-										<label class="control-label">Пол</label>
-										<select name="gender" class="selectpicker form-control">
-											<option value="not set">Не указан</option>
-											<option value="male">Мужской</option>
-											<option value="female">Женский</option>
-										</select>
-									</div> -->
 									<div class="form-group label-floating is-empty">
 										<label class="control-label">Инвайт</label>
-										<input class="form-control" placeholder="" name="invite" type="text" required />
+										<input class="form-control" maxlength="100" name="invite" type="text" required />
 									</div>
 									<div class="form-group label-floating is-empty">
 										<label class="control-label">Пригласивший</label>
-										<input class="form-control" placeholder="" name="referrer" type="text" required />
+										<input class="form-control" maxlength="20" name="referrer" type="text" required />
 									</div>
 			
-									<!-- <div class="form-group date-time-picker label-floating">
-										<label class="control-label">День рождения</label>
-										<input name="datetimepicker" value="10/24/1984" />
-										<span class="input-group-addon">
-														<svg class="olymp-calendar-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-calendar-icon"></use></svg>
-													</span>
-									</div> -->
-			
-									<!-- <div class="remember">
-										<div class="checkbox">
-											<label>
-												<input name="optionsCheckboxes" type="checkbox">
-												Я принимаю <a href="#">Условия Пользовательского Соглашения</a> 
-											</label>
-										</div>
-									</div> -->
-			
-                                                                        <input type ="submit" value ="Зарегистрироваться" class="btn btn-purple btn-lg full-width" />
+									<input type ="submit" value ="Зарегистрироваться" class="btn btn-purple btn-lg full-width" />
 								</div>
 							</div>
 						</form>
@@ -161,7 +136,7 @@
 								<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
 									<div class="form-group label-floating is-empty">
 										<label class="control-label">Логин</label>
-										<input class="form-control" type="text" name="name" required>
+										<input class="form-control" maxlength="20" type="text" name="name" required>
 									</div>
 									<div class="form-group label-floating is-empty">
 										<label class="control-label">Пароль</label>
@@ -169,7 +144,6 @@
 									</div>
 			
 									<input class="btn btn-lg btn-primary full-width" type="submit" value="Войти" />
-			
 								</div>
 							</div>
 						</form>
