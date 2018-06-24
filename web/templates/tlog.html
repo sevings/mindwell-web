@@ -93,17 +93,17 @@
                         {% endif %}
                         {% if profile.counts.followings %}
                             <li>
-                                <a href="/users/{{ profile.name }}/followings" class="title">Подписчики:</a>
+                                <a href="/users/{{ profile.name }}/followings" class="title">Подписки:</a>
                                 <a href="/users/{{ profile.name }}/followings" class="text">{{ profile.counts.followings }}</a>
                             </li>
                         {% endif %}
                         {% if profile.counts.ignored %}
                             <li>
                             {% if me.id == profile.id %}
-                                <a href="/users/{{ profile.name }}/ignored" class="title">Подписчики:</a>
+                                <a href="/users/{{ profile.name }}/ignored" class="title">Заблокированы:</a>
                                 <a href="/users/{{ profile.name }}/ignored" class="text">{{ profile.counts.ignored }}</a>
                             {% else %}
-                                <span class="title">Подписчики:</span>
+                                <span class="title">Заблокированы:</span>
                                 <span class="text">{{ profile.counts.ignored }}</span>
                             {% endif %}
                             </li>

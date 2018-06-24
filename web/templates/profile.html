@@ -5,7 +5,8 @@
     <script src="/assets/tlog.js"></script>
 {% endblock %}
 {% block body %}
-<div class="container">
+<div id="profile" class="container" data-id="{{ profile.id }}" data-privacy="{{ profile.privacy }}" 
+        data-rel-to-me="{{ profile.relations.toMe }}" data-rel-from-me="{{ profile.relations.fromMe }}">
 	<div class="row">
 		<div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 			<div class="ui-block">
@@ -39,17 +40,20 @@
                                             <a href="/users/{{ profile.name }}/invited" {% if relation == "invited" %}class="active"{% endif %}>Приглашенные</a>
                                         </li>
                                     {% endif %}
+                                    {% if me.id != profile.id %}
+                                        <div class="more">
+											<svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
+											<ul class="more-dropdown more-with-triangle">
+												<li>
+													<a id="blacklist" href="#"></a>
+												</li>
+											</ul>
+										</div>
+                                    {% endif %}
 								</ul>
 							</div>
-						</div>
-
+                        </div>
 						<div class="control-block-button">
-                            {% if me.id != profile.id %}
-                                <a href="35-YourAccount-FriendsRequests.html" class="btn btn-control bg-blue">
-                                    <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
-                                </a>
-                            {% endif %}
-
                             {% if me.id == profile.id %}
                                 <div class="btn btn-control bg-primary more">
                                     <svg class="olymp-settings-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-settings-icon"></use></svg>
@@ -66,6 +70,16 @@
                                         </li>
                                     </ul>
                                 </div>
+                            {% else %}
+                                <a id="permit-rel" href="#" class="btn btn-control bg-green" title="Принять заявку" hidden>
+                                    <svg class="olymp-check-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-check-icon"></use></svg>
+                                </a>
+                                <a id="cancel-rel" href="#" class="btn btn-control bg-google" title="Отклонить заявку" hidden>
+                                    <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+                                </a>
+                                <a id="follow" href="#" class="btn btn-control">
+                                    <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
+                                </a>
                             {% endif %}
 						</div>
 					</div>
@@ -89,31 +103,6 @@
 		</div>
 	</div>
 </div>
-{% comment %} 
-    {% if me.id != profile.id %}
-        <p>
-            <button type="button" id="permit_rel" onclick="permitFriend({{ profile.id }})" {% if profile.relations.toMe != "requested" %}hidden{% endif %}>Принять заявку</button>
-            <button type="button" id="cancel_rel" onclick="cancelFriend({{ profile.id }})" {% if profile.relations.toMe != "requested" && profile.relations.toMe != "followed" || me.privacy == "all" %}hidden{% endif %}>
-                    {% if profile.relations.toMe == "followed" %}Отписать{% elif profile.relations.toMe == "requested" %}Отклонить заявку{% endif %}</button>
-            <span id="followed_rel" {% if profile.relations.toMe != "followed" %}hidden{% endif %}>Подписан на вас</span>
-            <span id="ignored_rel" {% if profile.relations.toMe != "ignored" %}hidden{% endif %}>Вы в черном списке</span>
-            <span id="none_rel" {% if profile.relations.toMe != "none" %}hidden{% endif %}>Не подписан на вас</span>
-
-            <button type="button" id="follow" onclick="followUser({{ profile.id }}, '{{ profile.privacy }}', '{{ profile.relations.toMe }}')" {% if profile.relations.fromMe != "none" || profile.relations.toMe == "ignored" %}hidden{% endif %}>
-                {% if profile.privacy == "all" %}Подписаться{% else %}Отправить заявку{% endif %}</button>
-            <button type="button" id="ignore" onclick="ignoreUser({{ profile.id }}, '{{ profile.privacy }}', '{{ profile.relations.toMe }}')" {% if profile.relations.fromMe != "none" %}hidden{% endif %}>Заблокировать</button>
-            <button type="button" id="unfollow" onclick="unfollowUser({{ profile.id }}, '{{ profile.privacy }}', '{{ profile.relations.toMe }}')" {% if profile.relations.fromMe == "none" %}hidden{% endif %}>
-                    {% if profile.relations.fromMe == "followed" %}
-                        Отписаться
-                    {% elif profile.relations.fromMe == "requested" %}
-                        Отменить заявку
-                    {% elif profile.relations.fromMe == "ignored" %}
-                        Разблокировать
-                    {% endif %}
-            </button>
-        </p>
-    {% endif %}
-{% endcomment %}
 
 {% block content %}{% endblock %}
 

@@ -1,122 +1,123 @@
-function permitFriend(id) {
-    var req = new XMLHttpRequest()
-    req.open('PUT', '/relations/from/' + id, true)
-    updateRelationToMe(req)
-}
+$("#follow").click(function() {
+    setRelationFromMe("followed")
+})
 
-function cancelFriend(id) {
-    var req = new XMLHttpRequest()
-    req.open('DELETE', '/relations/from/' + id, true)
-    updateRelationToMe(req)
-}
+$("#blacklist").click(function() {
+    setRelationFromMe("ignored")
+})
 
-function updateRelationToMe(req) {
-    req.onreadystatechange = updateRelation
-    req.send()
+$("#permit-rel").click(function() {
+    handleFriendRequest("PUT")
+})
 
-    var permit = document.getElementById("permit_rel")
-    var cancel = document.getElementById("cancel_rel")
-    permit.disabled = cancel.disabled = true
+$("#cancel-rel").click(function() {
+    handleFriendRequest("DELETE")
+})
 
-    function updateRelation() {
-        if(req.readyState != XMLHttpRequest.DONE)
-            return
+function setRelationFromMe(relation) {
+    var profile = $("#profile")
+    var id = profile.data("id")
+    var relationFromMe = profile.data("relFromMe")
 
-        permit.disabled = cancel.disabled = false
+    var method
+    if(relationFromMe == relation || (relation == "followed") && relationFromMe == "requested")
+        method = "DELETE"
+    else
+        method = "PUT"
 
-        var resp = JSON.parse(req.responseText)
-        if(req.status != 200) {
+    $.ajax({
+        url: "/relations/to/" + id + "?r=" + relation,
+        method: method,
+        dataType: "json",
+        success: function(resp) {
+            profile.data("id", resp.to)
+            profile.data("relFromMe", resp.relation)
+
+            updateRelations()
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
             alert(resp.message)
-            return
-        }
-
-        if(resp.relation == "followed") {
-            permit.hidden = true
-            cancel.hidden = false
-            cancel.innerText = "Отписать"
-        }
-        else if(resp.relation == "none") {
-            permit.hidden = true
-            cancel.hidden = true
-
-            var none = document.getElementById("none_rel")
-            none.hidden = false
-        }
-        else {
-            console.log(resp)
-        }
-    }
+        },
+    })    
 }
 
-function followUser(id, privacy, relationToMe) {
-    var req = new XMLHttpRequest()
-    req.open('PUT', '/relations/to/' + id + "?r=followed", true)
-    updateRelationFromMe(req, privacy, relationToMe)
-}
+function handleFriendRequest(method) {
+    var profile = $("#profile")
+    var id = profile.data("id")
 
-function ignoreUser(id, privacy, relationToMe) {
-    var req = new XMLHttpRequest()
-    req.open('PUT', '/relations/to/' + id + "?r=ignored", true)
-    updateRelationFromMe(req, privacy, relationToMe)
-}
+    $.ajax({
+        url: "/relations/from/" + id,
+        method: method,
+        dataType: "json",
+        success: function(resp) {
+            profile.data("id", resp.from)
+            profile.data("relToMe", resp.relation)
 
-function unfollowUser(id, privacy, relationToMe) {
-    var req = new XMLHttpRequest()
-    req.open('DELETE', '/relations/to/' + id, true)
-    updateRelationFromMe(req, privacy, relationToMe)
-}
-
-function updateRelationFromMe(req, privacy, relationToMe) {
-    req.onreadystatechange = updateRelation
-    req.send()
-
-    var follow = document.getElementById("follow")
-    var ignore = document.getElementById("ignore")
-    var unfollow = document.getElementById("unfollow")
-    follow.disabled = ignore.disabled = unfollow.disabled = true
-
-    function updateRelation() {
-        if(req.readyState != XMLHttpRequest.DONE)
-            return
-
-        follow.disabled = ignore.disabled = unfollow.disabled = false
-
-        var resp = JSON.parse(req.responseText)
-        if(req.status != 200) {
+            updateRelations()
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
             alert(resp.message)
-            return
-        }
-
-        if(resp.relation == "followed") {
-            follow.hidden = true
-            ignore.hidden = true
-            unfollow.hidden = false
-            unfollow.innerText = "Отписаться"
-        }
-        else if(resp.relation == "requested") {
-            follow.hidden = true
-            ignore.hidden = true
-            unfollow.hidden = false
-            unfollow.innerText = "Отменить заявку"
-        }
-        else if(resp.relation == "ignored") {
-            follow.hidden = true
-            ignore.hidden = true
-            unfollow.hidden = false
-            unfollow.innerText = "Разблокировать"
-        }
-        else if(resp.relation == "none") {
-            follow.hidden = relationToMe == "ignored"
-            follow.innerText = (privacy == "all" ? "Подписаться" : "Отправить заявку")
-
-            ignore.hidden = false
-            unfollow.hidden = true
-        }
-        else {
-            console.log(resp)
-        }
-    }
+        },
+    })    
 }
+
+function updateRelations() {
+    var profile = $("#profile")
+    var privacy = profile.data("privacy")
+    var relationToMe = profile.data("relToMe")
+    var relationFromMe = profile.data("relFromMe")
+    
+    var followBtn = $("#follow")
+
+    var followColor
+    if(relationFromMe == "followed")
+        followColor = "bg-blue"
+    else if(relationFromMe == "requested")
+        followColor = "bg-breez"
+    else
+        followColor = "bg-grey"
+
+    followBtn.removeClass("bg-blue bg-breez bg-grey").addClass(followColor)
+
+    var ignored = relationToMe == "ignored" || relationFromMe == "ignored"
+    followBtn.toggleClass("disabled", ignored)
+
+    var followTitle
+
+    if(relationToMe == "ignored")
+        followTitle = "Ты в черном списке"
+    else if(relationFromMe == "ignored")
+        followTitle = "В черном списке"
+    else if(relationFromMe == "followed")
+        followTitle = "Отписаться"
+    else if(relationFromMe == "requested")
+        followTitle = "Отменить заявку"
+    else if(privacy == "all")
+        followTitle = "Подписаться"
+    else
+        followTitle = "Отправить заявку"
+
+    followBtn.attr("title", followTitle)
+
+    var permit = $("#permit-rel")
+    var cancel = $("#cancel-rel")
+    var requested = relationToMe == "requested"
+    permit.attr("hidden", !requested)
+    cancel.attr("hidden", !requested)
+
+    var blockText
+    if(relationFromMe == "ignored")
+        blockText = "Разблокировать"
+    else
+        blockText = "Заблокировать"
+
+    var blacklist = $("#blacklist")
+    blacklist.text(blockText)
+}
+
+$(updateRelations)
 
 $("#verify-email a").click(function() { 
     var p = $("#verify-email")
