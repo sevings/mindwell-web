@@ -1,4 +1,6 @@
 {% for entry in entries %}
-    {% include "entry_base.html" %}
+    <div id="post{{ entry.id }}">
+        {% include "entry_base.html" %}
+    </div>
 {% endfor %}
 {% include "nav.html" %}
