@@ -266,7 +266,7 @@ func coverSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.Forward()
+		api.ForwardToNotAuthorized(ctx.Request.URL.Path)
 		api.WriteTemplate("verified")
 	}
 }
