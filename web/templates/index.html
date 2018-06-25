@@ -1,201 +1,117 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
+﻿{% extends "base.html" %}
+{% block title %}Mindwell — дом мыслей{% endblock %}
+{% block body_class %}class="landing-page"(% endblock %}
+{% block header %}
+	<div class="content-bg-wrap"></div>
 
-	<title>Mindwell — дом мыслей</title>
+	<div class="header--standard header--standard-landing" id="header--standard">
+		<div class="container">
+			<div class="header--standard-wrap">
 
-	<!-- Required meta tags always come first -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="x-ua-compatible" content="ie=edge">
+				<a href="#" class="logo">
+					<div class="img-wrap">
+						<img src="/assets/olympus/img/logo-mindwell.png" width="200" alt="Mindwell">
+						<!-- <img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus" class="logo-colored"> -->
+					</div>
+					<div class="title-block">
+						<h6 class="logo-title">mindwell</h6>
+						<div class="sub-title">дом мыслей</div>
+					</div>
+				</a>
 
-{% include "favicons.html" %}
+			</div>
+		</div>
+	</div>
 
-	<!-- Main Font -->
-	<script src="/assets/olympus/js/webfontloader.min.js"></script>
-
-	<script>
-		WebFont.load({
-			google: {
-				families: ['Roboto:300,400,500,700:latin']
-			}
-		});
-	</script>
-
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" type="text/css" href="/assets/olympus/Bootstrap/dist/css/bootstrap-reboot.css">
-	<link rel="stylesheet" type="text/css" href="/assets/olympus/Bootstrap/dist/css/bootstrap.css">
-	<link rel="stylesheet" type="text/css" href="/assets/olympus/Bootstrap/dist/css/bootstrap-grid.css">
-
-	<!-- Main Styles CSS -->
-	<link rel="stylesheet" type="text/css" href="/assets/olympus/css/main.min.css">
-	<link rel="stylesheet" type="text/css" href="/assets/olympus/css/fonts.min.css">
-
-
-
-</head>
-
-<body class="landing-page">
-
-<div class="content-bg-wrap"></div>
-
-
-<!-- Header Standard Landing  -->
-
-<div class="header--standard header--standard-landing" id="header--standard">
+	<div class="header-spacer--standard"></div>
+{% endblock %}
+{% block body %}
 	<div class="container">
-		<div class="header--standard-wrap">
-
-			<a href="#" class="logo">
-				<div class="img-wrap">
-					<img src="/assets/olympus/img/logo-mindwell.png" width="200" alt="mindwell">
-					<!-- <img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus" class="logo-colored"> -->
-				</div>
-				<div class="title-block">
-					<h6 class="logo-title">mindwell</h6>
-					<div class="sub-title">дом мыслей</div>
-				</div>
-			</a>
-
-
-		</div>
-	</div>
-</div>
-
-<!-- ... end Header Standard Landing  -->
-<div class="header-spacer--standard"></div>
-
-<div class="container">
-	<div class="row display-flex">
-		<div class="col col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-			<div class="landing-content">
-				<h1>Место для твоих мыслей</h1>
-				<p>Добро пожаловать на сайт Mindwell. Здесь ты можешь вести свой дневник, делиться переживаниями, рассказывать истории и общаться с другими людьми. Присоединяйся!
-				</p>
-				<!-- <a href="#" class="btn btn-md btn-border c-white">Присоединяйтесь!</a> -->
-			</div>
-		</div>
-
-		<div class="col col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12">
-			
-			<!-- Login-Registration Form  -->
-			
-			<div class="registration-login-form">
-				<!-- Nav tabs -->
-				<ul class="nav nav-tabs" role="tablist">
-					<li class="nav-item">
-						<a class="nav-link active" data-toggle="tab" href="#login" role="tab">
-							<svg class="olymp-login-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-login-icon"></use></svg>
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#register" role="tab">
-							<svg class="olymp-register-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-register-icon"></use></svg>
-						</a>
-					</li>
-				</ul>
-			
-				<!-- Tab panes -->
-				<div class="tab-content">
-					<div class="tab-pane active" id="login" role="tabpanel" data-mh="log-tab">
-						<div class="title h6">Войти в аккаунт</div>
-						<form class="content" action="/login" method="post">
-							<div class="row">
-								<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Логин</label>
-										<input class="form-control" maxlength="20" type="text" name="name" required>
-									</div>
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Пароль</label>
-										<input class="form-control" type="password" name="password" required>
-									</div>
-			
-									<input class="btn btn-lg btn-primary full-width" type="submit" value="Войти" />
-								</div>
-							</div>
-						</form>
-					</div>
-
-					<div class="tab-pane" id="register" role="tabpanel" data-mh="log-tab">
-						<div class="title h6">Зарегистрироваться</div>
-						<form class="content" name="register" action="/register" method="post">
-							<div class="row">
-								<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Логин</label>
-										<input class="form-control" maxlength="20" title="Разрешены латинские буквы и цифры" name="name" type="text" required />
-									</div>
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Адрес почты</label>
-										<input class="form-control" name="email" type="email" required />
-									</div>
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Пароль</label>
-										<input class="form-control" title="Не менее 6 символов" name="password" type="password" required />
-									</div>
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Инвайт</label>
-										<input class="form-control" maxlength="100" name="invite" type="text" required />
-									</div>
-									<div class="form-group label-floating is-empty">
-										<label class="control-label">Пригласивший</label>
-										<input class="form-control" maxlength="20" name="referrer" type="text" required />
-									</div>
-			
-									<input type ="submit" value ="Зарегистрироваться" class="btn btn-purple btn-lg full-width" />
-								</div>
-							</div>
-						</form>
-					</div>
+		<div class="row display-flex">
+			<div class="col col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+				<div class="landing-content">
+					<h1>Место для твоих мыслей</h1>
+					<p>Добро пожаловать на сайт Mindwell. Здесь ты можешь вести свой дневник, 
+						делиться переживаниями, рассказывать истории и общаться с другими людьми. Присоединяйся!</p>
 				</div>
 			</div>
-			
-			<!-- ... end Login-Registration Form  -->		</div>
+
+			<div class="col col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12">
+				
+				<!-- Login-Registration Form  -->
+				
+				<div class="registration-login-form">
+					<!-- Nav tabs -->
+					<ul class="nav nav-tabs" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" data-toggle="tab" href="#login" role="tab">
+								<svg class="olymp-login-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-login-icon"></use></svg>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#register" role="tab">
+								<svg class="olymp-register-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-register-icon"></use></svg>
+							</a>
+						</li>
+					</ul>
+				
+					<!-- Tab panes -->
+					<div class="tab-content">
+						<div class="tab-pane active" id="login" role="tabpanel" data-mh="log-tab">
+							<div class="title h6">Войти в аккаунт</div>
+							<form class="content" action="/login" method="post">
+								<div class="row">
+									<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+										<div class="form-group label-floating is-empty">
+											<label class="control-label">Логин</label>
+											<input class="form-control" maxlength="20" type="text" name="name" required>
+										</div>
+										<div class="form-group label-floating is-empty">
+											<label class="control-label">Пароль</label>
+											<input class="form-control" type="password" name="password" required>
+										</div>
+				
+										<input class="btn btn-lg btn-primary full-width" type="submit" value="Войти" />
+									</div>
+								</div>
+							</form>
+						</div>
+
+						<div class="tab-pane" id="register" role="tabpanel" data-mh="log-tab">
+							<div class="title h6">Зарегистрироваться</div>
+							<form class="content" name="register" action="/register" method="post">
+								<div class="row">
+									<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+										<div class="form-group label-floating is-empty">
+											<label class="control-label">Логин</label>
+											<input class="form-control" maxlength="20" title="Разрешены латинские буквы и цифры" name="name" type="text" required />
+										</div>
+										<div class="form-group label-floating is-empty">
+											<label class="control-label">Адрес почты</label>
+											<input class="form-control" name="email" type="email" required />
+										</div>
+										<div class="form-group label-floating is-empty">
+											<label class="control-label">Пароль</label>
+											<input class="form-control" title="Не менее 6 символов" name="password" type="password" required />
+										</div>
+										<div class="form-group label-floating is-empty">
+											<label class="control-label">Инвайт</label>
+											<input class="form-control" maxlength="100" name="invite" type="text" required />
+										</div>
+										<div class="form-group label-floating is-empty">
+											<label class="control-label">Пригласивший</label>
+											<input class="form-control" maxlength="20" name="referrer" type="text" required />
+										</div>
+				
+										<input type ="submit" value ="Зарегистрироваться" class="btn btn-purple btn-lg full-width" />
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				
+				<!-- ... end Login-Registration Form  -->		</div>
+		</div>
 	</div>
-</div>
-
-
-<!-- JS Scripts -->
-<script src="/assets/js/jquery-3.3.1.min.js"></script>
-
-<script src="/assets/olympus/js/jquery.appear.js"></script>
-<script src="/assets/olympus/js/jquery.mousewheel.js"></script>
-<script src="/assets/olympus/js/perfect-scrollbar.js"></script>
-<script src="/assets/olympus/js/jquery.matchHeight.js"></script>
-<script src="/assets/olympus/js/svgxuse.js"></script>
-<script src="/assets/olympus/js/imagesloaded.pkgd.js"></script>
-<script src="/assets/olympus/js/Headroom.js"></script>
-<script src="/assets/olympus/js/velocity.js"></script>
-<script src="/assets/olympus/js/ScrollMagic.js"></script>
-<script src="/assets/olympus/js/jquery.waypoints.js"></script>
-<script src="/assets/olympus/js/jquery.countTo.js"></script>
-<script src="/assets/olympus/js/popper.min.js"></script>
-<script src="/assets/olympus/js/material.min.js"></script>
-<script src="/assets/olympus/js/bootstrap-select.js"></script>
-<script src="/assets/olympus/js/smooth-scroll.js"></script>
-<script src="/assets/olympus/js/selectize.js"></script>
-<script src="/assets/olympus/js/swiper.jquery.js"></script>
-<script src="/assets/olympus/js/moment.js"></script>
-<script src="/assets/olympus/js/daterangepicker.js"></script>
-<script src="/assets/olympus/js/simplecalendar.js"></script>
-<script src="/assets/olympus/js/fullcalendar.js"></script>
-<script src="/assets/olympus/js/isotope.pkgd.js"></script>
-<script src="/assets/olympus/js/ajax-pagination.js"></script>
-<script src="/assets/olympus/js/Chart.js"></script>
-<script src="/assets/olympus/js/chartjs-plugin-deferred.js"></script>
-<script src="/assets/olympus/js/circle-progress.js"></script>
-<script src="/assets/olympus/js/loader.js"></script>
-<script src="/assets/olympus/js/run-chart.js"></script>
-<script src="/assets/olympus/js/jquery.magnific-popup.js"></script>
-<script src="/assets/olympus/js/jquery.gifplayer.js"></script>
-<script src="/assets/olympus/js/mediaelement-and-player.js"></script>
-<script src="/assets/olympus/js/mediaelement-playlist-plugin.min.js"></script>
-
-<script src="/assets/olympus/js/base-init.js"></script>
-<script defer src="/assets/olympus/fonts/fontawesome-all.js"></script>
-
-<script src="/assets/olympus/Bootstrap/dist/js/bootstrap.bundle.js"></script>
-
-</body>
-</html>
+{% endblock %}

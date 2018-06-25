@@ -7,9 +7,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 
-	<title>{% block title %}Mindwell{% endblock %}</title>
-
-{% include "favicons.html" %}
+    <title>{% block title %}Mindwell{% endblock %}</title>
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="/assets/icons/site.webmanifest">
+    <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg" color="#fe6543">
+    <link rel="shortcut icon" href="/assets/icons/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="Mindwell">
+    <meta name="application-name" content="Mindwell">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/assets/icons/browserconfig.xml">
+    <meta name="theme-color" content="#fe6543">
 
 	<!-- Main Font -->
 	<script src="/assets/olympus/js/webfontloader.min.js"></script>
@@ -31,57 +41,12 @@
 	<link rel="stylesheet" type="text/css" href="/assets/olympus/css/fonts.min.css">
 
     <link rel="stylesheet" type="text/css" href="/assets/base.css">
-    {% block styles %}{% endblock %}
+    {% block base_styles %}{% endblock %}
 
 </head>
-<body>
-    <div id="header--standard" class="header--standard header--standard-dark">
-        <div class="container">
-            <div class="header--standard-wrap">
-                <a href="/live" class="logo">
-                    <div class="img-wrap">
-                        <img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus">
-                    </div>
-                    <div class="title-block">
-                        <h6 class="logo-title">mindwell</h6>
-                        <div class="sub-title">ДОМ МЫСЛЕЙ</div>
-                    </div>
-                </a>
-    
-                <a href="#" class="open-responsive-menu js-open-responsive-menu">
-                    <svg class="olymp-menu-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-menu-icon"></use></svg>
-                </a>
-    
-                <div class="nav nav-pills nav1 header-menu">
-                    <div class="mCustomScrollbar">
-                        <ul>
-                            <ul>
-                                <li class="nav-item">
-                                    <a href="/live" class="nav-link">Прямой эфир</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/friends" class="nav-link">Подписки</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/users/{{ me.name }}" class="nav-link">{{ me.showName }}</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/post" class="nav-link">Новая запись</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/logout" class="nav-link">Выйти</a>
-                                </li>
-                                <li class="close-responsive-menu js-close-responsive-menu">
-                                    <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
-                                </li>
-                            </ul>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
+<body {% block body_class %}(% endblock %}>
+
+    {% block header %}{% endblock %}
     {% block body %}{% endblock %}
  
     <a class="back-to-top" href="#">

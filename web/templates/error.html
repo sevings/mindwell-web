@@ -1,147 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-	<title>Company Page - 404 Error </title>
-
-	<!-- Required meta tags always come first -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="x-ua-compatible" content="ie=edge">
-
-{% include "favicons.html" %}
-
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" type="text/css" href="/assets/olympus/Bootstrap/dist/css/bootstrap-reboot.css">
-	<link rel="stylesheet" type="text/css" href="/assets/olympus/Bootstrap/dist/css/bootstrap.css">
-	<link rel="stylesheet" type="text/css" href="/assets/olympus/Bootstrap/dist/css/bootstrap-grid.css">
-
-	<!-- Main Styles CSS -->
-	<link rel="stylesheet" type="text/css" href="/assets/olympus/css/main.min.css">
-	<link rel="stylesheet" type="text/css" href="/assets/olympus/css/fonts.min.css">
-
-	<!-- Main Font -->
-	<script src="/assets/olympus/js/webfontloader.min.js"></script>
-	<script>
-		WebFont.load({
-			google: {
-				families: ['Roboto:300,400,500,700:latin']
-			}
-		});
-	</script>
-
-</head>
-<body class="body-bg-white">
-
-
-
-<!-- Stunning header -->
-
-<div class="stunning-header bg-primary-opacity">
-
-	
-	<!-- Header Standard Landing  -->
-	
-	<div class="header--standard header--standard-landing" id="header--standard">
-		<div class="container">
-			<div class="header--standard-wrap">
-	
-				<a href="#" class="logo">
-					<div class="img-wrap">
-						<img src="/assets/olympus/img/logo.png" alt="Olympus">
-						<img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus" class="logo-colored">
-					</div>
-					<div class="title-block">
-						<h6 class="logo-title">olympus</h6>
-						<div class="sub-title">SOCIAL NETWORK</div>
-					</div>
-				</a>
-	
-			</div>
-		</div>
-	</div>
-	
-	<!-- ... end Header Standard Landing  -->
-	<div class="header-spacer--standard"></div>
-
-	<div class="stunning-header-content">
-		<h1 class="stunning-header-title">404 Error Page</h1>
-		<ul class="breadcrumbs">
-			<li class="breadcrumbs-item">
-				<a href="#">Home</a>
-				<span class="icon breadcrumbs-custom">/</span>
-			</li>
-			<li class="breadcrumbs-item active">
-				<span>404 Error</span>
-			</li>
-		</ul>
-	</div>
-
-	<div class="content-bg-wrap stunning-header-bg1"></div>
-</div>
-
-<!-- End Stunning header -->
-
-
-<section class="medium-padding120">
-	<div class="container">
-		<div class="row">
-			<div class="col col-xl-6 m-auto col-lg-6 col-md-12 col-sm-12 col-12">
-				<div class="page-404-content">
-					<img src="/assets/olympus/img/404.png" alt="photo">
-					<div class="crumina-module crumina-heading align-center">
-						<h2 class="h1 heading-title">A <span class="c-primary">wild ghost</span> appears! Sadly, not what you were looking for...</h2>
-						<p class="heading-text">{{ message|default:"Кажется, что-то пошло не так…" }}</p>
-					</div>
-
-					<a href="/" class="btn btn-primary btn-lg">Go to Homepage</a>
+{% extends "base.html" %}
+{% block title %}Ошибка {{ code|default:404 }} — Mindwell{% endblock %}
+{% block body_class %}class="body-bg-white"(% endblock %}
+{% block header %}
+	<div class="stunning-header bg-primary-opacity">
+		
+		<div class="header--standard header--standard-landing" id="header--standard">
+			<div class="container">
+				<div class="header--standard-wrap">
+		
+					<a href="#" class="logo">
+						<div class="img-wrap">
+							<img src="/assets/olympus/img/logo.png" alt="Olympus">
+							<img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus" class="logo-colored">
+						</div>
+						<div class="title-block">
+							<h6 class="logo-title">olympus</h6>
+							<div class="sub-title">SOCIAL NETWORK</div>
+						</div>
+					</a>
+		
 				</div>
 			</div>
 		</div>
+		
+		<div class="header-spacer--standard"></div>
+
+		<div class="stunning-header-content">
+			<h1 class="stunning-header-title">404 Error Page</h1>
+			<ul class="breadcrumbs">
+				<li class="breadcrumbs-item">
+					<a href="#">Home</a>
+					<span class="icon breadcrumbs-custom">/</span>
+				</li>
+				<li class="breadcrumbs-item active">
+					<span>404 Error</span>
+				</li>
+			</ul>
+		</div>
+
+		<div class="content-bg-wrap stunning-header-bg1"></div>
 	</div>
-</section>
+{% endblock %}
+{% block body %}
+	<section class="medium-padding120">
+		<div class="container">
+			<div class="row">
+				<div class="col col-xl-6 m-auto col-lg-6 col-md-12 col-sm-12 col-12">
+					<div class="page-404-content">
+						<img src="/assets/olympus/img/404.png" alt="photo">
+						<div class="crumina-module crumina-heading align-center">
+							<h2 class="h1 heading-title">A <span class="c-primary">wild ghost</span> appears! Sadly, not what you were looking for...</h2>
+							<p class="heading-text">{{ message|default:"Кажется, что-то пошло не так…" }}</p>
+						</div>
 
-
-<!-- JS Scripts -->
-<script src="/assets/js/jquery-3.3.1.min.js"></script>
-
-<script src="/assets/olympus/js/jquery.appear.js"></script>
-<script src="/assets/olympus/js/jquery.mousewheel.js"></script>
-<script src="/assets/olympus/js/perfect-scrollbar.js"></script>
-<script src="/assets/olympus/js/jquery.matchHeight.js"></script>
-<script src="/assets/olympus/js/svgxuse.js"></script>
-<script src="/assets/olympus/js/imagesloaded.pkgd.js"></script>
-<script src="/assets/olympus/js/Headroom.js"></script>
-<script src="/assets/olympus/js/velocity.js"></script>
-<script src="/assets/olympus/js/ScrollMagic.js"></script>
-<script src="/assets/olympus/js/jquery.waypoints.js"></script>
-<script src="/assets/olympus/js/jquery.countTo.js"></script>
-<script src="/assets/olympus/js/popper.min.js"></script>
-<script src="/assets/olympus/js/material.min.js"></script>
-<script src="/assets/olympus/js/bootstrap-select.js"></script>
-<script src="/assets/olympus/js/smooth-scroll.js"></script>
-<script src="/assets/olympus/js/selectize.js"></script>
-<script src="/assets/olympus/js/swiper.jquery.js"></script>
-<script src="/assets/olympus/js/moment.js"></script>
-<script src="/assets/olympus/js/daterangepicker.js"></script>
-<script src="/assets/olympus/js/simplecalendar.js"></script>
-<script src="/assets/olympus/js/fullcalendar.js"></script>
-<script src="/assets/olympus/js/isotope.pkgd.js"></script>
-<script src="/assets/olympus/js/ajax-pagination.js"></script>
-<script src="/assets/olympus/js/Chart.js"></script>
-<script src="/assets/olympus/js/chartjs-plugin-deferred.js"></script>
-<script src="/assets/olympus/js/circle-progress.js"></script>
-<script src="/assets/olympus/js/loader.js"></script>
-<script src="/assets/olympus/js/run-chart.js"></script>
-<script src="/assets/olympus/js/jquery.magnific-popup.js"></script>
-<script src="/assets/olympus/js/jquery.gifplayer.js"></script>
-<script src="/assets/olympus/js/mediaelement-and-player.js"></script>
-<script src="/assets/olympus/js/mediaelement-playlist-plugin.min.js"></script>
-
-<script src="/assets/olympus/js/base-init.js"></script>
-<script defer src="/assets/olympus/fonts/fontawesome-all.js"></script>
-
-<script src="/assets/olympus/Bootstrap/dist/js/bootstrap.bundle.js"></script>
-
-</body>
-</html>
+						<a href="/" class="btn btn-primary btn-lg">Go to Homepage</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
