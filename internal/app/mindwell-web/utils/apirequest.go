@@ -309,7 +309,11 @@ func (api *APIRequest) parseResponse() map[string]interface{} {
 }
 
 func (api *APIRequest) setErrorCode() {
-	code := api.Data()["code"]
+	if api.data == nil {
+		api.data = map[string]interface{}{}
+	}
+
+	code := api.data["code"]
 	if code != nil {
 		return
 	}
@@ -320,7 +324,7 @@ func (api *APIRequest) setErrorCode() {
 		code = 500
 	}
 
-	api.SetData("code", code)
+	api.data["code"] = code
 }
 
 func (api *APIRequest) WriteTemplate(name string) {

@@ -1,17 +1,21 @@
 $("#follow").click(function() {
     setRelationFromMe("followed")
+    return false
 })
 
 $("#blacklist").click(function() {
     setRelationFromMe("ignored")
+    return false
 })
 
 $("#permit-rel").click(function() {
     handleFriendRequest("PUT")
+    return false
 })
 
 $("#cancel-rel").click(function() {
     handleFriendRequest("DELETE")
+    return false
 })
 
 function setRelationFromMe(relation) {
@@ -132,4 +136,6 @@ $("#verify-email a").click(function() {
             p.text("При выполнении запроса произошла ошибка: " + resp.message)
         },
     })
+
+    return false
 })

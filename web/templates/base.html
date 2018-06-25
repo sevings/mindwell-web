@@ -43,15 +43,12 @@
     {% block base_styles %}{% endblock %}
 
 </head>
-<body {% block body_class %}(% endblock %}>
+<body {% block body_class %}{% endblock %}>
 
     {% block header %}{% endblock %}
     {% block body %}{% endblock %}
- 
-    <a class="back-to-top" href="#">
-        <img src="/assets/olympus/svg-icons/back-to-top.svg" alt="arrow" class="back-icon">
-    </a>
-
+    {% block footer %}{% endblock %}
+    
     <!-- JS Scripts -->
     <script src="/assets/js/jquery-3.3.1.min.js"></script>
 
