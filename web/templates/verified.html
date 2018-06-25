@@ -1,20 +1,37 @@
 {% extends "base.html" %}
 {% block title %}Почта подтверждена — Mindwell{% endblock %}
-{% block body %}
-<section class="medium-padding120">
-    <div class="container">
-        <div class="row">
-            <div class="col col-xl-6 m-auto col-lg-6 col-md-12 col-sm-12 col-12">
-                <div class="page-404-content">
-                    <div class="crumina-module crumina-heading align-center">
-                        <h2 class="h1 heading-title">Адрес почты успешно подтвержден. <span class="c-primary">Спасибо!</span>
-                            Теперь ты можешь получать некоторые важные письма.</h2>
+{% block header %}
+    <div id="header--standard" class="header--standard header--standard-dark">
+        <div class="container">
+            <div class="header--standard-wrap">
+                <a href="/live" class="logo">
+                    <div class="img-wrap">
+                        <img src="/assets/olympus/img/logo-colored-small.png" alt="Olympus">
                     </div>
-
-                    <a href="/live" class="btn btn-primary btn-lg">Прямой эфир</a>
-                </div>
+                    <div class="title-block">
+                        <h6 class="logo-title">mindwell</h6>
+                        <div class="sub-title">ДОМ МЫСЛЕЙ</div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
-</section>
+{% endblock %}
+{% block body %}
+    <section class="medium-padding120">
+        <div class="container">
+            <div class="row">
+                <div class="col col-xl-6 m-auto col-lg-6 col-md-12 col-sm-12 col-12">
+                    <div class="page-404-content">
+                        <div class="crumina-module crumina-heading align-center">
+                            <h2 class="h1 heading-title">Адрес почты успешно подтвержден. <span class="c-primary">Спасибо!</span>
+                                Теперь ты можешь получать некоторые важные письма.</h2>
+                        </div>
+
+                        <a href="/live" class="btn btn-primary btn-lg">Прямой эфир</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}
