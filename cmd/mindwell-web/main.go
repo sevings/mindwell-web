@@ -392,6 +392,7 @@ func meOnlineHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func error404Handler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
+		api.SetData("code", 404)
 		api.SetData("message", "Страница, которую вы искали, перемещена или никогда не существовала.")
 		api.WriteTemplate("error")
 	}

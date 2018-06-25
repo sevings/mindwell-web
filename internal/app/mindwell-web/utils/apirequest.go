@@ -308,9 +308,25 @@ func (api *APIRequest) parseResponse() map[string]interface{} {
 	return data
 }
 
+func (api *APIRequest) setErrorCode() {
+	code := api.Data()["code"]
+	if code != nil {
+		return
+	}
+
+	if api.resp.StatusCode >= 400 {
+		code = api.resp.StatusCode
+	} else {
+		code = 500
+	}
+
+	api.SetData("code", code)
+}
+
 func (api *APIRequest) WriteTemplate(name string) {
 	if api.err == http.ErrNotSupported {
 		name = "error"
+		api.setErrorCode()
 	} else if api.err != nil {
 		return
 	}
