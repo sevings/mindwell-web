@@ -1,0 +1,52 @@
+{% extends "base_auth.html" %}
+{% block body %}
+
+    <div class="profile-settings-responsive">
+        <a href="#" class="js-profile-settings-open profile-settings-open">
+            <i class="fa fa-angle-right" aria-hidden="true"></i>
+            <i class="fa fa-angle-left" aria-hidden="true"></i>
+        </a>
+        <div class="mCustomScrollbar" data-mcs-theme="dark">
+            <div class="ui-block">
+                <ul class="your-profile-menu">
+                    <li>
+                        <a href="/account/invites">Приглашения</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>    
+
+    <div class="main-header">
+        <div class="content-bg-wrap bg-account"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col col-lg-8 m-auto col-md-8 col-sm-12 col-12">
+                    <div class="main-header-content">
+                        <h1>Панель управления учетной записью</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col col-xl-9 order-xl-2 col-lg-9 order-lg-2 col-md-12 order-md-1 col-sm-12 col-12">
+                <div class="ui-block">
+                    {% block page %}{% endblock page %}
+                </div>
+            </div>
+
+            <div class="col col-xl-3 order-xl-1 col-lg-3 order-lg-1 col-md-12 order-md-2 col-sm-12 responsive-display-none">
+                <div class="ui-block">
+                    <ul class="your-profile-menu">
+                        <li>
+                            <a href="/account/invites">Приглашения</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

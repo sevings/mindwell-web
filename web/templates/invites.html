@@ -1,0 +1,24 @@
+{% extends "settings.html" %}
+{% block page %}
+    <div class="ui-block-title">
+        <h6 class="title">Приглашения</h6>
+    </div>
+
+    <div class="ui-block-content">
+        <div class="row">
+            <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <p>
+                    Чтобы зарегистрироваться на Mindwell, нужно получить приглашение. 
+                    У нас оно состоит из трех английских слов через пробел. 
+                    Скопируй одно из своих приглашений и отправь другу.
+                </p>
+                {% for invite in invites %}
+                    <input class="form-control" type="text" value="{{ invite }}" readonly>
+                {% empty %}
+                    <h6 class="title">У тебя пока нет свободных приглашений.</h6>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+{% endblock page %}

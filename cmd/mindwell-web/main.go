@@ -46,6 +46,7 @@ func main() {
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
+	router.GET("/account/invites", invitesHandler(mdw))
 
 	router.GET("/design", designEditorHandler(mdw))
 	router.POST("/design", designSaverHandler(mdw))
@@ -268,6 +269,15 @@ func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardToNotAuthorized(ctx.Request.URL.Path)
 		api.WriteTemplate("verified")
+	}
+}
+
+func invitesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+		api.SetMe()
+		api.WriteTemplate("invites")
 	}
 }
 
