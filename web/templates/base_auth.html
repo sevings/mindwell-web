@@ -24,26 +24,25 @@
                 <div class="nav nav-pills nav1 header-menu">
                     <div class="mCustomScrollbar">
                         <ul>
-                            <ul>
-                                <li class="nav-item">
-                                    <a href="/live" class="nav-link">Прямой эфир</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/friends" class="nav-link">Подписки</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/users/{{ me.name }}" class="nav-link">{{ me.showName }}</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/post" class="nav-link">Новая запись</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/logout" class="nav-link">Выйти</a>
-                                </li>
-                                <li class="close-responsive-menu js-close-responsive-menu">
-                                    <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
-                                </li>
-                            </ul>
+                            <li class="nav-item">
+                                <a href="/live" class="nav-link">Прямой эфир</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/friends" class="nav-link">Подписки</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-hover="dropdown" data-toggle="dropdown" href="#" 
+                                    role="button" aria-haspopup="false" aria-expanded="false" tabindex='1'>{{ me.showName }}</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/users/{{ me.name }}">Профиль</a>
+                                    <a class="dropdown-item" href="/post">Новая запись</a>
+                                    <a class="dropdown-item" href="/account/invites">Приглашения</a>
+                                    <a class="dropdown-item" href="/logout">Выйти</a>
+                                </div>
+                            </li>
+                            <li class="close-responsive-menu js-close-responsive-menu">
+                                <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+                            </li>
                         </ul>
                     </div>
                 </div>
