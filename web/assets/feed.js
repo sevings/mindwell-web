@@ -20,6 +20,10 @@ function vote(id, positive) {
             
             var rate = (resp.rating || 0)
             rating.attr("title", "Рейтинг: " + Math.round(rate))
+
+            rating.find("data-fa-i2svg")
+                .toggleClass("far")
+                .toggleClass("fas")
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)

@@ -35,27 +35,30 @@
         <div class="post-additional-info inline-items">
     
             {% if entry.isVotable %}
-                <div class="post-rating" data-toggle="tooltip" data-placement="top" data-enabled="true" data-vote="{{ entry.vote }}" 
-                        title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
-                    {% if entry.vote != "ban" %}
-                        <a href="#" class="post-add-icon inline-items" onclick="vote({{ entry.id }}, false);return false;" >
+                <div class="post-rating" data-vote="{{ entry.vote }}" title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
+                    {% if entry.vote == "ban" %}
+                        <div class="inline-items">
+                    {% else %}
+                        <a href="#" class="post-add-icon inline-items" onclick="vote({{ entry.id }}, false);return false;">
                     {% endif %}
-                        <svg class="olymp-heart-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-heart-icon"></use></svg>
+                        <i class="{% if entry.vote == "neg" %}fas{% else %}far{% endif %} fa-thumbs-down fa-lg"></i>
                         <span class="post-down-count">{{ entry.votes|default:0 }}</span>
-                    {% if entry.vote != "ban" %}</a>{% endif %}
+                    {% if entry.vote == "ban" %}</div>{% else %</a>{% endif %}
                     
-                    {% if entry.vote != "ban" %}
-                        <a href="#" class="post-add-icon inline-items" onclick="vote({{ entry.id }}, true);return false;" >
+                    {% if entry.vote == "ban" %}
+                        <div class="inline-items">
+                    {% else %}
+                        <a href="#" class="post-add-icon inline-items" onclick="vote({{ entry.id }}, true);return false;">
                     {% endif %}
-                        <svg class="olymp-heart-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-heart-icon"></use></svg>
+                        <i class="{% if entry.vote == "pos" %}fas{% else %}far{% endif %} fa-thumbs-up fa-lg"></i>
                         <span class="post-up-count">{{ entry.votes|default:0 }}</span>
-                    {% if entry.vote != "ban" %}</a>{% endif %}
+                    {% if entry.vote == "ban" %}</div>{% else %</a>{% endif %}
                 </div>    
             {% endif %}
     
             <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items">
                 <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
-                <span>{{ entry.commentCount }}</span>
+                <span>{{ entry.commentCount|default:0 }}</span>
             </a>
     
         </div>
