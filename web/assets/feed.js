@@ -1,9 +1,9 @@
-$("a.post-down-count").click(function() {
+$("a.post-down").click(function() {
     vote($(this), false)
     return false
 })
 
-$("a.post-up-count").click(function() {
+$("a.post-up").click(function() {
     vote($(this), true)
     return false
 })
@@ -24,24 +24,26 @@ function vote(counter, positive) {
         method: delVote ? "DELETE" : "PUT",
         dataType: "json",
         success: function(resp) {
-            var upCounter = info.find(".post-up-count")
-            var downCounter = info.find(".post-down-count")
+            info.data("vote", resp.vote)
 
-            var count = (resp.votes || 0)
-            upCounter.find("span").text(count)
-            downCounter.find("span").text(count)
+            var upLink = info.find(".post-up")
+            var downLink = info.find(".post-down")
+            var span = info.find("span")
+
+            span.text(resp.votes || 0)
             
             var title = "Рейтинг: " + Math.round(resp.rating || 0)
-            upCounter.attr("title", title)
-            downCounter.attr("title", title)
+            upLink.attr("title", title)
+            downLink.attr("title", title)
+            span.attr("title", title)
 
             var up = resp.vote == "pos"
-            upCounter.find("[data-fa-i2svg]")
+            upLink.find("[data-fa-i2svg]")
                 .toggleClass("far", !up)
                 .toggleClass("fas", up)
 
             var down = resp.vote == "neg"
-            downCounter.find("[data-fa-i2svg]")
+            downLink.find("[data-fa-i2svg]")
                 .toggleClass("far", !down)
                 .toggleClass("fas", down)
         },

@@ -69,6 +69,7 @@ func main() {
 	router.PUT("/me/online", meOnlineHandler(mdw))
 
 	router.PUT("/entries/:id/vote", proxyHandler(mdw))
+	router.DELETE("/entries/:id/vote", proxyHandler(mdw))
 
 	router.GET("/relations/to/:id", proxyHandler(mdw))
 	router.PUT("/relations/to/:id", proxyHandler(mdw))
