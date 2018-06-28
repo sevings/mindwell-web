@@ -1,12 +1,22 @@
-function vote(id, positive) {
-    var post = $("#post" + id)
-    var rating = $(".post-rating", post)
-    if(rating.data("enabled") == false)
+$("a.post-down-count").click(function() {
+    vote($(this), false)
+    return false
+})
+
+$("a.post-up-count").click(function() {
+    vote($(this), true)
+    return false
+})
+
+function vote(counter, positive) {
+    var info = counter.parents(".post-additional-info")
+    if(info.data("enabled") == false)
         return
 
-    rating.data("enabled", true)
+    info.data("enabled", true)
 
-    var vote = rating.data("vote")
+    var id = info.data("id")
+    var vote = info.data("vote")
     var delVote = ((positive && vote == "pos") || (!positive && vote == "neg"))
 
     $.ajax({
@@ -14,23 +24,33 @@ function vote(id, positive) {
         method: delVote ? "DELETE" : "PUT",
         dataType: "json",
         success: function(resp) {
-            var count = (resp.votes || 0)
-            $(".post-up-count", rating).text(count)
-            $(".post-down-count", rating).text(count)
-            
-            var rate = (resp.rating || 0)
-            rating.attr("title", "Рейтинг: " + Math.round(rate))
+            var upCounter = info.find(".post-up-count")
+            var downCounter = info.find(".post-down-count")
 
-            rating.find("data-fa-i2svg")
-                .toggleClass("far")
-                .toggleClass("fas")
+            var count = (resp.votes || 0)
+            upCounter.find("span").text(count)
+            downCounter.find("span").text(count)
+            
+            var title = "Рейтинг: " + Math.round(resp.rating || 0)
+            upCounter.attr("title", title)
+            downCounter.attr("title", title)
+
+            var up = resp.vote == "pos"
+            upCounter.find("[data-fa-i2svg]")
+                .toggleClass("far", !up)
+                .toggleClass("fas", up)
+
+            var down = resp.vote == "neg"
+            downCounter.find("[data-fa-i2svg]")
+                .toggleClass("far", !down)
+                .toggleClass("fas", down)
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
             alert(resp.message)
         },
         complete: function() {
-            rating.data("enabled", true)
+            info.data("enabled", true)
         },
     })
 }
