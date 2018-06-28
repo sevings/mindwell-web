@@ -259,8 +259,12 @@ func (api *APIRequest) SetField(key, path string) {
 		api.data = api.parseResponse()
 	}
 
-	if api.err != nil || api.data == nil {
+	if api.err != nil {
 		return
+	}
+
+	if api.data == nil {
+		api.data = map[string]interface{}{}
 	}
 
 	api.Get(path)
