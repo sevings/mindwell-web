@@ -34,28 +34,31 @@
         
         <div class="post-additional-info inline-items" data-id="{{ entry.id }}" data-vote="{{ entry.vote }}">
     
-            {% if entry.isVotable %}
-                {% if entry.vote == "ban" %}
+            {% if entry.rating.isVotable %}
+                {% if entry.rating.vote == "ban" %}
                     <div class="inline-items post-down-count"
                 {% else %}
                     <a href="#" class="post-add-icon inline-items post-down"
                 {% endif %}
-                        title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
+                        title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против. 
+Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
 
-                    <i class="{% if entry.vote == "neg" %}fas{% else %}far{% endif %} fa-thumbs-down fa-lg"></i>
-                {% if entry.vote == "ban" %}</div>{% else %}</a>{% endif %}
+                    <i class="{% if entry.rating.vote == "neg" %}fas{% else %}far{% endif %} fa-thumbs-down fa-lg"></i>
+                {% if entry.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
 
-                <span>{{ entry.votes|default:0 }}</span>
+                <span title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против. 
+Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">{{ entry.rating.upCount|default:0 - entry.rating.downCount|default:0 }}</span>
 
-                {% if entry.vote == "ban" %}
+                {% if entry.rating.vote == "ban" %}
                     <div class="inline-items post-up-count"
                 {% else %}
                     <a href="#" class="post-add-icon inline-items post-up"
                 {% endif %}
-                        title="Рейтинг: {{ entry.rating|floatformat:0|default:0 }}">
+                        title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против. 
+Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
 
-                    <i class="{% if entry.vote == "pos" %}fas{% else %}far{% endif %} fa-thumbs-up fa-lg"></i>
-                {% if entry.vote == "ban" %}</div>{% else %}</a>{% endif %}
+                    <i class="{% if entry.rating.vote == "pos" %}fas{% else %}far{% endif %} fa-thumbs-up fa-lg"></i>
+                {% if entry.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
             {% endif %}
     
             <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items">

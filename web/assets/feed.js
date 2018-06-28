@@ -30,9 +30,11 @@ function vote(counter, positive) {
             var downLink = info.find(".post-down")
             var span = info.find("span")
 
-            span.text(resp.votes || 0)
+            var upCount = (resp.upCount || 0)
+            var downCount = (resp.downCount || 0)
+            span.text(upCount - downCount)
             
-            var title = "Рейтинг: " + Math.round(resp.rating || 0)
+            var title = upCount + " за, " + downCount + " против.\nРейтинг: " + Math.round(resp.rating || 0)
             upLink.attr("title", title)
             downLink.attr("title", title)
             span.attr("title", title)
