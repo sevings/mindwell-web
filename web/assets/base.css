@@ -24,3 +24,18 @@ body .header--standard {
 .main-header {
     max-width: 100%;
 }
+
+.post-add-icon svg {
+    margin-left: 8px;
+    height: 20px;
+}
+
+a.post-add-icon [data-prefix="fas"] {
+    fill: #ff5e3a;
+    color: #ff5e3a;
+}
+
+div.post-add-icon:hover {
+    fill: #c2c5d9;
+    color: #c2c5d9;
+}

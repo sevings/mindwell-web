@@ -32,33 +32,27 @@
     
         <div>{{ entry.content|safe }}</div>
         
-        <div class="post-additional-info inline-items" data-id="{{ entry.id }}" data-vote="{{ entry.vote }}">
+        <div class="post-additional-info inline-items" data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}">
     
             {% if entry.rating.isVotable %}
-                {% if entry.rating.vote == "ban" %}
-                    <div class="inline-items post-down-count"
-                {% else %}
-                    <a href="#" class="post-add-icon inline-items post-down"
-                {% endif %}
+
+                {% if entry.rating.vote == "ban" %}<div{% else %}<a href="#"{% endif %} 
+                        class="post-add-icon inline-items post-down"
                         title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против. 
 Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
-
-                    <i class="{% if entry.rating.vote == "neg" %}fas{% else %}far{% endif %} fa-thumbs-down fa-lg"></i>
+                    <i class="{% if entry.rating.vote == "neg" || entry.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-down fa-2x"></i>
                 {% if entry.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
 
                 <span title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против. 
 Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">{{ entry.rating.upCount|default:0 - entry.rating.downCount|default:0 }}</span>
 
-                {% if entry.rating.vote == "ban" %}
-                    <div class="inline-items post-up-count"
-                {% else %}
-                    <a href="#" class="post-add-icon inline-items post-up"
-                {% endif %}
+                {% if entry.rating.vote == "ban" %}<div{% else %}<a href="#"{% endif %} 
+                        class="post-add-icon inline-items post-up"
                         title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против. 
 Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
-
-                    <i class="{% if entry.rating.vote == "pos" %}fas{% else %}far{% endif %} fa-thumbs-up fa-lg"></i>
+                    <i class="{% if entry.rating.vote == "pos" || entry.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-up fa-2x"></i>
                 {% if entry.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
+
             {% endif %}
     
             <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items">
