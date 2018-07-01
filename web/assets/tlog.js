@@ -130,6 +130,7 @@ $("#verify-email a").click(function() {
         method: "POST",
         success: function() {
             p.text("Письмо с кодом подтверждения отправлено на почту.")
+            p.removeClass("alert-danger").addClass("alert-success")
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
