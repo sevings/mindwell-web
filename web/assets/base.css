@@ -39,3 +39,12 @@ div.post-add-icon:hover {
     fill: #c2c5d9;
     color: #c2c5d9;
 }
+
+.post .post__date a {
+    color: #888da8;
+    font-weight: 400;
+}
+
+.post .post__date a:hover {
+    color: #ff5e3a;
+}

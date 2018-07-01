@@ -7,9 +7,9 @@
             <div class="author-date">
                 <a class="h6 post__author-name fn" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
                 <div class="post__date">
-                    <time class="published" datetime="{{ entry.createdAt }}">
-                        {{ entry.createdAt|floatformat:0 }}
-                    </time>
+                    <a href="/entries/{{ entry.id }}">
+                        <time class="published" datetime="{{ entry.createdAt }}">{{ entry.createdAt|floatformat:0 }}</time>
+                    </a>
                 </div>
             </div>
     
