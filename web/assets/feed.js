@@ -28,7 +28,7 @@ function vote(counter, positive) {
 
             var upLink = info.find(".post-up")
             var downLink = info.find(".post-down")
-            var span = info.find("span")
+            var span = info.find(".post-rating")
 
             var upCount = (resp.upCount || 0)
             var downCount = (resp.downCount || 0)
