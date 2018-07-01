@@ -6362,7 +6362,7 @@ ol ol li {
     font-size: 11px; }
 
 /*================= Responsive Mode ============*/
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .post-control-button .btn-control {
     display: inline-block; }
   .post .control-block-button {
@@ -6385,7 +6385,7 @@ ol ol li {
     .post-additional-info > * + * {
       margin-top: 10px; }
     .post-additional-info > *:last-child {
-      margin-left: 0; } }
+      margin-left: 0; } } */
 
 /*------------- #COMMENTS-LIST --------------*/
 .comments-list {
