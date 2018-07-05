@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block title %}Mindwell — дом мыслей{% endblock %}
 {% block body_class %}class="landing-page"{% endblock %}
 {% block header %}
@@ -84,7 +84,7 @@
 									<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
 										<div class="form-group label-floating is-empty">
 											<label class="control-label">Логин</label>
-											<input class="form-control" maxlength="20" title="Разрешены латинские буквы и цифры" name="name" type="text" required />
+											<input class="form-control" maxlength="20" title="Разрешены латинские буквы и цифры" data-toggle="tooltip" data-placement="top" name="name" type="text" required />
 										</div>
 										<div class="form-group label-floating is-empty">
 											<label class="control-label">Адрес почты</label>
@@ -92,7 +92,7 @@
 										</div>
 										<div class="form-group label-floating is-empty">
 											<label class="control-label">Пароль</label>
-											<input class="form-control" title="Не менее 6 символов" name="password" type="password" required />
+											<input class="form-control" title="Не менее 6 символов" data-toggle="tooltip" data-placement="top" name="password" type="password" required />
 										</div>
 										<div class="form-group label-floating is-empty">
 											<label class="control-label">Инвайт</label>
