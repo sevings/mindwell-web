@@ -1,6 +1,6 @@
 {% for entry in entries %}
     <div id="post{{ entry.id }}">
-        {% include "entry_base.html" %}
+        {% include "entry_base.html" with cutEntry = false %}
     </div>
 {% endfor %}
 {% include "nav.html" %}

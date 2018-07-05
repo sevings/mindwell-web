@@ -1,6 +1,6 @@
 {% for entry in entries %}
     <div id="post{{ entry.id }}" class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 sorting-item">
-        {% include "entry_base.html" %}
+        {% include "entry_base.html" with cutEntry = true %}
     </div>
 {% endfor %}
 {% include "nav.html" %}
