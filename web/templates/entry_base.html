@@ -34,7 +34,11 @@
         
         <div class="post-additional-info inline-items" data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}">
     
-            {% if entry.rating.isVotable %}
+            {% if entry.privacy == "me" %}
+                <div class="post-add-icon inline-items" title="Эта запись видна только тебе">
+                    <i class="far fa-eye-slash fa-2x"></i>
+                </div>
+            {% elif entry.rating.isVotable %}
 
                 {% if entry.rating.vote == "ban" %}<div{% else %}<a href="#"{% endif %} 
                         class="post-add-icon inline-items post-down"
