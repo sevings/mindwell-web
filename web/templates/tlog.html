@@ -87,14 +87,24 @@
                         {% endif %}
                         {% if profile.counts.followers %}
                             <li>
-                                <a href="/users/{{ profile.name }}/followers" class="title">Подписчики:</a>
-                                <a href="/users/{{ profile.name }}/followers" class="text">{{ profile.counts.followers }}</a>
+                                {% if profile.privacy != "followers" || profile.relations.fromMe == "followed" || me.id == profile.id%}
+                                    <a href="/users/{{ profile.name }}/followers" class="title">Подписчики:</a>
+                                    <a href="/users/{{ profile.name }}/followers" class="text">{{ profile.counts.followers }}</a>
+                                {% else %}
+                                    <span class="title">Подписчики:</span>
+                                    <span class="text">{{ profile.counts.followers }}</span>
+                                {% endif %}
                             </li>
                         {% endif %}
                         {% if profile.counts.followings %}
                             <li>
-                                <a href="/users/{{ profile.name }}/followings" class="title">Подписки:</a>
-                                <a href="/users/{{ profile.name }}/followings" class="text">{{ profile.counts.followings }}</a>
+                                {% if profile.privacy != "followers" || profile.relations.fromMe == "followed" || me.id == profile.id%}
+                                    <a href="/users/{{ profile.name }}/followings" class="title">Подписки:</a>
+                                    <a href="/users/{{ profile.name }}/followings" class="text">{{ profile.counts.followings }}</a>
+                                {% else %}
+                                    <span class="title">Подписки:</span>
+                                    <span class="text">{{ profile.counts.followings }}</span>
+                                {% endif %}
                             </li>
                         {% endif %}
                         {% if profile.counts.ignored %}
@@ -110,8 +120,13 @@
                         {% endif %}
                         {% if profile.counts.invited %}
                             <li>
-                                <a href="/users/{{ profile.name }}/invited" class="title">Приглашенные:</a>
-                                <a href="/users/{{ profile.name }}/invited" class="text">{{ profile.counts.invited }}</a>
+                                {% if profile.privacy != "followers" || profile.relations.fromMe == "followed" || me.id == profile.id%}
+                                    <a href="/users/{{ profile.name }}/invited" class="title">Приглашенные:</a>
+                                    <a href="/users/{{ profile.name }}/invited" class="text">{{ profile.counts.invited }}</a>
+                                {% else %}
+                                    <span class="title">Приглашенные:</span>
+                                    <span class="text">{{ profile.counts.invited }}</span>
+                                {% endif %}
                             </li>
                         {% endif %}
                     </ul>
