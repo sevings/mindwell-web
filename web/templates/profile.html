@@ -191,6 +191,12 @@
                             <option value="male" {% if me.gender == "male" %}selected{% endif %}>мужской</option>
                         </select>
 
+                        <label class="control-label">Приватность тлога</label>
+                        <select class="selectpicker form-control" name="privacy">
+                            <option value="all" {% if me.privacy == "all" %}selected{% endif %}>открыт для всех</option>
+                            <option value="followers" {% if me.privacy == "followers" %}selected{% endif %}>открыт только подписчикам</option>
+                        </select>
+
                         <label class="control-label">Страна</label>
                         <input class="form-control" maxlength="50" type="text" name="country" value="{{ me.country }}">
 
@@ -200,12 +206,6 @@
                         {% comment %} <input type="checkbox" name="isDaylog" {% if isDaylog %}checked{% endif %}> Тлогодень<br /> 
                         <input type="checkbox" name="showInTops" {% if showInTops %}checked{% endif %}> Разрешить показывать в топах<br />  {% endcomment %}
                        
-                        <label class="control-label">Приватность тлога</label>
-                        <select class="selectpicker form-control" name="privacy">
-                            <option value="all" {% if me.privacy == "all" %}selected{% endif %}>открыт для всех</option>
-                            <option value="followers" {% if me.privacy == "followers" %}selected{% endif %}>открыт только подписчикам</option>
-                        </select>
-
                         <input type="submit" class="btn btn-primary btn-lg full-width" value="Сохранить" />
                     </form>
 
