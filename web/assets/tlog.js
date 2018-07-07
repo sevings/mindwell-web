@@ -140,3 +140,9 @@ $("#verify-email a").click(function() {
 
     return false
 })
+
+$(".file-upload__input").change(function(){
+    var input = $(this)
+    var fileName = input.val().split('/').pop().split('\\').pop();
+    input.prev().text(fileName)
+})
