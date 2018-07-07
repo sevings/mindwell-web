@@ -42,7 +42,7 @@
                                             </li>
                                         {% endif %}
                                     {% endif %}
-                                    {% if me.id != profile.id %}
+                                    {% comment %} {% if me.id != profile.id %}
                                         <div class="more">
 											<svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
 											<ul class="more-dropdown more-with-triangle">
@@ -51,7 +51,7 @@
 												</li>
 											</ul>
 										</div>
-                                    {% endif %}
+                                    {% endif %} {% endcomment %}
 								</ul>
 							</div>
                         </div>

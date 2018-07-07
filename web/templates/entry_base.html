@@ -35,7 +35,7 @@
         <div class="post-additional-info inline-items" data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}">
     
             {% if entry.privacy == "me" %}
-                <div class="post-add-icon inline-items" title="Эта запись видна только тебе">
+                <div class="post-add-icon inline-items" title="Эта запись видна только тебе" data-toggle="tooltip" data-placement="top">
                     <i class="far fa-eye-slash fa-2x"></i>
                 </div>
             {% elif entry.rating.isVotable %}
