@@ -2,10 +2,10 @@
 {% block title %}{{ profile.showName }} в Mindwell{% endblock %}
 {% block scripts %}
     <script src="/assets/feed.js?d=20180701"></script>
-    <script src="/assets/tlog.js?d=20180701"></script>
+    <script src="/assets/tlog.js?d=20180708"></script>
 {% endblock %}
 {% block body %}
-<div id="profile" class="container" data-id="{{ profile.id }}" data-privacy="{{ profile.privacy }}" 
+<div id="profile" class="container" data-name="{{ profile.name }}" data-privacy="{{ profile.privacy }}" 
         data-rel-to-me="{{ profile.relations.toMe }}" data-rel-from-me="{{ profile.relations.fromMe }}">
 	<div class="row">
 		<div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">

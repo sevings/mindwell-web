@@ -27,9 +27,16 @@ func main() {
 	router.GET("/", rootHandler)
 	router.GET("/index.html", indexHandler(mdw))
 
-	router.GET("/logout", logoutHandler(mdw))
-	router.POST("/login", loginHandler(mdw))
-	router.POST("/register", registerHandler(mdw))
+	router.GET("/account/logout", logoutHandler(mdw))
+	router.POST("/account/login", accountHandler(mdw))
+	router.POST("/account/register", accountHandler(mdw))
+
+	router.POST("/account/verification", proxyHandler(mdw))
+	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
+	router.GET("/account/invites", invitesHandler(mdw))
+
+	router.GET("/account/password", passwordHandler(mdw))
+	router.POST("/account/password", proxyHandler(mdw))
 
 	router.GET("/live", liveHandler(mdw))
 	router.GET("/friends", friendsHandler(mdw))
@@ -44,17 +51,10 @@ func main() {
 	router.POST("/profile/avatar", avatarSaverHandler(mdw))
 	router.POST("/profile/cover", coverSaverHandler(mdw))
 
-	router.POST("/account/verification", proxyHandler(mdw))
-	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
-	router.GET("/account/invites", invitesHandler(mdw))
-
-	router.GET("/account/password", passwordHandler(mdw))
-	router.POST("/account/password", proxyHandler(mdw))
-
 	router.GET("/design", designEditorHandler(mdw))
 	router.POST("/design", designSaverHandler(mdw))
 
-	router.GET("/post", editorHandler(mdw))
+	router.GET("/editor", editorHandler(mdw))
 	router.POST("/entries", postHandler(mdw))
 
 	router.GET("/entries/:id/edit", editorExistingHandler(mdw))
@@ -66,18 +66,18 @@ func main() {
 	router.GET("/entries/:id/comments", commentsHandler(mdw))
 	router.POST("/entries/:id/comments", postCommentHandler(mdw))
 
-	router.PUT("/me/online", meOnlineHandler(mdw))
+	router.PUT("/me/online", proxyHandler(mdw))
 
 	router.PUT("/entries/:id/vote", proxyHandler(mdw))
 	router.DELETE("/entries/:id/vote", proxyHandler(mdw))
 
-	router.GET("/relations/to/:id", proxyHandler(mdw))
-	router.PUT("/relations/to/:id", proxyHandler(mdw))
-	router.DELETE("/relations/to/:id", proxyHandler(mdw))
+	router.GET("/relations/to/:name", proxyHandler(mdw))
+	router.PUT("/relations/to/:name", proxyHandler(mdw))
+	router.DELETE("/relations/to/:name", proxyHandler(mdw))
 
-	router.GET("/relations/from/:id", proxyHandler(mdw))
-	router.PUT("/relations/from/:id", proxyHandler(mdw))
-	router.DELETE("/relations/from/:id", proxyHandler(mdw))
+	router.GET("/relations/from/:name", proxyHandler(mdw))
+	router.PUT("/relations/from/:name", proxyHandler(mdw))
+	router.DELETE("/relations/from/:name", proxyHandler(mdw))
 
 	router.NoRoute(error404Handler(mdw))
 
@@ -133,18 +133,10 @@ func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func loginHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return accountHandler(mdw, "/account/login")
-}
-
-func registerHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return accountHandler(mdw, "/account/register")
-}
-
-func accountHandler(mdw *utils.Mindwell, path string) func(ctx *gin.Context) {
+func accountHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardToNotAuthorized(path)
+		api.ForwardNotAuthorized()
 		if api.Error() != nil {
 			return
 		}
@@ -158,10 +150,36 @@ func accountHandler(mdw *utils.Mindwell, path string) func(ctx *gin.Context) {
 			Value:    token,
 			Expires:  exp,
 			HttpOnly: true,
+			Path:     "/",
 		}
 		http.SetCookie(ctx.Writer, &cookie)
 
 		api.Redirect("/live")
+	}
+}
+
+func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardNotAuthorized()
+		api.WriteTemplate("verified")
+	}
+}
+
+func invitesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+		api.SetMe()
+		api.WriteTemplate("invites")
+	}
+}
+
+func passwordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.SetMe()
+		api.WriteTemplate("password")
 	}
 }
 
@@ -197,19 +215,11 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		name := ctx.Param("name")
 
-		api := utils.NewRequest(mdw, ctx)
-		api.Get("/users/byName/" + name)
-		id, ok := api.Data()["id"].(json.Number)
-		if !ok {
-			api.WriteTemplate("error")
-			return
-		}
-
 		clbk := func(api *utils.APIRequest) {
-			api.SetField("profile", "/users/byName/"+name)
+			api.SetField("profile", "/users/"+name)
 		}
 
-		handle := feedHandler(mdw, "/entries/users/"+id.String(), "/users/"+name, "tlog", "tlog_page", clbk)
+		handle := feedHandler(mdw, "/users/"+name+"/tlog", "/users/"+name, "tlog", "tlog_page", clbk)
 		handle(ctx)
 	}
 }
@@ -217,11 +227,9 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		name := ctx.Param("name")
-		path := "/users/byName/" + name + "/" + ctx.Param("relation")
-		api.ForwardTo(path)
+		api.Forward()
 		api.SetMe()
-		api.SetField("profile", "/users/byName/"+name)
+		api.SetField("profile", "/users/"+ctx.Param("name"))
 		api.WriteTemplate("users")
 	}
 }
@@ -229,8 +237,7 @@ func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func meUsersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		path := "/users/me/" + ctx.Param("relation")
-		api.ForwardTo(path)
+		api.Forward()
 		api.SetMe()
 		api.WriteTemplate("users")
 	}
@@ -241,13 +248,13 @@ func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("profile", api.Data()["me"])
 	}
 
-	return feedHandler(mdw, "/entries/users/me", "/me", "tlog", "tlog_page", clbk)
+	return feedHandler(mdw, "/me/tlog", "/me", "tlog", "tlog_page", clbk)
 }
 
 func meSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.MethodForwardTo("PUT", "/users/me")
+		api.MethodForwardTo("PUT", "/me")
 		api.Redirect("/me")
 	}
 }
@@ -255,7 +262,7 @@ func meSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func avatarSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.MethodForwardToImages("PUT", "/users/me/avatar")
+		api.MethodForwardToImages("PUT", "/me/avatar")
 		api.Redirect("/me")
 	}
 }
@@ -263,33 +270,8 @@ func avatarSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func coverSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.MethodForwardToImages("PUT", "/users/me/cover")
+		api.MethodForwardToImages("PUT", "/me/cover")
 		api.Redirect("/me")
-	}
-}
-
-func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.ForwardToNotAuthorized(ctx.Request.URL.Path)
-		api.WriteTemplate("verified")
-	}
-}
-
-func invitesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.Forward()
-		api.SetMe()
-		api.WriteTemplate("invites")
-	}
-}
-
-func passwordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.SetMe()
-		api.WriteTemplate("password")
 	}
 }
 
@@ -320,7 +302,7 @@ func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo("/entries/users/me")
+		api.ForwardTo("/me/tlog")
 		api.Redirect("/me")
 	}
 }
@@ -341,8 +323,8 @@ func writeEntry(api *utils.APIRequest) {
 
 	if entry != nil {
 		author := entry["author"].(map[string]interface{})
-		id := author["id"].(json.Number)
-		api.SetField("profile", "/users/"+string(id))
+		name := author["name"].(string)
+		api.SetField("profile", "/users/"+name)
 
 		entryID := entry["id"].(json.Number).String()
 		cmts := entry["comments"].(map[string]interface{})
@@ -399,14 +381,6 @@ func proxyHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
-		api.WriteResponse()
-	}
-}
-
-func meOnlineHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo("/users/me/online")
 		api.WriteResponse()
 	}
 }

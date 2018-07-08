@@ -20,7 +20,7 @@ $("#cancel-rel").click(function() {
 
 function setRelationFromMe(relation) {
     var profile = $("#profile")
-    var id = profile.data("id")
+    var name = profile.data("name")
     var relationFromMe = profile.data("relFromMe")
 
     var method
@@ -30,11 +30,11 @@ function setRelationFromMe(relation) {
         method = "PUT"
 
     $.ajax({
-        url: "/relations/to/" + id + "?r=" + relation,
+        url: "/relations/to/" + name + "?r=" + relation,
         method: method,
         dataType: "json",
         success: function(resp) {
-            profile.data("id", resp.to)
+            profile.data("name", resp.to)
             profile.data("relFromMe", resp.relation)
 
             updateRelations()
@@ -48,14 +48,14 @@ function setRelationFromMe(relation) {
 
 function handleFriendRequest(method) {
     var profile = $("#profile")
-    var id = profile.data("id")
+    var name = profile.data("name")
 
     $.ajax({
-        url: "/relations/from/" + id,
+        url: "/relations/from/" + name,
         method: method,
         dataType: "json",
         success: function(resp) {
-            profile.data("id", resp.from)
+            profile.data("name", resp.from)
             profile.data("relToMe", resp.relation)
 
             updateRelations()

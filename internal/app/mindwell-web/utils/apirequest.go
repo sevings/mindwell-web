@@ -245,6 +245,10 @@ func (api *APIRequest) ForwardToNotAuthorized(path string) {
 	}
 }
 
+func (api *APIRequest) ForwardNotAuthorized() {
+	api.ForwardToNotAuthorized(api.ctx.Request.URL.Path)
+}
+
 func (api *APIRequest) ForwardToNoCookie(path string) {
 	req := api.copyRequest(path)
 	api.do(req)
@@ -272,7 +276,7 @@ func (api *APIRequest) SetField(key, path string) {
 }
 
 func (api *APIRequest) SetMe() {
-	api.SetField("me", "/users/me")
+	api.SetField("me", "/me")
 }
 
 func (api *APIRequest) readResponse() []byte {
