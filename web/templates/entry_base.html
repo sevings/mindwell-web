@@ -41,20 +41,20 @@
             {% elif entry.rating.isVotable %}
 
                 {% if entry.rating.vote == "ban" %}<div{% else %}<a href="#"{% endif %} 
-                        class="post-add-icon inline-items post-down"
-                        title="{{ entry.rating.downCount|default:0 }} против, {{ entry.rating.upCount|default:0 }} за. 
+                        class="post-add-icon inline-items post-up"
+                        title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против. 
 Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
-                    <i class="{% if entry.rating.vote == "neg" || entry.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-down fa-2x"></i>
+                    <i class="{% if entry.rating.vote == "pos" || entry.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-up fa-2x"></i>
                 {% if entry.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
 
-                <span class="post-rating" title="{{ entry.rating.downCount|default:0 }} против, {{ entry.rating.upCount|default:0 }} за. 
+                <span class="post-rating" title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против. 
 Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">{{ entry.rating.upCount|default:0 - entry.rating.downCount|default:0 }}</span>
 
                 {% if entry.rating.vote == "ban" %}<div{% else %}<a href="#"{% endif %} 
-                        class="post-add-icon inline-items post-up"
-                        title="{{ entry.rating.downCount|default:0 }} против, {{ entry.rating.upCount|default:0 }} за. 
+                        class="post-add-icon inline-items post-down"
+                        title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против. 
 Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
-                    <i class="{% if entry.rating.vote == "pos" || entry.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-up fa-2x"></i>
+                    <i class="{% if entry.rating.vote == "neg" || entry.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-down fa-2x"></i>
                 {% if entry.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
 
             {% endif %}
