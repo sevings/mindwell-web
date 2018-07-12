@@ -9,11 +9,11 @@ $("a.post-up").click(function() {
 })
 
 function vote(counter, positive) {
-    var info = counter.parents(".post-additional-info")
+    var info = counter.parents(".post")
     if(info.data("enabled") == false)
         return
 
-    info.data("enabled", true)
+    info.data("enabled", false)
 
     var id = info.data("id")
     var vote = info.data("vote")
@@ -78,6 +78,42 @@ function deletePost(id) {
         },
     })
 }
+
+$("a.watch-post").click(function() {
+    var link = $(this)
+    var info = link.parents(".post")
+    if(info.data("enabled") == false)
+        return
+
+    info.data("enabled", false)
+
+    var id = info.data("id")
+    var watching = !!info.data("watching")
+
+    $.ajax({
+        url: "/entries/" + id + "/watching",
+        method: watching ? "DELETE" : "PUT",
+        dataType: "json",
+        success: function(resp) {
+            watching = !!resp.isWatching
+            info.data("watching", watching)
+
+            if(watching)
+                link.html("Отписаться от&nbsp;комментариев")
+            else
+                link.html("Подписаться на&nbsp;комментарии")
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            alert(resp.message)
+        },
+        complete: function() {
+            info.data("enabled", true)
+        },
+    })
+
+    return false
+})
 
 function loadComments(href) {
     $.ajax({

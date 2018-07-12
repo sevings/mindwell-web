@@ -1,5 +1,5 @@
 <div class="ui-block">
-    <article class="hentry post">
+    <article class="hentry post" data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}" data-watching="{{ entry.isWatching }}">
         <div class="post__author author vcard inline-items">
             
             <a href="/users/{{ entry.author.name }}"><img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}"></a>
@@ -13,18 +13,27 @@
                 </div>
             </div>
     
-            {% if entry.author.id == me.id %}
-                <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
-                    <ul class="more-dropdown">
+            <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
+                <ul class="more-dropdown">
+                    <li>
+                        <a href="#" class="watch-post">
+                            {% if entry.isWatching %}
+                                Отписаться от&nbsp;комментариев
+                            {% else %}
+                                Подписаться на&nbsp;комментарии
+                            {% endif%}
+                        </a>
+                    </li>
+                    {% if entry.author.id == me.id %}
                         <li>
                             <a href="/entries/{{ entry.id }}/edit">Редактировать</a>
                         </li>
                         <li>
                             <a href="#" onclick="deletePost({{ entry.id }});return false;">Удалить</a>
                         </li>
-                    </ul>
-                </div>
-            {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
     
         </div>
     
@@ -32,7 +41,7 @@
     
         <div>{% if cutEntry && entry.cutContent %}{{ entry.cutContent|safe }}{% else %}{{ entry.content|safe }}{% endif %}</div>
         
-        <div class="post-additional-info inline-items" data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}">
+        <div class="post-additional-info inline-items">
     
             {% if entry.privacy == "me" %}
                 <div class="post-add-icon inline-items" title="Эта запись видна только тебе" data-toggle="tooltip" data-placement="top">
