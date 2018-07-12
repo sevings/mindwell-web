@@ -39,7 +39,7 @@
     
         <a href="/entries/{{ entry.id }}" class="h2 post-title">{% if cutEntry && entry.cutTitle %}{{ entry.cutTitle }}{% else %}{{ entry.title }}{% endif %}</a>
     
-        <div>{% if cutEntry && entry.cutContent %}{{ entry.cutContent|safe }}{% else %}{{ entry.content|safe }}{% endif %}</div>
+        <div class="post-content">{% if cutEntry && entry.cutContent %}{{ entry.cutContent|safe }}{% else %}{{ entry.content|safe }}{% endif %}</div>
         
         <div class="post-additional-info inline-items">
     

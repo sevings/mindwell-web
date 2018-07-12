@@ -48,3 +48,7 @@ div.post-add-icon:hover {
 .post .post__date a:hover {
     color: #ff5e3a;
 }
+
+.post-content, .comment-content {
+    overflow-wrap: break-word;
+}
