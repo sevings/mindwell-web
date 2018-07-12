@@ -95,7 +95,7 @@
                                 {% if profile.isOnline %}
                                     Онлайн
                                 {% else %}
-                                    Был{% if profile.gender == "female" %}а{% endif %} в сети <time class="lcase" datetime="{{ profile.lastSeenAt }}">{{ profile.lastSeenAt|floatformat:0 }}</time>
+                                    Заходил{% if profile.gender == "female" %}а{% endif %} <time class="lcase" datetime="{{ profile.lastSeenAt }}">{{ profile.lastSeenAt|floatformat:0 }}</time>
                                 {% endif %}
                             </div>
 						</div>

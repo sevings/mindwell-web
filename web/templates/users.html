@@ -49,7 +49,7 @@
                                         {% if user.isOnline %}
                                             Онлайн
                                         {% else %}
-                                            Был{% if user.gender == "female" %}а{% endif %} в сети <time class="lcase" datetime="{{ user.lastSeenAt }}">{{ user.lastSeenAt|floatformat:0 }}</time>
+                                            Заходил{% if user.gender == "female" %}а{% endif %} <time class="lcase" datetime="{{ user.lastSeenAt }}">{{ user.lastSeenAt|floatformat:0 }}</time>
                                         {% endif %}
                                     </div>
                                 </div>
