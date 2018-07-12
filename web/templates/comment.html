@@ -1,4 +1,4 @@
-<li class="comment-item">
+<li class="comment-item" data-show-name="{{ comment.author.showName }}">
     <div class="post__author author vcard inline-items">
         <img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}">
 
@@ -13,4 +13,6 @@
     </div>
 
     <div class="comment-content">{{ comment.content|linebreaks|safe }}</div>
+
+    <a href="#" class="reply">Ответить</a>
 </li>

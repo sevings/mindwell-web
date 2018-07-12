@@ -144,3 +144,15 @@ $("#post-comment").click(function() {
 
     return false;
 })
+
+$(".comment-item .reply").click(function() { 
+    var showName =  $(this).parents(".comment-item").data("showName")
+    var area = $("#comment-editor textarea")
+    area.val(function(i, val){
+        return showName + ", " + val;
+    })
+
+    $("html, body").animate({ scrollTop: area.offset().top }, 500);
+
+    return false
+})
