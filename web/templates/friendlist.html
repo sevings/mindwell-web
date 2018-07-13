@@ -1,0 +1,33 @@
+{% extends "profile.html" %}
+{% block title %}{{ subject.showName }}{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+			<div class="ui-block responsive-flex">
+				<div class="ui-block-title">
+					<div class="h6 title">
+                        {% if relation == "followers" %}
+                            Подписчики {{ subject.showName }}
+                        {% elif relation == "followings" %}
+                            Подписки {{ subject.showName }}
+                        {% elif relation == "requested" %}
+                            Заявки {{ subject.showName }}
+                        {% elif relation == "ignored" %}
+                            Заблокированные пользователи
+                        {% elif relation == "invited" %}
+                            Приглашенные {{ subject.showName }}
+                        {% endif %}                        
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="row sorting-container" data-layout="masonry">
+        {% include "users_page.html" %}
+    </div>
+</div>
+{% endblock %}

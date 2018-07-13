@@ -41,6 +41,7 @@ func main() {
 	router.GET("/live", liveHandler(mdw))
 	router.GET("/friends", friendsHandler(mdw))
 
+	router.GET("/users", topsHandler(mdw))
 	router.GET("/users/:name", tlogHandler(mdw))
 	router.GET("/users/:name/:relation", usersHandler(mdw))
 
@@ -214,6 +215,15 @@ func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return feedHandler(mdw, "/entries/friends", "/friends", "friends", "feed_page", nil)
 }
 
+func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+		api.SetMe()
+		api.WriteTemplate("top_users")
+	}
+}
+
 func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		name := ctx.Param("name")
@@ -233,7 +243,7 @@ func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.Forward()
 		api.SetMe()
 		api.SetField("profile", "/users/"+ctx.Param("name"))
-		api.WriteTemplate("users")
+		api.WriteTemplate("friendlist")
 	}
 }
 
@@ -242,7 +252,7 @@ func meUsersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
 		api.SetMe()
-		api.WriteTemplate("users")
+		api.WriteTemplate("friendlist")
 	}
 }
 

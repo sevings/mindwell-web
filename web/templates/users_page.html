@@ -1,0 +1,51 @@
+{% for user in users %}
+<div class="col col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 sorting-item">
+    <div class="ui-block">
+        <div class="friend-item">
+            <div class="friend-header-thumb">
+                <img src="{{ user.cover.x318 }}" alt="{{ user.showName }}" width="318" height="122">
+            </div>
+        
+            <div class="friend-item-content">
+        
+                <div class="friend-avatar">
+                    <div class="author-thumb">
+                        <a href="/users/{{ user.name }}">
+                            <img src="{{ user.avatar.x92 }}" alt="{{ user.showName }}" width="92" height="92">
+                        </a>
+                    </div>
+                    <div class="author-content">
+                        <a href="/users/{{ user.name }}" class="h5 author-name">{{ user.showName }}</a>
+                        <div class="country">
+                            {% if user.isOnline %}
+                                Онлайн
+                            {% else %}
+                                Заходил{% if user.gender == "female" %}а{% endif %} <time class="lcase" datetime="{{ user.lastSeenAt }}">{{ user.lastSeenAt|floatformat:0 }}</time>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="friend-count">
+                    <a href="/users/{{ user.name }}" class="friend-count-item">
+                        <div class="h6">{{ user.counts.entries|default:0 }}</div>
+                        <div class="title">Записи</div>
+                    </a>
+                    <a href="/users/{{ user.name }}/followers" class="friend-count-item">
+                        <div class="h6">{{ user.counts.followers|default:0 }}</div>
+                        <div class="title">Подписчики</div>
+                    </a>
+                    <a href="/users/{{ user.name }}" class="friend-count-item">
+                        <div class="h6">{{ user.karma|default:0|floatformat:2 }}</div>
+                        <div class="title">Карма</div>
+                    </a>
+                </div>
+
+                <p class="friend-about">{{ user.title }}</p>
+            </div>
+        </div>		
+    </div>          
+</div>
+{% empty %}
+<h6 class="title hcenter">Здесь никого нет</h6>
+{% endfor %}  
