@@ -1,6 +1,6 @@
 <li class="comment-item" data-show-name="{{ comment.author.showName }}">
     <div class="post__author author vcard inline-items">
-        <img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}">
+        <a href="/users/{{ comment.author.name }}"><img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}"></a>
 
         <div class="author-date">
             <a class="h6 post__author-name fn" href="/users/{{ comment.author.name }}">{{ comment.author.showName }}</a>
