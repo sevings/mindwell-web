@@ -37,7 +37,9 @@
     
         </div>
     
-        <a href="/entries/{{ entry.id }}" class="h2 post-title">{% if cutEntry && entry.cutTitle %}{{ entry.cutTitle }}{% else %}{{ entry.title }}{% endif %}</a>
+        {% if cutEntry %}<a href="/entries/{{ entry.id }}"{% else %}<span{% endif %}
+            class="h2 post-title">{% if cutEntry && entry.cutTitle %}{{ entry.cutTitle }}{% else %}{{ entry.title }}{% endif %}
+        {% if cutEntry %}</a>{% else %}</span>{% endif %}
     
         <div class="post-content">{% if cutEntry && entry.cutContent %}{{ entry.cutContent|safe }}{% else %}{{ entry.content|safe }}{% endif %}</div>
         

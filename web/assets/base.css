@@ -2,10 +2,6 @@
     max-width: 100%;
 }
 
-.post p, .comments-list p {
-    color: #515365;
-}
-
 .lcase {
     text-transform: lowercase;
 }
@@ -51,4 +47,11 @@ div.post-add-icon:hover {
 
 .post-content, .comment-content {
     overflow-wrap: break-word;
+    color: #515365;
+    text-align: justify;
+}
+
+.post-content p, .comment-content p {
+    text-indent: 1em;
+    margin: 1em 0;
 }
