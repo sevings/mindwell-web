@@ -83,7 +83,8 @@ function formatTimeElements(context) {
     $("time", context).each(function() {
         var unix = $(this).attr("datetime")
         var text = formatDate(unix)
-        $(this).text(text)
+        var title = new Date(unix * 1000).toLocaleString()
+        $(this).text(text).attr("title", title)
     })    
 }
 
