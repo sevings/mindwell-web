@@ -20,7 +20,7 @@
                             {% if user.isOnline %}
                                 Онлайн
                             {% else %}
-                                Заходил{% if user.gender == "female" %}а{% endif %} <time class="lcase" datetime="{{ user.lastSeenAt }}"></time>
+                                Заходил{% if user.gender == "female" %}а{% endif %} <time class="text-lowercase" datetime="{{ user.lastSeenAt }}"></time>
                             {% endif %}
                         </div>
                     </div>
