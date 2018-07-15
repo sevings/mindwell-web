@@ -8,7 +8,7 @@
         <div class="post__author author vcard inline-items">
             <img src="{{ me.avatar.x42 }}" alt="{{ me.showName }}">
             <div class="form-group">
-                <textarea class="form-control" name="content" placeholder="Написать комментарий…" required></textarea>
+                <textarea class="form-control" name="content" maxlength="1000" placeholder="Написать комментарий…" required></textarea>
             </div>
         </div>
         <button id="post-comment" class="btn btn-md-2 btn-primary">Отправить</button>

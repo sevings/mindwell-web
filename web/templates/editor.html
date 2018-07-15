@@ -21,12 +21,12 @@
 
                             <form name="editor" action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post">
                                 <div class="form-group">
-                                    <textarea class="form-control" rows="2" cols="80" 
+                                    <textarea class="form-control" rows="2" cols="80" maxlength="500"
                                         name="title" placeholder="Заголовок поста">{{ title }}</textarea>
                                 </div>
 
                                 <div id="editormd" class="form-group">
-                                    <textarea class="form-control" rows="20" cols="80" 
+                                    <textarea class="form-control" rows="20" cols="80" maxlength="30000"
                                         name="content" placeholder="Текст поста" required>{{ editContent }}</textarea>
                                 </div>
 
