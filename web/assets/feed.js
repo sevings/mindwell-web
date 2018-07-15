@@ -11,7 +11,7 @@ $("a.post-up").click(function() {
 function vote(counter, positive) {
     var info = counter.parents(".post")
     if(info.data("enabled") == false)
-        return
+        return false
 
     info.data("enabled", false)
 
@@ -61,7 +61,7 @@ function vote(counter, positive) {
 
 function deletePost(id) {
     if(!confirm("Пост будет удален навсегда."))
-        return
+        return false
 
     $.ajax({
         url: "/entries/" + id,
@@ -83,7 +83,7 @@ $("a.watch-post").click(function() {
     var link = $(this)
     var info = link.parents(".post")
     if(info.data("enabled") == false)
-        return
+        return false
 
     info.data("enabled", false)
 
@@ -156,3 +156,22 @@ $(".comment-item .reply").click(function() {
 
     return false
 })
+
+function deleteComment(id) {
+    if(!confirm("Комментарий будет удален навсегда."))
+        return false
+
+    $.ajax({
+        url: "/comments/" + id,
+        method: "DELETE",
+        success: function() {
+            $("#comment" + id).remove()
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            alert(resp.message)
+        },
+    })
+
+    return false
+}

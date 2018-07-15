@@ -1,4 +1,4 @@
-<li class="comment-item" data-show-name="{{ comment.author.showName }}">
+<li id="comment{{ comment.id }}" class="comment-item" data-show-name="{{ comment.author.showName }}">
     <div class="post__author author vcard inline-items">
         <a href="/users/{{ comment.author.name }}"><img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}"></a>
 
@@ -8,6 +8,16 @@
                 <time class="published" datetime="{{ comment.createdAt }}"></time>
             </div>
         </div>
+
+        {% if entry.author.id == me.id %}
+            <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
+                <ul class="more-dropdown">
+                    <li>
+                        <a href="#" onclick="return deleteComment({{ comment.id }})">Удалить</a>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
     </div>
 
     <div class="comment-content">{{ comment.content|linebreaks|safe }}</div>
