@@ -47,7 +47,7 @@ div.post-add-icon:hover {
     text-align: justify;
 }
 
-.post-content p, .comment-content p {
+.post-content p {
     text-indent: 1em;
     margin: 1em 0;
 }
