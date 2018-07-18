@@ -148,6 +148,9 @@ $("#post-comment").click(function() {
 function replyComment(showName) { 
     var area = $("#comment-editor textarea")
     area.val(function(i, val){
+        if(val.includes(showName))
+            return val
+
         return showName + ", " + val;
     })
 
