@@ -53,7 +53,7 @@ div.post-add-icon:hover {
 }
 
 .content-bg-wrap {
-	background-size: cover;
+	background-size: auto 100%;
 }
 
 .header--standard > .container > .header--standard-wrap {
