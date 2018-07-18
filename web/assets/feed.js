@@ -145,8 +145,7 @@ $("#post-comment").click(function() {
     return false;
 })
 
-$(".comment-item .reply").click(function() { 
-    var showName =  $(this).parents(".comment-item").data("showName")
+function replyComment(showName) { 
     var area = $("#comment-editor textarea")
     area.val(function(i, val){
         return showName + ", " + val;
@@ -155,7 +154,7 @@ $(".comment-item .reply").click(function() {
     $("html, body").animate({ scrollTop: area.offset().top }, 500);
 
     return false
-})
+}
 
 function deleteComment(id) {
     if(!confirm("Комментарий будет удален навсегда."))
