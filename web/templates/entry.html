@@ -1,6 +1,17 @@
 {% extends "base_auth.html" %}
 {% block title %} 
-    {% if entry.title %} {{ entry.title }} {% else %} {{ profile.showName }} в Mindwell{% endif %}    
+    {% if entry.cutTitle %}
+        {{ entry.cutTitle }}
+    {% elif entry.title %}
+        {{ entry.title }}
+    {% elif entry.cutContent %}
+        {{ entry.cutContent|stringformat:"%.60s" }}
+    {% elif entry.content %}
+        {{ entry.content|stringformat:"%.60s" }}
+    {% else %}
+        {{ profile.showName }}
+    {% endif %}    
+    — Mindwell
 {% endblock %}
 {% block scripts %}
     <script src="/assets/feed.js?d=20180715"></script>

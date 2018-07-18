@@ -1,5 +1,18 @@
 {% extends "profile.html" %}
-{% block title %}{{ subject.showName }}{% endblock %}
+{% block title %}
+    {% if relation == "followers" %}
+        Подписчики {{ subject.showName }}
+    {% elif relation == "followings" %}
+        Подписки {{ subject.showName }}
+    {% elif relation == "requested" %}
+        Заявки {{ subject.showName }}
+    {% elif relation == "ignored" %}
+        Заблокированные пользователи
+    {% elif relation == "invited" %}
+        Приглашенные {{ subject.showName }}
+    {% endif %}
+    — Mindwell
+{% endblock %}
 {% block content %}
 <div class="container">
 	<div class="row">
