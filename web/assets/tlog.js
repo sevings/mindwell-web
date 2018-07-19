@@ -123,24 +123,6 @@ function updateRelations() {
 
 $(updateRelations)
 
-$("#verify-email a").click(function() { 
-    var p = $("#verify-email")
-    $.ajax({
-        url: "/account/verification",
-        method: "POST",
-        success: function() {
-            p.text("Письмо с кодом подтверждения отправлено на почту.")
-            p.removeClass("alert-danger").addClass("alert-success")
-        },
-        error: function(req) {
-            var resp = JSON.parse(req.responseText)
-            p.text("При выполнении запроса произошла ошибка: " + resp.message)
-        },
-    })
-
-    return false
-})
-
 $(".file-upload__input").change(function(){
     var input = $(this)
     var fileName = input.val().split('/').pop().split('\\').pop();

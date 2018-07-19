@@ -1,0 +1,50 @@
+{% extends "settings.html" %}
+{% block title %}
+    Настройка уведомлений — Mindwell
+{% endblock %}
+{% block page %}
+    <div class="ui-block-title">
+        <h6 class="title">Настройка уведомлений</h6>
+    </div>
+
+    <div class="ui-block-content">
+        <form id="email-settings" action="/account/settings/email" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <p>Присылать мне на почту уведомление, когда кто-то…</p>
+
+                    <div class="switcher-block">
+                        <div class="h6 title">комментирует запись, за которой я слежу</div>
+                        <div class="togglebutton">
+                            <label>
+                                <input type="checkbox" name="comments" {% if comments %}checked{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="switcher-block">
+                        <div class="h6 title">подписывается на мой тлог</div>
+                        <div class="togglebutton">
+                            <label>
+                                <input type="checkbox" name="followers" {% if followers %}checked{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button id="save-email-settings" class="btn btn-primary btn-lg full-width">Сохранить</button>
+
+                    <h6 id="email-settings-status" role="alert"></h6>
+                </div>
+            </div>
+        </form>
+
+        {% if !me.account.verified %}
+            <p id="verify-email" class="alert alert-danger" role="alert">
+                Адрес почты не подтвержден. <a href="#" class="alert-link">Выслать письмо повторно.</a>
+            </p>
+        {% endif %}
+    </div>
+{% endblock page %}
+{% block scripts %}
+    <script src="/assets/settings.js"></script>
+{% endblock %}

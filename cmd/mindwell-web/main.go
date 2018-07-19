@@ -38,6 +38,9 @@ func main() {
 	router.GET("/account/password", passwordHandler(mdw))
 	router.POST("/account/password", proxyHandler(mdw))
 
+	router.GET("/account/email", emailSettingsHandler(mdw))
+	router.POST("/account/settings/email", emailSettingsSaverHandler(mdw))
+
 	router.GET("/live", liveHandler(mdw))
 	router.GET("/friends", friendsHandler(mdw))
 
@@ -186,6 +189,23 @@ func passwordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
 		api.WriteTemplate("password")
+	}
+}
+
+func emailSettingsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardTo("/account/settings/email")
+		api.SetMe()
+		api.WriteTemplate("email")
+	}
+}
+
+func emailSettingsSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.MethodForward("PUT")
+		api.WriteResponse()
 	}
 }
 
