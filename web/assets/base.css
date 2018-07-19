@@ -2,6 +2,10 @@
     max-width: 100%;
 }
 
+body {
+    color: #252632;
+}
+
 body .header--standard {
     position: relative;
     width: 100%;
@@ -27,6 +31,10 @@ a.post-add-icon [data-prefix="fas"] {
     color: #ff5e3a;
 }
 
+.post-rating {
+    color: #c2c5d9;
+}
+
 div.post-add-icon:hover {
     fill: #c2c5d9;
     color: #c2c5d9;
@@ -43,7 +51,6 @@ div.post-add-icon:hover {
 
 .post-content, .comment-content {
     overflow-wrap: break-word;
-    color: #515365;
     text-align: justify;
 }
 
