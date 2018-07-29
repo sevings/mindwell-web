@@ -46,7 +46,8 @@ func main() {
 
 	router.GET("/users", topsHandler(mdw))
 	router.GET("/users/:name", tlogHandler(mdw))
-	router.GET("/users/:name/:relation", usersHandler(mdw))
+	router.GET("/users/:name/favorites", favoritesHandler(mdw))
+	router.GET("/users/:name/relations/:relation", usersHandler(mdw))
 
 	router.GET("/me", meHandler(mdw))
 	router.GET("/me/:relation", meUsersHandler(mdw))
@@ -255,9 +256,24 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 		clbk := func(api *utils.APIRequest) {
 			api.SetField("profile", "/users/"+name)
+			api.SetData("__tlog", true)
 		}
 
 		handle := feedHandler(mdw, "/users/"+name+"/tlog", "/users/"+name, "tlog", "tlog_page", clbk)
+		handle(ctx)
+	}
+}
+
+func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		name := ctx.Param("name")
+
+		clbk := func(api *utils.APIRequest) {
+			api.SetField("profile", "/users/"+name)
+			api.SetData("__favorites", true)
+		}
+
+		handle := feedHandler(mdw, "/users/"+name+"/favorites", "/users/"+name, "tlog", "tlog_page", clbk)
 		handle(ctx)
 	}
 }

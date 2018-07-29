@@ -88,8 +88,8 @@
                         {% if profile.counts.followers %}
                             <li>
                                 {% if profile.privacy != "followers" || profile.relations.fromMe == "followed" || me.id == profile.id%}
-                                    <a href="/users/{{ profile.name }}/followers" class="title">Подписчики:</a>
-                                    <a href="/users/{{ profile.name }}/followers" class="text">{{ profile.counts.followers }}</a>
+                                    <a href="/users/{{ profile.name }}/relations/followers" class="title">Подписчики:</a>
+                                    <a href="/users/{{ profile.name }}/relations/followers" class="text">{{ profile.counts.followers }}</a>
                                 {% else %}
                                     <span class="title">Подписчики:</span>
                                     <span class="text">{{ profile.counts.followers }}</span>
@@ -99,8 +99,8 @@
                         {% if profile.counts.followings %}
                             <li>
                                 {% if profile.privacy != "followers" || profile.relations.fromMe == "followed" || me.id == profile.id%}
-                                    <a href="/users/{{ profile.name }}/followings" class="title">Подписки:</a>
-                                    <a href="/users/{{ profile.name }}/followings" class="text">{{ profile.counts.followings }}</a>
+                                    <a href="/users/{{ profile.name }}/relations/followings" class="title">Подписки:</a>
+                                    <a href="/users/{{ profile.name }}/relations/followings" class="text">{{ profile.counts.followings }}</a>
                                 {% else %}
                                     <span class="title">Подписки:</span>
                                     <span class="text">{{ profile.counts.followings }}</span>
@@ -110,8 +110,8 @@
                         {% if profile.counts.ignored %}
                             <li>
                             {% if me.id == profile.id %}
-                                <a href="/users/{{ profile.name }}/ignored" class="title">Заблокированы:</a>
-                                <a href="/users/{{ profile.name }}/ignored" class="text">{{ profile.counts.ignored }}</a>
+                                <a href="/users/{{ profile.name }}/relations/ignored" class="title">Заблокированы:</a>
+                                <a href="/users/{{ profile.name }}/relations/ignored" class="text">{{ profile.counts.ignored }}</a>
                             {% else %}
                                 <span class="title">Заблокированы:</span>
                                 <span class="text">{{ profile.counts.ignored }}</span>
@@ -121,8 +121,8 @@
                         {% if profile.counts.invited %}
                             <li>
                                 {% if profile.privacy != "followers" || profile.relations.fromMe == "followed" || me.id == profile.id%}
-                                    <a href="/users/{{ profile.name }}/invited" class="title">Приглашенные:</a>
-                                    <a href="/users/{{ profile.name }}/invited" class="text">{{ profile.counts.invited }}</a>
+                                    <a href="/users/{{ profile.name }}/relations/invited" class="title">Приглашенные:</a>
+                                    <a href="/users/{{ profile.name }}/relations/invited" class="text">{{ profile.counts.invited }}</a>
                                 {% else %}
                                     <span class="title">Приглашенные:</span>
                                     <span class="text">{{ profile.counts.invited }}</span>

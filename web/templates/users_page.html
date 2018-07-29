@@ -31,7 +31,7 @@
                         <div class="h6">{{ user.counts.entries|default:0 }}</div>
                         <div class="title">Записи</div>
                     </a>
-                    <a href="/users/{{ user.name }}/followers" class="friend-count-item">
+                    <a href="/users/{{ user.name }}/relations/followers" class="friend-count-item">
                         <div class="h6">{{ user.counts.followers|default:0 }}</div>
                         <div class="title">Подписчики</div>
                     </a>
