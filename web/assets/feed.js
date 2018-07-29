@@ -115,6 +115,42 @@ $("a.watch-post").click(function() {
     return false
 })
 
+$("a.favorite-post").click(function() {
+    var link = $(this)
+    var info = link.parents(".post")
+    if(info.data("enabled") == false)
+        return false
+
+    info.data("enabled", false)
+
+    var id = info.data("id")
+    var favorited = !!info.data("favorited")
+
+    $.ajax({
+        url: "/entries/" + id + "/favorite",
+        method: favorited ? "DELETE" : "PUT",
+        dataType: "json",
+        success: function(resp) {
+            favorited = !!resp.isFavorited
+            info.data("favorited", favorited)
+
+            if(favorited)
+                link.html("Удалить из&nbsp;избранного")
+            else
+                link.html("Добавить в&nbsp;избранное")
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            alert(resp.message)
+        },
+        complete: function() {
+            info.data("enabled", true)
+        },
+    })
+
+    return false
+})
+
 function loadComments(href) {
     $.ajax({
         url: href,

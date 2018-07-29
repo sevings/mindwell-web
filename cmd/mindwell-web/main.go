@@ -80,6 +80,9 @@ func main() {
 	router.PUT("/entries/:id/watching", proxyHandler(mdw))
 	router.DELETE("/entries/:id/watching", proxyHandler(mdw))
 
+	router.PUT("/entries/:id/favorite", proxyHandler(mdw))
+	router.DELETE("/entries/:id/favorite", proxyHandler(mdw))
+
 	router.GET("/relations/to/:name", proxyHandler(mdw))
 	router.PUT("/relations/to/:name", proxyHandler(mdw))
 	router.DELETE("/relations/to/:name", proxyHandler(mdw))

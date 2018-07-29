@@ -1,5 +1,6 @@
 <div class="ui-block">
-    <article class="hentry post" data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}" data-watching="{{ entry.isWatching }}">
+    <article class="hentry post" data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}" 
+            data-watching="{{ entry.isWatching|default:false }}" data-favorited="{{ entry.isFavorited|default:false }}">
         <div class="post__author author vcard inline-items">
             
             <a href="/users/{{ entry.author.name }}"><img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}"></a>
@@ -15,6 +16,15 @@
     
             <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
                 <ul class="more-dropdown">
+                    <li>
+                        <a href="#" class="favorite-post">
+                            {% if entry.isFavorited %}
+                                Удалить из&nbsp;избранного
+                            {% else %}
+                                Добавить в&nbsp;избранное
+                            {% endif%}
+                        </a>
+                    </li>
                     <li>
                         <a href="#" class="watch-post">
                             {% if entry.isWatching %}
