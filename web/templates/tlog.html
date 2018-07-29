@@ -75,8 +75,13 @@
                         {% endif %}
                         {% if profile.counts.favorites %}
                             <li>
-                                <span class="title">В избранном:</span>
-                                <span class="text">{{ profile.counts.favorites }}</span>
+                                {% if profile.privacy != "followers" || profile.relations.fromMe == "followed" || me.id == profile.id%}
+                                    <a href="/users/{{ profile.name }}/favorites" class="title">Избранное:</a>
+                                    <a href="/users/{{ profile.name }}/favorites" class="text">{{ profile.counts.favorites }}</a>
+                                {% else %}
+                                    <span class="title">Избранное:</span>
+                                    <span class="text">{{ profile.counts.favorites }}</span>
+                                {% endif %}
                             </li>
                         {% endif %}
                         {% if profile.counts.tags %}

@@ -1,6 +1,6 @@
 <div class="ui-block">
     <article class="hentry post" data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}" 
-            data-watching="{{ entry.isWatching|default:false }}" data-favorited="{{ entry.isFavorited|default:false }}">
+            data-watching="{{ entry.isWatching }}" data-favorited="{{ entry.isFavorited }}">
         <div class="post__author author vcard inline-items">
             
             <a href="/users/{{ entry.author.name }}"><img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}"></a>
