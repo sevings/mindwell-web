@@ -285,10 +285,13 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
+		relation := ctx.Param("relation")
+		name := ctx.Param("name")
+
 		api := utils.NewRequest(mdw, ctx)
-		api.Forward()
+		api.ForwardTo("/users/" + name + "/" + relation)
 		api.SetMe()
-		api.SetField("profile", "/users/"+ctx.Param("name"))
+		api.SetField("profile", "/users/"+name)
 		api.WriteTemplate("friendlist")
 	}
 }
