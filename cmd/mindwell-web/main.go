@@ -219,6 +219,11 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName, ajaxTempla
 		api.ForwardTo(apiPath)
 		api.SetScrollHrefs(webPath)
 
+		if api.Error() != nil {
+			// skip error
+			api = utils.NewRequest(mdw, ctx)
+		}
+
 		if api.IsAjax() {
 			api.WriteTemplate(ajaxTemplateName)
 		} else {
