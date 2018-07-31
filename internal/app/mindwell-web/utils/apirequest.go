@@ -378,6 +378,21 @@ func (api *APIRequest) WriteResponse() {
 	}
 }
 
+func (api *APIRequest) WriteJson() {
+	if api.resp != nil {
+		api.ctx.Status(api.resp.StatusCode)
+	}
+
+	api.ctx.Header("Cache-Control", "no-store")
+	api.ctx.Header("Content-Type", "application/json")
+
+	encoder := json.NewEncoder(api.ctx.Writer)
+	api.err = encoder.Encode(api.Data())
+	if api.err != nil {
+		log.Println(api.err)
+	}
+}
+
 func (api *APIRequest) Redirect(path string) {
 	if api.err != nil {
 		api.WriteTemplate("error")

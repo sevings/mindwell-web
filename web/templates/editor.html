@@ -1,15 +1,16 @@
 {% extends "base_auth.html" %}
 {% block title %}Редактор поста — Mindwell{% endblock %}
 {% block styles %}
-    <link rel="stylesheet" href="/assets/editor/css/editormd.min.css" />
+    {% comment %}<link rel="stylesheet" href="/assets/editor/css/editormd.min.css" />{% endcomment %}
 {% endblock %}
-{% comment %}
 {% block scripts %}
+{% comment %}
     <script src="/assets/editor/editormd.min.js"></script>
     <script src="/assets/editor/languages/en.js"></script>
+{% endcomment %}
+    <script src="/assets/js/store.modern.min.js"></script>
     <script src="/assets/editor.js"></script>
 {% endblock %}
-{% endcomment %}
 {% block body %}
 <div class="container">
 	<div class="row justify-content-center">
@@ -19,7 +20,8 @@
                     <div class="row">
                         <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 
-                            <form name="editor" action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post">
+                            <form id="entry-editor" name="editor" data-entry-id="{{ id }}"
+                                    action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post">
                                 <div class="form-group">
                                     <textarea class="form-control" rows="2" cols="80" maxlength="500"
                                         name="title" placeholder="Заголовок поста">{{ title }}</textarea>
@@ -48,7 +50,7 @@
                                     </div>
                                 </div>
 
-                                <input type="submit" class="btn btn-primary btn-md-2" value={% if id %}"Сохранить"{% else %}"Опубликовать"{% endif %} />
+                                <button id="post-entry" class="btn btn-primary btn-md-2">{% if id %}"Сохранить"{% else %}"Опубликовать"{% endif %}</button>
                             </form>
                             
                         </div>

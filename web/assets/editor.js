@@ -1,4 +1,4 @@
-$(function() {
+/*$(function() {
     var editor = editormd({
         id:              "editormd",
         path:            "/assets/editor/lib/",
@@ -24,3 +24,51 @@ $(function() {
         },
     });
 });
+*/
+
+function storeEntry() {
+    var entry = {
+        title       = $("textarea[name='title']").val(),
+        content     = $("textarea[name='content']").val(),
+        privacy     = $("select[name='privacy']").val(),
+        isVotable   = $("input[name='isVotable']").prop("checked"),
+    }
+
+    store.set("entry", entry)
+}
+
+function loadEntry() {
+    var entry = store.get("entry")
+
+    $("textarea[name='title']").val(entry.title)
+    $("textarea[name='content']").val(entry.content)
+    $("select[name='privacy']").val(entry.privacy)
+    $("input[name='isVotable']").prop("checked", entry.isVotable)
+}
+
+$(function(){
+    var entryId = $("#entrty-editor").data("entryId")
+    if(entryId > 0)
+        return
+
+    loadEntry()
+    setInterval(storeEntry, 30000)
+})
+
+$(window).on("beforeunload", storeEntry)
+
+$("#post-entry").click(function() { 
+    $("#entry-editor").ajaxSubmit({
+        dataType: "json",
+        success: function(data) {
+            store.remove("entry")
+            $(window).off("beforeunload")
+            window.location.pathname = data.path
+        },
+        error: function(data) {
+            alert(data)
+        },
+    })
+
+    return false;
+})

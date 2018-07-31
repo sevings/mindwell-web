@@ -365,7 +365,13 @@ func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/me/tlog")
-		api.Redirect("/me")
+
+		entry := api.Data()
+		entryID := entry["id"].(json.Number).String()
+
+		api.ClearData()
+		api.Data()["path"] = "/entries/" + entryID
+		api.WriteJson()
 	}
 }
 
@@ -401,8 +407,13 @@ func editPostHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForward("PUT")
-		api.SetField("comments", "/entries/"+ctx.Param("id")+"/comments")
-		writeEntry(api)
+
+		entry := api.Data()
+		entryID := entry["id"].(json.Number).String()
+
+		api.ClearData()
+		api.Data()["path"] = "/entries/" + entryID
+		api.WriteJson()
 	}
 }
 
