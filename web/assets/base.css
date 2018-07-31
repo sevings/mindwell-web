@@ -66,3 +66,7 @@ div.post-add-icon:hover {
 .header--standard > .container > .header--standard-wrap {
     height: 100%;
 }
+
+.country, .friend-about {
+    color: #888da8;
+}
