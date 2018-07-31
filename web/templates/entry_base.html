@@ -82,7 +82,7 @@
     
             <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items">
                 <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
-                <span>{{ entry.commentCount|default:0 }}</span>
+                <span id="comment-count">{{ entry.commentCount|default:0 }}</span>
             </a>
     
         </div>

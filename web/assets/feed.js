@@ -172,6 +172,11 @@ $("#post-comment").click(function() {
         success: function(data) {
             var cmt = formatTimeHtml(data)
             $("#comments").append(cmt)
+
+            var counter = $("#comment-count")
+            var count = counter.text()
+            count++
+            counter.text(count)
         },
         error: function(data) {
             alert(data)
