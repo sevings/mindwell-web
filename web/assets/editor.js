@@ -33,10 +33,10 @@ function isVotableElem()    { return $("input[name='isVotable']") }
 
 function storeDraft() {
     var draft = {
-        title       = titleElem().val(),
-        content     = contentElem().val(),
-        privacy     = privacyElem().val(),
-        isVotable   = isVotableElem().prop("checked"),
+        title       : titleElem().val(),
+        content     : contentElem().val(),
+        privacy     : privacyElem().val(),
+        isVotable   : isVotableElem().prop("checked"),
     }
 
     store.set("draft", draft)
@@ -47,18 +47,22 @@ function loadDraft() {
     if(!draft)
         return
 
-    titleElem().val(draft.title)
-    contentElem().val(draft.content)
+    if(draft.title)
+        titleElem().val(draft.title)
+
+    if(draft.content)
+        contentElem().val(draft.content)
+
     privacyElem().val(draft.privacy)
+    $('.selectpicker').selectpicker('refresh');
+
     isVotableElem().prop("checked", draft.isVotable)
 }
 
 function removeDraft() {
     var draft = {
-        title       = "",
-        content     = "",
-        privacy     = privacyElem().val(),
-        isVotable   = isVotableElem().prop("checked"),
+        privacy     : privacyElem().val(),
+        isVotable   : isVotableElem().prop("checked"),
     }
 
     store.set("draft", draft)   
