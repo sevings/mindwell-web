@@ -278,7 +278,7 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetData("__favorites", true)
 		}
 
-		handle := feedHandler(mdw, "/users/"+name+"/favorites", "/users/"+name+"/favorites", "tlog", "tlog_page", clbk)
+		handle := feedHandler(mdw, "/users/"+name+"/favorites", "/users/"+name+"/favorites", "favorites", "tlog_page", clbk)
 		handle(ctx)
 	}
 }
