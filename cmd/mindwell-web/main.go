@@ -219,8 +219,8 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName, ajaxTempla
 		api.ForwardTo(apiPath)
 		api.SetScrollHrefs(webPath)
 
-		if api.Error() != nil {
-			// skip error
+		if api.StatusCode() == 404 {
+			// private tlog, skip error
 			api = utils.NewRequest(mdw, ctx)
 		}
 

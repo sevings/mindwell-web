@@ -9,7 +9,13 @@
                 {% else %}
                     <div class="ui-block">
                         <div class="ui-block-title">
-                            <h6 class="title">{% if profile.privacy == "followers" && profile.relations.fromMe != "followed" %}Это закрытый тлог{% else %}Нет записей{% endif %}</h6>
+                            <h6 class="title">
+                                {% if profile.privacy == "followers" && profile.relations.fromMe != "followed" && profile.id != me.id %}
+                                    Это закрытый тлог
+                                {% else %}
+                                    Нет записей
+                                {% endif %}
+                            </h6>
                         </div>
                     </div>
                 {% endif %}

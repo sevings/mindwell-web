@@ -34,6 +34,14 @@ func (api *APIRequest) Error() error {
 	return api.err
 }
 
+func (api *APIRequest) StatusCode() int {
+	if api.resp == nil {
+		return 200
+	}
+
+	return api.resp.StatusCode
+}
+
 func (api *APIRequest) Data() map[string]interface{} {
 	if api.err != nil {
 		return nil
