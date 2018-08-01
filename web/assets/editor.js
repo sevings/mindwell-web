@@ -26,42 +26,60 @@
 });
 */
 
-function storeEntry() {
-    var entry = {
-        title       = $("textarea[name='title']").val(),
-        content     = $("textarea[name='content']").val(),
-        privacy     = $("select[name='privacy']").val(),
-        isVotable   = $("input[name='isVotable']").prop("checked"),
+function titleElem()        { return $("textarea[name='title']") }
+function contentElem()      { return $("textarea[name='content']") }
+function privacyElem()      { return $("select[name='privacy']") }
+function isVotableElem()    { return $("input[name='isVotable']") }
+
+function storeDraft() {
+    var draft = {
+        title       = titleElem().val(),
+        content     = contentElem().val(),
+        privacy     = privacyElem().val(),
+        isVotable   = isVotableElem().prop("checked"),
     }
 
-    store.set("entry", entry)
+    store.set("draft", draft)
 }
 
-function loadEntry() {
-    var entry = store.get("entry")
+function loadDraft() {
+    var draft = store.get("draft")
+    if(!draft)
+        return
 
-    $("textarea[name='title']").val(entry.title)
-    $("textarea[name='content']").val(entry.content)
-    $("select[name='privacy']").val(entry.privacy)
-    $("input[name='isVotable']").prop("checked", entry.isVotable)
+    titleElem().val(draft.title)
+    contentElem().val(draft.content)
+    privacyElem().val(draft.privacy)
+    isVotableElem().prop("checked", draft.isVotable)
+}
+
+function removeDraft() {
+    var draft = {
+        title       = "",
+        content     = "",
+        privacy     = privacyElem().val(),
+        isVotable   = isVotableElem().prop("checked"),
+    }
+
+    store.set("draft", draft)   
 }
 
 $(function(){
-    var entryId = $("#entrty-editor").data("entryId")
+    var entryId = $("#entry-editor").data("entryId")
     if(entryId > 0)
         return
 
-    loadEntry()
-    setInterval(storeEntry, 30000)
+    loadDraft()
+    setInterval(storeDraft, 60000)
 })
 
-$(window).on("beforeunload", storeEntry)
+$(window).on("beforeunload", storeDraft)
 
 $("#post-entry").click(function() { 
     $("#entry-editor").ajaxSubmit({
         dataType: "json",
         success: function(data) {
-            store.remove("entry")
+            removeDraft()
             $(window).off("beforeunload")
             window.location.pathname = data.path
         },
