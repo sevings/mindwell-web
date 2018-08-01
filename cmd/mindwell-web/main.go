@@ -42,6 +42,7 @@ func main() {
 	router.POST("/account/settings/email", emailSettingsSaverHandler(mdw))
 
 	router.GET("/live", liveHandler(mdw))
+	router.GET("/best", bestHandler(mdw))
 	router.GET("/friends", friendsHandler(mdw))
 
 	router.GET("/users", topsHandler(mdw))
@@ -240,6 +241,10 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName, ajaxTempla
 
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return feedHandler(mdw, "/entries/live", "/live", "live", "feed_page", nil)
+}
+
+func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return feedHandler(mdw, "/entries/best", "/best", "best", "feed_page", nil)
 }
 
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
