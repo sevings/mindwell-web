@@ -30,6 +30,7 @@ function titleElem()        { return $("textarea[name='title']") }
 function contentElem()      { return $("textarea[name='content']") }
 function privacyElem()      { return $("select[name='privacy']") }
 function isVotableElem()    { return $("input[name='isVotable']") }
+
 function entryId()          { return parseInt($("#entry-editor").data("entryId")) }
 function isCreating()       { return entryId() <= 0 }
 

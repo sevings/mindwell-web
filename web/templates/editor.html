@@ -20,7 +20,7 @@
                     <div class="row">
                         <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 
-                            <form id="entry-editor" name="editor" data-entry-id="{{ id }}"
+                            <form id="entry-editor" name="editor" data-entry-id="{{ id|default:0 }}"
                                     action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post">
                                 <div class="form-group">
                                     <textarea class="form-control" rows="2" cols="80" maxlength="500"
