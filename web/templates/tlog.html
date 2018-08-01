@@ -2,25 +2,6 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
-			<div id="feed">
-                {% if entries %}
-                    {% include "tlog_page.html" %}
-                {% else %}
-                    <div class="ui-block">
-                        <div class="ui-block-title">
-                            <h6 class="title">
-                                {% if profile.privacy == "followers" && profile.relations.fromMe != "followed" && profile.id != me.id %}
-                                    Это закрытый тлог
-                                {% else %}
-                                    Нет записей
-                                {% endif %}
-                            </h6>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
         <div class="col col-xl-3 order-xl-1 col-lg-6 order-lg-2 col-md-6 col-sm-12 col-12">
 			<div class="ui-block">
 				<div class="ui-block-title">
@@ -142,6 +123,25 @@
                         {% endif %}
                     </ul>
                 </div>
+            </div>
+        </div>
+		<div class="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
+			<div id="feed">
+                {% if entries %}
+                    {% include "tlog_page.html" %}
+                {% else %}
+                    <div class="ui-block">
+                        <div class="ui-block-title">
+                            <h6 class="title">
+                                {% if profile.privacy == "followers" && profile.relations.fromMe != "followed" && profile.id != me.id %}
+                                    Это закрытый тлог
+                                {% else %}
+                                    Нет записей
+                                {% endif %}
+                            </h6>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
