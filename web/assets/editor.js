@@ -30,6 +30,8 @@ function titleElem()        { return $("textarea[name='title']") }
 function contentElem()      { return $("textarea[name='content']") }
 function privacyElem()      { return $("select[name='privacy']") }
 function isVotableElem()    { return $("input[name='isVotable']") }
+function entryId()          { return parseInt($("#entry-editor").data("entryId")) }
+function isCreating()       { return entryId() <= 0 }
 
 function storeDraft() {
     var draft = {
@@ -69,22 +71,23 @@ function removeDraft() {
 }
 
 $(function(){
-    var entryId = $("#entry-editor").data("entryId")
-    if(entryId > 0)
+    if(!isCreating())
         return
 
     loadDraft()
     setInterval(storeDraft, 60000)
+    $(window).on("beforeunload", storeDraft)
 })
-
-$(window).on("beforeunload", storeDraft)
 
 $("#post-entry").click(function() { 
     $("#entry-editor").ajaxSubmit({
         dataType: "json",
         success: function(data) {
-            removeDraft()
-            $(window).off("beforeunload")
+            if(isCreating()) {
+                removeDraft()
+                $(window).off("beforeunload")
+            }
+                
             window.location.pathname = data.path
         },
         error: function(data) {

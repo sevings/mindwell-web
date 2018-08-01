@@ -370,7 +370,7 @@ func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		entryID := entry["id"].(json.Number).String()
 
 		api.ClearData()
-		api.Data()["path"] = "/entries/" + entryID
+		api.SetData("path", "/entries/"+entryID)
 		api.WriteJson()
 	}
 }
@@ -412,7 +412,7 @@ func editPostHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		entryID := entry["id"].(json.Number).String()
 
 		api.ClearData()
-		api.Data()["path"] = "/entries/" + entryID
+		api.SetData("path", "/entries/"+entryID)
 		api.WriteJson()
 	}
 }
