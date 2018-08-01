@@ -14,69 +14,74 @@ function setOnline() {
 $(setOnline)
 
 function formatDate(unix) {
-    var today = new Date();
+    var today = new Date()
     var date = new Date(unix * 1000)
     
-    if(today.getMonth() == date.getMonth()) {
+    function time() {
         var min = date.getMinutes()
         if(min < 10)
-            min = "0" + min
-
-        if(today.getDate() == date.getDate())
-            return "Сегодня в " + date.getHours() + ":" + min;
-
-        if(today.getDate() == date.getDate() + 1)
-            return "Вчера в " + date.getHours() + ":" + min;
+            min = "0" + min       
+            
+        return date.getHours() + ":" + min 
     }
+
+    if(today.getDate() == date.getDate())
+        return "Сегодня в " + time()
+
+    var yesterday = today
+    yesterday.setDate(today.getDate() - 1)
+
+    if(yesterday.getDate() == date.getDate())
+        return "Вчера в " + time()
 
     var str = date.getDate()
 
     switch (date.getMonth()) {
     case 0:
-        str += " января";
-        break;
+        str += " января"
+        break
     case 1:
-        str += " февраля";
-        break;
+        str += " февраля"
+        break
     case 2:
-        str += " марта";
-        break;
+        str += " марта"
+        break
     case 3:
-        str += " апреля";
-        break;
+        str += " апреля"
+        break
     case 4:
-        str += " мая";
-        break;
+        str += " мая"
+        break
     case 5:
-        str += " июня";
-        break;
+        str += " июня"
+        break
     case 6:
-        str += " июля";
-        break;
+        str += " июля"
+        break
     case 7:
-        str += " августа";
-        break;
+        str += " августа"
+        break
     case 8:
-        str += " сентябя";
-        break;
+        str += " сентябя"
+        break
     case 9:
-        str += " октября";
-        break;
+        str += " октября"
+        break
     case 10:
-        str += " ноября";
-        break;
+        str += " ноября"
+        break
     case 11:
-        str += " декабря";
-        break;
+        str += " декабря"
+        break
     default:
-        str += " " + date.getMonth();
-        break;
+        str += " " + date.getMonth()
+        break
     }
 
     if (today.getFullYear() !== date.getFullYear())
-        str += " " + date.getFullYear();
+        str += " " + date.getFullYear()
 
-    return str;
+    return str
 }
 
 function formatTimeElements(context) {
@@ -89,9 +94,9 @@ function formatTimeElements(context) {
 }
 
 function formatTimeHtml(html) {
-    var template = document.createElement('template');
-    template.innerHTML = html;
-    var elements = template.content.childNodes;
+    var template = document.createElement('template')
+    template.innerHTML = html
+    var elements = template.content.childNodes
     formatTimeElements(elements)
     return elements
 }
