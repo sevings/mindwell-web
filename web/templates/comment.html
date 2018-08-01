@@ -9,7 +9,7 @@
             </div>
         </div>
 
-        {% if comment.author.id == me.id %}
+        {% if comment.isMine %}
             <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
                 <ul class="more-dropdown">
                     <li>
