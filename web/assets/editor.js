@@ -79,7 +79,7 @@ $(function(){
 
     loadDraft()
     setInterval(storeDraft, 60000)
-    $(window).on("beforeunload", storeDraft)
+    $(window).on("pagehide", storeDraft)
 })
 
 $("#post-entry").click(function() { 
@@ -88,7 +88,7 @@ $("#post-entry").click(function() {
         success: function(data) {
             if(isCreating()) {
                 removeDraft()
-                $(window).off("beforeunload")
+                $(window).off("pagehide")
             }
                 
             window.location.pathname = data.path
