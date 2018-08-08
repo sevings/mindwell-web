@@ -25,13 +25,17 @@ function formatDate(unix) {
         return date.getHours() + ":" + min 
     }
 
-    if(today.getDate() == date.getDate())
+    if(today.getDate() == date.getDate() 
+        && today.getMonth() == date.getMonth() 
+        && today.getFullYear() == date.getFullYear())
         return "Сегодня в " + time()
 
     var yesterday = today
     yesterday.setDate(today.getDate() - 1)
 
-    if(yesterday.getDate() == date.getDate())
+    if(yesterday.getDate() == date.getDate()
+        && yesterday.getMonth() == date.getMonth() 
+        && yesterday.getFullYear() == date.getFullYear())
         return "Вчера в " + time()
 
     var str = date.getDate()
