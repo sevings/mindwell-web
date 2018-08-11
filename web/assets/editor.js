@@ -93,9 +93,7 @@ $("#post-entry").click(function() {
                 
             window.location.pathname = data.path
         },
-        error: function(data) {
-            alert(data)
-        },
+        error: showAjaxError,
     })
 
     return false;

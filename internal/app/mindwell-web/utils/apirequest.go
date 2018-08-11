@@ -326,7 +326,10 @@ func (api *APIRequest) parseResponse() map[string]interface{} {
 
 func (api *APIRequest) setErrorCode() {
 	if api.data == nil {
-		api.data = map[string]interface{}{}
+		api.data = api.parseResponse()
+		if api.data == nil {
+			api.data = map[string]interface{}{}
+		}
 	}
 
 	code := api.data["code"]
@@ -348,6 +351,11 @@ func (api *APIRequest) WriteTemplate(name string) {
 		name = "error"
 		api.setErrorCode()
 	} else if api.err != nil {
+		return
+	}
+
+	if name == "error" && api.IsAjax() {
+		api.WriteJson()
 		return
 	}
 

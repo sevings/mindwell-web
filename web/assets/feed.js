@@ -178,9 +178,7 @@ $("#post-comment").click(function() {
             count++
             counter.text(count)
         },
-        error: function(data) {
-            alert(data)
-        },
+        error: showAjaxError,
     })
 
     return false;
@@ -210,10 +208,7 @@ function deleteComment(id) {
         success: function() {
             $("#comment" + id).remove()
         },
-        error: function(req) {
-            var resp = JSON.parse(req.responseText)
-            alert(resp.message)
-        },
+        error: showAjaxError,
     })
 
     return false

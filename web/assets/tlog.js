@@ -39,10 +39,7 @@ function setRelationFromMe(relation) {
 
             updateRelations()
         },
-        error: function(req) {
-            var resp = JSON.parse(req.responseText)
-            alert(resp.message)
-        },
+        error: showAjaxError,
     })    
 }
 
@@ -60,10 +57,7 @@ function handleFriendRequest(method) {
 
             updateRelations()
         },
-        error: function(req) {
-            var resp = JSON.parse(req.responseText)
-            alert(resp.message)
-        },
+        error: showAjaxError,
     })    
 }
 
