@@ -111,3 +111,16 @@ function showAjaxError(req) {
     var resp = JSON.parse(req.responseText)
     alert(resp.message)
 }
+
+// to count new lines properly
+$("textarea").each(function() {
+    var area = $(this)
+    var max = area.prop("maxlength")
+    if(max <= 0)
+        return;
+        
+    area.maxlength({
+        max: max,
+        showFeedback: false,
+    })
+})
