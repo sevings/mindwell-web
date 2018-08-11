@@ -59,6 +59,15 @@ div.post-add-icon:hover {
     margin: 1em 0;
 }
 
+.post-content ul {
+    list-style-type: disc;
+    list-style-position: inside;
+}
+
+.post-content ul, .post-content ol {
+    font-size: .875rem;    
+}
+
 .content-bg-wrap {
 	background-size: auto 100%;
 }
