@@ -369,6 +369,10 @@ func (api *APIRequest) WriteTemplate(name string) {
 		api.ctx.Status(api.resp.StatusCode)
 	}
 
+	if api.mdw.DevMode {
+		api.SetData("__test", true)
+	}
+
 	api.ctx.Header("Cache-Control", "no-store")
 	api.ctx.Header("Content-Type", "text/html; charset=utf-8")
 

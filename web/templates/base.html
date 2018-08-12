@@ -47,6 +47,10 @@
 </head>
 <body {% block body_class %}{% endblock %}>
 
+    {% if __test %}
+        <h1 style="background-color: red; position: fixed; top: 80px; left: 10px; z-index: 100;">ТЕСТ</h1>
+    {% endif %}
+
     {% block header %}{% endblock %}
     {% block body %}{% endblock %}
     {% block footer %}{% endblock %}
