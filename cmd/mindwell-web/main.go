@@ -179,7 +179,7 @@ func accountHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		// api.ForwardNotAuthorized()
+		api.ForwardNotAuthorized()
 		api.WriteTemplate("verified")
 	}
 }

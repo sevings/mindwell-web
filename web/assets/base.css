@@ -1,3 +1,9 @@
 body {
     color: #252632;
 }
+
+.header--standard {
+    position: relative;
+    width: 100%;
+    left: 0px;
+}

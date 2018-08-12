@@ -3,10 +3,11 @@
 }
 
 .header--standard {
-    position: relative;
-    width: 100%;
-    left: 0px;
     padding: 0px;
+}
+
+.main-header {
+    max-width: 100%;
 }
 
 .footer {
@@ -17,10 +18,6 @@
 
 .hcenter {
     margin: auto;
-}
-
-.main-header {
-    max-width: 100%;
 }
 
 .post-add-icon svg {
@@ -72,10 +69,6 @@ div.post-add-icon:hover {
 
 .content-bg-wrap {
 	background-size: auto 100%;
-}
-
-.header--standard > .container > .header--standard-wrap {
-    height: 100%;
 }
 
 .country, .friend-about {
