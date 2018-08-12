@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block title %}Вопросы по госованию и карме — Mindwell{% endblock %}
+{% block header %}
+    <div class="stunning-header bg-primary-opacity">
+		
+		<div class="header--standard header--standard-landing" id="header--standard">
+			<div class="container">
+				<div class="header--standard-wrap">
+		
+					<a href="/" class="logo">
+						<div class="img-wrap">
+							<img src="/assets/icons/header-white.png" width="42" height="45" alt="Mindwell">
+						</div>
+						<div class="title-block">
+							<h6 class="logo-title">mindwell</h6>
+							<div class="sub-title">ДОМ МЫСЛЕЙ</div>
+						</div>
+					</a>
+		
+				</div>
+			</div>
+		</div>
+		
+		<div class="header-spacer--standard"></div>
+
+		<div class="stunning-header-content">
+            <h1 class="stunning-header-title">Вопросы по голосованию и карме</h1>
+            <ul class="breadcrumbs">
+                <li class="breadcrumbs-item">
+                    <a href="/help/faq/">ЧаВо</a>
+                    <span class="icon breadcrumbs-custom">/</span>
+                </li>
+                <li class="breadcrumbs-item active">
+                    <span>Карма</span>
+                </li>
+            </ul>
+		</div>
+
+		<div class="content-bg-wrap stunning-header-bg1"></div>
+	</div>
+{% endblock %}
+{% block body_class %}class="body-bg-white"{% endblock %}
+{% block body %}
+    <section class="mb60">
+        <div class="container">
+            <div class="row">
+                <div class="col col-xl-8 m-auto col-lg-10 col-md-12 col-sm-12 col-12">
+                    <div id="accordion" role="tablist" aria-multiselectable="true" class="accordion-faqs">
+                        <div class="card">
+
+                            <div class="card-header" role="tab" id="heading-best">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-best" aria-expanded="true" aria-controls="collapse-best" class="collapsed">
+                                        По какому принципу посты отбираются в раздел Лучшее? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-best" class="collapse" role="tabpanel" aria-labelledby="heading-best">
+                                <p>
+                                    В Лучшее попадают посты с самыми высокими рейтингами. Рейтинг поста показывается при наведении 
+                                    мышкой на голосовалку. При этом у записи с большим количеством положительных голосов рейтинг 
+                                    может быть ниже, чем у записи с меньшим числом голосов. 
+                                </p>
+                            </div>
+                    
+                            <div class="card-header" role="tab" id="heading-rating">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-rating" aria-expanded="true" aria-controls="collapse-rating" class="collapsed">
+                                        Как рассчитываются рейтинги постов? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-rating" class="collapse" role="tabpanel" aria-labelledby="heading-rating">
+                                <p>
+                                    Все посты автоматически разделяются на несколько категорий. Длинный пост с текстом — одна категория, 
+                                    пост с фотографиями — другая, короткая записка — третья. Отдельная категория — комментарии.
+                                </p>
+                                <p>
+                                    Каждый пользователь имеет свой вес в каждой категории. Вес определяется тем, насколько хорошие посты 
+                                    в этой категории публикует человек. Изначально после регистрации все веса близки к нулю. Каждый раз, 
+                                    когда за пост голосуют, вес человека в данной категории увеличивается или наоборот падает.
+                                </p>
+                                <p>
+                                    Вес — это то, как сильно голоса человека влияет на рейтинги чужих постов. Сразу после регистрации 
+                                    влияние минимально. Если человек публикует хорошие посты, которые нравятся другим, влияние его голосов 
+                                    в данной категории растет.
+                                </p>
+                            </div>
+                    
+                            <div class="card-header" role="tab" id="heading-vote">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-vote" aria-expanded="true" aria-controls="collapse-vote" class="collapsed">
+                                        Как посмотреть, кто проголосовал за мой пост? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-vote" class="collapse" role="tabpanel" aria-labelledby="heading-vote">
+                                <p>
+                                    Голосование планируется оставить анонимным. Это позволит избежать накруток, когда человек голосует 
+                                    за все посты подряд в ожидании ответных лайков. И с обратной стороны — если человек опубликовал что-то 
+                                    непотребное, можно спокойно ставить ему минус, не боясь, что он заминусует в ответ.
+                                </p>
+                            </div>
+                    
+                            <div class="card-header" role="tab" id="heading-karma">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-karma" aria-expanded="true" aria-controls="collapse-karma" class="collapsed">
+                                        В чем суть кармы? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-karma" class="collapse" role="tabpanel" aria-labelledby="heading-karma">
+                                <p>
+                                    Каждый голос за публикацию с определенными коэффициентом прибавляется к карме ее автора. 
+                                    Но, в отличие от весов, сама по себе карма не остаётся на месте, а медленно стремится к нулю. 
+                                    Раз в сутки карма у всех немного уменьшается по модулю.
+                                </p>
+                                <p>
+                                    Таким образом, чем выше у человека карма, значит, тем больше хороших постов он опубликовал за последние 
+                                    несколько недель. По карме составляется текущий топ тлогов. Он всегда будет актуален. Если человек 
+                                    перестает писать, его карма падает, и он вылетает из рейтинга. Если новенький публикует то, что всем 
+                                    нравится, он может попасть в этот рейтинг.
+                                </p>
+                                <p>
+                                    Позже для низкой кармы будут введены ограничения. Человек с отрицательной кармой не сможет публиковать
+                                    в прямой эфир и в анонимки. Если человека заминусуют, у него будет время подумать над своим поведением, 
+                                    пока его карма вернётся к нулю. С низкой кармой можно будет публиковаться только раз в сутки. Возможно, 
+                                    будут ограничения на голосование, или придумаем ещё что-то. В свой тлог можно будет писать всегда 
+                                    без ограничений.
+                                </p>
+                                <p>
+                                    Людям с высокой кармой время от времени выдаются приглашения. Проверяйте иногда свои аккаунты. 
+                                    Может быть, введём ещё какие-нибудь плюшки. Если есть идеи — пишите.
+                                </p>
+                            </div>
+                    
+                            <div class="card-header" role="tab" id="heading-morekarma">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-morekarma" aria-expanded="true" aria-controls="collapse-morekarma" class="collapsed">
+                                        Как заработать больше кармы? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-morekarma" class="collapse" role="tabpanel" aria-labelledby="heading-morekarma">
+                                <p>
+                                    Все просто. Публикуй интересные записи, пиши полезные комментарии. Веди себя вежливо, уважай других
+                                    и соблюдай правила поведения в обществе. 
+                                </p>
+                            </div>
+                    
+                            <div class="card-header" role="tab" id="heading-invite">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-invite" aria-expanded="true" aria-controls="collapse-invite" class="collapsed">
+                                        Как пригласить на сайт своего друга? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-invite" class="collapse" role="tabpanel" aria-labelledby="heading-invite">
+                                <p>
+                                    Нужно отправить ему приглашение. Приглашения автоматически выдаются пользователям с кармой выше
+                                    определенного порога. 
+                                </p>
+                            </div>
+                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

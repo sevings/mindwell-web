@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+{% block title %}Вопросы по форматированию постов — Mindwell{% endblock %}
+{% block header %}
+    <div class="stunning-header bg-primary-opacity">
+		
+		<div class="header--standard header--standard-landing" id="header--standard">
+			<div class="container">
+				<div class="header--standard-wrap">
+		
+					<a href="/" class="logo">
+						<div class="img-wrap">
+							<img src="/assets/icons/header-white.png" width="42" height="45" alt="Mindwell">
+						</div>
+						<div class="title-block">
+							<h6 class="logo-title">mindwell</h6>
+							<div class="sub-title">ДОМ МЫСЛЕЙ</div>
+						</div>
+					</a>
+		
+				</div>
+			</div>
+		</div>
+		
+		<div class="header-spacer--standard"></div>
+
+		<div class="stunning-header-content">
+            <h1 class="stunning-header-title">Вопросы по форматированию постов</h1>
+            <ul class="breadcrumbs">
+                <li class="breadcrumbs-item">
+                    <a href="/help/faq/">ЧаВо</a>
+                    <span class="icon breadcrumbs-custom">/</span>
+                </li>
+                <li class="breadcrumbs-item active">
+                    <span>Markdown</span>
+                </li>
+            </ul>
+		</div>
+
+		<div class="content-bg-wrap stunning-header-bg1"></div>
+	</div>
+{% endblock %}
+{% block body_class %}class="body-bg-white"{% endblock %}
+{% block body %}
+    <section class="mb60">
+        <div class="container">
+            <div class="row">
+                <div class="col col-xl-8 m-auto col-lg-10 col-md-12 col-sm-12 col-12">
+                    <div id="accordion" role="tablist" aria-multiselectable="true" class="accordion-faqs">
+                        <div class="card">
+
+                            <div class="card-header" role="tab" id="heading-p">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-p" aria-expanded="true" aria-controls="collapse-p" class="collapsed">
+                                        Как сделать абзац? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-p" class="collapse" role="tabpanel" aria-labelledby="heading-p">
+                                <p>
+                                    Один перевод строки — это просто новая строка. 
+                                </p>
+                                <p>
+                                    Два перевода строки подряд начинают новый абзац. 
+                                    Абзацы отделены интервалами сверху и снизу и начинаются с красной строки. 
+                                </p>
+                            </div>
+                    
+                            <div class="card-header" role="tab" id="heading-title">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-title" aria-expanded="true" aria-controls="collapse-title" class="collapsed">
+                                        Как вставить заголовок? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                        
+                            <div id="collapse-title" class="collapse" role="tabpanel" aria-labelledby="heading-title">
+                                <p>
+                                    Чтобы написать заголовок, нужно добавить в начале строки один или несколько символов # (решетка). Одна решетка — заголовок первого уровня, самый крупный, и до шести решеток - заголовка шестого уровня.
+                                    Вот так:
+                                </p>                    
+                                <code>
+                                    # Заголовок 1<br>
+                                    ## Заголовок 2<br>
+                                    ### Заголовок 3<br>
+                                    #### Заголовок 4<br>
+                                    ##### Заголовок 5<br>
+                                    ###### Заголовок 6
+                                </code>
+                                <h1>Конечно, вы можете написать хоть весь свой пост шрифтом заголовка первого уровня.</h1>
+                                <p>
+                                    Но не надо так. Имейте уважение к тем, кто будет это читать. Желательно вообще не использовать заголовки выше третьего.
+                                </p>
+                                <h3>Так выглядит заголовок 3</h3>
+                            </div>
+                        
+                            <div class="card-header" role="tab" id="heading-italic">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-italic" aria-expanded="true" aria-controls="collapse-italic" class="collapsed">
+                                        Как выделить текст <em>курсивом</em>? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-italic" class="collapse" role="tabpanel" aria-labelledby="heading-italic">
+                                <p>
+                                    Чтобы <em>выделить текст курсивом</em>, нужно использовать звездочки или знаки подчеркивания. 
+                                    Вот так: <code>*курсив*</code> или <code>_тоже курсив_</code>.
+                                </p>
+                            </div>
+                            
+                            <div class="card-header" role="tab" id="heading-strong">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-strong" aria-expanded="true" aria-controls="collapse-strong" class="collapsed">
+                                        Как выделить текст <strong>полужирным шрифтом</strong>? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-strong" class="collapse" role="tabpanel" aria-labelledby="heading-strong">
+                                <p>
+                                    Чтобы <strong>сделать полужирный шрифт</strong>, нужно поставить по две звездочки или по два знака подчеркивания. 
+                                    Вот так: <code>**полужирный шрифт**</code> или <code>__тоже полужирный__</code>.
+                                </p>
+                            </div>
+                        
+                            <div class="card-header" role="tab" id="heading-s">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-s" aria-expanded="true" aria-controls="collapse-s" class="collapsed">
+                                        Как написать <s>зачеркнутый</s> текст? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                
+                            <div id="collapse-s" class="collapse" role="tabpanel" aria-labelledby="heading-s">
+                                <p>
+                                    <s>Текст зачеркивается</s> двумя тильдами с каждой стороны: <code>~~зачеркнутый текст~~</code>.
+                                </p>
+                            </div>
+                            
+                            <div class="card-header" role="tab" id="heading-list">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-list" aria-expanded="true" aria-controls="collapse-list" class="collapsed">
+                                        Как вставить список? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                        
+                            <div id="collapse-list" class="collapse" role="tabpanel" aria-labelledby="heading-list">
+                                <p>
+                                    Если строки начинаются с любого числа и точки, то получается нумерованный список. <br/>
+                                    Если строки начинаются со звездочки, с плюса или с минуса, то получается несортированный список.
+                                </p>
+                                <p>
+                                    Вот так:
+                                </p>
+                                <code>
+                                    1. Если строки начинаются <br/>
+                                    100. с любого числа и точки, <br/>
+                                    1. то получается нумерованный список. <br/>
+                                    <br/>
+                                    Если строки начинаются <br/>
+                                    + со звездочки,<br/>
+                                    + с плюса или с минуса,<br/>
+                                    + то получается несортированный список. 
+                                </code>
+                            </div>
+                        
+                            <div class="card-header" role="tab" id="heading-quote">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-quote" aria-expanded="true" aria-controls="collapse-quote" class="collapsed">
+                                        Как вставить цитату? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                
+                            <div id="collapse-quote" class="collapse" role="tabpanel" aria-labelledby="heading-quote">
+                                <p>
+                                    Цитаты начинаются со знака &gt; (больше).
+                                </p>
+                                <code>
+                                    &gt;Это цитата. <br/>
+                                    &gt;&gt;Это цитата цитаты. 
+                                </code>
+                            </div>
+                                
+                            <div class="card-header" role="tab" id="heading-hr">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-hr" aria-expanded="true" aria-controls="collapse-hr" class="collapsed">
+                                        Как вставить горизонтальную черту? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                
+                            <div id="collapse-hr" class="collapse" role="tabpanel" aria-labelledby="heading-hr">
+                                <p>
+                                    В текст можно вставить горизонтальную линию, написав на строке три звездочки, три дефиса или три нижних подчеркивания.
+                                </p>
+                            </div>
+                                    
+                            <div class="card-header" role="tab" id="heading-link">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-link" aria-expanded="true" aria-controls="collapse-link" class="collapsed">
+                                        Как вставить ссылку? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                
+                            <div id="collapse-link" class="collapse" role="tabpanel" aria-labelledby="heading-link">
+                                <p>
+                                    Ссылка вставляется так: <code>[Лучшая тлогоплатформа](http://mindwell.win)</code>. 
+                                    Сначала необходимо написать в квадратных скобках текст ссылки, а затем в круглые скобки вставить сам адрес. 
+                                    Между квадратной и круглой скобками не должно быть пробелов.
+                                    В результате будет: <a href="http://mindwell.win">Лучшая тлогоплатформа</a>.<br>
+                                    Если просто вставить в текст адрес ссылки, она станет кликабельной: <a href="http://mindwell.win">http://mindwell.win</a>.
+                                </p>
+                            </div>
+                                    
+                            <div class="card-header" role="tab" id="heading-img">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-img" aria-expanded="true" aria-controls="collapse-img" class="collapsed">
+                                        Как вставить картинку? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                
+                            <div id="collapse-img" class="collapse" role="tabpanel" aria-labelledby="heading-img">
+                                <p>
+                                    Картинка вставляется почти так же, как и ссылка, только в начале нужно еще добавить восклицательный знак. 
+                                    Например, <code>![Мур-мур-мур, котятки](http://img.mindwell.win/covers/1920/default/1.jpg)</code>. 
+                                    Обратите внимание, что это должна быть прямая ссылка на картинку, а не на страницу с картинкой.<br>
+                                    Текст в квадратных скобках — это то, что будет написано на месте картинки, пока она не загрузится. 
+                                    В принципе, его можно опустить.
+                                </p>
+                            </div>
+                                    
+                            <div class="card-header" role="tab" id="heading-video">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-video" aria-expanded="true" aria-controls="collapse-video" class="collapsed">
+                                        Можно ли вставить видео? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                
+                            <div id="collapse-video" class="collapse" role="tabpanel" aria-labelledby="heading-video">
+                                <p>
+                                    Вставить видео нельзя. Но можно вставить картинку со ссылкой, которая будет вести на видео. Например, с Youtube: 
+                                    <code>[![Краткое описание](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID)</code>. 
+                                    Здесь YOUTUBE_VIDEO_ID нужно заменить на ID желаемого видео.<br>
+                                    Например.  <code>[![Краткое описание](http://img.youtube.com/vi/zG-BWw__yos/0.jpg)](http://www.youtube.com/watch?v=zG-BWw__yos)</code> превратится в<br>
+                                    <a href="http://www.youtube.com/watch?v=zG-BWw__yos"><img src="http://img.youtube.com/vi/zG-BWw__yos/0.jpg" alt="Краткое описание"></a>
+                                </p>
+                                <p>
+                                    В будущем фото и видео можно будет прикреплять к посту отдельно, как вложения.
+                                </p>
+                            </div>
+                                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

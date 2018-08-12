@@ -93,6 +93,10 @@ func main() {
 	router.PUT("/relations/from/:name", proxyHandler(mdw))
 	router.DELETE("/relations/from/:name", proxyHandler(mdw))
 
+	router.GET("/help/faq/", faqHandler(mdw))
+	router.GET("/help/faq/md", faqMdHandler(mdw))
+	router.GET("/help/faq/karma", faqKarmaHandler(mdw))
+
 	router.NoRoute(error404Handler(mdw))
 
 	addr := mdw.ConfigString("listen_address")
@@ -175,7 +179,7 @@ func accountHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardNotAuthorized()
+		// api.ForwardNotAuthorized()
 		api.WriteTemplate("verified")
 	}
 }
@@ -460,6 +464,27 @@ func proxyHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
 		api.WriteResponse()
+	}
+}
+
+func faqHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.WriteTemplate("faq")
+	}
+}
+
+func faqMdHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.WriteTemplate("faq_md")
+	}
+}
+
+func faqKarmaHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.WriteTemplate("faq_karma")
 	}
 }
 

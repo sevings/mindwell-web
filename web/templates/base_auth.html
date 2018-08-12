@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block base_styles %}
-    <link rel="stylesheet" type="text/css" href="/assets/base.css?d=20180811">
+    <link rel="stylesheet" type="text/css" href="/assets/base_auth.css?d=20180812">
     {% block styles %}{% endblock %}
 {% endblock %}
 {% block body_class %}class="has-standard-header"{% endblock %}
@@ -61,6 +61,104 @@
 
 {% endblock %}
 {% block footer %}
+    <div class="footer footer--dark" id="footer">
+        <div class="container">
+            <div class="row">
+
+                <div class="col col-lg-4 col-md-4 col-sm-6 col-6">
+                    <div class="widget w-about">
+                        <a href="/live" class="logo">
+                            <div class="img-wrap">
+                                <img src="/assets/icons/header.png" width="34" height="34" alt="Mindwell">
+                            </div>
+                            <div class="title-block">
+                                <h6 class="logo-title">mindwell</h6>
+                                <div class="sub-title">ДОМ МЫСЛЕЙ</div>
+                            </div>
+                        </a>
+                        <p>Здесь ты можешь вести свой дневник, делиться переживаниями, рассказывать истории и общаться с другими людьми.</p>
+                        <ul class="socials">
+                            <li>
+                                <a href="https://t.me/mindwell">
+                                    <i class="fab fa-telegram" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col col-lg-2 col-md-4 col-sm-6 col-6">
+                    <div class="widget w-list">
+                        <h6 class="title">{{ me.showName }}</h6>
+                        <ul>
+                            <li>
+                                <a href="/users/{{ me.name }}">Тлог</a>
+                            </li>
+                            {% if me.counts.favorites %}
+                                <li>
+                                    <a href="/users/{{ me.name }}/favorites">Избранное</a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a href="/account/email">Настройки</a>
+                            </li>
+                            <li>
+                                <a href="/account/invites">Приглашения</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col col-lg-2 col-md-4 col-sm-6 col-6">
+                    <div class="widget w-list">
+                        <h6 class="title">Разделы</h6>
+                        <ul>
+                            <li>
+                                <a href="/live">Прямой эфир</a>
+                            </li>
+                            <li>
+                                <a href="/best">Лучшее</a>
+                            </li>
+                            <li>
+                                <a href="/friends">Подписки</a>
+                            </li>
+                            <li>
+                                <a href="/users">Тлоги</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+    
+                <div class="col col-lg-2 col-md-4 col-sm-6 col-6">
+                    <div class="widget w-list">
+                        <h6 class="title">Информация</h6>
+                        <ul>
+                            <li>
+                                <a href="/help/faq/">Помошь</a>
+                            </li>
+                            <li>
+                                <a href="/users/Mindwell">Тлог</a>
+                            </li>
+                            <li>
+                                <a href="/help/api/">Разработчикам</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="col col-lg-12 col-md-12 col-sm-12 col-12">
+                    <div class="sub-footer-copyright">
+                        <span>
+                            © Команда Mindwell, 2018. 
+                            За иконку спасибо <a href="http://www.freepik.com/">Freepik</a> с <a href="http://www.flaticon.com/">flaticon.com</a>. 
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <a class="back-to-top" href="#">
         <img src="/assets/olympus/svg-icons/back-to-top.svg" alt="arrow" class="back-icon">
     </a>
