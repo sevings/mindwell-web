@@ -79,6 +79,9 @@ func main() {
 	router.PUT("/entries/:id/vote", proxyHandler(mdw))
 	router.DELETE("/entries/:id/vote", proxyHandler(mdw))
 
+	router.PUT("/comments/:id/vote", proxyHandler(mdw))
+	router.DELETE("/comments/:id/vote", proxyHandler(mdw))
+
 	router.PUT("/entries/:id/watching", proxyHandler(mdw))
 	router.DELETE("/entries/:id/watching", proxyHandler(mdw))
 

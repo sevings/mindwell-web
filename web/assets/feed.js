@@ -213,3 +213,52 @@ function deleteComment(id) {
 
     return false
 }
+
+function voteComment(id, positive) {
+    var cmt = $("#comment"+id)
+    if(cmt.data("enabled") == false)
+        return false
+
+    cmt.data("enabled", false)
+
+    var vote = cmt.data("vote")
+    var delVote = ((positive && vote == "pos") || (!positive && vote == "neg"))
+
+    $.ajax({
+        url: "/comments/" + id + "/vote?positive=" + positive,
+        method: delVote ? "DELETE" : "PUT",
+        dataType: "json",
+        success: function(resp) {
+            cmt.data("vote", resp.vote)
+
+            var upLink = cmt.find(".comment-up")
+            var downLink = cmt.find(".comment-down")
+            var span = cmt.find(".comment-rating")
+
+            var upCount = (resp.upCount || 0)
+            var downCount = (resp.downCount || 0)
+            span.text(upCount - downCount)
+            
+            var title = upCount + " за, " + downCount + " против.\nРейтинг: " + Math.round(resp.rating || 0)
+            upLink.attr("title", title)
+            downLink.attr("title", title)
+            span.attr("title", title)
+
+            var up = resp.vote == "pos"
+            upLink.find("[data-fa-i2svg]")
+                .toggleClass("far", !up)
+                .toggleClass("fas", up)
+
+            var down = resp.vote == "neg"
+            downLink.find("[data-fa-i2svg]")
+                .toggleClass("far", !down)
+                .toggleClass("fas", down)
+        },
+        error: showAjaxError,
+        complete: function() {
+            cmt.data("enabled", true)
+        },
+    })
+
+    return false;
+}
