@@ -62,6 +62,7 @@ function loadDraft() {
 
     privacyElem().val(draft.privacy)
     $('.selectpicker').selectpicker('refresh');
+    togglePublicOnly()
 
     isVotableElem().prop("checked", draft.isVotable)
     inLiveElem().prop("checked", draft.inLive)
@@ -77,7 +78,20 @@ function removeDraft() {
     store.set("draft", draft)   
 }
 
+function togglePublicOnly() {
+    var elems= $(".for-public-only")
+    var privacy = privacyElem().val()
+    if(privacy == "me") {
+        elems.hide()
+    } else {
+        elems.show()
+    }    
+}
+
+privacyElem().change(togglePublicOnly)
+
 $(function(){
+    togglePublicOnly()
     if(!isCreating())
         return
 
