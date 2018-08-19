@@ -11,6 +11,11 @@
                     <a href="/entries/{{ entry.id }}">
                         <time class="published" datetime="{{ entry.createdAt }}"></time>
                     </a>
+                    {% if !cutEntry && entry.inLive %}
+                        <span class="post-live" title="Запись отправлена в Прямой эфир" data-toggle="tooltip" data-placement="top" >
+                            <i class="fas fa-bullhorn"></i>
+                        </span>
+                    {% endif %}
                 </div>
             </div>
     

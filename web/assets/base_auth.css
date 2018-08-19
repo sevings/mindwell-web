@@ -39,6 +39,11 @@ div.post-add-icon:hover {
     color: #c2c5d9;
 }
 
+.post .post__date svg {
+    color: #888da8;
+    margin: 0px 7px;
+}
+
 .post .post__date a {
     color: #888da8;
     font-weight: 400;

@@ -32,6 +32,7 @@ function titleElem()        { return $("textarea[name='title']") }
 function contentElem()      { return $("textarea[name='content']") }
 function privacyElem()      { return $("select[name='privacy']") }
 function isVotableElem()    { return $("input[name='isVotable']") }
+function inLiveElem()       { return $("input[name='inLive']") }
 
 function entryId()          { return parseInt($("#entry-editor").data("entryId")) }
 function isCreating()       { return entryId() <= 0 }
@@ -42,6 +43,7 @@ function storeDraft() {
         content     : contentElem().val(),
         privacy     : privacyElem().val(),
         isVotable   : isVotableElem().prop("checked"),
+        inLive      : inLiveElem().prop("checked"),
     }
 
     store.set("draft", draft)
@@ -62,12 +64,14 @@ function loadDraft() {
     $('.selectpicker').selectpicker('refresh');
 
     isVotableElem().prop("checked", draft.isVotable)
+    inLiveElem().prop("checked", draft.inLive)
 }
 
 function removeDraft() {
     var draft = {
         privacy     : privacyElem().val(),
         isVotable   : isVotableElem().prop("checked"),
+        inLive      : inLiveElem().prop("checked"),
     }
 
     store.set("draft", draft)   
