@@ -28,7 +28,7 @@
 
 store = new window.Basil();
 
-function titleElem()        { return $("textarea[name='title']") }
+function titleElem()        { return $("input[name='title']") }
 function contentElem()      { return $("textarea[name='content']") }
 function privacyElem()      { return $("select[name='privacy']") }
 function isVotableElem()    { return $("input[name='isVotable']") }
