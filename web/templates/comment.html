@@ -22,22 +22,25 @@
 
     <div class="comment-content">{{ comment.content|linebreaks|safe }}</div>
 
-    {% if comment.rating.vote == "ban" %}<div{% else %}<a href="#" onclick="return voteComment({{ comment.id }}, true);"{% endif %} 
-        class="post-add-icon inline-items comment-up"
-        title="{{ comment.rating.upCount|default:0 }} за, {{ comment.rating.downCount|default:0 }} против. 
-    Рейтинг: {{ comment.rating.rating|floatformat:0|default:0 }}">
-    <i class="{% if comment.rating.vote == "pos" || comment.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-up fa-2x"></i>
-    {% if comment.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
+    <div class="comment-additional-info inline-items">
+        {% if comment.rating.vote == "ban" %}<div{% else %}<a href="#" onclick="return voteComment({{ comment.id }}, true);"{% endif %} 
+            class="post-add-icon inline-items comment-up"
+            title="{{ comment.rating.upCount|default:0 }} за, {{ comment.rating.downCount|default:0 }} против. 
+Рейтинг: {{ comment.rating.rating|floatformat:0|default:0 }}">
+        <i class="{% if comment.rating.vote == "pos" || comment.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-up fa-2x"></i>
+        {% if comment.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
 
-    <span class="comment-rating" title="{{ comment.rating.upCount|default:0 }} за, {{ comment.rating.downCount|default:0 }} против. 
-    Рейтинг: {{ comment.rating.rating|floatformat:0|default:0 }}">{{ comment.rating.upCount|default:0 - comment.rating.downCount|default:0 }}</span>
+        <span class="comment-rating" title="{{ comment.rating.upCount|default:0 }} за, {{ comment.rating.downCount|default:0 }} против. 
+        Рейтинг: {{ comment.rating.rating|floatformat:0|default:0 }}">{{ comment.rating.upCount|default:0 - comment.rating.downCount|default:0 }}</span>
 
-    {% if comment.rating.vote == "ban" %}<div{% else %}<a href="#" onclick="return voteComment({{ comment.id }}, false);"{% endif %} 
-        class="post-add-icon inline-items comment-down"
-        title="{{ comment.rating.upCount|default:0 }} за, {{ comment.rating.downCount|default:0 }} против. 
-    Рейтинг: {{ comment.rating.rating|floatformat:0|default:0 }}">
-    <i class="{% if comment.rating.vote == "neg" || comment.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-down fa-2x"></i>
-    {% if comment.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
+        {% if comment.rating.vote == "ban" %}<div{% else %}<a href="#" onclick="return voteComment({{ comment.id }}, false);"{% endif %} 
+            class="post-add-icon inline-items comment-down"
+            title="{{ comment.rating.upCount|default:0 }} за, {{ comment.rating.downCount|default:0 }} против. 
+Рейтинг: {{ comment.rating.rating|floatformat:0|default:0 }}">
+        <i class="{% if comment.rating.vote == "neg" || comment.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-down fa-2x"></i>
+        {% if comment.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
 
-    <a href="#" class="reply" onclick="return replyComment('{{ comment.author.showName }}');">Ответить</a>
+        <a href="#" class="reply" onclick="return replyComment('{{ comment.author.showName }}');">Ответить</a>
+    </div>
+
 </li>

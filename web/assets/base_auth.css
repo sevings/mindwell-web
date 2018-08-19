@@ -74,3 +74,11 @@ div.post-add-icon:hover {
 .country, .friend-about {
     color: #888da8;
 }
+
+.comment-additional-info {
+    display: flex;
+}
+
+.comment-additional-info > * {
+    margin-right: 15px;
+}
