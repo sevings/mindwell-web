@@ -5,9 +5,9 @@
     {% elif entry.title %}
         {{ entry.title }}
     {% elif entry.cutContent %}
-        {{ entry.cutContent|striptags|stringformat:"%.60s" }}
+        {{ entry.cutContent|striptags|stringformat:"%.80s" }}
     {% elif entry.content %}
-        {{ entry.content|striptags|stringformat:"%.60s" }}
+        {{ entry.content|striptags|stringformat:"%.80s" }}
     {% else %}
         {{ profile.showName }}
     {% endif %}    
