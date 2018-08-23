@@ -72,7 +72,7 @@ func main() {
 	router.GET("/entries/:id/comments", commentsHandler(mdw))
 	router.POST("/entries/:id/comments", postCommentHandler(mdw))
 
-	router.PUT("/comments/:id", editCommentHandler(mdw))
+	router.POST("/comments/:id", editCommentHandler(mdw))
 	router.DELETE("/comments/:id", proxyHandler(mdw))
 
 	router.PUT("/me/online", proxyHandler(mdw))
