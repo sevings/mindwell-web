@@ -380,10 +380,12 @@ func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.ForwardTo("/me/tlog")
 
 		entry := api.Data()
-		entryID := entry["id"].(json.Number).String()
+		entryID, ok := entry["id"].(json.Number)
+		if ok {
+			api.ClearData()
+			api.SetData("path", "/entries/"+entryID.String())
+		}
 
-		api.ClearData()
-		api.SetData("path", "/entries/"+entryID)
 		api.WriteJson()
 	}
 }
