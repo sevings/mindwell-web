@@ -1,21 +1,17 @@
 $("#follow").click(function() {
-    setRelationFromMe("followed")
-    return false
+    return setRelationFromMe("followed")
 })
 
 $("#blacklist").click(function() {
-    setRelationFromMe("ignored")
-    return false
+    return setRelationFromMe("ignored")
 })
 
 $("#permit-rel").click(function() {
-    handleFriendRequest("PUT")
-    return false
+    return handleFriendRequest("PUT")
 })
 
 $("#cancel-rel").click(function() {
-    handleFriendRequest("DELETE")
-    return false
+    return handleFriendRequest("DELETE")
 })
 
 function setRelationFromMe(relation) {
@@ -58,7 +54,9 @@ function handleFriendRequest(method) {
             updateRelations()
         },
         error: showAjaxError,
-    })    
+    })
+
+    return false
 }
 
 function updateRelations() {

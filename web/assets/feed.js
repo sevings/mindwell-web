@@ -167,6 +167,12 @@ function loadComments(href) {
 }
 
 $("#post-comment").click(function() { 
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
+    btn.addClass("disabled")
+
     $("#comment-editor").ajaxSubmit({
         resetForm: true,
         success: function(data) {
@@ -179,6 +185,9 @@ $("#post-comment").click(function() {
             counter.text(count)
         },
         error: showAjaxError,
+        complete: function() {
+            btn.removeClass("disabled")
+        },
     })
 
     return false;
@@ -212,6 +221,9 @@ $("#edit-comment").on("show.bs.modal", function(event) {
 
 $("#save-comment").click(function() { 
     var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
     btn.addClass("disabled")
 
     $("#existing-comment-editor").ajaxSubmit({

@@ -101,6 +101,12 @@ $(function(){
 })
 
 $("#post-entry").click(function() { 
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
+    btn.addClass("disabled")
+
     $("#entry-editor").ajaxSubmit({
         dataType: "json",
         success: function(data) {
@@ -112,6 +118,9 @@ $("#post-entry").click(function() {
             window.location.pathname = data.path
         },
         error: showAjaxError,
+        complete: function() {
+            btn.removeClass("disabled")
+        },
     })
 
     return false;

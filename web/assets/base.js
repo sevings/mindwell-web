@@ -112,7 +112,7 @@ function showAjaxError(req) {
     alert(resp.message)
 }
 
-// to count new lines properly
+// for counting new lines properly
 $("textarea").each(function() {
     var area = $(this)
     var max = area.prop("maxlength")

@@ -1,4 +1,10 @@
 $("#save-password").click(function() { 
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
+    btn.addClass("disabled")
+
     var status = $("#password-status")
     
     $("#change-password").ajaxSubmit({
@@ -14,6 +20,7 @@ $("#save-password").click(function() {
         },
         complete: function() {
             status.toggleClass("alert", true)
+            btn.removeClass("disabled")
         },
     })
 
@@ -21,6 +28,12 @@ $("#save-password").click(function() {
 })
 
 $("#save-email-settings").click(function() { 
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
+    btn.addClass("disabled")
+
     var status = $("#email-settings-status")
     
     $("#email-settings").ajaxSubmit({
@@ -36,6 +49,7 @@ $("#save-email-settings").click(function() {
         },
         complete: function() {
             status.toggleClass("alert", true)
+            btn.removeClass("disabled")
         },
     })
 
