@@ -87,3 +87,7 @@ div.post-add-icon:hover {
 .comment-additional-info > * {
     margin-right: 15px;
 }
+
+#existing-comment-editor textarea {
+    min-height: 164px;
+}
