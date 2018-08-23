@@ -131,5 +131,7 @@ function unescapeHtml(text) {
          .replace(/&lt;/g,   "<")
          .replace(/&gt;/g,   ">")
          .replace(/&quot;/g, '"')
-         .replace(/&#039;/g, "'");
+         .replace(/&#34;/g,  '"')
+         .replace(/&#039;/g, "'")
+         .replace(/&#39;/g,  "'")
  }
