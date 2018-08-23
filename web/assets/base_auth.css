@@ -84,7 +84,7 @@ div.post-add-icon:hover {
     display: flex;
 }
 
-.comment-additional-info > * {
+.comment-additional-info > *, .comment-additional-info .post-add-icon {
     margin-right: 15px;
 }
 
