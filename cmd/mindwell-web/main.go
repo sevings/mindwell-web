@@ -400,36 +400,20 @@ func editorExistingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func writeEntry(api *utils.APIRequest) {
-	entry := api.Data()
-	api.ClearData()
-	api.SetData("entry", entry)
-
-	if entry != nil {
-		author := entry["author"].(map[string]interface{})
-		name := author["name"].(string)
-		api.SetField("profile", "/users/"+name)
-
-		entryID := entry["id"].(json.Number).String()
-		cmts := entry["comments"].(map[string]interface{})
-		api.SetScrollHrefsWithData("/entries/"+entryID+"/comments", cmts)
-	}
-
-	api.SetMe()
-	api.WriteTemplate("entry")
-}
-
 func editPostHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForward("PUT")
 
 		entry := api.Data()
-		entryID := entry["id"].(json.Number).String()
-
-		api.ClearData()
-		api.SetData("path", "/entries/"+entryID)
-		api.WriteJson()
+		entryID, ok := entry["id"].(json.Number)
+		if ok {
+			api.ClearData()
+			api.SetData("path", "/entries/"+entryID.String())
+			api.WriteJson()
+		} else {
+			api.WriteResponse()
+		}
 	}
 }
 
@@ -437,7 +421,23 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
-		writeEntry(api)
+
+		entry := api.Data()
+		api.ClearData()
+		api.SetData("entry", entry)
+
+		if entry != nil {
+			author := entry["author"].(map[string]interface{})
+			name := author["name"].(string)
+			api.SetField("profile", "/users/"+name)
+
+			entryID := entry["id"].(json.Number).String()
+			cmts := entry["comments"].(map[string]interface{})
+			api.SetScrollHrefsWithData("/entries/"+entryID+"/comments", cmts)
+		}
+
+		api.SetMe()
+		api.WriteTemplate("entry")
 	}
 }
 
