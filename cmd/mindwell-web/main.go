@@ -72,6 +72,7 @@ func main() {
 	router.GET("/entries/:id/comments", commentsHandler(mdw))
 	router.POST("/entries/:id/comments", postCommentHandler(mdw))
 
+	router.PUT("/comments/:id", editCommentHandler(mdw))
 	router.DELETE("/comments/:id", proxyHandler(mdw))
 
 	router.PUT("/me/online", proxyHandler(mdw))
@@ -453,6 +454,19 @@ func postCommentHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
+
+		cmt := api.Data()
+		api.ClearData()
+		api.SetData("comment", cmt)
+
+		api.WriteTemplate("comment")
+	}
+}
+
+func editCommentHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.MethodForward("PUT")
 
 		cmt := api.Data()
 		api.ClearData()

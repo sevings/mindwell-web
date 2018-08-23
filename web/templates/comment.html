@@ -1,4 +1,4 @@
-<li id="comment{{ comment.id }}" class="comment-item" data-id="{{ comment.id }}" data-vote="{{ comment.rating.vote }}" >
+<li id="comment{{ comment.id }}" class="comment-item" data-id="{{ comment.id }}" data-vote="{{ comment.rating.vote }}">
     <div class="post__author author vcard inline-items">
         <a href="/users/{{ comment.author.name }}"><img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}"></a>
 
@@ -12,6 +12,10 @@
         {% if comment.isMine %}
             <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
                 <ul class="more-dropdown">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#edit-comment" 
+                            data-content="{{ comment.content }}">Редактировать</a>
+                    </li>
                     <li>
                         <a href="#" onclick="return deleteComment({{ comment.id }})">Удалить</a>
                     </li>

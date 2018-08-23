@@ -14,13 +14,36 @@
     — Mindwell
 {% endblock %}
 {% block scripts %}
-    <script src="/assets/feed.js?d=20180811"></script>
+    <script src="/assets/feed.js?d=20180823"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
 	<div class="row mt50">
 		<div class="col col-xl-8 m-auto col-lg-10 col-md-12 col-sm-12 col-12">
             {% include "entry_full.html" with cutEntry = false %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="edit-comment" tabindex="-1" role="dialog" aria-labelledby="edit-comment" aria-hidden="true">
+    <div class="modal-dialog window-popup edit-widget modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+            </a>
+
+            <div class="modal-header">
+                <h6 class="title">Редактировать комментарий</h6>
+            </div>
+
+            <div class="modal-body">
+                <form id="existing-comment-editor" action="/" method="POST" enctype="multipart/form-data">
+                    <textarea class="form-control" maxlength="1000" name="content"></textarea>
+                    <button id="save-comment" class="btn btn-primary btn-md-2">Сохранить</button>
+                </form>
+            </div>
+
         </div>
     </div>
 </div>

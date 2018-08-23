@@ -198,6 +198,39 @@ function replyComment(showName) {
     return false
 }
 
+$("#edit-comment").on("show.bs.modal", function(event) {
+    var a = $(event.relatedTarget)
+    var form = $("#existing-comment-editor")
+
+    var id = a.parents(".comment-item").data("id")
+    form.attr("action", "/comments/"+id)
+    form.data("id", id)
+
+    var content = unescapeHtml(a.data("content"))
+    $("textarea", form).val(content)
+})
+
+$("#save-comment").click(function() { 
+    var btn = $(this)
+    btn.addClass("disabled")
+
+    $("#existing-comment-editor").ajaxSubmit({
+        resetForm: true,
+        success: function(data) {
+            var cmt = formatTimeHtml(data)
+            var id = $("#existing-comment-editor").data("id")
+            $("#comment"+id).replaceWith(cmt)
+        },
+        error: showAjaxError,
+        complete: function() {
+            $('#edit-comment').modal('hide')
+            btn.removeClass("disabled")
+        },
+    })
+
+    return false;
+})
+
 function deleteComment(id) {
     if(!confirm("Комментарий будет удален навсегда."))
         return false
