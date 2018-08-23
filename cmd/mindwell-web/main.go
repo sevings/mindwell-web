@@ -384,9 +384,10 @@ func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		if ok {
 			api.ClearData()
 			api.SetData("path", "/entries/"+entryID.String())
+			api.WriteJson()
+		} else {
+			api.WriteResponse()
 		}
-
-		api.WriteJson()
 	}
 }
 
