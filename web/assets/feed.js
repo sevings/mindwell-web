@@ -215,7 +215,7 @@ $("#edit-comment").on("show.bs.modal", function(event) {
     form.attr("action", "/comments/"+id)
     form.data("id", id)
 
-    var content = unescapeHtml(a.data("content"))
+    var content = unescapeHtml(a.data("content") + "")
     $("textarea", form).val(content)
 })
 
