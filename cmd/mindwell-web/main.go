@@ -44,6 +44,7 @@ func main() {
 	router.GET("/live", liveHandler(mdw))
 	router.GET("/best", bestHandler(mdw))
 	router.GET("/friends", friendsHandler(mdw))
+	router.GET("/watching", watchingHandler(mdw))
 
 	router.GET("/users", topsHandler(mdw))
 	router.GET("/users/:name", tlogHandler(mdw))
@@ -268,7 +269,25 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return feedHandler(mdw, "/entries/friends", "/friends", "friends", "feed_page", nil)
+	return func(ctx *gin.Context) {
+		clbk := func(api *utils.APIRequest) {
+			api.SetData("__section", "friends")
+		}
+
+		handle := feedHandler(mdw, "/entries/friends", "/friends", "friends", "feed_page", clbk)
+		handle(ctx)
+	}
+}
+
+func watchingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		clbk := func(api *utils.APIRequest) {
+			api.SetData("__section", "watching")
+		}
+
+		handle := feedHandler(mdw, "/entries/watching", "/watching", "friends", "feed_page", clbk)
+		handle(ctx)
+	}
 }
 
 func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
