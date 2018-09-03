@@ -105,7 +105,7 @@ function formatTimeHtml(html) {
     return elements
 }
 
-$(formatTimeElements)
+formatTimeElements()
 
 function showAjaxError(req) {
     var resp = JSON.parse(req.responseText)
