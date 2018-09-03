@@ -12,3 +12,8 @@ $("#friends-section").change(function() {
     else
         console.log("unknown section: " + section)
 })
+
+$("#best-category").change(function() {
+    var category = $(this).val()
+    window.location.search = "category=" + category
+})

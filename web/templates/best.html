@@ -1,5 +1,17 @@
 {% extends "feed.html" %}
-{% block title %}Лучшее за месяц — Mindwell{% endblock %}
+{% block scripts %}
+    <script src="/assets/feed.js?d=20180824"></script>
+    <script src="/assets/live.js?d=20180903"></script>
+{% endblock %}
+{% block title %}Лучшее — Mindwell{% endblock %}
 {% block heading %}
-    <div class="h6 title">Лучшее за месяц</div>
+    <div class="h6 title">Лучшее</div>
+    <div class="w-select">
+        <fieldset class="form-group">
+            <select id="best-category" class="selectpicker form-control">
+                <option value="month" {% if __category == "month" %}selected{% endif %}>За месяц</option>
+                <option value="week" {% if __category == "week" %}selected{% endif %}>За неделю</option>
+            </select>
+        </fieldset>
+    </div>
 {% endblock %}

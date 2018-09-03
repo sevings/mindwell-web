@@ -265,7 +265,19 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return feedHandler(mdw, "/entries/best", "/best", "best", "feed_page", nil)
+	return func(ctx *gin.Context) {
+		category, ok := ctx.GetQuery("category")
+		if !ok {
+			category = "month"
+		}
+
+		clbk := func(api *utils.APIRequest) {
+			api.SetData("__category", category)
+		}
+
+		handle := feedHandler(mdw, "/entries/best", "/best", "best", "feed_page", clbk)
+		handle(ctx)
+	}
 }
 
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
