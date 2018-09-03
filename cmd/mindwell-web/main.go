@@ -248,7 +248,19 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName, ajaxTempla
 }
 
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return feedHandler(mdw, "/entries/live", "/live", "live", "feed_page", nil)
+	return func(ctx *gin.Context) {
+		section, ok := ctx.GetQuery("section")
+		if !ok {
+			section = "entries"
+		}
+
+		clbk := func(api *utils.APIRequest) {
+			api.SetData("__section", section)
+		}
+
+		handle := feedHandler(mdw, "/entries/live", "/live", "live", "feed_page", clbk)
+		handle(ctx)
+	}
 }
 
 func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {

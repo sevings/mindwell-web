@@ -1,3 +1,17 @@
 {% extends "feed.html" %}
+{% block scripts %}
+    <script src="/assets/feed.js?d=20180824"></script>
+    <script src="/assets/live.js?d=20180903"></script>
+{% endblock %}
 {% block title %}Прямой эфир — Mindwell{% endblock %}
-{% block heading %}Прямой эфир{% endblock %}
+{% block heading %}
+    <div class="h6 title">Прямой эфир</div>
+    <div class="w-select">
+        <fieldset class="form-group">
+            <select id="live-section" class="selectpicker form-control">
+                <option value="entries" {% if __section == "entries" %}selected{% endif %}>По дате публикации</option>
+                <option value="comments" {% if __section == "comments" %}selected{% endif %}>По последнему комментарию</option>
+            </select>
+        </fieldset>
+    </div>
+{% endblock %}
