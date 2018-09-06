@@ -41,6 +41,10 @@ func main() {
 	router.GET("/account/email", emailSettingsHandler(mdw))
 	router.POST("/account/settings/email", emailSettingsSaverHandler(mdw))
 
+	router.GET("/account/recover", resetPasswordHandler(mdw))
+	router.POST("/account/recover", proxyNotAuthorizedHandler(mdw))
+	router.POST("/account/recover/password", recoverHandler(mdw))
+
 	router.GET("/live", liveHandler(mdw))
 	router.GET("/best", bestHandler(mdw))
 	router.GET("/friends", friendsHandler(mdw))
@@ -219,6 +223,24 @@ func emailSettingsSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForward("PUT")
+		api.WriteResponse()
+	}
+}
+
+func resetPasswordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.SetData("__code", ctx.Query("code"))
+		api.SetData("__email", ctx.Query("email"))
+		api.SetData("__date", ctx.Query("date"))
+		api.WriteTemplate("recover")
+	}
+}
+
+func recoverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardNotAuthorized()
 		api.WriteResponse()
 	}
 }
@@ -526,6 +548,14 @@ func proxyHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
+		api.WriteResponse()
+	}
+}
+
+func proxyNotAuthorizedHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardNotAuthorized()
 		api.WriteResponse()
 	}
 }

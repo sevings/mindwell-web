@@ -135,3 +135,62 @@ function unescapeHtml(text) {
          .replace(/&#039;/g, "'")
          .replace(/&#39;/g,  "'")
  }
+
+ $("#send-recover").click(function() { 
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
+    btn.addClass("disabled")
+
+    var status = $("#recover-status")
+    
+    $("#recover-email").ajaxSubmit({
+        success: function() {
+            status.text("Письмо отправлено. Проверь свой почтовый ящик.")
+            status.removeClass("alert-danger").addClass("alert-success")
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            var msg = resp ? resp.message : ""
+            status.text(msg)
+            status.addClass("alert-danger").removeClass("alert-success")
+            btn.removeClass("disabled")
+        },
+        complete: function() {
+            status.toggleClass("alert", true)
+        },
+    })
+
+    return false;
+})
+
+$("#send-reset").click(function() { 
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
+    btn.addClass("disabled")
+
+    var status = $("#reset-status")
+    
+    $("#reset-password").ajaxSubmit({
+        resetForm: true,
+        success: function() {
+            status.text("Теперь ты можешь войти в свой аккаунт, используя новый пароль.")
+            status.removeClass("alert-danger").addClass("alert-success")
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            var msg = resp ? resp.message : ""
+            status.text(msg)
+            status.addClass("alert-danger").removeClass("alert-success")
+            btn.removeClass("disabled")
+        },
+        complete: function() {
+            status.toggleClass("alert", true)
+        },
+    })
+
+    return false;
+})

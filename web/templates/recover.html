@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Почта подтверждена — Mindwell{% endblock %}
+{% block header %}
+    <div id="header--standard" class="header--standard header--standard-dark">
+        <div class="container">
+            <div class="header--standard-wrap">
+                <a href="/live" class="logo">
+                    <div class="img-wrap">
+						<img src="/assets/icons/header-white.png" width="42" height="45" alt="Mindwell">
+                    </div>
+                    <div class="title-block">
+                        <h6 class="logo-title">mindwell</h6>
+                        <div class="sub-title">ДОМ МЫСЛЕЙ</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block body_class %}class="has-standard-header body-bg-white"{% endblock %}
+{% block body %}
+    <section class="medium-padding120">
+        <div class="container">
+            <div class="row">
+                <div class="col col-xl-6 m-auto col-lg-6 col-md-12 col-sm-12 col-12">
+                    <form id="reset-password" action="/account/recover/password" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="email" value="{{ __email }}" />
+                        <input type="hidden" name="code" value="{{ __code }}" />
+                        <input type="hidden" name="date" value="{{ __date }}" />
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Новый пароль</label>
+                            <input class="form-control" title="Не менее 6 символов" data-toggle="tooltip" data-placement="top" name="password" type="password" required />
+                        </div>
+                        <button id="send-reset" class="btn btn-primary btn-lg full-width">Сохранить</button>
+                    </form>
+                    <h6 id="reset-status" role="alert"></h6>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
