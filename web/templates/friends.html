@@ -1,17 +1,6 @@
 {% extends "feed.html" %}
-{% block scripts %}
-    <script src="/assets/feed.js?d=20180824"></script>
-    <script src="/assets/live.js?d=20180903"></script>
-{% endblock %}
 {% block title %}Подписки — Mindwell{% endblock %}
-{% block heading %}
-    <div class="h6 title">Подписки</div>
-    <div class="w-select">
-        <fieldset class="form-group">
-            <select id="friends-section" class="selectpicker form-control">
-                <option value="friends" {% if __section == "friends" %}selected{% endif %}>Публикации по дате</option>
-                <option value="watching" {% if __section == "watching" %}selected{% endif %}>Новые комментарии</option>
-            </select>
-        </fieldset>
-    </div>
+{% block submenu %}
+    <li class="cat-list__item {% if __section == "friends" %}active{% endif %}"><a href="/friends">Записи</a></li>
+    <li class="cat-list__item {% if __section == "watching" %}active{% endif %}"><a href="/watching">Комментарии</a></li>
 {% endblock %}

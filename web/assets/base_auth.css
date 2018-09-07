@@ -91,3 +91,7 @@ div.post-add-icon:hover {
 #existing-comment-editor textarea {
     min-height: 264px;
 }
+
+li.cat-list__item > a {
+    text-transform: none;
+}
