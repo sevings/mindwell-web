@@ -187,6 +187,7 @@ func (api *APIRequest) Get(path string) {
 	}
 
 	req.Header.Add("X-User-Key", api.uKey)
+	req.Header.Add("X-Forwarded-For", api.ctx.ClientIP())
 
 	api.do(req)
 	api.checkError()
@@ -200,7 +201,7 @@ func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 	req.Close = false
 
 	req.Header = make(map[string][]string)
-	headers := [...]string{"Accept", "Content-Length", "Content-Type", "Host"}
+	headers := [...]string{"Accept", "Content-Length", "Content-Type", "Host", "X-Forwarded-For"}
 	for _, k := range headers {
 		vv := api.ctx.Request.Header[k]
 		vv2 := make([]string, len(vv))
