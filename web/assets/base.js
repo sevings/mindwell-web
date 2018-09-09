@@ -66,7 +66,7 @@ function formatDate(unix) {
         str += " августа"
         break
     case 8:
-        str += " сентябя"
+        str += " сентября"
         break
     case 9:
         str += " октября"
