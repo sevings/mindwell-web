@@ -53,6 +53,15 @@ div.post-add-icon:hover {
     color: #ff5e3a;
 }
 
+.post-additional-info > *:last-child {
+    margin: unset;
+}
+
+.post-additional-info > .comment-button:last-of-type {
+    margin-right: 0;
+    margin-left: auto;
+}
+
 .post-content, .comment-content {
     overflow-wrap: break-word;
     text-align: justify;
