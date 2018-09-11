@@ -95,3 +95,7 @@ div.post-add-icon:hover {
 li.cat-list__item > a {
     text-transform: none;
 }
+
+span.comment-rating {
+    color: #9a9fbf;
+}
