@@ -99,3 +99,8 @@ li.cat-list__item > a {
 span.comment-rating {
     color: #9a9fbf;
 }
+
+span.h2.post-title {
+    word-break: break-all;
+    overflow: hidden;
+}
