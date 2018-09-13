@@ -100,7 +100,7 @@ span.comment-rating {
     color: #9a9fbf;
 }
 
-span.h2.post-title {
+a.h2.post-title, span.h2.post-title {
     word-break: break-all;
     overflow: hidden;
 }
