@@ -104,3 +104,15 @@ a.h2.post-title, span.h2.post-title {
     word-break: break-all;
     overflow: hidden;
 }
+
+div.markdown-for-editor {
+    text-align: center;
+    font-size: 15px;
+    padding-bottom: 1em;
+}
+div.markdown-for-editor a {
+color: #9a9fbf;
+}
+div.markdown-for-editor a:hover {
+    color: #ff5e3a; 
+}
