@@ -85,10 +85,12 @@
 
             {% endif %}
     
-            <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items">
-                <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
-                <span id="comment-count">{{ entry.commentCount|default:0 }}</span>
-            </a>
+            {% block commentButton %}
+                <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button">
+                    <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
+                    <span id="comment-count">{{ entry.commentCount|default:0 }}</span>
+                </a>
+            {% endblock commentButton %}
     
         </div>
     </article>
