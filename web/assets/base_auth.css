@@ -96,23 +96,25 @@ li.cat-list__item > a {
     text-transform: none;
 }
 
-span.comment-rating {
+.comment-rating {
     color: #9a9fbf;
 }
 
-a.h2.post-title, span.h2.post-title {
+.post-title {
     word-break: break-all;
     overflow: hidden;
 }
 
-div.markdown-for-editor {
+.markdown-for-editor {
     text-align: center;
     font-size: 15px;
     padding-bottom: 1em;
 }
-div.markdown-for-editor a {
-color: #9a9fbf;
+
+.markdown-for-editor a {
+    color: #9a9fbf;
 }
-div.markdown-for-editor a:hover {
+
+.markdown-for-editor a:hover {
     color: #ff5e3a; 
 }
