@@ -53,6 +53,13 @@ div.post-add-icon:hover {
     color: #ff5e3a;
 }
 
+.post-title {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal; /* для Opera и FireFox */
+    word-break: break-word; /* для Chrome */
+}
+
 .post-content, .comment-content {
     overflow-wrap: break-word;
     text-align: justify;
@@ -98,11 +105,6 @@ li.cat-list__item > a {
 
 .comment-rating {
     color: #9a9fbf;
-}
-
-.post-title {
-    word-break: break-all;
-    overflow: hidden;
 }
 
 .markdown-for-editor {
