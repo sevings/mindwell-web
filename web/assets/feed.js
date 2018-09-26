@@ -67,8 +67,13 @@ function deletePost(id) {
         url: "/entries/" + id,
         method: "DELETE",
         success: function(resp) {
-            if(document.location.pathname == "/entries/" + id)
-                window.history.back();
+            var loc = window.location;
+            if((loc.pathname == "/entries/" + id &&
+                document.referrer == loc.origin + loc.pathname) || // for ignore hash
+                document.referrer == loc.origin + loc.pathname + "/edit")
+                    loc.replace(loc.origin + "/me");
+            else if(loc.pathname == "/entries/" + id)
+                    window.history.back();
             else
                 $("#post" + id).remove()
         },
