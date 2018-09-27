@@ -63,13 +63,14 @@ div.post-add-icon:hover {
 }
 
 .post-title {
+    word-wrap: break-word; /* Internet Explorer */
     overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: normal; /* для Opera и FireFox */
-    word-break: break-word; /* для Chrome */
+    display: inline-block;
+    width: 100%;
 }
 
 .post-content, .comment-content {
+    word-wrap: break-word; /* Internet Explorer */
     overflow-wrap: break-word;
     text-align: justify;
 }
