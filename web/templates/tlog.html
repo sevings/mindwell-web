@@ -45,8 +45,8 @@
                             <a href="/users/{{ profile.invitedBy.name }}" class="text">{{ profile.invitedBy.showName }}</a>
                         </li>
 						<li>
-							<span class="title">Карма:</span>
-							<span class="text">{{ profile.karma|default:0|floatformat:2 }}</span>
+							<span class="title">Активность:</span>
+							<span class="text">{{ profile.rank }}</span>
                         </li>
                         {% if profile.counts.entries %}
                             <li>

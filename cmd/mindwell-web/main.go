@@ -104,7 +104,7 @@ func main() {
 
 	router.GET("/help/faq/", faqHandler(mdw))
 	router.GET("/help/faq/md", faqMdHandler(mdw))
-	router.GET("/help/faq/karma", faqKarmaHandler(mdw))
+	router.GET("/help/faq/votes", faqVotesHandler(mdw))
 
 	router.NoRoute(error404Handler(mdw))
 
@@ -574,10 +574,10 @@ func faqMdHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func faqKarmaHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func faqVotesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.WriteTemplate("faq_karma")
+		api.WriteTemplate("faq_votes")
 	}
 }
 
