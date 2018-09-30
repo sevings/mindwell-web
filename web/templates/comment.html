@@ -14,7 +14,7 @@
                 <ul class="more-dropdown">
                     <li>
                         <a href="#" data-toggle="modal" data-target="#edit-comment" 
-                            data-content="{{ comment.content }}">Редактировать</a>
+                            data-content="{{ comment.editContent }}">Редактировать</a>
                     </li>
                     <li>
                         <a href="#" onclick="return deleteComment({{ comment.id }})">Удалить</a>
@@ -24,7 +24,7 @@
         {% endif %}
     </div>
 
-    <div class="comment-content">{{ comment.content|linebreaks|safe }}</div>
+    <div class="comment-content">{{ comment.content|safe }}</div>
 
     <div class="comment-additional-info inline-items">
         {% if comment.rating.vote == "ban" %}<div{% else %}<a href="#" onclick="return voteComment({{ comment.id }}, true);"{% endif %} 
