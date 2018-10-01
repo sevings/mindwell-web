@@ -41,12 +41,12 @@
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs" role="tablist">
 						<li class="nav-item">
-							<a class="nav-link active" data-toggle="tab" href="#login" role="tab">
+							<a class="nav-link {% if !__invite %}active{% endif %}" data-toggle="tab" href="#login" role="tab">
 								<svg class="olymp-login-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-login-icon"></use></svg>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" data-toggle="tab" href="#register" role="tab">
+							<a class="nav-link {% if __invite %}active{% endif %}" data-toggle="tab" href="#register" role="tab">
 								<svg class="olymp-register-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-register-icon"></use></svg>
 							</a>
 						</li>
@@ -54,7 +54,7 @@
 				
 					<!-- Tab panes -->
 					<div class="tab-content">
-						<div class="tab-pane active" id="login" role="tabpanel" data-mh="log-tab">
+						<div class="tab-pane {% if !__invite %}active{% endif %}" id="login" role="tabpanel" data-mh="log-tab">
 							<div class="title h6">Войти в аккаунт</div>
 							<form class="content" action="/account/login" method="post">
 								<div class="row">
@@ -78,7 +78,7 @@
 							</form>
 						</div>
 
-						<div class="tab-pane" id="register" role="tabpanel" data-mh="log-tab">
+						<div class="tab-pane {% if __invite %}active{% endif %}" id="register" role="tabpanel" data-mh="log-tab">
 							<div class="title h6">Зарегистрироваться</div>
 							<form class="content" name="register" action="/account/register" method="post">
 								<div class="row">
@@ -104,7 +104,8 @@
 										</div>
 										<div class="form-group label-floating is-empty">
 											<label class="control-label">Приглашение</label>
-											<input class="form-control" title="Три слова через пробел" data-toggle="tooltip" data-placement="top" maxlength="100" name="invite" type="text" required />
+											<input class="form-control" title="Три слова через пробел" data-toggle="tooltip" data-placement="top" 
+												maxlength="100" name="invite" type="text" value="{{ __invite }}" required />
 										</div>
 				
 										<input type ="submit" value ="Зарегистрироваться" class="btn btn-purple btn-lg full-width" />

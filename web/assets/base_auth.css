@@ -134,3 +134,7 @@ li.cat-list__item > a {
 .markdown-for-editor a:hover {
     color: #ff5e3a; 
 }
+
+.invite {
+    cursor: pointer;
+}

@@ -148,6 +148,10 @@ func rootHandler(ctx *gin.Context) {
 func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
+
+		invite := ctx.Query("invite")
+		api.SetData("__invite", invite)
+
 		api.WriteTemplate("index")
 	}
 }

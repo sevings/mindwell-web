@@ -73,3 +73,19 @@ $("#verify-email a").click(function() {
 
     return false
 })
+
+$(".invite").val(function(i, link) {
+    return document.location.protocol + "//" + document.location.host 
+            + "/index.html?invite=" + encodeURIComponent(link)
+})
+
+$(".invite").click(function() {
+    var invite = $(this)
+    var link = invite.val()
+    if(link.endsWith(")"))
+        link = link.split(" ")[0]
+    
+    invite.select()
+    document.execCommand("copy")
+    invite.val(link + " (ссылка скопирована)")
+})

@@ -13,15 +13,15 @@
                 <p>
                     Чтобы зарегистрироваться на Mindwell, нужно получить приглашение. 
                     У нас оно состоит из трех английских слов через пробел. 
-                    Скопируй одно из своих приглашений и отправь другу.
+                    Скопируй одну из своих содержащих приглашения ссылок и отправь другу.
                 </p>
                 {% for invite in invites %}
-                    <input class="form-control" type="text" value="{{ invite }}" readonly>
+                    <input class="form-control invite" type="text" value="{{ invite }}" readonly 
+                        title="Нажми, чтобы скопировать ссылку">
                 {% empty %}
                     <h6 class="title">У тебя пока нет свободных приглашений.</h6>
                 {% endfor %}
             </div>
         </div>
-    </div>
-    
+    </div>    
 {% endblock page %}
