@@ -29,11 +29,11 @@
                 <div class="friend-count">
                     <a href="/users/{{ user.name }}" class="friend-count-item">
                         <div class="h6">{{ user.counts.entries|default:0 }}</div>
-                        <div class="title">Записи</div>
+                        <div class="title">Запис{{ user.counts.entries|quantity:"ь,и,ей" }}</div>
                     </a>
                     <a href="/users/{{ user.name }}/relations/followers" class="friend-count-item">
                         <div class="h6">{{ user.counts.followers|default:0 }}</div>
-                        <div class="title">Подписчики</div>
+                        <div class="title">Подписчик{{ user.counts.followers|quantity:",а,ов" }}</div>
                     </a>
                     <a href="/users/{{ user.name }}" class="friend-count-item">
                         <div class="h6">{{ user.rank }}</div>
