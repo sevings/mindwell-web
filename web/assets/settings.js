@@ -80,12 +80,5 @@ $(".invite").val(function(i, link) {
 })
 
 $(".invite").click(function() {
-    var invite = $(this)
-    var link = invite.val()
-    if(link.endsWith(")"))
-        link = link.split(" ")[0]
-    
-    invite.select()
-    document.execCommand("copy")
-    invite.val(link + " (ссылка скопирована)")
+    this.select()
 })

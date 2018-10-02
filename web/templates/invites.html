@@ -16,8 +16,7 @@
                     Скопируй одну из своих содержащих приглашения ссылок и отправь другу.
                 </p>
                 {% for invite in invites %}
-                    <input class="form-control invite" type="text" value="{{ invite }}" readonly 
-                        title="Нажми, чтобы скопировать ссылку">
+                    <input class="form-control invite" type="text" value="{{ invite }}" readonly>
                 {% empty %}
                     <h6 class="title">У тебя пока нет свободных приглашений.</h6>
                 {% endfor %}
