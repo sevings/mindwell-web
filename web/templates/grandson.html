@@ -11,7 +11,7 @@
         <form id="grandson" action="/adm/grandson" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                    <p>В акции уже участвует {{ stat.grandsons }} человек{{ stat.grandsons|quantity:",а," }}.</p>
+                    <p>В акции уже участвует {{ stat.grandsons|default:0 }} человек{{ stat.grandsons|quantity:",а," }}.</p>
 
                     <div class="form-group label-floating">
                         <label class="control-label">Фамилия, имя, отчество</label>
