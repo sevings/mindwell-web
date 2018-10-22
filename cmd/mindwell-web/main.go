@@ -41,6 +41,9 @@ func main() {
 	router.GET("/account/email", emailSettingsHandler(mdw))
 	router.POST("/account/settings/email", emailSettingsSaverHandler(mdw))
 
+	router.GET("/adm/grandson", grandsonHandler(mdw))
+	router.POST("/adm/grandson", grandsonSaverHandler(mdw))
+
 	router.GET("/account/recover", resetPasswordHandler(mdw))
 	router.POST("/account/recover", proxyNotAuthorizedHandler(mdw))
 	router.POST("/account/recover/password", recoverHandler(mdw))
@@ -227,6 +230,24 @@ func emailSettingsSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForward("PUT")
+		api.WriteResponse()
+	}
+}
+
+func grandsonHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+		api.SetField("stat", "/adm/stat")
+		api.SetMe()
+		api.WriteTemplate("grandson")
+	}
+}
+
+func grandsonSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
 		api.WriteResponse()
 	}
 }

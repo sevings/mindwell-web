@@ -82,3 +82,32 @@ $(".invite").val(function(i, link) {
 $(".invite").click(function() {
     this.select()
 })
+
+$("#save-grandson").click(function() { 
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
+    btn.addClass("disabled")
+
+    var status = $("#grandson-status")
+    
+    $("#grandson").ajaxSubmit({
+        success: function() {
+            status.text("Адрес сохранен.")
+            btn.text("Сохранить")
+            status.removeClass("alert-danger").addClass("alert-success")
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            status.text(resp.message)
+            status.addClass("alert-danger").removeClass("alert-success")
+        },
+        complete: function() {
+            status.toggleClass("alert", true)
+            btn.removeClass("disabled")
+        },
+    })
+
+    return false;
+})

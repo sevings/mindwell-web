@@ -1,0 +1,53 @@
+{% extends "settings.html" %}
+{% block title %}
+    Анонимный Дед Мороз — Mindwell
+{% endblock %}
+{% block page %}
+    <div class="ui-block-title">
+        <h6 class="title">Анонимный Дед Мороз</h6>
+    </div>
+
+    <div class="ui-block-content">
+        <form id="grandson" action="/adm/grandson" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <p>В акции уже участвует {{ stat.grandsons }} человек{{ stat.grandsons|quantity:",а," }}.</p>
+
+                    <div class="form-group label-floating">
+                        <label class="control-label">Фамилия, имя, отчество</label>
+                        <input class="form-control" type="text" name="name" value="{{ name }}" required>
+                    </div>
+
+                    <div class="form-group label-floating">
+                        <label class="control-label">Страна</label>
+                        <input class="form-control" type="text" name="country" value="{{ country }}" required>
+                    </div>
+
+                    <div class="form-group label-floating">
+                        <label class="control-label">Почтовый индекс</label>
+                        <input class="form-control" type="text" name="postcode" value="{{ postcode }}" required>
+                    </div>
+
+                    <div class="form-group label-floating">
+                        <label class="control-label">Адрес</label>
+                        <input class="form-control" type="text" name="address" value="{{ address }}" required>
+                    </div>
+
+                    <div class="switcher-block for-public-only">
+                        <div class="h6 title">Скрыть мой ник</div>
+                        <div class="togglebutton">
+                            <label>
+                                <input type="checkbox" name="anonymous" {% if anonymous %}checked{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button id="save-grandson" class="btn btn-primary btn-lg full-width">
+                        {% if address %}Сохранить{% else %}Участвовать{% endif %}</button>
+
+                    <h6 id="grandson-status" role="alert"></h6>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock page %}
