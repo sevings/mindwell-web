@@ -60,7 +60,7 @@
             {% if cutEntry && entry.cutContent %}
                 {{ entry.cutContent|safe }}
                 {% with wc=entry.wordCount %}
-                    <a href="/entries/{{ entry.id }}">({{ wc }}&nbsp;слов{{ wc|quantity:",а," }})</a>
+                    <a href="/entries/{{ entry.id }}">({{ wc }}&nbsp;слов{{ wc|quantity:"о,а," }})</a>
                 {% endwith %}
             {% else %}
                 {{ entry.content|safe }}

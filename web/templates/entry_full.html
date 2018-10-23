@@ -3,7 +3,7 @@
 {% block comments %}
     <a name="comments"></a>
     <ul id="comments" class="comments-list">
-        {% include "comments_page.html" with data = entry.comments.data %}
+        {% include "comments_page.html" with data = entry.comments.data, commentCount = entry.commentCount %}
     </ul>
     <form id="comment-editor" class="comment-form inline-items" action="/entries/{{entry.id}}/comments" method="post" enctype="multipart/form-data">
         <div class="post__author author vcard inline-items">

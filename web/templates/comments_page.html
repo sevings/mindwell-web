@@ -1,6 +1,11 @@
 {% if beforeHref %}
     <a href="#" class="more-comments" onclick="loadComments('{{ beforeHref }}'); return false;">
-        Показать больше комментариев</a>
+        {% if commentCount > 0 and commentCount <= 50 %}
+            Показать {{ commentCount }} комментари{{ commentCount|quantity:"й,я,ев" }}
+        {% else %}
+            Показать больше комментариев
+        {% endif %}
+    </a>
 {% endif %}
 {% for comment in data %}
     {% include "comment.html" %}
