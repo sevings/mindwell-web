@@ -16,6 +16,13 @@
     left: 0px;
 }
 
+.footer-link {
+    color: #888da8;
+    padding: 8px 0;
+    display: block;
+    font-weight: 500;
+}
+
 .hcenter {
     margin: auto;
 }

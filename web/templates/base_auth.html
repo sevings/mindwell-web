@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block base_styles %}
-    <link rel="stylesheet" type="text/css" href="/assets/base_auth.css?d=20180927">
+    <link rel="stylesheet" type="text/css" href="/assets/base_auth.css?d=20181026">
     {% block styles %}{% endblock %}
 {% endblock %}
 {% block body_class %}class="has-standard-header"{% endblock %}
@@ -62,14 +62,14 @@
             <div class="row">
 
             {% if __mobile %}
-                <div class="col col-lg-2 col-md-3 col-sm-6 col-6">
-                    <a href="/help/faq/">Помошь</a>
+                <div class="col col-lg-2 col-md-2 col-sm-3 col-4">
+                    <a class="footer-link hcenter" href="/help/faq/">Помошь</a>
                 </div>
-                <div class="col col-lg-2 col-md-3 col-sm-6 col-6">
-                    <a href="/users/Mindwell">Тлог</a>
+                <div class="col col-lg-2 col-md-2 col-sm-3 col-4">
+                    <a class="footer-link hcenter" href="/users/Mindwell">Тлог</a>
                 </div>
-                <div class="col col-lg-2 col-md-3 col-sm-6 col-6">
-                    <a href="/help/api/">Разработчикам</a>
+                <div class="col col-lg-2 col-md-2 col-sm-3 col-4">
+                    <a class="footer-link hcenter" href="/help/api/">Разработчикам</a>
                 </div>
             {% else %}
                 <div class="col col-lg-4 col-md-3 col-sm-6 col-6">
