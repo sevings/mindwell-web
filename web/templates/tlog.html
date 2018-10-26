@@ -5,9 +5,11 @@
         <div class="col col-xl-3 order-xl-1 col-lg-6 order-lg-2 col-md-6 col-sm-12 col-12">
 			<div class="ui-block">
 				<div class="ui-block-title">
-					<h6 class="title">Информация</h6>
+                    {% if __mobile %}<a data-toggle="collapse" href="#profile-info">{% endif %}
+                    <h6 class="title">Информация</h6>
+                    {% if __mobile %}</a>{% endif %}
 				</div>
-				<div class="ui-block-content">
+				<div id="profile-info" class="ui-block-content {% if __mobile %}collapse{% endif %}">
 					<ul class="widget w-personal-info">
 						<li>
 							<span class="text">{{ profile.title }}</span>
