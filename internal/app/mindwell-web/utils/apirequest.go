@@ -379,6 +379,8 @@ func (api *APIRequest) WriteTemplate(name string) {
 		api.ctx.Status(api.resp.StatusCode)
 	}
 
+	api.SetData("__mobile", api.IsMobile())
+
 	if api.mdw.DevMode {
 		api.SetData("__test", true)
 	}
