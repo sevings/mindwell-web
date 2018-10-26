@@ -74,13 +74,17 @@ $("#verify-email a").click(function() {
     return false
 })
 
-$(".invite").val(function(i, link) {
+$(".invite").val(function(i, invite) {
     return document.location.protocol + "//" + document.location.host 
-            + "/index.html?invite=" + encodeURIComponent(link)
+            + "/index.html?invite=" + encodeURIComponent(invite)
 })
 
 $(".invite").click(function() {
-    this.select()
+    // https://stackoverflow.com/a/7436574
+    var input = this;
+    setTimeout(function() {
+        input.setSelectionRange(0, 9999);
+    }, 1);
 })
 
 $("#save-grandson").click(function() { 
