@@ -28,8 +28,8 @@ func main() {
 	router.GET("/index.html", indexHandler(mdw))
 
 	router.GET("/account/logout", logoutHandler(mdw))
-	router.POST("/account/login", accountHandler(mdw))
-	router.POST("/account/register", accountHandler(mdw))
+	router.POST("/account/login", accountHandler(mdw, "/live"))
+	router.POST("/account/register", accountHandler(mdw, "/me"))
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
@@ -167,7 +167,7 @@ func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func accountHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardNotAuthorized()
@@ -188,7 +188,7 @@ func accountHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		}
 		http.SetCookie(ctx.Writer, &cookie)
 
-		api.Redirect("/live")
+		api.Redirect(redirectPath)
 	}
 }
 
