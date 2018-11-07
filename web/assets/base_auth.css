@@ -1,3 +1,13 @@
+html, body {
+	height: 100%;
+}
+
+.content-wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+}
+
 .post img {
     max-width: 100%;
 }
