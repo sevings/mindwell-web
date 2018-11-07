@@ -115,6 +115,15 @@ div.post-add-icon:hover {
     font-size: .875rem;    
 }
 
+.dot-divider {
+    padding-right: .3em;
+    padding-left: .3em;
+}
+
+.dot-divider::after {
+    content: '\00B7';
+}
+
 .content-bg-wrap {
 	background-size: auto 100%;
 }

@@ -10,6 +10,12 @@
                 <div class="post__date">
                     <a href="/entries/{{ entry.id }}">
                         <time class="published" datetime="{{ entry.createdAt }}"></time>
+                        {% if entry.cutContent %}
+                            <span class="dot-divider"></span>
+                            {% with wc=entry.wordCount %}
+                                <span>{{ wc }}&nbsp;слов{{ wc|quantity:"о,а," }}</span>
+                            {% endwith %}
+                        {% endif %}
                     </a>
                     {% if !cutEntry && entry.inLive %}
                         <span class="post-live" title="Запись отправлена в Прямой эфир" data-toggle="tooltip" data-placement="top" >
@@ -59,9 +65,6 @@
         <div class="post-content">
             {% if cutEntry && entry.cutContent %}
                 {{ entry.cutContent|safe }}
-                {% with wc=entry.wordCount %}
-                    <a href="/entries/{{ entry.id }}">({{ wc }}&nbsp;слов{{ wc|quantity:"о,а," }})</a>
-                {% endwith %}
             {% else %}
                 {{ entry.content|safe }}
             {% endif %}
