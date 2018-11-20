@@ -24,12 +24,12 @@
                                     action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post">
                                 <div class="form-group">
                                     <input type="text" class="form-control" maxlength="500"
-                                        name="title" placeholder="Заголовок поста" value="{{ title }}"/>
+                                        name="title" placeholder="Заголовок поста" value="{{ title|safe }}"/>
                                 </div>
 
                                 <div id="editormd" class="form-group">
                                     <textarea class="form-control" rows="20" cols="80" maxlength="30000"
-                                        name="content" placeholder="Текст поста" required>{{ editContent }}</textarea>
+                                        name="content" placeholder="Текст поста" required>{{ editContent|safe }}</textarea>
                                 </div>
                             	
                                 <fieldset class="form-group label-floating is-select">
