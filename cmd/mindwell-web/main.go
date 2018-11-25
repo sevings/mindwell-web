@@ -44,6 +44,14 @@ func main() {
 	router.GET("/adm/grandson", grandsonHandler(mdw))
 	router.POST("/adm/grandson", grandsonSaverHandler(mdw))
 
+	router.GET("/adm/grandson/status", proxyHandler(mdw))
+	router.POST("/adm/grandson/status", proxyHandler(mdw))
+
+	router.GET("/adm/grandfather", grandfatherHandler(mdw))
+
+	router.GET("/adm/grandfather/status", proxyHandler(mdw))
+	router.POST("/adm/grandfather/status", proxyHandler(mdw))
+
 	router.GET("/account/recover", resetPasswordHandler(mdw))
 	router.POST("/account/recover", proxyNotAuthorizedHandler(mdw))
 	router.POST("/account/recover/password", recoverHandler(mdw))
@@ -241,6 +249,18 @@ func grandsonHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetField("stat", "/adm/stat")
 		api.SetMe()
 		api.WriteTemplate("grandson")
+	}
+}
+
+func grandfatherHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+		api.SetField("stat", "/adm/stat")
+		api.SetField("son", "/adm/grandson/status")
+		api.SetField("father", "/adm/grandfather/status")
+		api.SetMe()
+		api.WriteTemplate("grandfather")
 	}
 }
 

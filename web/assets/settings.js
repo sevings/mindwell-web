@@ -115,3 +115,51 @@ $("#save-grandson").click(function() {
 
     return false;
 })
+
+$("#gift-sent").change(function(){
+    var status = $("#grandfather-status")
+    
+    var sent = $(this).prop("checked")
+    $.ajax({
+        url: "/adm/grandfather/status?sent="+sent,
+        method: "POST",
+        success: function() {
+            status.text("Сохранено.")
+            status.removeClass("alert-danger").addClass("alert-success")
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            status.text(resp.message)
+            status.addClass("alert-danger").removeClass("alert-success")
+        },
+        complete: function() {
+            status.toggleClass("alert", true)
+        },
+    })
+
+    return false;
+})
+
+$("#gift-received").change(function(){
+    var status = $("#grandfather-status")
+    
+    var received = $(this).prop("checked")
+    $.ajax({
+        url: "/adm/grandson/status?received="+received,
+        method: "POST",
+        success: function() {
+            status.text("Сохранено.")
+            status.removeClass("alert-danger").addClass("alert-success")
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            status.text(resp.message)
+            status.addClass("alert-danger").removeClass("alert-success")
+        },
+        complete: function() {
+            status.toggleClass("alert", true)
+        },
+    })
+
+    return false;
+})

@@ -1,0 +1,58 @@
+{% extends "settings.html" %}
+{% block title %}
+    Клуб анонимных Дедов Морозов — Mindwell
+{% endblock %}
+{% block page %}
+    <div class="ui-block-title">
+        <h6 class="title">Клуб анонимных Дедов Морозов</h6>
+    </div>
+
+    <div class="ui-block-content">
+        <div class="row">
+            <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <p>
+                    В игре участвует {{ stat.grandsons|default:0 }} человек{{ stat.grandsons|quantity:",а," }}.
+                    На текущий момент отправлен{{ stat.sent|quantity:",о,о" }} {{ stat.sent|default:0 }} 
+                    подар{{ stat.sent|quantity:"ок,ка,ков" }} и получен{{ stat.received|quantity:",о,о" }} 
+                    {{ stat.received|default:0 }} подар{{ stat.received|quantity:"ок,ка,ков" }}.
+                </p>
+                <p>
+                    {% if name %}
+                        Ты анонимный Дед Мороз для <a href="/users/{{ name }}">{{ name }}</a>.
+                    {% endif %}
+                    Тебе необходимо отправить подарок по следующему адресу: 
+                    <i>{{ fullname }}, {{ postcode }}, {{ country }}, {{ address }}</i>.
+                </p>
+                {% if comment %}
+                    <p>Комментарий твоего получателя подарка: <i>«{{ comment }}»</i>.</p>
+                {% endif %}
+
+                <div class="checkbox">
+                    <label>
+                        <input id="gift-sent" type="checkbox" {% if father.sent %}checked{% endif %}>
+                        Я отправил{{ me.gender|gender }} подарок
+                    </label>
+                </div>
+
+                {% if father.sent || father.received %}
+                    <p>
+                        Твой внук {% if father.received %}уже{% else %}еще не{% endif %} получил свой подарок.
+                    </p>
+                {% endif %}
+
+                <p>
+                    Твой Дед Мороз {% if son.sent %}уже{% else %}еще не{% endif %} отправил тебе подарок.
+                </p>
+
+                <div class="checkbox">
+                    <label>
+                        <input id="gift-received" type="checkbox"  {% if son.received %}checked{% endif %}>
+                        Я получил{{ me.gender|gender }} свой подарок
+                    </label>
+                </div>
+
+                <h6 id="grandfather-status" role="alert"></h6>
+            </div>
+        </div>
+    </div>
+{% endblock page %}
