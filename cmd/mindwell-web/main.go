@@ -33,6 +33,7 @@ func main() {
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
+
 	router.GET("/account/invites", invitesHandler(mdw))
 
 	router.GET("/account/password", passwordHandler(mdw))
@@ -208,11 +209,20 @@ func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
+func SetAdm(mdw *utils.Mindwell, ctx *gin.Context, origAPI *utils.APIRequest) {
+	api := utils.NewRequest(mdw, ctx)
+	api.Get("/adm/grandfather/status")
+	adm := api.Error() == nil
+
+	origAPI.SetData("__adm", adm)
+}
+
 func invitesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
 		api.SetMe()
+		SetAdm(mdw, ctx, api)
 		api.WriteTemplate("invites")
 	}
 }
@@ -221,6 +231,7 @@ func passwordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
+		SetAdm(mdw, ctx, api)
 		api.WriteTemplate("password")
 	}
 }
@@ -230,6 +241,7 @@ func emailSettingsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/account/settings/email")
 		api.SetMe()
+		SetAdm(mdw, ctx, api)
 		api.WriteTemplate("email")
 	}
 }
@@ -248,6 +260,7 @@ func grandsonHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.Forward()
 		api.SetField("stat", "/adm/stat")
 		api.SetMe()
+		api.SetData("__adm", true)
 		api.WriteTemplate("grandson")
 	}
 }
@@ -260,6 +273,7 @@ func grandfatherHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetField("son", "/adm/grandson/status")
 		api.SetField("father", "/adm/grandfather/status")
 		api.SetMe()
+		api.SetData("__adm", true)
 		api.WriteTemplate("grandfather")
 	}
 }
