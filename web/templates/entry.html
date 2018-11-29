@@ -1,18 +1,5 @@
 {% extends "base_auth.html" %}
-{% block title %} 
-    {% if entry.cutTitle %}
-        {{ entry.cutTitle|safe }}
-    {% elif entry.title %}
-        {{ entry.title|safe }}
-    {% elif entry.cutContent|safe %}
-        {{ entry.cutContent|striptags|safe|stringformat:"%.80s" }}
-    {% elif entry.content %}
-        {{ entry.content|striptags|safe|stringformat:"%.80s" }}
-    {% else %}
-        {{ profile.showName }}
-    {% endif %}    
-    — Mindwell
-{% endblock %}
+{% block title %}Запись{% endblock %}
 {% block scripts %}
     <script src="/assets/feed.js?d=20180824"></script>
 {% endblock %}

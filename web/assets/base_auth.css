@@ -12,12 +12,16 @@ html, body {
     max-width: 100%;
 }
 
-.header--standard {
+.header--standard, .header-responsive {
     padding: 0px;
 }
 
 .main-header {
     max-width: 100%;
+}
+
+.mobile-app-tabs {
+    justify-content: flex-end
 }
 
 .footer {

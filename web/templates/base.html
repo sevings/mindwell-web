@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>{% block title %}Mindwell{% endblock %}</title>
+    <title>{% block pagetitle %}{% block title %}{% endblock %} — Mindwell{% endblock %}</title>
     
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
@@ -48,15 +48,11 @@
 <body {% block body_class %}{% endblock %}>
 
     {% if __test %}
-        <h1 style="background-color: red; position: fixed; top: 80px; left: 10px; z-index: 100;">ТЕСТ</h1>
+        <h1 style="background-color: red; position: fixed; bottom: 80px; left: 10px; z-index: 100;">ТЕСТ</h1>
     {% endif %}
 
-    <div class="content-wrapper">
-        {% block header %}{% endblock %}
-        {% block body %}{% endblock %}        
-        <div class="push"></div>
-    </div>
-
+    {% block header %}{% endblock %}
+    {% block body %}{% endblock %}
     {% block footer %}{% endblock %}
     
     <!-- JS Scripts -->
