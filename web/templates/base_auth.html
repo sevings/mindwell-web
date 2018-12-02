@@ -3,7 +3,6 @@
     <link rel="stylesheet" type="text/css" href="/assets/base_auth.css?d=20181129">
     {% block styles %}{% endblock %}
 {% endblock %}
-{% comment %} {% block body_class %}class="has-standard-header"{% endblock %} {% endcomment %}
 {% block header %}
 
 <div class="fixed-sidebar">
@@ -227,16 +226,14 @@
 	</div>
 
 	<div class="header-content-wrapper">
-		<form class="search-bar w-search notification-list friend-requests">
+		<form class="search-bar w-search notification-list friend-requests" action="/users">
 			<div class="form-group with-button">
-				<input class="form-control" placeholder="Поиск…" type="text">
+				<input class="form-control" placeholder="Поиск тлогов" type="text" name="query" value="{{ query }}">
 				<button>
 					<svg class="olymp-magnifying-glass-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-magnifying-glass-icon"></use></svg>
 				</button>
 			</div>
 		</form>
-
-		<a href="#" class="link-find-friend">{% block whattofind %}Найти{% endblock %}</a>
 
 		<div class="control-block">
 
@@ -324,12 +321,12 @@
 
 	<div class="tab-content tab-content-responsive">
 
-		<div class="tab-pane " id="search" role="tabpanel">
-				<form class="search-bar w-search notification-list friend-requests">
-					<div class="form-group with-button">
-						<input class="form-control" placeholder="Поиск…" type="text">
-					</div>
-				</form>
+		<div class="tab-pane" id="search" role="tabpanel">
+			<form class="search-bar w-search notification-list friend-requests" action="/users">
+				<div class="form-group with-button">
+					<input class="form-control" placeholder="Поиск тлогов" type="text" name="query" value="{{ query }}">
+				</div>
+			</form>
 		</div>
 
 	</div>

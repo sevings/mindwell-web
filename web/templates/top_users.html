@@ -1,6 +1,8 @@
 {% extends "base_auth.html" %}
 {% block title %}
-    {% if top == "new" %}
+    {% if query %}
+        Поиск тлогов
+    {% elif top == "new" %}
         Новые тлоги
     {% elif top == "rank" %}
         Рейтинг тлогов
@@ -8,15 +10,17 @@
 {% endblock %}
 {% block body %}
 <div class="container">
-	<div class="row">
-		<div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="row">
+        <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <ul class="cat-list-bg-style align-center sorting-menu">
-                <li class="cat-list__item {% if top == "new" %}active{% endif %}"><a href="/users?top=new">Новые</a></li>
-                <li class="cat-list__item {% if top == "rank" %}active{% endif %}"><a href="/users?top=rank">Рейтинг</a></li>
+                {% if top %}
+                    <li class="cat-list__item {% if top == "new" %}active{% endif %}"><a href="/users?top=new">Новые</a></li>
+                    <li class="cat-list__item {% if top == "rank" %}active{% endif %}"><a href="/users?top=rank">Рейтинг</a></li>
+                {% endif %}
             </ul>
-		</div>
+        </div>
     </div>
-    
+
 	<div class="row sorting-container" data-layout="masonry">
         {% include "users_page.html" %}
     </div>
