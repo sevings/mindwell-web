@@ -194,11 +194,3 @@ $("#send-reset").click(function() {
 
     return false;
 })
-
-$(window).resize(function(){
-    var footerHeight = $('.footer').outerHeight();
-    $('.push').height(footerHeight);
-    $('.content-wrapper').css({'marginBottom':'-' + footerHeight + 'px'});
-});
-
-$(window).resize();
