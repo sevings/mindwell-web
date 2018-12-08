@@ -29,24 +29,6 @@ html, body {
     justify-content: flex-end
 }
 
-.footer {
-    color: #888da8;
-    width: 100%;
-    left: 0px;
-    padding: 40px 15px 0;
-}
-
-.footer-link {
-    color: #888da8;
-    display: block;
-    font-weight: 500;
-}
-
-.sub-footer-copyright {
-    margin-top: 40px;
-    padding: 40px 0;
-}
-
 .hcenter {
     margin: auto;
 }
