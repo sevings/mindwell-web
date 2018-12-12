@@ -1,31 +1,3 @@
-/*$(function() {
-    var editor = editormd({
-        id:              "editormd",
-        path:            "/assets/editor/lib/",
-        height:          640,
-        placeholder:     "Текст поста",
-        watch:           false,
-        mode:            "markdown",
-        name:            "content",
-        lineNumbers:     false,
-        indentWithTabs:  false,
-        styleActiveLine: false,
-        toc:             false,
-        fontSize:        "14px",
-        toolbarIcons :   function() {
-            return [
-                "undo", "redo", "|", 
-                "bold", "del", "italic", "quote", "|", 
-                "h3", "h4", "h5", "h6", "|", 
-                "list-ul", "list-ol", "hr", "link", "image", "||",
-                "watch", "fullscreen", "|",
-                "help", "info"
-            ]
-        },
-    });
-});
-*/
-
 store = new window.Basil();
 
 function titleElem()        { return $("input[name='title']") }
@@ -88,17 +60,19 @@ function togglePublicOnly() {
     }    
 }
 
-privacyElem().change(togglePublicOnly)
+function init(){
+    privacyElem().change(togglePublicOnly)
 
-$(function(){
     togglePublicOnly()
     if(!isCreating())
-        return
+        return;
 
     loadDraft()
     setInterval(storeDraft, 60000)
     $(window).on("pagehide", storeDraft)
-})
+}
+
+init()
 
 $("#post-entry").click(function() { 
     var btn = $(this)
@@ -115,7 +89,7 @@ $("#post-entry").click(function() {
                 $(window).off("pagehide")
             }
                 
-            window.location.pathname = data.path
+            $().ajaxify(data.path)
         },
         error: showAjaxError,
         complete: function() {

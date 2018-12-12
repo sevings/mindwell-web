@@ -180,6 +180,9 @@ $("#post-comment").click(function() {
 
     $("#comment-editor").ajaxSubmit({
         resetForm: true,
+        headers: {
+            "X-Error-Type": "JSON",
+        },
         success: function(data) {
             var cmt = formatTimeHtml(data)
             $("#comments").append(cmt)
@@ -233,6 +236,9 @@ $("#save-comment").click(function() {
 
     $("#existing-comment-editor").ajaxSubmit({
         resetForm: true,
+        headers: {
+            "X-Error-Type": "JSON",
+        },
         success: function(data) {
             var cmt = formatTimeHtml(data)
             var id = $("#existing-comment-editor").data("id")

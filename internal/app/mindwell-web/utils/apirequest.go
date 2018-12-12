@@ -364,7 +364,7 @@ func (api *APIRequest) WriteTemplate(name string) {
 		return
 	}
 
-	if name == "error" && api.IsAjax() {
+	if name == "error" && api.ExpectsJsonError() {
 		api.WriteJson()
 		return
 	}
@@ -437,6 +437,11 @@ func (api *APIRequest) Redirect(path string) {
 func (api *APIRequest) IsAjax() bool {
 	with := api.ctx.GetHeader("X-Requested-With")
 	return with == "XMLHttpRequest"
+}
+
+func (api *APIRequest) ExpectsJsonError() bool {
+	with := api.ctx.GetHeader("X-Error-Type")
+	return with == "JSON"
 }
 
 func (api *APIRequest) IsMobile() bool {

@@ -113,7 +113,7 @@ function updateRelations() {
     blacklist.text(blockText)
 }
 
-$(updateRelations)
+updateRelations()
 
 $(".file-upload__input").change(function(){
     var input = $(this)
