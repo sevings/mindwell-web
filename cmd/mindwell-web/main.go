@@ -114,6 +114,9 @@ func main() {
 	router.PUT("/relations/from/:name", proxyHandler(mdw))
 	router.DELETE("/relations/from/:name", proxyHandler(mdw))
 
+	router.GET("/notifications", notificationsHandler(mdw))
+	router.PUT("/notifications/read", proxyHandler(mdw))
+
 	router.GET("/help/faq/", faqHandler(mdw))
 	router.GET("/help/faq/md", faqMdHandler(mdw))
 	router.GET("/help/faq/votes", faqVotesHandler(mdw))
@@ -596,6 +599,14 @@ func editCommentHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("comment", cmt)
 
 		api.WriteTemplate("comment")
+	}
+}
+
+func notificationsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+		api.WriteTemplate("notifications")
 	}
 }
 
