@@ -88,7 +88,6 @@
 		<a href="#" class="logo js-sidebar-open">
 			<img src="/assets/icons/header.png" alt="Mindwell">
 		</a>
-
 	</div>
 
 	<div class="fixed-sidebar-left sidebar--large" id="sidebar-left-1-responsive">
@@ -203,6 +202,19 @@
 
 		<div class="control-block">
 
+			<div class="control-icon more has-items notifications">
+				<svg class="olymp-thunder-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-thunder-icon"></use></svg>
+
+				<div class="label-avatar bg-primary hidden notifications-counter"></div>
+
+				<div class="more-dropdown more-with-triangle triangle-top-center">
+					<div class="mCustomScrollbar" data-mcs-theme="dark">
+						{% comment %} <h6 class="title hcenter">Здесь будут отображаться твои уведомления.</h6> {% endcomment %}
+						<ul class="notification-list"></ul>
+					</div>
+				</div>
+			</div>
+
 			<div class="author-page author vcard inline-items more">
 				<div class="author-thumb">
                     <a href="/users/{{ me.name }}" class="fn">
@@ -266,6 +278,15 @@
 	<div class="header-content-wrapper">
 		<ul class="nav nav-tabs mobile-app-tabs" role="tablist">
 			<li class="nav-item">
+				<a class="nav-link notifications" data-toggle="tab" href="#notification" role="tab">
+					<div class="control-icon has-items">
+						<svg class="olymp-thunder-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-thunder-icon"></use></svg>
+						<div class="label-avatar bg-primary hidden notifications-counter"></div>
+					</div>
+				</a>
+			</li>
+
+			<li class="nav-item">
 				<a class="nav-link" data-toggle="tab" href="#search" role="tab">
 					<svg class="olymp-magnifying-glass-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-magnifying-glass-icon"></use></svg>
 					<svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
@@ -275,6 +296,13 @@
 	</div>
 
 	<div class="tab-content tab-content-responsive">
+
+		<div class="tab-pane " id="notification" role="tabpanel">
+			<div class="mCustomScrollbar" data-mcs-theme="dark">
+				{% comment %} <p>Здесь будут отображаться твои уведомления.</p> {% endcomment %}
+				<ul class="notification-list"></ul>
+			</div>
+		</div>
 
 		<div class="tab-pane" id="search" role="tabpanel">
 			<form class="search-bar w-search notification-list friend-requests" action="/users">

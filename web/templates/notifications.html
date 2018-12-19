@@ -1,29 +1,45 @@
-<ul data-unread-count="{{ unreadCount }}">
-    {% for ntf in notifications %}
-        <li {% if !ntf.read %}class="un-read"{% endif %}>
-            {% if ntf.type == "comment" %}
-                <div class="author-thumb">
-                    <img src="{{ nft.comment.author.avatar.x42 }}" alt="{{ ntf.comment.author.showName }}">
-                </div>
-                <div class="notification-event">
-                    <div><a href="/users/{{ ntf.comment.author.name }}" class="h6 notification-friend">{{ ntf.comment.author.showName }}</a></div>
-                    <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
-                </div>
-                <span class="notification-icon">
-                    <svg class="olymp-comments-post-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-comments-post-icon"></use></svg>
-                </span>
-            {% else %}
+<div class="data-helper" data-unread-count="{{ unreadCount|default:0 }}" 
+    data-after="{{ nextAfter }}" data-has-after="{{ hasAfter }}"
+    data-before="{{ nextBefore }}" data-has-after="{{ hasBefore }}"></div>
+
+{% for ntf in notifications %}
+    <li {% if !ntf.read %}class="un-read"{% endif %}>
+        {% if ntf.type == "comment" %}
             <div class="author-thumb">
-                    <img src="{{ nft.user.avatar.x42 }}" alt="{{ ntf.user.showName }}">
+                <img class="avatar-x34" src="{{ ntf.comment.author.avatar.x42 }}" alt="{{ ntf.comment.author.showName }}">
+            </div>
+            <div class="notification-event">
+                <div>
+                    <a href="/users/{{ ntf.comment.author.name }}" class="h6 notification-friend">{{ ntf.comment.author.showName }}</a>:<br>
+                    {{ ntf.comment.content|safe }}
                 </div>
-                <div class="notification-event">
-                    <div><a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a></div>
-                    <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
+                <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
+            </div>
+            <span class="notification-icon">
+                <svg class="olymp-comments-post-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-comments-post-icon"></use></svg>
+            </span>
+        {% else %}
+            <div class="author-thumb">
+                <img class="avatar-x34" src="{{ ntf.user.avatar.x42 }}" alt="{{ ntf.user.showName }}">
+            </div>
+            <div class="notification-event">
+                <div>
+                    {% if ntf.type == "follower" %}
+                        <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a>
+                        теперь следит за твоим тлогом.
+                    {% elif ntf.type == "request" %}
+                        <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a>
+                        просит разрешения на чтение твоего тлога.
+                    {% elif ntf.type == "accept" %}
+                        Теперь ты можешь видеть записи из тлога  
+                        <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a>.
+                    {% endif %}
                 </div>
-                <span class="notification-icon">
-                    <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
-                </span>
-            {% endif %}
-        </li>
-    {% endfor %}
-</ul>
+                <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
+            </div>
+            <span class="notification-icon">
+                <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
+            </span>
+        {% endif %}
+    </li>
+{% endfor %}

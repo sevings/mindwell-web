@@ -13,6 +13,56 @@ function setOnline() {
 
 $(setOnline)
 
+var notifications = {
+    after: "", 
+    hasAfter: true,
+    before: "",
+    hasBefore: true,
+}
+
+function prependNotifications(data) {
+    var ul = $(formatTimeHtml(data))
+
+    var unread = ul.data("unreadCount")
+    $(".notifications-counter").text(unread).toggleClass("hidden", unread == 0)
+
+    notifications.hasAfter = ul.data("hasAfter")
+    var nextAfter = ul.data("after")
+    if(nextAfter)
+        notifications.after = nextAfter
+
+    $("ul.notification-list").prepend(ul).children(".data-helper").remove()
+}
+
+$(function() {
+    function load() {
+        $.ajax({
+            url: "/notifications?unread=true&after=" + notifications.after,
+            method: "GET",
+            success: prependNotifications,
+            error: showAjaxError,
+        })
+    }
+
+    setInterval(load, 30000)
+
+    load()
+})
+
+$(".notifications").on("mouseenter click", function() {
+    if(!notifications.hasAfter)
+        return true
+
+    $.ajax({
+        url: "/notifications?after=" + notifications.after,
+        method: "GET",
+        success: prependNotifications,
+        error: showAjaxError,
+    })
+
+    return true
+})
+
 function formatDate(unix) {
     var today = new Date()
     var date = new Date(unix * 1000)
