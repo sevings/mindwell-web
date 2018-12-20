@@ -18,20 +18,47 @@ var notifications = {
     hasAfter: true,
     before: "",
     hasBefore: true,
-}
+    scrollLoad: true,
+    unread: 0,
+    setUnread: function(ul) {
+        var unread = ul.data("unreadCount")
+        if(unread == notifications.unread)
+            return
 
-function prependNotifications(data) {
-    var ul = $(formatTimeHtml(data))
+        $(".notifications-counter")
+            .text(unread)
+            .toggleClass("hidden", unread == 0)
 
-    var unread = ul.data("unreadCount")
-    $(".notifications-counter").text(unread).toggleClass("hidden", unread == 0)
+        var title = document.title
+        var repl = unread ? "(" + unread + ") " : ""
+        title = title.replace(/^(?:\(\d+\) )?/, repl)
+        document.title = title
 
-    notifications.hasAfter = ul.data("hasAfter")
-    var nextAfter = ul.data("after")
-    if(nextAfter)
-        notifications.after = nextAfter
+        notifications.unread = unread
+    },
+    setBefore: function(ul) {
+        notifications.hasBefore = ul.data("hasBefore")
+        var nextBefore = ul.data("before")
+        if(nextBefore)
+            notifications.before = nextBefore        
+    },
+    setAfter: function(ul) {
+        notifications.hasAfter = ul.data("hasAfter")
+        var nextAfter = ul.data("after")
+        if(nextAfter)
+            notifications.after = nextAfter
+    },
+    addClickHandler: function(ul) {
+        $("a", ul).click(function(){
+            if(!notifications.unread)
+                return 
 
-    $("ul.notification-list").prepend(ul).children(".data-helper").remove()
+            $.ajax({
+                url: "/notifications/read?time=" + notifications.after,
+                method: "PUT",
+            })
+        })    
+    },
 }
 
 $(function() {
@@ -39,7 +66,18 @@ $(function() {
         $.ajax({
             url: "/notifications?unread=true&after=" + notifications.after,
             method: "GET",
-            success: prependNotifications,
+            success: function(data) {
+                var ul = $(formatTimeHtml(data))
+                notifications.addClickHandler(ul)
+                notifications.setUnread(ul)
+                notifications.setAfter(ul)
+
+                if(!notifications.before) {
+                    notifications.setBefore(ul)
+                }
+
+                $("ul.notification-list").prepend(ul).children(".data-helper").remove()
+            },
             error: showAjaxError,
         })
     }
@@ -49,19 +87,38 @@ $(function() {
     load()
 })
 
-$(".notifications").on("mouseenter click", function() {
-    if(!notifications.hasAfter)
-        return true
+$("div.notifications").scroll(function() { 
+    if(!notifications.scrollLoad)
+        return
+
+    var scroll = $(this)
+    var list = $("ul", scroll)
+
+    if(scroll.scrollTop() < list.height() - scroll.height() - 300)
+        return
+
+    notifications.scrollLoad = false;
+
+    if(!notifications.hasBefore)
+        return
 
     $.ajax({
-        url: "/notifications?after=" + notifications.after,
+        url: "/notifications?before=" + notifications.before,
         method: "GET",
-        success: prependNotifications,
+        success: function(data) {
+            var ul = $(formatTimeHtml(data))
+            notifications.addClickHandler(ul)
+            notifications.setUnread(ul)
+            notifications.setBefore(ul)
+        
+            list.append(ul).children(".data-helper").remove()
+        },
         error: showAjaxError,
+        complete: function() { 
+            notifications.scrollLoad = true
+        }
     })
-
-    return true
-})
+});
 
 function formatDate(unix) {
     var today = new Date()
