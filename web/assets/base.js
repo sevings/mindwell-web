@@ -49,16 +49,20 @@ var notifications = {
             notifications.after = nextAfter
     },
     addClickHandler: function(ul) {
-        $("a", ul).click(function(){
-            if(!notifications.unread)
-                return 
-
-            $.ajax({
-                url: "/notifications/read?time=" + notifications.after,
-                method: "PUT",
-            })
-        })    
+        $("a", ul).click(notifications.read)
     },
+    read: function() {
+        if(!notifications.unread)
+            return 
+
+        notifications.unread = 0;
+        $("ul.notification-list > li.un-read").removeClass("un-read")
+
+        $.ajax({
+            url: "/notifications/read?time=" + notifications.after,
+            method: "PUT",
+        })        
+    }
 }
 
 $(function() {
