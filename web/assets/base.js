@@ -20,6 +20,7 @@ var notifications = {
     hasBefore: true,
     scrollLoad: true,
     unread: 0,
+    centrifuge: null,
     setUnread: function(ul) {
         var unread = ul.data("unreadCount")
         if(unread == notifications.unread)
@@ -62,11 +63,8 @@ var notifications = {
             url: "/notifications/read?time=" + notifications.after,
             method: "PUT",
         })        
-    }
-}
-
-$(function() {
-    function load() {
+    },
+    check: function() {
         $.ajax({
             url: "/notifications?unread=true&after=" + notifications.after,
             method: "GET",
@@ -82,13 +80,46 @@ $(function() {
 
                 $("ul.notification-list").prepend(ul).children(".data-helper").remove()
             },
-            error: showAjaxError,
+            error: function(req) {
+                var resp = JSON.parse(req.responseText)
+                console.log(resp.message)
+            },
         })
+    },
+    isConnected : function() {
+        return notifications.centrifuge && notifications.centrifuge.isConnected()
+    },
+    connect: function(token) {
+        var url = "ws://" + document.location.host + "/centrifugo/connection/websocket"
+        var cent = new Centrifuge(url)
+
+        cent.setToken(token)
+
+        var id = $("body").data("meId")
+        cent.subscribe("notifications#" + id, function() {
+            notifications.check()
+        })
+        
+        cent.connect()
+
+        notifications.centrifuge = cent
+    },
+    start: function() {
+        $.ajax({
+            method: "GET",
+            url: "/account/subscribe/token",
+            dataType: "json",
+            success: function(resp) {
+                notifications.connect(resp.token)
+            }
+        })
+
+        notifications.check()
     }
+}
 
-    setInterval(load, 30000)
-
-    load()
+$(function() {
+    notifications.start()
 })
 
 $("div.notifications").scroll(function() { 

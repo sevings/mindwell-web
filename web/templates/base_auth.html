@@ -3,6 +3,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/base_auth.css?d=20181206">
     {% block styles %}{% endblock %}
 {% endblock %}
+{% block body_data %}data-me-id="{{ me.id }}" data-me-name="{{ me.name }}"{% endblock %}
 {% block header %}
 
 <div class="fixed-sidebar">

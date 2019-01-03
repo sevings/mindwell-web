@@ -45,7 +45,7 @@
     {% block base_styles %}{% endblock %}
 
 </head>
-<body {% block body_class %}{% endblock %}>
+<body {% block body_class %}{% endblock %} {% block body_data %}{% endblock %}>
 
     {% if __test %}
         <h1 style="background-color: red; position: fixed; bottom: 80px; left: 10px; z-index: 100;">ТЕСТ</h1>
@@ -101,9 +101,10 @@
     <script src="/assets/js/jquery.form.min.js"></script>
     <script src="/assets/js/jquery.plugin.min.js"></script>
     <script src="/assets/js/jquery.maxlength.min.js"></script>
+    <script src="/assets/js/centrifuge.min.js"></script>
     {% comment %} <script src="/assets/js/ajaxify.min.js"></script> {% endcomment %}
     
-    <script src="/assets/base.js?d=20181216"></script>
+    <script src="/assets/base.js?d=20190103"></script>
     {% block scripts %}{% endblock %}
 
 </body>

@@ -42,6 +42,8 @@ func main() {
 	router.GET("/account/email", emailSettingsHandler(mdw))
 	router.POST("/account/settings/email", emailSettingsSaverHandler(mdw))
 
+	router.GET("/account/subscribe/token", proxyHandler(mdw))
+
 	router.GET("/adm/grandson", grandsonHandler(mdw))
 	router.POST("/adm/grandson", grandsonSaverHandler(mdw))
 
