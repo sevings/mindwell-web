@@ -78,7 +78,12 @@ var notifications = {
                     notifications.setBefore(ul)
                 }
 
-                $("ul.notification-list").prepend(ul).children(".data-helper").remove()
+                var list = $("ul.notification-list")
+
+                list.prepend(ul).children(".data-helper").remove()
+
+                if(list.children().length > 0)
+                    $(".notification-placeholder").remove()
             },
             error: function(req) {
                 var resp = JSON.parse(req.responseText)

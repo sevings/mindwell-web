@@ -89,7 +89,8 @@ $("#post-entry").click(function() {
                 $(window).off("pagehide")
             }
                 
-            $().ajaxify(data.path)
+            window.location.pathname = data.path
+            // $().ajaxify(data.path)
         },
         error: showAjaxError,
         complete: function() {

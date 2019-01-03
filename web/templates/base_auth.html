@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block base_styles %}
-    <link rel="stylesheet" type="text/css" href="/assets/base_auth.css?d=20181206">
+    <link rel="stylesheet" type="text/css" href="/assets/base_auth.css?d=20190103">
     {% block styles %}{% endblock %}
 {% endblock %}
 {% block body_data %}data-me-id="{{ me.id }}" data-me-name="{{ me.name }}"{% endblock %}
@@ -210,8 +210,10 @@
 
 				<div class="more-dropdown more-with-triangle triangle-top-center">
 					<div class="mCustomScrollbar notifications" data-mcs-theme="dark">
-						{% comment %} <h6 class="title hcenter">Здесь будут отображаться твои уведомления.</h6> {% endcomment %}
 						<ul class="notification-list"></ul>
+						<div class="notification-placeholder">
+							Здесь будут отображаться твои уведомления.
+						</div>
 					</div>
 				</div>
 			</div>
@@ -300,8 +302,10 @@
 
 		<div class="tab-pane " id="notification" role="tabpanel">
 			<div class="mCustomScrollbar notifications" data-mcs-theme="dark">
-				{% comment %} <p>Здесь будут отображаться твои уведомления.</p> {% endcomment %}
 				<ul class="notification-list"></ul>
+				<div class="notification-placeholder">
+					Здесь будут отображаться твои уведомления.
+				</div>
 			</div>
 		</div>
 
