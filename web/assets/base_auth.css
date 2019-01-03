@@ -44,6 +44,7 @@ html, body {
 
 .control-icon .more-dropdown {
     padding: 0px;
+    width: 400px;
 }
 
 .control-icon .mCustomScrollbar {
@@ -57,6 +58,16 @@ html, body {
 .notifications-placeholder {
     padding: 25px;
     text-align: center;
+}
+
+.notification-event a {
+    display: inline;
+}
+
+.notification-content {
+    color: #252632;
+    word-wrap: break-word; /* Internet Explorer */
+    overflow-wrap: break-word;
 }
 
 .post-add-icon svg {
@@ -108,7 +119,7 @@ div.post-add-icon:hover {
     width: 100%;
 }
 
-.post-content, .comment-content {
+.post-content, .comment-content{
     word-wrap: break-word; /* Internet Explorer */
     overflow-wrap: break-word;
     text-align: justify;

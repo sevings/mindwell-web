@@ -9,9 +9,18 @@
                 <img class="avatar-x34" src="{{ ntf.comment.author.avatar.x42 }}" alt="{{ ntf.comment.author.showName }}">
             </div>
             <div class="notification-event">
-                <div>
-                    <a href="/users/{{ ntf.comment.author.name }}" class="h6 notification-friend">{{ ntf.comment.author.showName }}</a>:<br>
+                <div class="notification-content">
+                    <a href="/users/{{ ntf.comment.author.name }}" class="h6 notification-friend">{{ ntf.comment.author.showName }}</a><br>
                     {{ ntf.comment.content|safe }}
+                </div>
+                <div>
+                    {% if ntf.entry.title || ntf.entry.cutTitle %}
+                        К записи <a href="/entries/{{ ntf.entry.id }}">
+                            {% if ntf.entry.cutTitle %}{{ ntf.entry.cutTitle|safe }}{% else %}{{ ntf.entry.title|safe }}{% endif %}
+                        </a>.
+                    {% else %}
+                        К <a href="/entries/{{ ntf.entry.id }}">записи</a>.
+                    {% endif %}
                 </div>
                 <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
             </div>
@@ -23,7 +32,7 @@
                 <img class="avatar-x34" src="{{ ntf.user.avatar.x42 }}" alt="{{ ntf.user.showName }}">
             </div>
             <div class="notification-event">
-                <div>
+                <div class="notification-content">
                     {% if ntf.type == "follower" %}
                         <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a>
                         теперь следит за твоим тлогом.
