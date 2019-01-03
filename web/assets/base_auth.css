@@ -46,6 +46,14 @@ html, body {
     padding: 0px;
 }
 
+.control-icon .mCustomScrollbar {
+    max-height: 500px;
+}
+
+.control-icon .ps > .ps__scrollbar-y-rail, .control-icon .ps:hover > .ps__scrollbar-y-rail {
+    top: 0px !important;
+}
+
 .notification-placeholder {
     padding: 25px;
     text-align: center;

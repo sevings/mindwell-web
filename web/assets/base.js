@@ -21,8 +21,13 @@ var notifications = {
     scrollLoad: true,
     unread: 0,
     centrifuge: null,
-    setUnread: function(ul) {
-        var unread = ul.data("unreadCount")
+    setUnread: function(val) {
+        var unread 
+        if(typeof val == "number")
+            unread = val
+        else
+            unread = val.data("unreadCount")
+        
         if(unread == notifications.unread)
             return
 
@@ -56,8 +61,9 @@ var notifications = {
         if(!notifications.unread)
             return 
 
-        notifications.unread = 0;
         $("ul.notification-list > li.un-read").removeClass("un-read")
+
+        notifications.setUnread(0)
 
         $.ajax({
             url: "/notifications/read?time=" + notifications.after,
@@ -125,6 +131,17 @@ var notifications = {
 
 $(function() {
     notifications.start()
+})
+
+$(".more-dropdown .notifications").mouseout(notifications.read)
+
+$("a[href='#notification']").click(function() {
+    var a = $(this)
+    var read = a.data("read")
+    a.data("read", !read)
+    
+    if(read)
+        notifications.read()
 })
 
 $("div.notifications").scroll(function() { 
