@@ -43,7 +43,12 @@ var notifications = {
 
         var title = document.title
         var repl = unread ? "(" + unread + ") " : ""
-        title = title.replace(/^(?:\(\d+\) )?/, repl)
+        
+        if(notifications.unread > 0)
+            title = title.replace(/^\(\d+\) /, repl)
+        else
+            title = repl + title
+
         document.title = title
 
         notifications.unread = unread
