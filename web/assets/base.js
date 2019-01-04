@@ -157,7 +157,8 @@ var notifications = {
         return notifications.centrifuge && notifications.centrifuge.isConnected()
     },
     connect: function(token) {
-        var url = "ws://" + document.location.host + "/centrifugo/connection/websocket"
+        var proto = (document.location.protocol == "https:" ? "wss:" : "ws:")
+        var url = proto + "//" + document.location.host + "/centrifugo/connection/websocket"
         var cent = new Centrifuge(url)
 
         cent.setToken(token)
