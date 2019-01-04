@@ -186,7 +186,7 @@ $(function() {
 $(".more-dropdown .notifications").mouseout(notifications.read)
 
 $(".notifications-control").mouseenter(function() {
-    if($("ul.notification-list").children().length == 0)
+    if($("ul.notification-list").children().length < 5)
         notifications.loadHistory()    
 })
 
@@ -197,7 +197,7 @@ $("a[href='#notifications']").click(function() {
     
     if(read)
         notifications.read()
-    else if($("ul.notification-list").children().length == 0)
+    else if($("ul.notification-list").children().length < 5)
         notifications.loadHistory()
 })
 

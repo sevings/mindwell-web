@@ -60,11 +60,15 @@ html, body {
     text-align: center;
 }
 
+.notification-list a {
+    padding: 0px;
+}
+
 .notification-event a {
     display: inline;
 }
 
-.notification-content {
+.notification-event {
     color: #252632;
     word-wrap: break-word; /* Internet Explorer */
     overflow-wrap: break-word;
