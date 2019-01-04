@@ -25,6 +25,7 @@ var notifications = {
     
     unread: 0,
     centrifuge: null,
+    sound: null,
 
     setUnread: function(val) {
         var unread 
@@ -159,6 +160,7 @@ var notifications = {
         var id = $("body").data("meId")
         cent.subscribe("notifications#" + id, function() {
             notifications.check()
+            notifications.sound.play()
         })
         
         cent.connect()
@@ -176,6 +178,8 @@ var notifications = {
         })
 
         notifications.check()
+
+        notifications.sound = new Audio("/assets/notification.mp3")
     }
 }
 
