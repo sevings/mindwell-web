@@ -105,7 +105,7 @@ var notifications = {
                 if(list.children().length > 0) {
                     $(".notifications-placeholder").remove()
                     if(!notifications.before) {
-                        notifications.setBefore(ul)
+                        notifications.before = $("time", list).last().attr("datetime")
                     }
                 }
             },
@@ -175,6 +175,7 @@ var notifications = {
                 }
             } else {
                 notifications.check()
+                notifications.setUnread(notifications.unread + 1)
                 notifications.sound.play()                
             }
         })
