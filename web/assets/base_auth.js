@@ -164,11 +164,18 @@ var notifications = {
         cent.setToken(token)
 
         var id = $("body").data("meId")
-        cent.subscribe("notifications#" + id, function() {
+        var channel = "notifications#" + id
+        var subs = cent.subscribe(channel, function() {
             notifications.check()
             notifications.sound.play()
         })
         
+        subs.on("subscribe", notifications.check)
+        subs.on("error", function(err) {
+            console.error("Subscribe to " + channel + ":", err.error)
+            notifications.check()
+        })
+
         cent.connect()
 
         notifications.centrifuge = cent
