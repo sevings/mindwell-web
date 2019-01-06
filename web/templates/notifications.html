@@ -3,7 +3,7 @@
     data-before="{{ nextBefore }}" data-has-before="{{ hasBefore }}"></div>
 
 {% for ntf in notifications %}
-    <li {% if !ntf.read %}class="un-read"{% endif %}>
+    <li id="notification{{ ntf.id }}" {% if !ntf.read %}class="un-read"{% endif %}>
         {% if ntf.type == "comment" %}
             <div class="author-thumb">
                 <a href="/users/{{ ntf.comment.author.name }}">

@@ -165,9 +165,18 @@ var notifications = {
 
         var id = $("body").data("meId")
         var channel = "notifications#" + id
-        var subs = cent.subscribe(channel, function() {
-            notifications.check()
-            notifications.sound.play()
+        var subs = cent.subscribe(channel, function(message) {
+            var ntf = message.data
+            if(ntf.read) {
+                var li = $("#notification" + ntf.id)
+                if(li.hasClass("un-read")) {
+                    li.removeClass("un-read")
+                    notifications.setUnread(notifications.unread - 1)
+                }
+            } else {
+                notifications.check()
+                notifications.sound.play()                
+            }
         })
         
         subs.on("subscribe", notifications.check)
@@ -189,8 +198,6 @@ var notifications = {
                 notifications.connect(resp.token)
             }
         })
-
-        notifications.check()
 
         notifications.sound = new Audio("/assets/notification.mp3")
     }
