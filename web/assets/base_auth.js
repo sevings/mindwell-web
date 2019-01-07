@@ -161,13 +161,17 @@ var notifications = {
         }
     },
     update: function(id) {
+        var old = $("#notification" + id)
+        if(!old.length)
+            return
+
         $.ajax({
             url: "/notifications/" + id,
             method: "GET",
             success: function(data) {
                 var li = $(formatTimeHtml(data))
                 notifications.addClickHandler(li)
-                $("#notification" + id).replaceWith(li)                
+                old.replaceWith(li)                
             },
             error: function(req) {
                 var resp = JSON.parse(req.responseText)
@@ -207,13 +211,13 @@ var notifications = {
             } else if(ntf.state == "removed") {
                 notifications.remove(ntf.id)
             } else {
-                console.error("Unknown notification state:", ntf.state)
+                console.log("Unknown notification state:", ntf.state)
             }
         })
         
         subs.on("subscribe", notifications.check)
         subs.on("error", function(err) {
-            console.error("Subscribe to " + channel + ":", err.error)
+            console.log("Subscribe to " + channel + ":", err.error)
             notifications.check()
         })
 
