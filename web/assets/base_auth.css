@@ -68,6 +68,10 @@ html, body {
     display: inline;
 }
 
+.notification-event img {
+    max-height: 100px;
+}
+
 .notification-event {
     color: #252632;
     word-wrap: break-word; /* Internet Explorer */
