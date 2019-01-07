@@ -66,9 +66,9 @@ var notifications = {
             notifications.after = nextAfter
     },
     addClickHandler: function(ul) {
-        $("a", ul).click(notifications.read)
+        $("a", ul).click(notifications.readAll)
     },
-    read: function() {
+    readAll: function() {
         if(!notifications.unread)
             return 
 
@@ -153,6 +153,35 @@ var notifications = {
             },
         })
     },
+    read: function(id) {
+        var li = $("#notification" + id)
+        if(li.hasClass("un-read")) {
+            li.removeClass("un-read")
+            notifications.setUnread(notifications.unread - 1)
+        }
+    },
+    update: function(id) {
+        $.ajax({
+            url: "/notifications/" + id,
+            method: "GET",
+            success: function(data) {
+                var li = $(formatTimeHtml(data))
+                notifications.addClickHandler(li)
+                $("#notification" + id).replaceWith(li)                
+            },
+            error: function(req) {
+                var resp = JSON.parse(req.responseText)
+                console.log(resp.message)
+            },
+        })       
+    },
+    remove: function(id) {
+        var li = $("#notification" + id)
+        if(li.hasClass("un-read"))
+            notifications.setUnread(notifications.unread - 1)
+            
+        li.remove()
+    },
     isConnected : function() {
         return notifications.centrifuge && notifications.centrifuge.isConnected()
     },
@@ -167,16 +196,18 @@ var notifications = {
         var channel = "notifications#" + id
         var subs = cent.subscribe(channel, function(message) {
             var ntf = message.data
-            if(ntf.read) {
-                var li = $("#notification" + ntf.id)
-                if(li.hasClass("un-read")) {
-                    li.removeClass("un-read")
-                    notifications.setUnread(notifications.unread - 1)
-                }
-            } else {
+            if(ntf.state == "new") {
                 notifications.check()
                 notifications.setUnread(notifications.unread + 1)
                 notifications.sound.play()                
+            } else if(ntf.state == "read") {
+                notifications.read(ntf.id)
+            } else if(ntf.state == "updated") {
+                notifications.update(ntf.id)
+            } else if(ntf.state == "removed") {
+                notifications.remove(ntf.id)
+            } else {
+                console.error("Unknown notification state:", ntf.state)
             }
         })
         
@@ -206,7 +237,7 @@ var notifications = {
 
 $(notifications.start)
 
-$(".more-dropdown .notifications").mouseout(notifications.read)
+$(".more-dropdown .notifications").mouseout(notifications.readAll)
 
 $(".notifications-control").mouseenter(function() {
     if($("ul.notification-list").children().length < 5)
@@ -219,7 +250,7 @@ $("a[href='#notifications']").click(function() {
     a.data("read", !read)
     
     if(read)
-        notifications.read()
+        notifications.readAll()
     else if($("ul.notification-list").children().length < 5)
         notifications.loadHistory()
 })
