@@ -192,8 +192,8 @@ var notifications = {
 
         cent.setToken(token)
 
-        var id = $("body").data("meId")
-        var channel = "notifications#" + id
+        var name = $("body").data("meName")
+        var channel = "notifications#" + name
         var subs = cent.subscribe(channel, function(message) {
             var ntf = message.data
             if(ntf.state == "new") {
