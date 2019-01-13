@@ -38,10 +38,13 @@
                                 <span class="text">{{ profile.city }}</span>
                             </li>
                         {% endif %}
-						<li>
-							<span class="title">С нами с:</span>
-							<span class="text"><time datetime="{{ profile.createdAt }}"></time></span>
-                        </li>
+                        {% if profile.counts.days > 0 %}
+                            <li>
+                                <span class="title">С нами:</span>
+                                <span id="user-days" class="text" data-created-at="{{ profile.createdAt }}">
+                                    {{ profile.counts.days }} д{{profile.counts.days|quantity:"ень,ня,ней"}}</span>
+                            </li>
+                        {% endif %}
 						<li>
                             <span class="title">Приглашен{{ profile.gender|gender }}:</span>
                             <a href="/users/{{ profile.invitedBy.name }}" class="text">{{ profile.invitedBy.showName }}</a>
