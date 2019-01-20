@@ -177,7 +177,7 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ClearCookie()
+		api.ClearCookieToken()
 		ctx.Redirect(http.StatusSeeOther, "/index.html")
 	}
 }
@@ -201,7 +201,7 @@ func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Cont
 			HttpOnly: true,
 			Path:     "/",
 		}
-		http.SetCookie(ctx.Writer, &cookie)
+		api.SetCookie(&cookie)
 
 		api.Redirect(redirectPath)
 	}
@@ -313,6 +313,7 @@ func recoverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string, clbk func(*utils.APIRequest)) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
+		api.QueryCookie()
 		api.ForwardTo(apiPath)
 		api.SetScrollHrefs(webPath)
 
@@ -333,12 +334,12 @@ func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string, clb
 
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		section, ok := ctx.GetQuery("section")
-		if !ok {
-			section = "entries"
-		}
-
 		clbk := func(api *utils.APIRequest) {
+			section, ok := ctx.GetQuery("section")
+			if !ok {
+				section = "entries"
+			}
+
 			api.SetData("__section", section)
 		}
 
@@ -349,12 +350,12 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		category, ok := ctx.GetQuery("category")
-		if !ok {
-			category = "month"
-		}
-
 		clbk := func(api *utils.APIRequest) {
+			category, ok := ctx.GetQuery("category")
+			if !ok {
+				category = "month"
+			}
+
 			api.SetData("__category", category)
 		}
 
@@ -388,6 +389,7 @@ func watchingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
+		api.QueryCookie()
 		api.Forward()
 		api.SetMe()
 		api.WriteTemplate("top_users")

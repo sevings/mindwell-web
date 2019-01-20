@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/flosch/pongo2"
@@ -143,7 +144,33 @@ func (api *APIRequest) do(req *http.Request) {
 	api.read = false
 }
 
-func (api *APIRequest) ClearCookie() {
+func (api *APIRequest) QueryCookie() {
+	url := api.ctx.Request.URL
+	path := strings.Split(url.Path, "/")
+	name := path[len(path)-1]
+
+	cookie, err := api.ctx.Request.Cookie(name)
+
+	if len(url.RawQuery) > 2 {
+		if err != nil || cookie.Value != url.RawQuery {
+			cookie = &http.Cookie{
+				Name:   name,
+				Value:  url.RawQuery,
+				Path:   url.Path,
+				MaxAge: 60 * 60 * 24 * 90,
+			}
+			api.SetCookie(cookie)
+		}
+	} else if err == nil {
+		url.RawQuery = cookie.Value
+	}
+}
+
+func (api *APIRequest) SetCookie(cookie *http.Cookie) {
+	http.SetCookie(api.ctx.Writer, cookie)
+}
+
+func (api *APIRequest) ClearCookieToken() {
 	token := &http.Cookie{
 		Name:     "api_token",
 		Value:    "",
@@ -164,7 +191,7 @@ func (api *APIRequest) checkError() {
 	code := api.resp.StatusCode
 	switch {
 	case code == 401:
-		api.ClearCookie()
+		api.ClearCookieToken()
 		api.Redirect("/index.html")
 	case code >= 400:
 		log.Print(api.resp.Status)
