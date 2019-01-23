@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 	"time"
@@ -144,6 +145,21 @@ func (api *APIRequest) do(req *http.Request) {
 	api.read = false
 }
 
+func removeValues(query string) string {
+	v, err := url.ParseQuery(query)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+
+	skipKeys := []string{"after", "before", "tag", "section"}
+	for _, key := range skipKeys {
+		v.Del(key)
+	}
+
+	return v.Encode()
+}
+
 func (api *APIRequest) QueryCookie() {
 	url := api.ctx.Request.URL
 	path := strings.Split(url.Path, "/")
@@ -155,14 +171,14 @@ func (api *APIRequest) QueryCookie() {
 		if err != nil || cookie.Value != url.RawQuery {
 			cookie = &http.Cookie{
 				Name:   name,
-				Value:  url.RawQuery,
+				Value:  removeValues(url.RawQuery),
 				Path:   url.Path,
 				MaxAge: 60 * 60 * 24 * 90,
 			}
 			api.SetCookie(cookie)
 		}
 	} else if err == nil {
-		url.RawQuery = cookie.Value
+		url.RawQuery = removeValues(cookie.Value)
 	}
 }
 
