@@ -13,11 +13,18 @@
                     У нас оно состоит из трех английских слов через пробел. 
                     Скопируй одну из своих содержащих приглашения ссылок и отправь другу.
                 </p>
-                {% for invite in invites %}
-                    <input class="form-control invite" type="text" value="{{ invite }}" readonly>
-                {% empty %}
-                    <h6 class="title">У тебя пока нет свободных приглашений.</h6>
-                {% endfor %}
+                {% if me.ban.invite %}
+                    <h6 class="title">
+                        Ты или один из приглашенных тобой пользователей нарушил правила сайта.
+                        Ты не можешь приглашать новых людей до <time datetime="{{ me.ban.invite }}"></time>.
+                    </h6>
+                {% else %}
+                    {% for invite in invites %}
+                        <input class="form-control invite" type="text" value="{{ invite }}" readonly>
+                    {% empty %}
+                        <h6 class="title">У тебя пока нет свободных приглашений.</h6>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>    
