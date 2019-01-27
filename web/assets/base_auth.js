@@ -39,7 +39,7 @@ var notifications = {
 
         $(".notifications-counter")
             .text(unread)
-            .toggleClass("hidden", unread == 0)
+            .toggleClass("hidden", !unread || unread < 0)
 
         var title = document.title
         var repl = unread ? "(" + unread + ") " : ""
