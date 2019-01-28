@@ -152,7 +152,7 @@ func removeValues(query string) string {
 		return ""
 	}
 
-	skipKeys := []string{"after", "before", "tag", "section"}
+	skipKeys := []string{"after", "before", "tag", "section", "query"}
 	for _, key := range skipKeys {
 		v.Del(key)
 	}
