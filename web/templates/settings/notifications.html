@@ -44,4 +44,26 @@
             </p>
         {% endif %}
     </div>
+
+
+    <div class="ui-block-content">
+        <div class="row">
+            <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <h6 class="title">Телеграм-бот</h6>
+                <p>
+                    Также уведомления можно получать с помощью бота в Телеграм. Для этого открой ссылку
+                    <a href="https://t.me/{{ __tg }}?start={{ telegram.token }}" target="__blank">
+                        t.me/{{ __tg }}?start={{ telegram.token }}
+                    </a> или добавь себе в контакты бота @{{ __tg }} и отправь ему команду 
+                    <code>/login?{{ telegram.token }}</code>.
+                </p>
+                <p>
+                    Ссылка и команда содержат автоматически сгенерированный пароль. Любой, кто отправит
+                    его боту, получит доступ к твоим уведомлениям. Пароль будет действителен в течение
+                    десяти минут.                
+                </p>
+            </div>
+        </div>
+    </div>
+
 {% endblock page %}
