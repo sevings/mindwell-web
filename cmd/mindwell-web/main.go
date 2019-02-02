@@ -230,7 +230,7 @@ func invitesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.Forward()
 		api.SetMe()
 		SetAdm(mdw, ctx, api)
-		api.WriteTemplate("invites")
+		api.WriteTemplate("settings/invites")
 	}
 }
 
@@ -239,7 +239,7 @@ func passwordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
 		SetAdm(mdw, ctx, api)
-		api.WriteTemplate("password")
+		api.WriteTemplate("settings/password")
 	}
 }
 
@@ -249,7 +249,7 @@ func emailSettingsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.ForwardTo("/account/settings/email")
 		api.SetMe()
 		SetAdm(mdw, ctx, api)
-		api.WriteTemplate("email")
+		api.WriteTemplate("settings/email")
 	}
 }
 
@@ -268,7 +268,7 @@ func grandsonHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetField("stat", "/adm/stat")
 		api.SetMe()
 		api.SetData("__adm", true)
-		api.WriteTemplate("grandson")
+		api.WriteTemplate("settings/grandson")
 	}
 }
 
@@ -281,7 +281,7 @@ func grandfatherHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetField("father", "/adm/grandfather/status")
 		api.SetMe()
 		api.SetData("__adm", true)
-		api.WriteTemplate("grandfather")
+		api.WriteTemplate("settings/grandfather")
 	}
 }
 
@@ -344,7 +344,7 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetData("__section", section)
 		}
 
-		handle := feedHandler(mdw, "/entries/live", "/live", "live", clbk)
+		handle := feedHandler(mdw, "/entries/live", "/live", "entries/live", clbk)
 		handle(ctx)
 	}
 }
@@ -360,7 +360,7 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetData("__category", category)
 		}
 
-		handle := feedHandler(mdw, "/entries/best", "/best", "best", clbk)
+		handle := feedHandler(mdw, "/entries/best", "/best", "entries/best", clbk)
 		handle(ctx)
 	}
 }
@@ -371,7 +371,7 @@ func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetData("__section", "friends")
 		}
 
-		handle := feedHandler(mdw, "/entries/friends", "/friends", "friends", clbk)
+		handle := feedHandler(mdw, "/entries/friends", "/friends", "entries/friends", clbk)
 		handle(ctx)
 	}
 }
@@ -382,7 +382,7 @@ func watchingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetData("__section", "watching")
 		}
 
-		handle := feedHandler(mdw, "/entries/watching", "/watching", "friends", clbk)
+		handle := feedHandler(mdw, "/entries/watching", "/watching", "entries/friends", clbk)
 		handle(ctx)
 	}
 }
@@ -393,7 +393,7 @@ func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.QueryCookie()
 		api.Forward()
 		api.SetMe()
-		api.WriteTemplate("top_users")
+		api.WriteTemplate("users/top_users")
 	}
 }
 
@@ -406,7 +406,7 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetData("__tlog", true)
 		}
 
-		handle := feedHandler(mdw, "/users/"+name+"/tlog", "/users/"+name, "tlog", clbk)
+		handle := feedHandler(mdw, "/users/"+name+"/tlog", "/users/"+name, "entries/tlog", clbk)
 		handle(ctx)
 	}
 }
@@ -420,7 +420,7 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetData("__favorites", true)
 		}
 
-		handle := feedHandler(mdw, "/users/"+name+"/favorites", "/users/"+name+"/favorites", "favorites", clbk)
+		handle := feedHandler(mdw, "/users/"+name+"/favorites", "/users/"+name+"/favorites", "entries/favorites", clbk)
 		handle(ctx)
 	}
 }
@@ -434,7 +434,7 @@ func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.ForwardTo("/users/" + name + "/" + relation)
 		api.SetMe()
 		api.SetField("profile", "/users/"+name)
-		api.WriteTemplate("friendlist")
+		api.WriteTemplate("users/friendlist")
 	}
 }
 
@@ -443,7 +443,7 @@ func meUsersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
 		api.SetMe()
-		api.WriteTemplate("friendlist")
+		api.WriteTemplate("users/friendlist")
 	}
 }
 
@@ -452,7 +452,7 @@ func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("profile", api.Data()["me"])
 	}
 
-	return feedHandler(mdw, "/me/tlog", "/me", "tlog", clbk)
+	return feedHandler(mdw, "/me/tlog", "/me", "entries/tlog", clbk)
 }
 
 func meSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
@@ -566,7 +566,7 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		}
 
 		api.SetMe()
-		api.WriteTemplate("entry")
+		api.WriteTemplate("entries/entry")
 	}
 }
 
@@ -578,7 +578,7 @@ func commentsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		entryID := ctx.Param("id")
 		api.SetScrollHrefs("/entries/" + entryID + "/comments")
 
-		api.WriteTemplate("comments_page")
+		api.WriteTemplate("entries/comments_page")
 	}
 }
 
@@ -591,7 +591,7 @@ func postCommentHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.ClearData()
 		api.SetData("comment", cmt)
 
-		api.WriteTemplate("comment")
+		api.WriteTemplate("entries/comment")
 	}
 }
 
@@ -604,7 +604,7 @@ func editCommentHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.ClearData()
 		api.SetData("comment", cmt)
 
-		api.WriteTemplate("comment")
+		api.WriteTemplate("entries/comment")
 	}
 }
 
@@ -648,21 +648,21 @@ func proxyNotAuthorizedHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func faqHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.WriteTemplate("faq")
+		api.WriteTemplate("faq/faq")
 	}
 }
 
 func faqMdHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.WriteTemplate("faq_md")
+		api.WriteTemplate("faq/faq_md")
 	}
 }
 
 func faqVotesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.WriteTemplate("faq_votes")
+		api.WriteTemplate("faq/faq_votes")
 	}
 }
 
