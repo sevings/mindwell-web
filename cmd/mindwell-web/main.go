@@ -43,7 +43,6 @@ func main() {
 	router.POST("/account/settings/email", emailSettingsSaverHandler(mdw))
 
 	router.GET("/account/subscribe/token", proxyHandler(mdw))
-	router.GET("/account/subscribe/telegram", proxyHandler(mdw)) // for test
 
 	router.GET("/adm/grandson", grandsonHandler(mdw))
 	router.POST("/adm/grandson", grandsonSaverHandler(mdw))
