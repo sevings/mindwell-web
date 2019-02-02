@@ -208,5 +208,5 @@ li.cat-list__item > a {
 }
 
 .invite {
-    cursor: pointer;
+    padding: 1.1rem;
 }

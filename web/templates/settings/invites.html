@@ -20,7 +20,7 @@
                     </h6>
                 {% else %}
                     {% for invite in invites %}
-                        <input class="form-control invite" type="text" value="{{ invite }}" readonly>
+                        <p><a class="invite" data-invite="{{ invite }}" target="__blank">{{ invite }}</a></p>
                     {% empty %}
                         <h6 class="title">У тебя пока нет свободных приглашений.</h6>
                     {% endfor %}

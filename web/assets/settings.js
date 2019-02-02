@@ -74,17 +74,10 @@ $("#verify-email a").click(function() {
     return false
 })
 
-$(".invite").val(function(i, invite) {
+$("a.invite").attr("href", function() {
+    var invite = $(this).data("invite")
     return document.location.protocol + "//" + document.location.host 
             + "/index.html?invite=" + encodeURIComponent(invite)
-})
-
-$(".invite").click(function() {
-    // https://stackoverflow.com/a/7436574
-    var input = this;
-    setTimeout(function() {
-        input.setSelectionRange(0, 9999);
-    }, 1);
 })
 
 $("#save-grandson").click(function() { 
