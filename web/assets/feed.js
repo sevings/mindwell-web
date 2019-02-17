@@ -157,6 +157,12 @@ $("a.favorite-post").click(function() {
 })
 
 function loadComments(href) {
+    var a = $("a.more-comments")
+    if(a.hasClass("disabled"))
+        return false
+
+    a.addClass("disabled")
+
     $.ajax({
         url: href,
         success: function(data) {
@@ -167,6 +173,9 @@ function loadComments(href) {
         error: function(req) {
             var resp = JSON.parse(req.responseText)
             alert(resp.message)
+        },
+        complete: function() {
+            a.removeClass("disabled")
         },
     })
 }
