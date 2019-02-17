@@ -62,6 +62,7 @@ function handleFriendRequest(method) {
 function updateRelations() {
     var profile = $("#profile")
     var privacy = profile.data("privacy")
+    var mePrivacy = $("body").data("mePrivacy")
     var relationToMe = profile.data("relToMe")
     var relationFromMe = profile.data("relFromMe")
     
@@ -100,8 +101,14 @@ function updateRelations() {
     var permit = $("#permit-rel")
     var cancel = $("#cancel-rel")
     var requested = relationToMe == "requested"
+    var followed  = relationToMe === "followed"
     permit.attr("hidden", !requested)
-    cancel.attr("hidden", !requested)
+    cancel.attr("hidden", mePrivacy == "all" || (!requested && !followed))
+
+    if(requested)
+        cancel.attr("title", "Отклонить заявку")
+    else
+        cancel.attr("title", "Отписать")
 
     var blockText
     if(relationFromMe == "ignored")
