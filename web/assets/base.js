@@ -180,6 +180,11 @@ $("#send-reset").click(function() {
     return false;
 })
 
+window.addEventListener('touchstart', function onFirstTouch() {
+    window.isTouchScreen = true;
+    window.removeEventListener('touchstart', onFirstTouch, false);
+}, false);
+
 // $(document).ready(function() {
 //     var options = {
 //         /* basic config parameters */

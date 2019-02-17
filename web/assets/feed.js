@@ -171,8 +171,8 @@ function loadComments(href) {
     })
 }
 
-$("#post-comment").click(function() { 
-    var btn = $(this)
+function postComment() {
+    var btn = $("#post-comment")
     if(btn.hasClass("disabled"))
         return false;
         
@@ -199,7 +199,22 @@ $("#post-comment").click(function() {
     })
 
     return false;
+}
+
+$("#comment-editor textarea").on("keydown", function(e){
+    if(e.key != "Enter")
+        return
+
+    if(e.shiftKey)
+        return
+
+    if(window.isTouchScreen)
+        return
+
+    postComment()
 })
+
+$("#post-comment").click(postComment)
 
 function replyComment(showName) { 
     var area = $("#comment-editor textarea")
