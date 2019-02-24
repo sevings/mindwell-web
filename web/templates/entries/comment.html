@@ -44,7 +44,7 @@
         <i class="{% if comment.rating.vote == "neg" || comment.rating.vote == "ban" %}fas{% else %}far{% endif %} fa-thumbs-down fa-2x"></i>
         {% if comment.rating.vote == "ban" %}</div>{% else %}</a>{% endif %}
 
-        <a href="#" class="reply" onclick="return replyComment('{{ comment.author.showName }}');">Ответить</a>
+        <a href="#" class="reply" onclick="return replyComment('{{ comment.author.showName }}', this);">Ответить</a>
     </div>
 
 </li>

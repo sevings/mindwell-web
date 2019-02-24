@@ -107,7 +107,7 @@ div.post-add-icon:hover {
     margin: 0px 7px;
 }
 
-.post .post__date a {
+.post .post__date {
     color: #888da8;
     font-weight: 400;
 }
@@ -154,6 +154,25 @@ div.post-add-icon:hover {
 
 .post-content ul, .post-content ol {
     font-size: .875rem;    
+}
+
+.blog-post-popup .post .post-title {
+    display: inline-block;
+}
+
+.blog-post-popup .post-title {
+    position: relative;
+    top: 0%;
+    left: 0%;
+    color: #515365;
+    -webkit-transform: none;
+    transform: none;
+    text-align: left;
+    z-index: 0;
+}
+
+.blog-post-popup .post p {
+    padding: 0;
 }
 
 .dot-divider {

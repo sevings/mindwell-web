@@ -1,6 +1,10 @@
 {% for entry in entries %}
     <div id="post{{ entry.id }}">
-        {% include "entry_base.html" with cutEntry = false %}
+        <div class="ui-block entry"
+                    data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}" 
+                    data-watching="{{ entry.isWatching }}" data-favorited="{{ entry.isFavorited }}">
+            {% include "entry_base.html" with cutEntry = false %}
+        </div>
     </div>
 {% endfor %}
 {% include "../nav.html" %}

@@ -7,7 +7,11 @@
 <div class="container">
 	<div class="row mt50">
 		<div class="col col-xl-8 m-auto col-lg-10 col-md-12 col-sm-12 col-12">
-            {% include "entry_full.html" with cutEntry = false %}
+            <div class="ui-block entry"
+                    data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}" 
+                    data-watching="{{ entry.isWatching }}" data-favorited="{{ entry.isFavorited }}">
+                {% include "entry_full.html" with cutEntry = false %}
+            </div>
         </div>
     </div>
 </div>

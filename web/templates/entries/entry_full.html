@@ -2,16 +2,17 @@
 {% block commentButton %}{% endblock commentButton %}
 {% block comments %}
     <a name="comments"></a>
-    <ul id="comments" class="comments-list">
+    <ul class="comments-list">
         {% include "comments_page.html" with data = entry.comments.data commentCount = entry.commentCount %}
+        <a href="/entries/{{ entry.id }}/comments?limit=5" class="update-comments"></a>
     </ul>
-    <form id="comment-editor" class="comment-form inline-items" action="/entries/{{entry.id}}/comments" method="post" enctype="multipart/form-data">
+    <form class="comment-form inline-items" action="/entries/{{ entry.id }}/comments" method="post" enctype="multipart/form-data">
         <div class="post__author author vcard inline-items">
             <img src="{{ me.avatar.x42 }}" alt="{{ me.showName }}">
             <div class="form-group">
                 <textarea class="form-control" name="content" maxlength="1000" placeholder="Написать комментарий…" required></textarea>
             </div>
         </div>
-        <button id="post-comment" class="btn btn-md-2 btn-primary">Отправить</button>
+        <button class="btn btn-md-2 btn-primary post-comment">Отправить</button>
     </form>
 {% endblock comments %}

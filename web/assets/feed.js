@@ -9,7 +9,7 @@ $("a.post-up").click(function() {
 })
 
 function vote(counter, positive) {
-    var info = counter.parents(".post")
+    var info = counter.parents(".entry")
     if(info.data("enabled") == false)
         return false
 
@@ -63,6 +63,8 @@ function deletePost(id) {
     if(!confirm("Пост будет удален навсегда."))
         return false
 
+    $(".post-popup.show").removeClass("fade").modal("hide");
+
     $.ajax({
         url: "/entries/" + id,
         method: "DELETE",
@@ -85,8 +87,7 @@ function deletePost(id) {
 }
 
 $("a.watch-post").click(function() {
-    var link = $(this)
-    var info = link.parents(".post")
+    var info = $(this).parents(".entry")
     if(info.data("enabled") == false)
         return false
 
@@ -94,6 +95,7 @@ $("a.watch-post").click(function() {
 
     var id = info.data("id")
     var watching = !!info.data("watching")
+    var link = info.find("a.watch-post")
 
     $.ajax({
         url: "/entries/" + id + "/watching",
@@ -121,8 +123,7 @@ $("a.watch-post").click(function() {
 })
 
 $("a.favorite-post").click(function() {
-    var link = $(this)
-    var info = link.parents(".post")
+    var info = $(this).parents(".entry")
     if(info.data("enabled") == false)
         return false
 
@@ -130,6 +131,7 @@ $("a.favorite-post").click(function() {
 
     var id = info.data("id")
     var favorited = !!info.data("favorited")
+    var link = info.find("a.favorite-post")
 
     $.ajax({
         url: "/entries/" + id + "/favorite",
@@ -156,8 +158,8 @@ $("a.favorite-post").click(function() {
     return false
 })
 
-function loadComments(href) {
-    var a = $("a.more-comments")
+function loadComments(href, a) {
+    a = $(a)
     if(a.hasClass("disabled"))
         return false
 
@@ -166,9 +168,15 @@ function loadComments(href) {
     $.ajax({
         url: href,
         success: function(data) {
-            $("a.more-comments").remove()
+            var ul = a.parent()
+
             var comments = formatTimeHtml(data)
-            $("#comments").prepend(comments)
+            ul.prepend(comments)
+            a.remove()
+
+            var upd = ul.find(".update-comments")
+            if(upd.length > 1)
+                upd.first().remove()
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
@@ -178,25 +186,78 @@ function loadComments(href) {
             a.removeClass("disabled")
         },
     })
+
+    return false
 }
 
-function postComment() {
-    var btn = $("#post-comment")
+function updateComments(entry) {
+    var a = entry.find(".update-comments")
+    if(a.hasClass("disabled"))
+        return false
+
+    a.addClass("disabled")
+
+    $.ajax({
+        url: a.attr("href"),
+        success: function(data) {
+            var ul = a.parent()
+            var hasPrev = ul.find(".comment-item").length > 0
+            var hasMore = ul.find(".more-comments").length > 0
+
+            var comments = formatTimeHtml(data)
+            ul.append(comments)
+
+            if(ul.find(".update-comments").length > 1)
+                a.remove()
+            
+            if(hasPrev) {
+                var more = ul.find(".more-comments")
+                if(!hasMore || more.length > 1)
+                    more.last().remove()
+            }
+
+            // remove duplicates
+            var items = {}
+            ul.find(".comment-item").each(function(){ 
+                var item = $(this)
+                var id = item.data("id")
+
+                var prev = items[id]
+                if(prev)
+                    prev.remove()
+                
+                items[id] = item
+            })
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            alert(resp.message)
+        },
+        complete: function() {
+            a.removeClass("disabled")
+        },
+    })
+
+    return false
+}
+
+function postComment(entry) {
+    var btn = entry.find(".post-comment")
     if(btn.hasClass("disabled"))
         return false;
         
     btn.addClass("disabled")
 
-    $("#comment-editor").ajaxSubmit({
+    entry.find("form.comment-form").ajaxSubmit({
         resetForm: true,
         headers: {
             "X-Error-Type": "JSON",
         },
         success: function(data) {
             var cmt = formatTimeHtml(data)
-            $("#comments").append(cmt)
+            entry.find(".comments-list").append(cmt)
 
-            var counter = $("#comment-count")
+            var counter = entry.find(".comment-count")
             var count = counter.text()
             count++
             counter.text(count)
@@ -210,7 +271,7 @@ function postComment() {
     return false;
 }
 
-$("#comment-editor textarea").on("keydown", function(e){
+$(".comment-form textarea").on("keydown", function(e){
     if(e.key != "Enter")
         return
 
@@ -220,22 +281,31 @@ $("#comment-editor textarea").on("keydown", function(e){
     if(window.isTouchScreen)
         return
 
-    postComment()
+    var entry = $(this).parents(".entry")
+    postComment(entry)
 })
 
-$("#post-comment").click(postComment)
+$(".post-comment").click(function(){
+    var entry = $(this).parents(".entry")
+    return postComment(entry)
+})
 
-function replyComment(showName) { 
-    var area = $("#comment-editor textarea")
+function replyComment(showName, a) { 
+    var entry = $(a).parents(".entry")
+    var area = entry.find("form.comment-form textarea")
     area.val(function(i, val){
         if(val.includes(showName))
             return val
 
-        return showName + ", " + val;
+        return showName + ", " + val
     })
 
-    $("html, body").animate({ scrollTop: area.offset().top }, 500);
-
+    var modal = $(".post-popup.show")
+    if(modal.length > 0)
+        modal.animate({ scrollTop: modal.children().outerHeight() }, 500)
+    else
+        $("html, body").animate({ scrollTop: area.offset().top }, 500);
+        
     return false
 }
 
@@ -342,3 +412,42 @@ function voteComment(id, positive) {
 
     return false;
 }
+
+$(".post-popup").on("show.bs.modal", function(event) {
+    window.location.hash = this.id;
+    
+    var entry = $(this).parents(".entry")
+    updateComments(entry)
+})
+
+$(".post-popup").on("shown.bs.modal", function(event) {
+    var a = $(event.relatedTarget)
+    if(!a.hasClass("comment-button"))
+        return
+        
+    var modal = $(this)
+    var comments = modal.find("a[name='comments']")
+    modal.animate({ scrollTop: comments.offset().top }, 500);
+})
+
+$(".post-popup").on("hide.bs.modal", function() {
+    if(window.location.hash == "")
+        return
+
+    window.history.back()
+
+    if(window.location.hash != "")
+        window.location.hash = ""
+})
+
+$(window).on("hashchange", function () {
+    if(window.location.hash == "")
+        $(".post-popup.show").modal("hide");
+    else
+        $(window.location.hash).modal("show")
+})
+
+$(function(){
+    if(window.location.hash != "")
+        $(window.location.hash).modal("show")
+})
