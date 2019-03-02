@@ -90,7 +90,6 @@ $("#post-entry").click(function() {
             }
                 
             window.location.pathname = data.path
-            // $().ajaxify(data.path)
         },
         error: showAjaxError,
         complete: function() {

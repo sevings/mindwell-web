@@ -52,9 +52,7 @@
     {% endif %}
 
     {% block header %}{% endblock %}
-    <div id="ajaxy-content">
-        {% block body %}{% endblock %}
-    </div>
+    {% block body %}{% endblock %}
     {% block footer %}{% endblock %}
     
     <!-- JS Scripts -->
@@ -105,7 +103,6 @@
     <script src="/assets/js/jquery.plugin.min.js"></script>
     <script src="/assets/js/jquery.maxlength.min.js"></script>
     <script src="/assets/js/centrifuge.min.js"></script>
-    {% comment %} <script src="/assets/js/ajaxify.min.js"></script> {% endcomment %}
     
     <script src="/assets/base.js?d=20190302"></script>
     {% block base_scripts %}{% endblock %}
