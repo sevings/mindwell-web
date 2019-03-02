@@ -426,8 +426,8 @@ $(".post-popup").on("shown.bs.modal", function(event) {
         return
         
     var modal = $(this)
-    var comments = modal.find("a[name='comments']")
-    modal.animate({ scrollTop: comments.offset().top }, 500);
+    var comments = modal.find("ul.comments-list")
+    modal.animate({ scrollTop: comments.position().top }, 500);
 })
 
 $(".post-popup").on("hide.bs.modal", function() {
