@@ -23,7 +23,7 @@
                             <form id="entry-editor" name="editor" data-entry-id="{{ id|default:0 }}"
                                     action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" maxlength="500"
+                                    <input type="text" class="form-control" maxlength="500" autocomplete="off"
                                         name="title" placeholder="Заголовок поста" value="{{ title|safe }}"/>
                                 </div>
 
