@@ -271,6 +271,16 @@ function postComment(entry) {
     return false;
 }
 
+function sendComment(entry) {
+    var form = entry.find(".comment-form")
+    var save = form.data("id") > 0
+
+    if(save)
+        return saveComment(entry)
+    
+    return postComment(entry)
+}
+
 $(".comment-form textarea").on("keydown", function(e){
     if(e.key != "Enter")
         return
@@ -282,13 +292,22 @@ $(".comment-form textarea").on("keydown", function(e){
         return
 
     var entry = $(this).parents(".entry")
-    postComment(entry)
+    entry.find(".comment-form textarea").blur()
+    return sendComment(entry)
 })
 
 $(".post-comment").click(function(){
     var entry = $(this).parents(".entry")
-    return postComment(entry)
+    return sendComment(entry)
 })
+
+function scrollToCommentEdit(area) {
+    var modal = $(".post-popup.show")
+    if(modal.length > 0)
+        modal.animate({ scrollTop: modal.children().outerHeight() }, 500)
+    else
+        $("html, body").animate({ scrollTop: area.offset().top }, 500);    
+}
 
 function replyComment(showName, a) { 
     var entry = $(a).parents(".entry")
@@ -300,52 +319,70 @@ function replyComment(showName, a) {
         return showName + ", " + val
     })
 
-    var modal = $(".post-popup.show")
-    if(modal.length > 0)
-        modal.animate({ scrollTop: modal.children().outerHeight() }, 500)
-    else
-        $("html, body").animate({ scrollTop: area.offset().top }, 500);
+    scrollToCommentEdit(area)
         
     return false
 }
 
-$("#edit-comment").on("show.bs.modal", function(event) {
-    var a = $(event.relatedTarget)
-    var form = $("#existing-comment-editor")
-
-    var id = a.parents(".comment-item").data("id")
+function editComment(id) {
+    var cmt = $("#comment" + id)
+    var content = unescapeHtml(cmt.data("content") + "")
+    var form = cmt.parents(".entry").find(".comment-form")
     form.attr("action", "/comments/"+id)
     form.data("id", id)
+    form.find("textarea").val(content)
+    form.find(".cancel-comment").toggleClass("hidden", false)
+    form.find(".post-comment").text("Сохранить")
 
-    var content = unescapeHtml(a.data("content") + "")
-    $("textarea", form).val(content)
-})
+    var area = form.find("textarea")
+    scrollToCommentEdit(area)
 
-$("#save-comment").click(function() { 
-    var btn = $(this)
+    return false
+}
+
+function saveComment(entry) {
+    var btn = entry.find(".post-comment")
     if(btn.hasClass("disabled"))
         return false;
         
     btn.addClass("disabled")
 
-    $("#existing-comment-editor").ajaxSubmit({
+    var form = entry.find(".comment-form")
+
+    form.ajaxSubmit({
         resetForm: true,
         headers: {
             "X-Error-Type": "JSON",
         },
         success: function(data) {
             var cmt = formatTimeHtml(data)
-            var id = $("#existing-comment-editor").data("id")
+            var id = form.data("id")
             $("#comment"+id).replaceWith(cmt)
         },
         error: showAjaxError,
         complete: function() {
-            $('#edit-comment').modal('hide')
             btn.removeClass("disabled")
+            clearCommentForm(entry)
         },
     })
 
-    return false;
+    return false
+}
+
+function clearCommentForm(entry) {
+    var form = entry.find(".comment-form")
+    form.attr("action", "/entries/" + entry.data("id") + "/comments")
+    form.data("id", "")
+    form[0].reset()
+    form.find(".cancel-comment").toggleClass("hidden", true)
+    form.find(".post-comment").text("Отправить")
+
+    return false
+}
+
+$(".cancel-comment").click(function(){
+    var entry = $(this).parents(".entry")
+    return clearCommentForm(entry)
 })
 
 function deleteComment(id) {
