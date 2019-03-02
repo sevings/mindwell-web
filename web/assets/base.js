@@ -185,6 +185,14 @@ window.addEventListener('touchstart', function onFirstTouch() {
     window.removeEventListener('touchstart', onFirstTouch, false);
 }, false);
 
+$(".show-password").click(function() {
+    var input = $(this).parents("form").find("input[name='password']")
+    if(input.attr("type") == "password")
+        input.attr("type", "text")
+    else
+        input.attr("type", "password")
+})
+
 // $(document).ready(function() {
 //     var options = {
 //         /* basic config parameters */
