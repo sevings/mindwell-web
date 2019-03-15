@@ -147,6 +147,14 @@ div.post-add-icon:hover {
     margin-left: -1em;
 }
 
+.post-content iframe {
+    margin-left: -1em;
+}
+
+.post-content iframe, .comment-content iframe {
+    max-width: 100%;
+}
+
 .post-content ul {
     list-style-type: disc;
     list-style-position: inside;

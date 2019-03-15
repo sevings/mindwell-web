@@ -171,6 +171,7 @@ function loadComments(href, a) {
             var ul = a.parent()
 
             var comments = formatTimeHtml(data)
+            $(comments).find(".comment-content a").each(embedVideo)
             ul.prepend(comments)
             a.remove()
 
@@ -205,6 +206,7 @@ function updateComments(entry) {
             var hasMore = ul.find(".more-comments").length > 0
 
             var comments = formatTimeHtml(data)
+            $(comments).find(".comment-content a").each(embedVideo)
             ul.append(comments)
 
             if(ul.find(".update-comments").length > 1)
@@ -255,6 +257,7 @@ function postComment(entry) {
         },
         success: function(data) {
             var cmt = formatTimeHtml(data)
+            $(cmt).find("a").each(embedVideo)
             entry.find(".comments-list").append(cmt)
 
             var counter = entry.find(".comment-count")
@@ -356,6 +359,7 @@ function saveComment(entry) {
         },
         success: function(data) {
             var cmt = formatTimeHtml(data)
+            $(cmt).find("a").each(embedVideo)
             var id = form.data("id")
             $("#comment"+id).replaceWith(cmt)
         },
@@ -488,3 +492,20 @@ $(function(){
     if(window.location.hash != "")
         $(window.location.hash).modal("show")
 })
+
+function embedVideo() {
+    var a = $(this)
+    if(a.text().substring(0, 10) != a.attr("href").substring(0, 10))
+        return
+
+    var re = /(?:https?:\/\/)?(?:www\.)?(?:youtube.com\/watch\?.*v=|youtu.be\/)([a-z0-9\-]+).*/i
+    var match = re.exec(a.attr("href"))
+    if(match == null)
+        return
+
+    var id = match[1]
+    a.replaceWith('<iframe type="text/html" width="480" height="270"'
+        + ' src="https://www.youtube.com/embed/' + id + '" frameborder="0" allowfullscreen>')    
+}
+
+$(".post-content a, .comment-content a").each(embedVideo)
