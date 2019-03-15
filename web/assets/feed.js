@@ -498,7 +498,7 @@ function embedVideo() {
     if(a.text().substring(0, 10) != a.attr("href").substring(0, 10))
         return
 
-    var re = /(?:https?:\/\/)?(?:www\.)?(?:youtube.com\/watch\?.*v=|youtu.be\/)([a-z0-9\-]+).*/i
+    var re = /(?:https?:\/\/)?(?:www\.)?(?:youtube.com\/watch\?.*v=|youtu.be\/)([a-z0-9\-_]+).*/i
     var match = re.exec(a.attr("href"))
     if(match == null)
         return
