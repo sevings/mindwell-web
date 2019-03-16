@@ -171,7 +171,7 @@ function loadComments(href, a) {
             var ul = a.parent()
 
             var comments = formatTimeHtml(data)
-            $(comments).find(".comment-content a").each(embedVideo)
+            $(comments).find(".comment-content a").each(embedMedia)
             ul.prepend(comments)
             a.remove()
 
@@ -206,7 +206,7 @@ function updateComments(entry) {
             var hasMore = ul.find(".more-comments").length > 0
 
             var comments = formatTimeHtml(data)
-            $(comments).find(".comment-content a").each(embedVideo)
+            $(comments).find(".comment-content a").each(embedMedia)
             ul.append(comments)
 
             if(ul.find(".update-comments").length > 1)
@@ -257,7 +257,7 @@ function postComment(entry) {
         },
         success: function(data) {
             var cmt = formatTimeHtml(data)
-            $(cmt).find("a").each(embedVideo)
+            $(cmt).find("a").each(embedMedia)
             entry.find(".comments-list").append(cmt)
 
             var counter = entry.find(".comment-count")
@@ -359,7 +359,7 @@ function saveComment(entry) {
         },
         success: function(data) {
             var cmt = formatTimeHtml(data)
-            $(cmt).find("a").each(embedVideo)
+            $(cmt).find("a").each(embedMedia)
             var id = form.data("id")
             $("#comment"+id).replaceWith(cmt)
         },
@@ -493,19 +493,43 @@ $(function(){
         $(window.location.hash).modal("show")
 })
 
-function embedVideo() {
+function embedMedia() {
     var a = $(this)
     if(a.text().substring(0, 10) != a.attr("href").substring(0, 10))
         return
 
-    var re = /(?:https?:\/\/)?(?:www\.)?(?:youtube.com\/watch\?.*v=|youtu.be\/)([a-z0-9\-_]+).*/i
-    var match = re.exec(a.attr("href"))
-    if(match == null)
-        return
+    var match = null
 
-    var id = match[1]
-    a.replaceWith('<iframe type="text/html" width="480" height="270"'
-        + ' src="https://www.youtube.com/embed/' + id + '" frameborder="0" allowfullscreen>')    
+    var youtubeRe = /(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtube.com\/watch\?.*v=|youtu.be\/)([a-z0-9\-_]+).*/i
+    match = youtubeRe.exec(a.attr("href"))
+    if(match != null) {
+        var video = match[1]
+        a.replaceWith('<iframe class="yt-video" type="text/html" frameborder="0" width="480" height="270" '
+            + 'src="https://www.youtube.com/embed/' + video + '" allowfullscreen></iframe>')
+
+        return
+    }
+
+    var yandexRe = /(?:https?:\/\/)?music\.yandex\.ru\/(?:album\/(\d+)(?:\/track\/(\d+))?|users\/([^\/]+)\/playlists\/(\d+)).*/i
+    match = yandexRe.exec(a.attr("href"))
+    if(match != null) {
+        var album = match[1]
+        var track = match[2]            
+        var user = match[3]
+        var playlist = match[4]
+
+        if(track) 
+            a.replaceWith('<iframe class="ya-track" type="text/html" frameborder="0" width="100%" height="100" '
+                + 'src="https://music.yandex.ru/iframe/#track/' + track + '/' + album + '/"></iframe>')
+        else if(album)
+            a.replaceWith('<iframe class="ya-album" type="text/html" frameborder="0" width="100%" height="400" '
+                + 'src="https://music.yandex.ru/iframe/#album/' + album +'/hide/cover/"></iframe>')
+        else
+            a.replaceWith('<iframe class="ya-album" type="text/html" frameborder="0" width="100%" height="400" '
+                + 'src="https://music.yandex.ru/iframe/#playlist/' + user +'/' + playlist + '/show/description/hide/cover/"></iframe>')
+
+        return
+    }
 }
 
-$(".post-content a, .comment-content a").each(embedVideo)
+$(".post-content a, .comment-content a").each(embedMedia)
