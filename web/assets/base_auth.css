@@ -143,11 +143,7 @@ div.post-add-icon:hover {
     margin: 1em 0;
 }
 
-.post-content p > img:first-child {
-    margin-left: -1em;
-}
-
-.post-content iframe {
+.post-content p > img:first-child, .post-content p > iframe:first-child {
     margin-left: -1em;
 }
 
