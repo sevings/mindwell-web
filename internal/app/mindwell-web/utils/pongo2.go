@@ -100,6 +100,7 @@ func convertMediaTag(tag string) string {
 	return tag
 }
 
+// usage: {{ html|media }}
 func media(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
 	if !content.IsString() {
 		return nil, &pongo2.Error{
