@@ -172,7 +172,9 @@ function loadComments(href, a) {
 
             var comments = formatTimeHtml(data)
             $(comments).find(".comment-content a").each(embedMedia)
+            $(comments).find("iframe.yt-video").each(prepareYtPlayer)
             ul.prepend(comments)
+            addYtPlayers()
             a.remove()
 
             var upd = ul.find(".update-comments")
@@ -207,7 +209,9 @@ function updateComments(entry) {
 
             var comments = formatTimeHtml(data)
             $(comments).find(".comment-content a").each(embedMedia)
+            $(comments).find("iframe.yt-video").each(prepareYtPlayer)
             ul.append(comments)
+            addYtPlayers()
 
             if(ul.find(".update-comments").length > 1)
                 a.remove()
@@ -258,7 +262,9 @@ function postComment(entry) {
         success: function(data) {
             var cmt = formatTimeHtml(data)
             $(cmt).find("a").each(embedMedia)
+            $(cmt).find("iframe.yt-video").each(prepareYtPlayer)
             entry.find(".comments-list").append(cmt)
+            addYtPlayers()
 
             var counter = entry.find(".comment-count")
             var count = counter.text()
@@ -360,8 +366,10 @@ function saveComment(entry) {
         success: function(data) {
             var cmt = formatTimeHtml(data)
             $(cmt).find("a").each(embedMedia)
+            $(cmt).find("iframe.yt-video").each(prepareYtPlayer)
             var id = form.data("id")
             $("#comment"+id).replaceWith(cmt)
+            addYtPlayers()
         },
         error: showAjaxError,
         complete: function() {
@@ -472,6 +480,10 @@ $(".post-popup").on("shown.bs.modal", function(event) {
 })
 
 $(".post-popup").on("hide.bs.modal", function() {
+    $(this).find("iframe.yt-video").each(function(i) {
+        this.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    });
+
     if(window.location.hash == "")
         return
 
@@ -505,7 +517,7 @@ function embedMedia() {
     if(match != null) {
         var video = match[1]
         a.replaceWith('<iframe class="yt-video" type="text/html" frameborder="0" width="480" height="270" '
-            + 'src="https://www.youtube.com/embed/' + video + '" allowfullscreen></iframe>')
+            + 'src="https://www.youtube.com/embed/' + video + '?enablejsapi=1" allowfullscreen></iframe>')
 
         return
     }
@@ -533,3 +545,50 @@ function embedMedia() {
 }
 
 $(".post-content a, .comment-content a").each(embedMedia)
+
+$(function() {
+    var tag = document.createElement('script');
+    tag.src = "//youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+})
+
+var ytPlayers = []
+var nextYtIds = []
+
+function onYtStateChange(event) {
+    if(event.data != YT.PlayerState.PLAYING)
+        return
+
+    var id = event.target.getIframe().id
+    $.each(ytPlayers, function() {
+        if (this.getPlayerState() == YT.PlayerState.PLAYING
+                && this.getIframe().id != id)
+            this.pauseVideo()
+    })
+}
+
+function prepareYtPlayer() {
+    if(!this.id) 
+        this.id="yt-video" + (ytPlayers.length + nextYtIds.length)
+
+    nextYtIds.push(this.id)
+}
+
+function addYtPlayers() {
+    for(var i = 0; i < nextYtIds.length; i++)
+    {
+        ytPlayers.push(new YT.Player(nextYtIds[i], {
+            events: {
+                "onStateChange": onYtStateChange
+            }
+        }))    
+    }
+
+    nextYtIds = []
+}
+
+function onYouTubeIframeAPIReady() {
+    $("iframe.yt-video").each(prepareYtPlayer)
+    addYtPlayers()
+}
