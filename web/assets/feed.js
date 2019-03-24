@@ -546,13 +546,6 @@ function embedMedia() {
 
 $(".post-content a, .comment-content a").each(embedMedia)
 
-$(function() {
-    var tag = document.createElement('script');
-    tag.src = "//youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-})
-
 var ytPlayers = []
 var nextYtIds = []
 
