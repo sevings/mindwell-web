@@ -78,6 +78,13 @@ var aRe = regexp.MustCompile(`(?i)<a[^>]+>[^<]*</a>`)
 var hrefRe = regexp.MustCompile(`(?i)<a[^>]+href="([^"]+)"[^>]*>([^<]*)</a>`)
 var ytRe = regexp.MustCompile(`(?i)(?:https?://)?(?:www\.)?(?:m\.)?(?:youtube.com/watch\?.*v=|youtu.be/)([a-z0-9\-_]+).*`)
 
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+
 func convertMediaTag(tag string) string {
 	ht := hrefRe.FindAllStringSubmatch(tag, -1)
 	if len(ht) == 0 {
@@ -87,7 +94,8 @@ func convertMediaTag(tag string) string {
 	href := ht[0][1]
 	text := ht[0][2]
 
-	if len(text) > 0 && href[:20] != text[:20] {
+	compareLen := min(20, min(len(text), len(href)))
+	if compareLen > 0 && href[:compareLen] != text[:compareLen] {
 		return tag
 	}
 
