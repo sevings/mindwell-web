@@ -314,29 +314,43 @@ func recoverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func feedHandler(mdw *utils.Mindwell, apiPath, webPath, templateName string, clbk func(*utils.APIRequest)) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
+func feedHandler(mdw *utils.Mindwell, templateName, ajaxTemplateName string) func(ctx *gin.Context, apiPath string, clbk func(*utils.APIRequest)) {
+	return func(ctx *gin.Context, apiPath string, clbk func(*utils.APIRequest)) {
 		api := utils.NewRequest(mdw, ctx)
-		api.QueryCookie()
+
+		isAjax := api.IsAjax()
+
+		if !isAjax {
+			api.QueryCookie()
+		}
+
 		api.ForwardTo(apiPath)
-		api.SetScrollHrefs(webPath)
+		api.SetScrollHrefs()
 
 		if api.StatusCode() == 404 {
 			// private tlog, skip error
 			api = utils.NewRequest(mdw, ctx)
 		}
 
-		api.SetMe()
+		if !isAjax {
+			api.SetMe()
+		}
 
 		if clbk != nil {
 			clbk(api)
 		}
 
-		api.WriteTemplate(templateName)
+		if isAjax {
+			api.WriteTemplate(ajaxTemplateName)
+		} else {
+			api.WriteTemplate(templateName)
+		}
 	}
 }
 
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	handle := feedHandler(mdw, "entries/live", "entries/feed_page")
+
 	return func(ctx *gin.Context) {
 		clbk := func(api *utils.APIRequest) {
 			section, ok := ctx.GetQuery("section")
@@ -347,12 +361,13 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetData("__section", section)
 		}
 
-		handle := feedHandler(mdw, "/entries/live", "/live", "entries/live", clbk)
-		handle(ctx)
+		handle(ctx, "/entries/live", clbk)
 	}
 }
 
 func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	handle := feedHandler(mdw, "entries/best", "entries/feed_page")
+
 	return func(ctx *gin.Context) {
 		clbk := func(api *utils.APIRequest) {
 			category, ok := ctx.GetQuery("category")
@@ -363,30 +378,31 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetData("__category", category)
 		}
 
-		handle := feedHandler(mdw, "/entries/best", "/best", "entries/best", clbk)
-		handle(ctx)
+		handle(ctx, "/entries/best", clbk)
 	}
 }
 
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	handle := feedHandler(mdw, "entries/friends", "entries/feed_page")
+
 	return func(ctx *gin.Context) {
 		clbk := func(api *utils.APIRequest) {
 			api.SetData("__section", "friends")
 		}
 
-		handle := feedHandler(mdw, "/entries/friends", "/friends", "entries/friends", clbk)
-		handle(ctx)
+		handle(ctx, "/entries/friends", clbk)
 	}
 }
 
 func watchingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	handle := feedHandler(mdw, "entries/friends", "entries/feed_page")
+
 	return func(ctx *gin.Context) {
 		clbk := func(api *utils.APIRequest) {
 			api.SetData("__section", "watching")
 		}
 
-		handle := feedHandler(mdw, "/entries/watching", "/watching", "entries/friends", clbk)
-		handle(ctx)
+		handle(ctx, "/entries/watching", clbk)
 	}
 }
 
@@ -401,30 +417,38 @@ func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	handle := feedHandler(mdw, "entries/tlog", "entries/tlog_page")
+
 	return func(ctx *gin.Context) {
 		name := ctx.Param("name")
 
 		clbk := func(api *utils.APIRequest) {
-			api.SetField("profile", "/users/"+name)
+			if !api.IsAjax() {
+				api.SetField("profile", "/users/"+name)
+			}
+
 			api.SetData("__tlog", true)
 		}
 
-		handle := feedHandler(mdw, "/users/"+name+"/tlog", "/users/"+name, "entries/tlog", clbk)
-		handle(ctx)
+		handle(ctx, "/users/"+name+"/tlog", clbk)
 	}
 }
 
 func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	handle := feedHandler(mdw, "entries/favorites", "entries/tlog_page")
+
 	return func(ctx *gin.Context) {
 		name := ctx.Param("name")
 
 		clbk := func(api *utils.APIRequest) {
-			api.SetField("profile", "/users/"+name)
+			if !api.IsAjax() {
+				api.SetField("profile", "/users/"+name)
+			}
+
 			api.SetData("__favorites", true)
 		}
 
-		handle := feedHandler(mdw, "/users/"+name+"/favorites", "/users/"+name+"/favorites", "entries/favorites", clbk)
-		handle(ctx)
+		handle(ctx, "/users/"+name+"/favorites", clbk)
 	}
 }
 
@@ -455,7 +479,11 @@ func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("profile", api.Data()["me"])
 	}
 
-	return feedHandler(mdw, "/me/tlog", "/me", "entries/tlog", clbk)
+	handler := feedHandler(mdw, "entries/tlog", "entries/tlog_page")
+
+	return func(ctx *gin.Context) {
+		handler(ctx, "/me/tlog", clbk)
+	}
 }
 
 func meSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
@@ -577,9 +605,7 @@ func commentsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
-
-		entryID := ctx.Param("id")
-		api.SetScrollHrefs("/entries/" + entryID + "/comments")
+		api.SetScrollHrefs()
 
 		api.WriteTemplate("entries/comments_page")
 	}

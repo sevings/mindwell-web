@@ -87,8 +87,8 @@ func (api *APIRequest) SetData(key string, value interface{}) {
 	data[key] = value
 }
 
-func (api *APIRequest) SetScrollHrefs(webPath string) {
-	api.SetScrollHrefsWithData(webPath, api.Data())
+func (api *APIRequest) SetScrollHrefs() {
+	api.SetScrollHrefsWithData(api.ctx.Request.URL.Path, api.Data())
 }
 
 func (api *APIRequest) SetScrollHrefsWithData(webPath string, data map[string]interface{}) {
