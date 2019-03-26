@@ -466,13 +466,33 @@ $(".post-popup").on("show.bs.modal", function(event) {
 })
 
 $(".post-popup").on("shown.bs.modal", function(event) {
-    var a = $(event.relatedTarget)
-    if(!a.hasClass("comment-button"))
-        return
-        
     var modal = $(this)
-    var comments = modal.find("ul.comments-list")
-    modal.animate({ scrollTop: comments.position().top }, 500);
+    var video = modal.data("video")
+    if(video) {
+        modal.data("video", "")
+        var iframe = modal.find("iframe[data-video='" + video + "']")
+        modal.animate({ scrollTop: iframe.position().top }, 500);
+        for(var i = 0; i < ytPlayers.length; i++)
+        {
+            var player = ytPlayers[i]
+            if(player.getPlayerState() == YT.PlayerState.PLAYING)
+                break
+            
+            if(player.getIframe().id != iframe.attr("id"))
+                continue
+                
+            player.playVideo()
+            break
+        }
+        return
+    }
+
+    var a = $(event.relatedTarget)
+    if(a.hasClass("comment-button")) {
+        var comments = modal.find("ul.comments-list")
+        modal.animate({ scrollTop: comments.position().top }, 500);
+        return
+    }
 })
 
 $(".post-popup").on("hide.bs.modal", function() {
@@ -499,6 +519,16 @@ $(window).on("hashchange", function () {
 $(function(){
     if(window.location.hash != "")
         $(window.location.hash).modal("show")
+})
+
+$(".play-video").click(function(){
+    var a = $(this)
+    var video = a.data("video")
+    var modal = a.parents(".entry").find(".modal")
+    modal.data("video", video)
+    modal.modal("show")
+
+    return false
 })
 
 var ytPlayers = []

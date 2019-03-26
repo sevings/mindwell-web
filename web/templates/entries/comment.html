@@ -25,7 +25,7 @@
         {% endif %}
     </div>
 
-    <div class="comment-content">{{ comment.content|media }}</div>
+    <div class="comment-content">{{ comment.content|media:"embed" }}</div>
 
     <div class="comment-additional-info inline-items">
         {% if comment.rating.vote == "ban" %}<div{% else %}<a href="#" onclick="return voteComment({{ comment.id }}, true);"{% endif %} 

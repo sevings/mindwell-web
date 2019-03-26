@@ -66,8 +66,10 @@
     <div class="post-content">
         {% if cutEntry && entry.cutContent %}
             {{ entry.cutContent|media }}
-        {% else %}
+        {% elif cutEntry %}
             {{ entry.content|media }}
+        {% else %}
+            {{ entry.content|media:"embed" }}
         {% endif %}
     </div>
     
