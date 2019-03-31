@@ -20,15 +20,15 @@
 				<div class="ui-block-title">
 					<div class="h6 title">
                         {% if relation == "followers" %}
-                            Подписчики {{ subject.showName }}
+                            Подписчики <span class="showname">{{ subject.showName }}</span>
                         {% elif relation == "followings" %}
-                            Подписки {{ subject.showName }}
+                            Подписки <span class="showname">{{ subject.showName }}</span>
                         {% elif relation == "requested" %}
-                            Заявки {{ subject.showName }}
+                            Заявки <span class="showname">{{ subject.showName }}</span>
                         {% elif relation == "ignored" %}
                             Заблокированные пользователи
                         {% elif relation == "invited" %}
-                            Приглашенные {{ subject.showName }}
+                            Приглашенные <span class="showname">{{ subject.showName }}</span>
                         {% endif %}                        
                     </div>
 				</div>

@@ -5,7 +5,7 @@
         <a href="/users/{{ comment.author.name }}"><img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}"></a>
 
         <div class="author-date">
-            <a class="h6 post__author-name fn" href="/users/{{ comment.author.name }}">{{ comment.author.showName }}</a>
+            <a class="h6 post__author-name fn showname" href="/users/{{ comment.author.name }}">{{ comment.author.showName }}</a>
             <div class="post__date">
                 <time class="published" datetime="{{ comment.createdAt }}"></time>
             </div>

@@ -87,6 +87,7 @@ function formatTimeHtml(html) {
     template.innerHTML = html
     var elements = template.content.childNodes
     formatTimeElements(elements)
+    $(elements).find(".showname").each(shuffleContent)
     return elements
 }
 
