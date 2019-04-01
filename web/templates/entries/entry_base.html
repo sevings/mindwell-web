@@ -4,7 +4,7 @@
         <a href="/users/{{ entry.author.name }}"><img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}"></a>
 
         <div class="author-date">
-            <a class="h6 post__author-name fn showname" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
+            <a class="h6 post__author-name fn" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
             <div class="post__date">
                 <time class="published" datetime="{{ entry.createdAt }}"></time>
                 {% if entry.cutContent %}
