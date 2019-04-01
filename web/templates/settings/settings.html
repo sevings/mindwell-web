@@ -1,7 +1,7 @@
 {% extends "../base_auth.html" %}
 {% block title %}Настройки{% endblock %}
 {% block scripts %}
-    <script src="/assets/settings.js?d=20190202"></script>
+    <script src="/assets/settings.js?d=20190401"></script>
 {% endblock %}
 {% block body %}
     <div class="profile-settings-responsive">
@@ -14,6 +14,9 @@
                 <ul class="your-profile-menu">
                     <li>
                         <a href="/account/notifications">Настроить уведомления</a>
+                    </li>
+                    <li>
+                        <a href="/account/email">Сменить адрес почты</a>
                     </li>
                     <li>
                         <a href="/account/password">Сменить пароль</a>
@@ -57,6 +60,9 @@
                     <ul class="your-profile-menu">
                         <li>
                             <a href="/account/notifications">Настроить уведомления</a>
+                        </li>
+                        <li>
+                            <a href="/account/email">Сменить адрес почты</a>
                         </li>
                         <li>
                             <a href="/account/password">Сменить пароль</a>

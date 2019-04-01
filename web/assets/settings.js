@@ -27,6 +27,39 @@ $("#save-password").click(function() {
     return false;
 })
 
+$("#save-email").click(function() { 
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
+    btn.addClass("disabled")
+
+    var status = $("#email-status")
+    
+    $("#change-email").ajaxSubmit({
+        resetForm: true,
+        success: function() {
+            status.text("На новую почту отправлено письмо с кодом для подтверждения.")
+            status.removeClass("alert-danger")
+                .removeClass("alert-secondary")
+                .toggleClass("alert-success", true)
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            status.text(resp.message)
+            status.toggleClass("alert-danger", true)
+                .removeClass("alert-secondary")
+                .removeClass("alert-success")
+        },
+        complete: function() {
+            status.toggleClass("alert", true)
+            btn.removeClass("disabled")
+        },
+    })
+
+    return false;
+})
+
 $("#save-email-settings").click(function() { 
     var btn = $(this)
     if(btn.hasClass("disabled"))
@@ -56,8 +89,8 @@ $("#save-email-settings").click(function() {
     return false;
 })
 
-$("#verify-email a").click(function() { 
-    var p = $("#verify-email")
+$("#email-status a").click(function() { 
+    var p = $("#email-status")
     $.ajax({
         url: "/account/verification",
         method: "POST",
