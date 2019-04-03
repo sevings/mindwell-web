@@ -16,7 +16,7 @@
                 {% if me.ban.invite %}
                     <h6 class="title">
                         Ты или один из приглашенных тобой пользователей нарушил правила сайта.
-                        Ты не можешь приглашать новых людей до <time datetime="{{ me.ban.invite }}"></time>.
+                        Ты не можешь приглашать новых людей до <time class="text-lowercase" datetime="{{ me.ban.invite }}"></time>.
                     </h6>
                 {% else %}
                     {% for invite in invites %}
