@@ -46,7 +46,7 @@
                 <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a>
                 просит разрешения на чтение твоего тлога.
             {% elif ntf.type == "accept" %}
-                Теперь ты можешь видеть записи из тлога  
+                Теперь ты можешь читать записи из тлога  
                 <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a>.
             {% endif %}
             <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
