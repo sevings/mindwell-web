@@ -11,10 +11,10 @@
         <form id="email-settings" action="/account/settings/email" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                    <p>Присылать мне на почту уведомление, когда кто-то…</p>
+                    <p>Присылать мне на почту уведомление, когда…</p>
 
                     <div class="switcher-block">
-                        <div class="h6 title">комментирует запись, за которой я слежу</div>
+                        <div class="h6 title">кто-то комментирует запись, за которой я слежу</div>
                         <div class="togglebutton">
                             <label>
                                 <input type="checkbox" name="comments" {% if comments %}checked{% endif %}>
@@ -23,10 +23,19 @@
                     </div>
 
                     <div class="switcher-block">
-                        <div class="h6 title">подписывается на мой тлог</div>
+                        <div class="h6 title">кто-то подписывается на мой тлог</div>
                         <div class="togglebutton">
                             <label>
                                 <input type="checkbox" name="followers" {% if followers %}checked{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="switcher-block">
+                        <div class="h6 title">мне выдается новое приглашение</div>
+                        <div class="togglebutton">
+                            <label>
+                                <input type="checkbox" name="invites" {% if invites %}checked{% endif %}>
                             </label>
                         </div>
                     </div>
