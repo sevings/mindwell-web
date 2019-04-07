@@ -48,6 +48,9 @@
             {% elif ntf.type == "accept" %}
                 Теперь ты можешь читать записи из тлога  
                 <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a>.
+            {% elif ntf.type == "welcome" %}
+                <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a><br>
+                Твое приглашение использовано. 
             {% endif %}
             <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
         </div>
