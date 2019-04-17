@@ -6,14 +6,16 @@
         {% include "comments_page.html" with data = entry.comments.data commentCount = entry.commentCount %}
         <a href="/entries/{{ entry.id }}/comments?limit=5" class="update-comments"></a>
     </ul>
-    <form class="comment-form inline-items" action="/entries/{{ entry.id }}/comments" method="post" enctype="multipart/form-data">
-        <div class="post__author author vcard inline-items">
-            <img src="{{ me.avatar.x42 }}" alt="{{ me.showName }}">
-            <div class="form-group">
-                <textarea class="form-control" name="content" maxlength="1000" placeholder="Написать комментарий…" required></textarea>
+    {% if entry.rights.comment %}
+        <form class="comment-form inline-items" action="/entries/{{ entry.id }}/comments" method="post" enctype="multipart/form-data">
+            <div class="post__author author vcard inline-items">
+                <img src="{{ me.avatar.x42 }}" alt="{{ me.showName }}">
+                <div class="form-group">
+                    <textarea class="form-control" name="content" maxlength="1000" placeholder="Написать комментарий…" required></textarea>
+                </div>
             </div>
-        </div>
-        <button class="btn btn-md-2 btn-primary post-comment">Отправить</button>
-        <button class="btn btn-md-2 btn-primary cancel-comment hidden">Отмена</button>
-    </form>
+            <button class="btn btn-md-2 btn-primary post-comment">Отправить</button>
+            <button class="btn btn-md-2 btn-primary cancel-comment hidden">Отмена</button>
+        </form>
+    {% endif %}
 {% endblock comments %}

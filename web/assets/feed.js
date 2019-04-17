@@ -17,14 +17,15 @@ function vote(counter, positive) {
 
     var id = info.data("id")
     var vote = info.data("vote")
-    var delVote = ((positive && vote == "pos") || (!positive && vote == "neg"))
+    var delVote = vote && (positive == vote > 0)
 
     $.ajax({
         url: "/entries/" + id + "/vote?positive=" + positive,
         method: delVote ? "DELETE" : "PUT",
         dataType: "json",
         success: function(resp) {
-            info.data("vote", resp.vote)
+            vote = resp.vote || 0
+            info.data("vote", vote)
 
             var upLink = info.find(".post-up")
             var downLink = info.find(".post-down")
@@ -39,12 +40,12 @@ function vote(counter, positive) {
             downLink.attr("title", title)
             span.attr("title", title)
 
-            var up = resp.vote == "pos"
+            var up = vote > 0
             upLink.find("[data-fa-i2svg]")
                 .toggleClass("far", !up)
                 .toggleClass("fas", up)
 
-            var down = resp.vote == "neg"
+            var down = vote < 0
             downLink.find("[data-fa-i2svg]")
                 .toggleClass("far", !down)
                 .toggleClass("fas", down)
@@ -417,14 +418,15 @@ function voteComment(id, positive) {
     cmt.data("enabled", false)
 
     var vote = cmt.data("vote")
-    var delVote = ((positive && vote == "pos") || (!positive && vote == "neg"))
+    var delVote = vote && (positive == vote > 0)
 
     $.ajax({
         url: "/comments/" + id + "/vote?positive=" + positive,
         method: delVote ? "DELETE" : "PUT",
         dataType: "json",
         success: function(resp) {
-            cmt.data("vote", resp.vote)
+            vote = resp.vote || 0
+            cmt.data("vote", vote)
 
             var upLink = cmt.find(".comment-up")
             var downLink = cmt.find(".comment-down")
@@ -439,12 +441,12 @@ function voteComment(id, positive) {
             downLink.attr("title", title)
             span.attr("title", title)
 
-            var up = resp.vote == "pos"
+            var up = vote > 0
             upLink.find("[data-fa-i2svg]")
                 .toggleClass("far", !up)
                 .toggleClass("fas", up)
 
-            var down = resp.vote == "neg"
+            var down = vote < 0
             downLink.find("[data-fa-i2svg]")
                 .toggleClass("far", !down)
                 .toggleClass("fas", down)
