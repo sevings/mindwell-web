@@ -29,13 +29,13 @@
                         {% if profile.country %}
                             <li>
                                 <span class="title">Страна:</span>
-                                <span class="text">{{ profile.country }}</span>
+                                <a href="/users?query={{ profile.country }}" class="text">{{ profile.country }}</a>
                             </li>
                         {% endif %}
                         {% if profile.city %}
                             <li>
                                 <span class="title">Город:</span>
-                                <span class="text">{{ profile.city }}</span>
+                                <a href="/users?query={{ profile.city }}" class="text">{{ profile.city }}</a>
                             </li>
                         {% endif %}
                         {% if profile.counts.days > 0 %}
