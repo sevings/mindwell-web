@@ -11,17 +11,13 @@ import (
 )
 
 func init() {
-	err := pongo2.RegisterFilter("quantity", pongo2.FilterFunction(quantity))
-	if err != nil {
-		log.Println(err)
-	}
+	registerFilter("quantity", quantity)
+	registerFilter("gender", gender)
+	registerFilter("media", media)
+}
 
-	err = pongo2.RegisterFilter("gender", pongo2.FilterFunction(gender))
-	if err != nil {
-		log.Println(err)
-	}
-
-	err = pongo2.RegisterFilter("media", pongo2.FilterFunction(media))
+func registerFilter(name string, filter func(*pongo2.Value, *pongo2.Value) (*pongo2.Value, *pongo2.Error)) {
+	err := pongo2.RegisterFilter(name, pongo2.FilterFunction(filter))
 	if err != nil {
 		log.Println(err)
 	}
@@ -29,6 +25,10 @@ func init() {
 
 // usage: {{ num }} слон{{ num|quantity:",а,ов" }}
 func quantity(num *pongo2.Value, end *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
+	if num.IsNil() {
+		return num, nil
+	}
+
 	if !end.IsString() {
 		return nil, &pongo2.Error{
 			Sender:    "filter:quantity",
@@ -58,6 +58,10 @@ func quantity(num *pongo2.Value, end *pongo2.Value) (*pongo2.Value, *pongo2.Erro
 
 // usage: сделал{{ profile.gender|gender }}
 func gender(gender *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
+	if gender.IsNil() {
+		return gender, nil
+	}
+
 	if !gender.IsString() {
 		return nil, &pongo2.Error{
 			Sender:    "filter:gender",
@@ -122,6 +126,10 @@ func convertMediaTag(tag string, embed bool) string {
 
 // usage: {{ html|media:"embed" }}
 func media(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
+	if content.IsNil() {
+		return content, nil
+	}
+
 	if !content.IsString() {
 		return nil, &pongo2.Error{
 			Sender:    "filter:media",
