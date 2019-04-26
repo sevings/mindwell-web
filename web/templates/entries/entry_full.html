@@ -7,7 +7,7 @@
         <a href="/entries/{{ entry.id }}/comments?limit=5" class="update-comments"></a>
     </ul>
     {% if entry.rights.comment %}
-        <form class="comment-form inline-items" action="/entries/{{ entry.id }}/comments" method="post" enctype="multipart/form-data">
+        <form class="comment-form inline-items" action="/entries/{{ entry.id }}/comments" method="post" enctype="application/x-www-form-urlencoded">
             <div class="post__author author vcard inline-items">
                 <img src="{{ me.avatar.x42 }}" alt="{{ me.showName }}">
                 <div class="form-group">

@@ -192,7 +192,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form name="profile-editor" action="/profile/save" method="post" enctype="multipart/form-data">
+                    <form name="profile-editor" action="/profile/save" method="post" enctype="application/x-www-form-urlencoded">
 
                         <label class="control-label">Краткая информация</label>
                         <textarea class="form-control" maxlength="500" name="title">{{ me.title }}</textarea>
@@ -242,7 +242,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form id="user-inviter" action="/relations/invited/{{ profile.name }}" method="POST" enctype="multipart/form-data">
+                    <form id="user-inviter" action="/relations/invited/{{ profile.name }}" method="POST" enctype="application/x-www-form-urlencoded">
                         <select id="invite-list" class="selectpicker form-control"></select>
                         <h6 id="no-invites" class="title hidden">У тебя пока нет свободных приглашений.</h6>
                         <input id="send-invite" type="submit" class="btn btn-primary btn-lg full-width disabled" value="Отправить" />
