@@ -131,6 +131,9 @@ function unescapeHtml(text) {
     var status = $("#recover-status")
     
     $("#recover-email").ajaxSubmit({
+        headers: {
+            "X-Error-Type": "JSON",
+        },
         success: function() {
             status.text("Письмо отправлено. Проверь свой почтовый ящик.")
             status.removeClass("alert-danger").addClass("alert-success")

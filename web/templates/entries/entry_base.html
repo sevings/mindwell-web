@@ -5,7 +5,12 @@
 
         <div class="author-date">
             <a class="h6 post__author-name fn" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
-            <div class="post__date">
+            {% if cutEntry %}
+                <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}"
+            {% else %}
+                <div
+            {% endif %}
+                    class="post__date">
                 <time class="published" datetime="{{ entry.createdAt }}"></time>
                 {% if entry.cutContent %}
                     <span class="dot-divider"></span>
@@ -18,7 +23,7 @@
                         <i class="fas fa-bullhorn"></i>
                     </span>
                 {% endif %}
-            </div>
+            {% if cutEntry %}</a>{% else %}</div>{% endif %}
         </div>
 
         <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>

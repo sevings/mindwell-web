@@ -90,6 +90,11 @@
                                 <a id="follow" href="#" class="btn btn-control">
                                     <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
                                 </a>
+                                {% if !profile.invitedBy.id %}
+                                    <a id="give-invite" href="#" class="btn btn-control" data-toggle="modal" data-target="#invite-user">
+                                        <svg class="olymp-happy-sticker-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-sticker-icon"></use></svg>
+                                    </a>
+                                {% endif %}
                             {% endif %}
 						</div>
 					</div>
@@ -224,6 +229,29 @@
             </div>
         </div>
     </div>
-{% endif %}
+{% elif !profile.invitedBy.id %}
+    <div class="modal fade" id="invite-user" tabindex="-1" role="dialog" aria-labelledby="invite-user" aria-hidden="true">
+        <div class="modal-dialog modal-sm window-popup edit-widget" role="document">
+            <div class="modal-content">
+                <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                    <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+                </a>
 
+                <div class="modal-header">
+                    <h6 class="title">Выдать приглашение</h6>
+                </div>
+
+                <div class="modal-body">
+                    <form id="user-inviter" action="/relations/to/{{ profile.name }}/invited" method="POST" enctype="multipart/form-data">
+                        <select id="invite-list" class="selectpicker form-control"></select>
+                        <h6 id="no-invites" class="title hidden">У тебя пока нет свободных приглашений.</h6>
+                        <input id="send-invite" type="submit" class="btn btn-primary btn-lg full-width disabled" value="Отправить" />
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endif %}
+`
 {% endblock %}

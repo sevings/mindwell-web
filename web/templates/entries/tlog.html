@@ -29,13 +29,13 @@
                         {% if profile.country %}
                             <li>
                                 <span class="title">Страна:</span>
-                                <span class="text">{{ profile.country }}</span>
+                                <a href="/users?query={{ profile.country }}" class="text">{{ profile.country }}</a>
                             </li>
                         {% endif %}
                         {% if profile.city %}
                             <li>
                                 <span class="title">Город:</span>
-                                <span class="text">{{ profile.city }}</span>
+                                <a href="/users?query={{ profile.city }}" class="text">{{ profile.city }}</a>
                             </li>
                         {% endif %}
                         {% if profile.counts.days > 0 %}
@@ -45,7 +45,7 @@
                                     {{ profile.counts.days }} д{{profile.counts.days|quantity:"ень,ня,ней"}}</span>
                             </li>
                         {% endif %}
-						<li>
+                        <li id="invited-by" {% if !profile.invitedBy.id %}class="hidden"{% endif %} >
                             <span class="title">Приглашен{{ profile.gender|gender }}:</span>
                             <a href="/users/{{ profile.invitedBy.name }}" class="text">{{ profile.invitedBy.showName }}</a>
                         </li>

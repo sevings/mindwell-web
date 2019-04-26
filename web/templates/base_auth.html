@@ -7,7 +7,12 @@
 	<script src="/assets/base_auth.js?d=20190120"></script>
 	{% block scripts %}{% endblock %}
 {% endblock %}
-{% block body_data %}data-me-id="{{ me.id }}" data-me-name="{{ me.name }}" data-me-privacy="{{ me.privacy }}"{% endblock %}
+{% block body_data %}
+	data-me-id="{{ me.id }}" 
+	data-me-name="{{ me.name }}" 
+	data-me-show-name="{{ me.showName }}" 
+	data-me-privacy="{{ me.privacy }}"
+{% endblock %}
 {% block header %}
 
 <div class="fixed-sidebar">

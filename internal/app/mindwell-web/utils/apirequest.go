@@ -483,8 +483,8 @@ func (api *APIRequest) IsAjax() bool {
 }
 
 func (api *APIRequest) ExpectsJsonError() bool {
-	with := api.ctx.GetHeader("X-Error-Type")
-	return with == "JSON"
+	errType := api.ctx.GetHeader("X-Error-Type")
+	return errType == "JSON"
 }
 
 func (api *APIRequest) IsMobile() bool {
