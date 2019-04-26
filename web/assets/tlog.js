@@ -134,3 +134,47 @@ $(function(){
     date = formatDate(date)
     el.attr("title", date)
 })
+
+$("#invite-user").on("show.bs.modal", function() {
+    $.ajax({
+        url: "/account/invites",
+        dataType: "json",
+        success: function(resp) {
+            var list = $("#invite-list")
+
+            if(!resp.invites) {
+                list.addClass("hidden")
+                $("#no-invites").removeClass("hidden")
+                return
+            }
+
+            for(var i = 0; i < resp.invites.length; i++) {
+                var inv = resp.invites[i]
+                list.append("<option value='" + inv + "'>" + inv + "</option>")
+            }
+
+            $("#send-invite").removeClass("disabled")
+        },
+        error: showAjaxError,
+    })
+})
+
+$("#send-invite").click(function(){
+    $("#user-inviter").ajaxSubmit({
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function() {
+            $("#invite-user").modal("hide")
+            $("#give-invite").addClass("hidden")
+
+            var meName = $("body").data("meName")
+            var meShowName = $("body").data("meShowName")
+            $("#invited-by").removeClass("hidden")
+                .find("a").attr("href", "/users/" + meName).text(meShowName)
+        },
+        error: showAjaxError,
+    })
+
+    return false
+})

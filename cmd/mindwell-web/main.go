@@ -115,6 +115,8 @@ func main() {
 	router.PUT("/relations/to/:name", proxyHandler(mdw))
 	router.DELETE("/relations/to/:name", proxyHandler(mdw))
 
+	router.POST("/relations/to/:name/invited", proxyHandler(mdw))
+
 	router.GET("/relations/from/:name", proxyHandler(mdw))
 	router.PUT("/relations/from/:name", proxyHandler(mdw))
 	router.DELETE("/relations/from/:name", proxyHandler(mdw))
@@ -230,9 +232,14 @@ func invitesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
-		api.SetMe()
-		SetAdm(mdw, ctx, api)
-		api.WriteTemplate("settings/invites")
+
+		if api.IsAjax() {
+			api.WriteResponse()
+		} else {
+			api.SetMe()
+			SetAdm(mdw, ctx, api)
+			api.WriteTemplate("settings/invites")
+		}
 	}
 }
 

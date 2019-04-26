@@ -45,12 +45,10 @@
                                     {{ profile.counts.days }} д{{profile.counts.days|quantity:"ень,ня,ней"}}</span>
                             </li>
                         {% endif %}
-                        {% if profile.invitedBy.id %}
-                            <li>
-                                <span class="title">Приглашен{{ profile.gender|gender }}:</span>
-                                <a href="/users/{{ profile.invitedBy.name }}" class="text">{{ profile.invitedBy.showName }}</a>
-                            </li>
-                        {% endif %}
+                        <li id="invited-by" {% if !profile.invitedBy.id %}class="hidden"{% endif %} >
+                            <span class="title">Приглашен{{ profile.gender|gender }}:</span>
+                            <a href="/users/{{ profile.invitedBy.name }}" class="text">{{ profile.invitedBy.showName }}</a>
+                        </li>
 						<li>
 							<span class="title">В рейтинге:</span>
 							<span class="text">{{ profile.rank }}</span>
