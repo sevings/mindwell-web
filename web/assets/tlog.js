@@ -136,23 +136,32 @@ $(function(){
 })
 
 $("#invite-user").on("show.bs.modal", function() {
+    var list = $("#invite-list")
+
+    if(list.length > 0)
+        return
+
     $.ajax({
         url: "/account/invites",
         dataType: "json",
         success: function(resp) {
-            var list = $("#invite-list")
+            var no = $("#no-invites")
 
             if(!resp.invites) {
-                list.addClass("hidden")
-                $("#no-invites").removeClass("hidden")
+                no.before("<div id='invite-list'></div>")
                 return
             }
+
+            no.before('<select id="invite-list" class="selectpicker form-control" name="invite"></select>')
+            list = $("#invite-list")
 
             for(var i = 0; i < resp.invites.length; i++) {
                 var inv = resp.invites[i]
                 list.append("<option value='" + inv + "'>" + inv + "</option>")
             }
 
+            no.remove()
+            $('.selectpicker').selectpicker("refresh")
             $("#send-invite").removeClass("disabled")
         },
         error: showAjaxError,
@@ -160,6 +169,9 @@ $("#invite-user").on("show.bs.modal", function() {
 })
 
 $("#send-invite").click(function(){
+    if($(this).hasClass("disabled"))
+        return false
+
     $("#user-inviter").ajaxSubmit({
         headers: {
             "X-Error-Type": "JSON",

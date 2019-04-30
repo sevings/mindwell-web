@@ -51,14 +51,16 @@
                                     </div>
                                 </div>
 
-                                <div class="switcher-block for-public-only">
-                                    <div class="h6 title">Отправить в Прямой эфир</div>
-                                    <div class="togglebutton">
-                                        <label>
-                                            <input type="checkbox" name="inLive" {% if !id || inLive %}checked{% endif %}>
-                                        </label>
+                                {% if me.invitedBy.id %}
+                                    <div class="switcher-block for-public-only">
+                                        <div class="h6 title">Отправить в Прямой эфир</div>
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="inLive" {% if !id || inLive %}checked{% endif %}>
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
+                                {% endif %}
 
                                 <button id="post-entry" class="btn btn-primary btn-md-2">{% if id %}Сохранить{% else %}Опубликовать{% endif %}</button>
                             </form>

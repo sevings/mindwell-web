@@ -32,6 +32,20 @@
         <span class="notification-icon">
             <svg class="olymp-happy-sticker-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-sticker-icon"></use></svg>
         </span>
+    {% elif ntf.type == "invited" %}
+        <div class="author-thumb">
+            <a href="/users/{{ ntf.user.name }}">
+                <img class="avatar-x34" src="{{ ntf.user.avatar.x42 }}" alt="{{ ntf.user.showName }}">
+            </a>
+        </div>
+        <div class="notification-event">
+            <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a><br>
+            Получено приглашение на Mindwell. Теперь тебе доступны все функции сайта (при отсутствии других ограничений).
+            <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
+        </div>
+        <span class="notification-icon">
+            <svg class="olymp-happy-sticker-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-sticker-icon"></use></svg>
+        </span>
     {% else %}
         <div class="author-thumb">
             <a href="/users/{{ ntf.user.name }}">

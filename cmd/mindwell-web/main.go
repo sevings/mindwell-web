@@ -115,7 +115,7 @@ func main() {
 	router.PUT("/relations/to/:name", proxyHandler(mdw))
 	router.DELETE("/relations/to/:name", proxyHandler(mdw))
 
-	router.POST("/relations/to/:name/invited", proxyHandler(mdw))
+	router.POST("/relations/invited/:name", proxyHandler(mdw))
 
 	router.GET("/relations/from/:name", proxyHandler(mdw))
 	router.PUT("/relations/from/:name", proxyHandler(mdw))
