@@ -145,14 +145,16 @@ $("#invite-user").on("show.bs.modal", function() {
         url: "/account/invites",
         dataType: "json",
         success: function(resp) {
-            var no = $("#no-invites")
+            var send = $("#send-invite")
 
             if(!resp.invites) {
-                no.before("<div id='invite-list'></div>")
+                var msg = "У тебя пока нет свободных приглашений."
+                send.before('<div id="invite-list" class="alert alert-secondary" role="alert">' + msg + '</div>')
+                    .addClass("hidden")
                 return
             }
 
-            no.before('<select id="invite-list" class="selectpicker form-control" name="invite"></select>')
+            send.before('<select id="invite-list" class="selectpicker form-control" name="invite"></select>')
             list = $("#invite-list")
 
             for(var i = 0; i < resp.invites.length; i++) {
@@ -160,9 +162,8 @@ $("#invite-user").on("show.bs.modal", function() {
                 list.append("<option value='" + inv + "'>" + inv + "</option>")
             }
 
-            no.addClass("hidden")
             $('.selectpicker').selectpicker("refresh")
-            $("#send-invite").removeClass("disabled")
+            send.removeClass("disabled")
         },
         error: showAjaxError,
     })

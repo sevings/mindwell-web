@@ -107,12 +107,6 @@ $("#email-status a").click(function() {
     return false
 })
 
-$("a.invite").attr("href", function() {
-    var invite = $(this).data("invite")
-    return document.location.protocol + "//" + document.location.host 
-            + "/index.html?invite=" + encodeURIComponent(invite)
-})
-
 $("#save-grandson").click(function() { 
     var btn = $(this)
     if(btn.hasClass("disabled"))
