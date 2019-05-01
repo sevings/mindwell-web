@@ -42,16 +42,16 @@
                                     </select>
                                 </fieldset>                
 
-                                <div class="switcher-block for-public-only">
-                                    <div class="h6 title">Разрешить голосование</div>
-                                    <div class="togglebutton">
-                                        <label>
-                                            <input type="checkbox" name="isVotable" {% if !id || rating.isVotable %}checked{% endif %}>
-                                        </label>
-                                    </div>
-                                </div>
-
                                 {% if me.invitedBy.id %}
+                                    <div class="switcher-block for-public-only">
+                                        <div class="h6 title">Разрешить голосование</div>
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="isVotable" {% if !id || rating.isVotable %}checked{% endif %}>
+                                            </label>
+                                        </div>
+                                    </div>
+
                                     <div class="switcher-block for-public-only">
                                         <div class="h6 title">Отправить в Прямой эфир</div>
                                         <div class="togglebutton">
@@ -60,6 +60,9 @@
                                             </label>
                                         </div>
                                     </div>
+                                {% else %}
+                                    <input type="hidden" name="isVotable" value="true" />
+                                    <input type="hidden" name="inLive" value="false" />
                                 {% endif %}
 
                                 <button id="post-entry" class="btn btn-primary btn-md-2">{% if id %}Сохранить{% else %}Опубликовать{% endif %}</button>

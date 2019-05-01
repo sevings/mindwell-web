@@ -160,7 +160,7 @@ $("#invite-user").on("show.bs.modal", function() {
                 list.append("<option value='" + inv + "'>" + inv + "</option>")
             }
 
-            no.remove()
+            no.addClass("hidden")
             $('.selectpicker').selectpicker("refresh")
             $("#send-invite").removeClass("disabled")
         },
@@ -185,7 +185,11 @@ $("#send-invite").click(function(){
             $("#invited-by").removeClass("hidden")
                 .find("a").attr("href", "/users/" + meName).text(meShowName)
         },
-        error: showAjaxError,
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            $("#no-invites").removeClass("hidden").text(resp.message)
+            $("#send-invite").addClass("disabled")
+        },
     })
 
     return false
