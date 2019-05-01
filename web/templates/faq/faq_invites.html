@@ -1,0 +1,120 @@
+{% extends "../base.html" %}
+{% block title %}Вопросы по приглашениям{% endblock %}
+{% block header %}
+    <div class="stunning-header bg-primary-opacity">
+		
+		<div class="header--standard header--standard-landing" id="header--standard">
+			<div class="container">
+				<div class="header--standard-wrap">
+		
+					<a href="/" class="logo">
+						<div class="img-wrap">
+							<img src="/assets/icons/header-white.png" width="42" height="45" alt="Mindwell">
+						</div>
+						<div class="title-block">
+							<h6 class="logo-title">mindwell</h6>
+							<div class="sub-title">ДОМ МЫСЛЕЙ</div>
+						</div>
+					</a>
+		
+				</div>
+			</div>
+		</div>
+		
+		<div class="header-spacer--standard"></div>
+
+		<div class="stunning-header-content">
+            <h1 class="stunning-header-title">Вопросы по приглашениям</h1>
+            <ul class="breadcrumbs">
+                <li class="breadcrumbs-item">
+                    <a href="/help/faq/">ЧаВо</a>
+                    <span class="icon breadcrumbs-custom">/</span>
+                </li>
+                <li class="breadcrumbs-item active">
+                    <span>Приглашения</span>
+                </li>
+            </ul>
+		</div>
+
+		<div class="content-bg-wrap stunning-header-bg1"></div>
+	</div>
+{% endblock %}
+{% block body_class %}class="body-bg-white"{% endblock %}
+{% block body %}
+    <section class="mb60">
+        <div class="container">
+            <div class="row">
+                <div class="col col-xl-8 m-auto col-lg-10 col-md-12 col-sm-12 col-12">
+                    <div id="accordion" role="tablist" aria-multiselectable="true" class="accordion-faqs">
+                        <div class="card">
+
+                            <div class="card-header" role="tab" id="heading-invite">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-invite" aria-expanded="true" aria-controls="collapse-invite" class="collapsed">
+                                        Как пригласить на сайт своего друга? 
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-invite" class="collapse" role="tabpanel" aria-labelledby="heading-invite">
+                                <p>
+                                    Нужно отправить ему приглашение. Пользователь получает свое первое приглашение после того, как опубликует
+                                    десять постов с положительным рейтингом. Голоса от пригласившего его человека при этом не учитываются. Для
+                                    получения приглашения нужно быть зарегистрированным на сайте не менее двух недель. 
+                                </p>
+                                <p>
+                                    Далее приглашения выдаются за посты, набравшие высокий рейтинг. Если на третьи сутки после публикации пост 
+                                    находится в сотне лучших за месяц, его автор получает приглашение. Приглашения можно получать не чаще
+                                    одного раза в две недели. 
+                                </p>
+                                <p>
+                                    Чтобы человеку можно было отправить приглашение, у него должно быть не менее пяти положительных голосов 
+                                    от трех разных людей суммарно за все его посты. Голоса за комментарии в расчет не берутся.
+                                </p>
+                            </div>
+                    
+                            <div class="card-header" role="tab" id="heading-not-invited">
+                                <h3 class="mb-0">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-not-invited" aria-expanded="true" aria-controls="collapse-not-invited" class="collapsed">
+                                        Какие ограничения имеют пользователи, не получившие приглашение?
+                                        <span class="icons-wrap">
+                                            <svg class="olymp-plus-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-plus-icon"></use></svg>
+                                            <svg class="olymp-accordion-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-accordion-close-icon"></use></svg>
+                                        </span>
+                                    </a>
+                                </h3>
+                            </div>
+                    
+                            <div id="collapse-not-invited" class="collapse" role="tabpanel" aria-labelledby="heading-not-invited">
+                                <p>
+                                    Пользователи без приглашений не могут:
+                                </p>
+                                <ul>
+                                    <li>публиковать свои записи в Прямой эфир,</li>
+                                    <li>отключать голосование на своих записях,</li>
+                                    <li>голосовать за посты и комментарии,</li>
+                                    <li>комментировать чужие посты,</li>
+                                    <li>приглашать других пользователей.</li>
+                                </ul>
+                                <p>
+                                    Каждый пользователь имеет право
+                                </p>
+                                <ul>
+                                    <li>писать посты в свой тлог,</li>
+                                    <li>общаться в комментариях под своими постами,</li>
+                                    <li>подписываться на тлоги</li>
+                                    <li>и делать все остальное в рамках правил.</li>
+                                </ul>
+                            </div>
+                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
