@@ -187,8 +187,8 @@ $("#send-invite").click(function(){
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
-            $("#no-invites").removeClass("hidden").text(resp.message)
-            $("#send-invite").addClass("disabled")
+            $("#send-invite").addClass("hidden")
+                .before('<div class="alert alert-danger" role="alert">' + resp.message + '</div>')
         },
     })
 
