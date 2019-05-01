@@ -9,9 +9,9 @@
         <div class="row">
             <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <p>
-                    Чтобы зарегистрироваться на Mindwell, нужно получить приглашение. 
+                    Чтобы стать полноправным пользователем Mindwell, нужно получить приглашение. 
                     У нас оно состоит из трех английских слов через пробел. 
-                    Скопируй одну из своих содержащих приглашения ссылок и отправь другу.
+                    Отправить человеку приглашение можно на странице его профиля.
                 </p>
                 {% if me.ban.invite %}
                     <h6 class="title">
@@ -20,7 +20,7 @@
                     </h6>
                 {% else %}
                     {% for invite in invites %}
-                        <p><a class="invite" data-invite="{{ invite }}" target="__blank">{{ invite }}</a></p>
+                        <div class="alert alert-secondary" role="alert">{{ invite }}</div>
                     {% empty %}
                         <h6 class="title">У тебя пока нет свободных приглашений.</h6>
                     {% endfor %}
