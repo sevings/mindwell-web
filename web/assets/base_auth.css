@@ -107,7 +107,7 @@ div.post-add-icon:hover {
     margin: 0px 7px;
 }
 
-.post .post__date {
+.post .post__date, .post .post__date a {
     color: #888da8;
     font-weight: 400;
 }

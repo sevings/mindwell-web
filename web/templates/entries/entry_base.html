@@ -5,25 +5,25 @@
 
         <div class="author-date">
             <a class="h6 post__author-name fn" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
-            {% if cutEntry %}
-                <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}"
-            {% else %}
-                <div
-            {% endif %}
-                    class="post__date">
-                <time class="published" datetime="{{ entry.createdAt }}"></time>
-                {% if entry.cutContent %}
-                    <span class="dot-divider"></span>
-                    {% with wc=entry.wordCount %}
-                        <span>{{ wc }}&nbsp;слов{{ wc|quantity:"о,а," }}</span>
-                    {% endwith %}
-                {% endif %}
-                {% if !cutEntry && entry.inLive %}
-                    <span class="post-live" title="Запись отправлена в Прямой эфир" data-toggle="tooltip" data-placement="top" >
-                        <i class="fas fa-bullhorn"></i>
-                    </span>
-                {% endif %}
-            {% if cutEntry %}</a>{% else %}</div>{% endif %}
+                <div class="post__date">
+                    {% if cutEntry %}
+                        <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}">
+                    {% endif %}
+                    
+                    <time class="published" datetime="{{ entry.createdAt }}"></time>
+                    {% if entry.cutContent %}
+                        <span class="dot-divider"></span>
+                        {% with wc=entry.wordCount %}
+                            <span>{{ wc }}&nbsp;слов{{ wc|quantity:"о,а," }}</span>
+                        {% endwith %}
+                    {% endif %}
+                    {% if !cutEntry && entry.inLive %}
+                        <span class="post-live" title="Запись отправлена в Прямой эфир" data-toggle="tooltip" data-placement="top" >
+                            <i class="fas fa-bullhorn"></i>
+                        </span>
+                    {% endif %}
+                {% if cutEntry %}</a>{% endif %}
+            </div>
         </div>
 
         <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
