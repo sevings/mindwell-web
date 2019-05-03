@@ -172,8 +172,12 @@ func rootHandler(ctx *gin.Context) {
 func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-
-		api.WriteTemplate("index")
+		_, err := ctx.Request.Cookie("api_token")
+		if err == nil {
+			ctx.Redirect(http.StatusSeeOther, "/live")
+		} else {
+			api.WriteTemplate("index")
+		}
 	}
 }
 
