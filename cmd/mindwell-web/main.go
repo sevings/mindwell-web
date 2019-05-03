@@ -487,21 +487,29 @@ func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func meUsersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.Forward()
-		api.SetMe()
-		api.WriteTemplate("users/friendlist")
+		relation := ctx.Param("relation")
+
+		api.ForwardTo("/me")
+		if api.Error() != nil {
+			return
+		}
+
+		name := api.Data()["name"].(string)
+		api.Redirect("/users/" + name + "/relations/" + relation)
 	}
 }
 
 func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	clbk := func(api *utils.APIRequest) {
-		api.SetData("profile", api.Data()["me"])
-	}
-
-	handler := feedHandler(mdw, "entries/tlog", "entries/tlog_page")
-
 	return func(ctx *gin.Context) {
-		handler(ctx, "/me/tlog", clbk)
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+
+		if api.Error() != nil {
+			return
+		}
+
+		name := api.Data()["name"].(string)
+		api.Redirect("/users/" + name)
 	}
 }
 
