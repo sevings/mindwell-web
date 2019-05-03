@@ -190,7 +190,7 @@ window.addEventListener('touchstart', function onFirstTouch() {
 
 $(".show-password").click(function() {
     var input = $(this).parents("form").find("input[name='password']")
-    if(input.attr("type") == "password")
+    if($(this).prop("checked"))
         input.attr("type", "text")
     else
         input.attr("type", "password")
