@@ -195,3 +195,27 @@ $(".show-password").click(function() {
     else
         input.attr("type", "password")
 })
+
+$(".register").click(function() {
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
+    btn.addClass("disabled")
+
+    btn.parents("form").ajaxSubmit({
+        dataType: "json",
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function(data) {
+            window.location.pathname = data.path
+        },
+        error: showAjaxError,
+        complete: function() {
+            btn.removeClass("disabled")
+        },
+    })
+
+    return false;
+})

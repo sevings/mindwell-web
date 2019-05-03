@@ -206,7 +206,9 @@ func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Cont
 		}
 		api.SetCookie(&cookie)
 
-		api.Redirect(redirectPath)
+		api.ClearData()
+		api.SetData("path", redirectPath)
+		api.WriteJson()
 	}
 }
 
