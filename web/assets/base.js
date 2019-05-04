@@ -201,9 +201,14 @@ $(".register").click(function() {
     if(btn.hasClass("disabled"))
         return false;
         
+    var form = btn.parents("form")
+
+    if(!form[0].reportValidity())
+        return false
+
     btn.addClass("disabled")
 
-    btn.parents("form").ajaxSubmit({
+    form.ajaxSubmit({
         dataType: "json",
         headers: {
             "X-Error-Type": "JSON",
