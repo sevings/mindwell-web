@@ -6,7 +6,7 @@ html, body {
     max-width: 100%;
 }
 
-.header--standard, .header-responsive {
+.header-responsive {
     padding: 0px;
 }
 

@@ -2,12 +2,6 @@ body {
     color: #252632;
 }
 
-.header--standard {
-    position: relative;
-    width: 100%;
-    left: 0px;
-}
-
 .collapse ul {
     list-style-type: disc;
     list-style-position: inside;
