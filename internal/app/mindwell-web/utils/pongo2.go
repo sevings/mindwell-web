@@ -25,10 +25,6 @@ func registerFilter(name string, filter func(*pongo2.Value, *pongo2.Value) (*pon
 
 // usage: {{ num }} слон{{ num|quantity:",а,ов" }}
 func quantity(num *pongo2.Value, end *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
-	if num.IsNil() {
-		return num, nil
-	}
-
 	if !end.IsString() {
 		return nil, &pongo2.Error{
 			Sender:    "filter:quantity",
