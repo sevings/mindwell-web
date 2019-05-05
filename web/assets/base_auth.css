@@ -29,6 +29,11 @@ html, body {
     height: 34px;
 }
 
+.btn-control .triangle-top-right {
+    top: calc(100% + 15px);
+    bottom: auto;
+}
+
 .mCustomScrollbar > hr {
     border-color: #e6ecf5;
     border-style: solid;
