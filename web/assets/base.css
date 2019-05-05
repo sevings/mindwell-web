@@ -7,3 +7,11 @@ body {
     list-style-position: inside;
     font-size: .875rem;    
 }
+
+.remember .forgot {
+    color: #252632;
+}
+
+.remember a {
+    display: inline;
+}
