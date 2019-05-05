@@ -22,6 +22,7 @@ var notifications = {
     before: "",
     hasBefore: true,
     loadingBefore: false,
+    reloadBefore: false,
     
     unread: 0,
     centrifuge: null,
@@ -117,6 +118,8 @@ var notifications = {
                 notifications.loadingAfter = false
                 if(notifications.reloadAfter)
                     notifications.check()
+                else if(notifications.reloadBefore)
+                    notifications.loadHistory()
             },
         })
     },
@@ -127,7 +130,14 @@ var notifications = {
         if(!notifications.hasBefore)
             return
     
-        notifications.loadingBefore = true;
+        if(notifications.loadingAfter && !notifications.before)
+        {
+            notifications.reloadBefore = true
+            return
+        }
+
+        notifications.loadingBefore = true
+        notifications.reloadBefore = false
 
         $.ajax({
             url: "/notifications?limit=10&before=" + notifications.before,
@@ -197,6 +207,9 @@ var notifications = {
         cent.setToken(token)
 
         var name = $("body").data("meName")
+        if(!name)
+            return
+
         var channel = "notifications#" + name
         var subs = cent.subscribe(channel, function(message) {
             var ntf = message.data
