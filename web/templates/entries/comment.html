@@ -1,6 +1,6 @@
 <li id="comment{{ comment.id }}" class="comment-item" 
         data-id="{{ comment.id }}" data-vote="{{ comment.rating.vote }}" 
-        {% if comment.isMine %} data-content="{{ comment.editContent }}" {% endif %}>
+        {% if comment.rights.edit %} data-content="{{ comment.editContent }}" {% endif %}>
     <div class="post__author author vcard inline-items">
         <a href="/users/{{ comment.author.name }}"><img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}"></a>
 
