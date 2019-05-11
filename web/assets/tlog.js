@@ -91,7 +91,7 @@ function updateRelations() {
         followTitle = "Отписаться"
     else if(relationFromMe == "requested")
         followTitle = "Отменить заявку"
-    else if(privacy == "all")
+    else if(privacy != "followers")
         followTitle = "Подписаться"
     else
         followTitle = "Отправить заявку"
@@ -103,7 +103,7 @@ function updateRelations() {
     var requested = relationToMe == "requested"
     var followed  = relationToMe === "followed"
     permit.attr("hidden", !requested)
-    cancel.attr("hidden", mePrivacy == "all" || (!requested && !followed))
+    cancel.attr("hidden", mePrivacy != "followers" || (!requested && !followed))
 
     if(requested)
         cancel.attr("title", "Отклонить заявку")
