@@ -164,6 +164,9 @@ $("#send-reset").click(function() {
     
     $("#reset-password").ajaxSubmit({
         resetForm: true,
+        headers: {
+            "X-Error-Type": "JSON",
+        },
         success: function() {
             status.text("Теперь ты можешь войти в свой аккаунт, используя новый пароль.")
             status.removeClass("alert-danger").addClass("alert-success")
