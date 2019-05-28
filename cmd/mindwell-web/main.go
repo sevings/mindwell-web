@@ -125,6 +125,7 @@ func main() {
 	router.GET("/notifications/:id", singleNotificationHandler(mdw))
 	router.PUT("/notifications/read", proxyHandler(mdw))
 
+	router.GET("/help/about", aboutHandler(mdw))
 	router.GET("/help/rules", rulesHandler(mdw))
 	router.GET("/help/faq/", faqHandler(mdw))
 	router.GET("/help/faq/md", faqMdHandler(mdw))
@@ -703,6 +704,13 @@ func proxyNotAuthorizedHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardNotAuthorized()
 		api.WriteResponse()
+	}
+}
+
+func aboutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.WriteTemplate("about")
 	}
 }
 

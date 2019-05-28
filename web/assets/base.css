@@ -15,3 +15,18 @@ body {
 .remember a {
     display: inline;
 }
+
+.about-us ul {
+    list-style-type: disc;
+    list-style-position: inside;
+}
+
+.about-us ul, .about-us ol {
+    font-size: .875rem;    
+}
+
+.about-us {
+    word-wrap: break-word; /* Internet Explorer */
+    overflow-wrap: break-word;
+    text-align: justify;
+}
