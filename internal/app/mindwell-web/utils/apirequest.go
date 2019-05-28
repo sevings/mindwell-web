@@ -240,11 +240,12 @@ func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 	req := api.ctx.Request.WithContext(api.ctx.Request.Context())
 	req.URL.Scheme = api.mdw.scheme
 	req.URL.Host = host
+	req.Host = host
 	req.URL.Path = api.mdw.path + path
 	req.Close = false
 
 	req.Header = make(map[string][]string)
-	headers := [...]string{"Accept", "Content-Length", "Content-Type", "Host", "X-Forwarded-For"}
+	headers := [...]string{"Accept", "Content-Length", "Content-Type", "X-Forwarded-For"}
 	for _, k := range headers {
 		vv := api.ctx.Request.Header[k]
 		vv2 := make([]string, len(vv))
