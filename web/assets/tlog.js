@@ -199,3 +199,9 @@ $("#send-invite").click(function(){
 
     return false
 })
+
+$("#hide-follow-update").click(function(){
+    document.cookie = "show-follow-update=false;path=/users/;max-age=15768000"
+    $("#follow-update").remove()
+    return false
+})

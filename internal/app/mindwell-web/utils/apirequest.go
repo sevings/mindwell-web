@@ -186,6 +186,10 @@ func (api *APIRequest) SetCookie(cookie *http.Cookie) {
 	http.SetCookie(api.ctx.Writer, cookie)
 }
 
+func (api *APIRequest) Cookie(name string) (*http.Cookie, error) {
+	return api.ctx.Request.Cookie(name)
+}
+
 func (api *APIRequest) ClearCookieToken() {
 	token := &http.Cookie{
 		Name:     "api_token",

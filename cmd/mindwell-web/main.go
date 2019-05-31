@@ -452,6 +452,10 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 				api.SetField("profile", "/users/"+name)
 			}
 
+			cookie, err := api.Cookie("show-follow-update")
+			showFollowUpdate := err != nil || cookie.Value != "false"
+			api.SetData("__showFollowUpdate", showFollowUpdate)
+
 			api.SetData("__tlog", true)
 		}
 

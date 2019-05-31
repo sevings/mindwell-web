@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-        <div class="col col-xl-3 order-xl-1 col-lg-6 order-lg-2 col-md-6 col-sm-12 col-12">
+        <div class="col col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 order-1">
 			<div class="ui-block">
 				<div class="ui-block-title">
                     {% if __mobile %}<a data-toggle="collapse" href="#profile-info">{% endif %}
@@ -130,7 +130,7 @@
                 </div>
             </div>
         </div>
-		<div class="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
+		<div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 order-3">
 			<div id="feed">
                 {% if entries %}
                     {% include "tlog_page.html" %}
@@ -196,6 +196,21 @@
                 {% endif %}
             </div>
         </div>
+        {% if profile.id != me.id && __showFollowUpdate %}
+            <div id="follow-update" class="col col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 order-first order-md-2 order-xl-last">
+                <div class="ui-block">
+                    <div class="ui-block-title">Обновление</div>
+                    <div class="ui-block-content">
+                        <p>
+                            Теперь кнопка <strong>Подписаться</strong> окрашена в синий цвет, если ты
+                            <strong>не&nbsp;подписан{{ me.gender|gender }}</strong> на этот тлог. 
+                            Отписаться можно в новом выпадающем меню. 
+                        </p>
+                        <a id="hide-follow-update" href="#" class="btn btn-primary btn-md full-width">Понятно!</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
