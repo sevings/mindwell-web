@@ -1,4 +1,4 @@
-$("#follow").click(function() {
+$("#follow, #unfollow").click(function() {
     return setRelationFromMe("followed")
 })
 
@@ -66,17 +66,24 @@ function updateRelations() {
     var relationToMe = profile.data("relToMe")
     var relationFromMe = profile.data("relFromMe")
     
+    var followed = relationFromMe == "followed"
+
     var followBtn = $("#follow")
+    followBtn.attr("hidden", followed)
 
-    var followColor
-    if(relationFromMe == "followed")
-        followColor = "bg-blue"
-    else if(relationFromMe == "requested")
-        followColor = "bg-breez"
-    else
-        followColor = "bg-grey"
+    var unfollow = $("#unfollow")
+    unfollow.parent().attr("hidden", !followed)
 
-    followBtn.removeClass("bg-blue bg-breez bg-grey").addClass(followColor)
+    if(!followed) {
+        followBtn.removeClass("bg-blue bg-breez bg-grey")
+
+        if(relationFromMe == "requested")
+            followBtn.addClass("bg-breez")
+        else if(relationFromMe == "ignored")
+            followBtn.addClass("bg-grey")
+        else
+            followBtn.addClass("bg-blue")        
+    }
 
     var ignored = relationToMe == "ignored" || relationFromMe == "ignored"
     followBtn.toggleClass("disabled", ignored)
@@ -110,14 +117,11 @@ function updateRelations() {
     else
         cancel.attr("title", "Отписать")
 
-    var blockText
-    if(relationFromMe == "ignored")
-        blockText = "Разблокировать"
-    else
-        blockText = "Заблокировать"
-
     var blacklist = $("#blacklist")
-    blacklist.text(blockText)
+    if(relationFromMe == "ignored")
+        blacklist.text("Разблокировать")
+    else
+        blacklist.text("Заблокировать")
 }
 
 updateRelations()
