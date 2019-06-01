@@ -186,7 +186,7 @@
                         <div class="ui-block-title">
                             <h6 class="title">
                                 {% if !isOpenForMe %}
-                                    Это закрытый тлог
+                                    {{ profile.showName }} скрыл{{ profile.gender|gender }} свои записи.
                                 {% else %}
                                     Нет записей
                                 {% endif %}
