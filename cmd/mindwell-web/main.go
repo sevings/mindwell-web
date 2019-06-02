@@ -42,6 +42,9 @@ func main() {
 	router.GET("/account/email", emailHandler(mdw))
 	router.POST("/account/email", proxyHandler(mdw))
 
+	router.GET("/account/ignored", ignoredHandler(mdw))
+	router.GET("/account/hidden", hiddenHandler(mdw))
+
 	router.GET("/account/notifications", notificationsSettingsHandler(mdw))
 	router.POST("/account/settings/email", emailSettingsSaverHandler(mdw))
 
@@ -264,6 +267,26 @@ func emailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetMe()
 		SetAdm(mdw, ctx, api)
 		api.WriteTemplate("settings/email")
+	}
+}
+
+func ignoredHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardTo("/me/ignored")
+		api.SetMe()
+		SetAdm(mdw, ctx, api)
+		api.WriteTemplate("settings/ignored")
+	}
+}
+
+func hiddenHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardTo("/me/hidden")
+		api.SetMe()
+		SetAdm(mdw, ctx, api)
+		api.WriteTemplate("settings/hidden")
 	}
 }
 

@@ -1,0 +1,48 @@
+{% extends "settings.html" %}
+{% block title %}Заблокированные тлоги{% endblock %}
+{% block page %}
+    <div class="ui-block-title">
+        <h6 class="title">Заблокированные тлоги</h6>
+    </div>
+
+    <div class="ui-block-content">
+        <div class="row">
+            <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <p>
+                    Для заблокированных тобой пользователей твой профиль будет
+                    закрыт. Ты также не будешь видеть их посты нигде, кроме их 
+                    тлогов.
+                </p>
+                {% if users %}
+                    <ul class="friend-requests">
+                    {% for user in users %}
+                        <li>
+                            <div class="author-thumb">
+                                <img src="{{ user.avatar.x92 }}" alt="{{ user.showName }}">
+                            </div>
+                            <div class="notification-event">
+                                <a href="/users/{{ user.name }}" class="h6 notification-friend">{{ user.showName }}</a>
+                            </div>
+                            <span class="notification-icon">
+                                <a href="#" class="accept-request">
+                                    <span class="icon-add">
+                                        <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
+                                    </span>
+                                    Accept Friend Request
+                                </a>
+                                <a href="#" class="accept-request request-del">
+                                    <span class="icon-minus">
+                                        <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
+                                    </span>
+                                </a>
+                            </span>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <h6 class="title">Ты пока никого не заблокировал{{ me.gender|gender }}. Отлично!</h6>
+                {% endif %}
+            </div>
+        </div>
+    </div>    
+{% endblock page %}

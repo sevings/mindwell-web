@@ -1,0 +1,23 @@
+{% extends "settings.html" %}
+{% block title %}Скрытые тлоги{% endblock %}
+{% block page %}
+    <div class="ui-block-title">
+        <h6 class="title">Скрытые тлоги</h6>
+    </div>
+
+    <div class="ui-block-content">
+        <div class="row">
+            <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <p>
+                    Посты из скрытых тлогов не показываются у тебя в Прямом 
+                    эфире и в Лучшем. На их авторов это никаких ограничений
+                    не накладывает. 
+                </p>
+                {% for user in users %}
+                {% empty %}
+                    <h6 class="title">Ты пока не скрыл{{ me.gender|gender }} ни один тлог.</h6>
+                {% endfor %}
+            </div>
+        </div>
+    </div>    
+{% endblock page %}
