@@ -2,6 +2,10 @@ $("#follow, #unfollow").click(function() {
     return setRelationFromMe("followed")
 })
 
+$("#hide-posts").click(function() {
+    return setRelationFromMe("hidden")
+})
+
 $("#blacklist").click(function() {
     return setRelationFromMe("ignored")
 })
@@ -79,13 +83,13 @@ function updateRelations() {
 
         if(relationFromMe == "requested")
             followBtn.addClass("bg-breez")
-        else if(relationFromMe == "ignored")
+        else if(relationFromMe == "ignored" || relationFromMe == "hidden")
             followBtn.addClass("bg-grey")
         else
             followBtn.addClass("bg-blue")        
     }
 
-    var ignored = relationToMe == "ignored" || relationFromMe == "ignored"
+    var ignored = relationToMe == "ignored" || relationFromMe == "ignored" || relationFromMe == "hidden"
     followBtn.toggleClass("disabled", ignored)
 
     var followTitle
@@ -94,6 +98,8 @@ function updateRelations() {
         followTitle = "Ты в черном списке"
     else if(relationFromMe == "ignored")
         followTitle = "В черном списке"
+    else if(relationFromMe == "hidden")
+        followTitle = "Скрыто из эфира"
     else if(relationFromMe == "followed")
         followTitle = "Отписаться"
     else if(relationFromMe == "requested")
@@ -122,6 +128,12 @@ function updateRelations() {
         blacklist.text("Разблокировать")
     else
         blacklist.text("Заблокировать")
+
+    var hidePosts = $("#hide-posts")
+    if(relationFromMe == "hidden")
+        hidePosts.text("Не скрывать из эфира")
+    else
+        hidePosts.text("Скрывать из эфира")
 }
 
 updateRelations()

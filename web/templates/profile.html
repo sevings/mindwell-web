@@ -3,7 +3,7 @@
 {% block scripts %}
     <script src="//youtube.com/iframe_api"></script>
     <script src="/assets/feed.js?d=20190417"></script>
-    <script src="/assets/tlog.js?d=20190531"></script>
+    <script src="/assets/tlog.js?d=20190602"></script>
 {% endblock %}
 {% block body %}
 {% with isOpenForMe = (profile.privacy == "all" || (profile.privacy == "followers" && profile.relations.fromMe == "followed") || (profile.privacy == "invited" && me.invitedBy.id)) && profile.relations.toMe != "ignored" || me.id == profile.id %}
@@ -57,6 +57,9 @@
 											<ul class="more-dropdown more-with-triangle">
 												<li {% if profile.relations.fromMe != "followed" %}hidden{% endif %}>
 													<a id="unfollow" href="#">Отписаться</a>
+												</li>
+												<li>
+													<a id="hide-posts" href="#"></a>
 												</li>
 												<li>
 													<a id="blacklist" href="#"></a>
