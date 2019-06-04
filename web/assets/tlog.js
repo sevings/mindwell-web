@@ -41,6 +41,8 @@ function setRelationFromMe(relation) {
         },
         error: showAjaxError,
     })    
+
+    return false
 }
 
 function handleFriendRequest(method) {

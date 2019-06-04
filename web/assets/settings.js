@@ -115,7 +115,8 @@ $(".remove-user").click(function(){
     btn.addClass("disabled")
 
     var title = btn.attr("aria-describedby")
-    var name = btn.parents(".ignored-user").data("userName")
+    var user = btn.parents(".ignored-user")
+    var name = user.data("userName")
     $.ajax({
         url: "/relations/to/"+name,
         method: "DELETE",
@@ -123,6 +124,7 @@ $(".remove-user").click(function(){
             "X-Error-Type": "JSON",
         },
         success: function() {
+            user.addClass("removed")
             btn.remove()
             if(title)
                 $("#" + title).remove()

@@ -256,6 +256,10 @@ li.cat-list__item > a {
     border-top: 1px solid #e6ecf5;
 }
 
+.removed {
+    opacity: 0.4;
+}
+
 .remove-user {
     float: right;
 }

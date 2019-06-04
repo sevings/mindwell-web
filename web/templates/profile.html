@@ -3,7 +3,7 @@
 {% block scripts %}
     <script src="//youtube.com/iframe_api"></script>
     <script src="/assets/feed.js?d=20190417"></script>
-    <script src="/assets/tlog.js?d=20190602"></script>
+    <script src="/assets/tlog.js?d=20190604"></script>
 {% endblock %}
 {% block body %}
 {% with isOpenForMe = (profile.privacy == "all" || (profile.privacy == "followers" && profile.relations.fromMe == "followed") || (profile.privacy == "invited" && me.invitedBy.id)) && profile.relations.toMe != "ignored" || me.id == profile.id %}
