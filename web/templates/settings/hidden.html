@@ -6,18 +6,17 @@
     </div>
 
     <div class="ui-block-content">
-        <div class="row">
-            <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                <p>
-                    Посты из скрытых тлогов не показываются у тебя в Прямом 
-                    эфире и в Лучшем. На их авторов это никаких ограничений
-                    не накладывает. 
-                </p>
-                {% for user in users %}
-                {% empty %}
-                    <h6 class="title">Ты пока не скрыл{{ me.gender|gender }} ни один тлог.</h6>
-                {% endfor %}
-            </div>
-        </div>
-    </div>    
+        <p>
+            Посты из&nbsp;скрытых тлогов не&nbsp; показываются 
+            у&nbsp;тебя в&nbsp;Прямом эфире и в&nbsp;Лучшем. 
+            На&nbsp;их авторов это не&nbsp;накладывает никаких 
+            ограничений. 
+        </p>
+        {% if !users %}
+            <h6 class="title">Ты пока не скрыл{{ me.gender|gender }} ни один тлог.</h6>
+        {% endif %}
+    </div>
+    {% for user in users %}
+        {% include "ignored_user.html" with __buttonTitle="Вернуть" %}
+    {% endfor %}
 {% endblock page %}

@@ -107,6 +107,35 @@ $("#email-status a").click(function() {
     return false
 })
 
+$(".remove-user").click(function(){
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false;
+        
+    btn.addClass("disabled")
+
+    var title = btn.attr("aria-describedby")
+    var name = btn.parents(".ignored-user").data("userName")
+    $.ajax({
+        url: "/relations/to/"+name,
+        method: "DELETE",
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function() {
+            btn.remove()
+            if(title)
+                $("#" + title).remove()
+        },
+        error: showAjaxError,
+        complete: function() {
+            btn.removeClass("disabled")
+        },
+    })
+
+    return false
+})
+
 $("#save-grandson").click(function() { 
     var btn = $(this)
     if(btn.hasClass("disabled"))

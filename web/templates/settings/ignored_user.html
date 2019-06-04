@@ -1,0 +1,20 @@
+<div class="birthday-item inline-items ignored-user" data-user-name="{{ user.name }}">
+    <a href="/users/{{ user.name }}" class="author-thumb">
+        <img class="avatar-x42" src="{{ user.avatar.x42 }}" alt="{{ user.showName }}">
+    </a>
+    <div class="birthday-author-name">
+        <a href="/users/{{ user.name }}" class="h6 author-name">{{ user.showName }}</a>
+        <div class="birthday-date">
+            {% if user.isOnline %}
+                Онлайн
+            {% else %}
+                Заходил{{ user.gender|gender }} <time class="text-lowercase" datetime="{{ user.lastSeenAt }}"></time>
+            {% endif %}
+        </div>
+    </div>
+    <a href="#" class="accept-request remove-user" title="{{ __buttonTitle }}" data-toggle="tooltip" data-placement="top">
+        <span class="icon-minus">
+            <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
+        </span>
+    </a>
+</div>
