@@ -6,7 +6,6 @@
     <script src="/assets/tlog.js?d=20190604"></script>
 {% endblock %}
 {% block body %}
-{% with isOpenForMe = (profile.privacy == "all" || (profile.privacy == "followers" && profile.relations.fromMe == "followed") || (profile.privacy == "invited" && me.invitedBy.id)) && profile.relations.toMe != "ignored" || me.id == profile.id %}
 <div id="profile" class="container" data-name="{{ profile.name }}" data-privacy="{{ profile.privacy }}" 
         data-rel-to-me="{{ profile.relations.toMe }}" data-rel-from-me="{{ profile.relations.fromMe }}">
 	<div class="row">
@@ -20,7 +19,7 @@
 						<div class="row">
 							<div class="col col-lg-5 col-md-5 col-sm-12 col-12">
 								<ul class="profile-menu">
-                                    {% if isOpenForMe %}
+                                    {% if profile.relations.isOpenForMe %}
                                         <li>
                                             <a href="/users/{{ profile.name }}" {% if __tlog %}class="active"{% endif %}>Тлог</a>
                                         </li>
@@ -34,7 +33,7 @@
 							</div>
 							<div class="col col-lg-5 ml-auto col-md-5 col-sm-12 col-12">
 								<ul class="profile-menu">
-                                    {% if isOpenForMe %}
+                                    {% if profile.relations.isOpenForMe %}
                                         {% if profile.counts.followings %}
                                             <li>
                                                 <a href="/users/{{ profile.name }}/relations/followings" {% if relation == "followings" %}class="active"{% endif %}>Подписки</a>
@@ -266,6 +265,4 @@
         </div>
     </div>
 {% endif %}
-
-{% endwith %}
 {% endblock %}

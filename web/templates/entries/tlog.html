@@ -67,7 +67,7 @@
                         {% endif %}
                         {% if profile.counts.favorites %}
                             <li>
-                                {% if isOpenForMe %}
+                                {% if profile.relations.isOpenForMe %}
                                     <a href="/users/{{ profile.name }}/favorites" class="title">Избранное:</a>
                                     <a href="/users/{{ profile.name }}/favorites" class="text">{{ profile.counts.favorites }}</a>
                                 {% else %}
@@ -84,7 +84,7 @@
                         {% endif %}
                         {% if profile.counts.followers %}
                             <li>
-                                {% if isOpenForMe %}
+                                {% if profile.relations.isOpenForMe %}
                                     <a href="/users/{{ profile.name }}/relations/followers" class="title">Подписчики:</a>
                                     <a href="/users/{{ profile.name }}/relations/followers" class="text">{{ profile.counts.followers }}</a>
                                 {% else %}
@@ -95,7 +95,7 @@
                         {% endif %}
                         {% if profile.counts.followings %}
                             <li>
-                                {% if isOpenForMe %}
+                                {% if profile.relations.isOpenForMe %}
                                     <a href="/users/{{ profile.name }}/relations/followings" class="title">Подписки:</a>
                                     <a href="/users/{{ profile.name }}/relations/followings" class="text">{{ profile.counts.followings }}</a>
                                 {% else %}
@@ -117,7 +117,7 @@
                         {% endif %}
                         {% if profile.counts.invited %}
                             <li>
-                                {% if isOpenForMe %}
+                                {% if profile.relations.isOpenForMe %}
                                     <a href="/users/{{ profile.name }}/relations/invited" class="title">Приглашенные:</a>
                                     <a href="/users/{{ profile.name }}/relations/invited" class="text">{{ profile.counts.invited }}</a>
                                 {% else %}
@@ -185,7 +185,7 @@
                     <div class="ui-block">
                         <div class="ui-block-title">
                             <h6 class="title">
-                                {% if !isOpenForMe %}
+                                {% if !profile.relations.isOpenForMe %}
                                     {{ profile.showName }} скрыл{{ profile.gender|gender }} свои записи.
                                 {% else %}
                                     Нет записей
