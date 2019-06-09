@@ -250,6 +250,18 @@ li.cat-list__item > a {
     color: #ff5e3a; 
 }
 
+#attached-images {
+    display: block;
+    width: 100%;
+}
+
+#attached-images img {
+    margin: 11px;
+    max-width: calc(100% / 5 - 25px);
+    height: auto;
+    display: inline-block;
+}
+
 .invite {
     padding: 1.1rem;
 }

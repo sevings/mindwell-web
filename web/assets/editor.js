@@ -150,6 +150,7 @@ $("#upload-image").click(function() {
 
     $("#image-uploader").ajaxSubmit({
         dataType: "html",
+        resetForm: true,
         success: function(data) {
             var img = $(data)
             $("#attached-images").append(img)
@@ -167,6 +168,7 @@ $("#upload-image").click(function() {
         complete: function() {
             btn.removeClass("disabled")
             $("#upload-image-popup").modal("hide")
+            $("#image-file").prev().text("")
         },
     })
 

@@ -140,12 +140,6 @@ function updateRelations() {
 
 updateRelations()
 
-$(".file-upload__input").change(function(){
-    var input = $(this)
-    var fileName = input.val().split('/').pop().split('\\').pop();
-    input.prev().text(fileName)
-})
-
 $(function(){
     var el = $("#user-days")
     var date = el.data("createdAt")

@@ -5258,11 +5258,6 @@ fieldset[disabled] .checkbox, fieldset[disabled] .checkbox input[type=checkbox],
 @media (max-width: 480px) {
   .add-options-message .options-message + .options-message {
     margin-left: 15px; }
-  .add-options-message button {
-    float: none;
-    margin-left: 0;
-    display: block;
-    margin-top: 10px; }
   .add-options-message button + button {
     margin-right: 0; }
   .notification-list .notification-event {
