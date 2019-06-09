@@ -129,6 +129,18 @@ $("#post-entry").click(function() {
     return false;
 })
 
+$("#show-upload-image").click(function(){
+    var cnt = $("#attached-images").children().length
+    if(cnt < 5)
+    {
+        $("#upload-image-popup").modal("show")
+        return false
+    }
+
+    alert("К посту можно прикрепить не более пяти изображений.")
+    return false
+})
+
 $("#upload-image").click(function() { 
     var btn = $(this)
     if(btn.hasClass("disabled"))
