@@ -9,7 +9,7 @@
     <script src="/assets/editor/languages/en.js"></script>
 {% endcomment %}
     <script src="/assets/js/basil.min.js"></script>
-    <script src="/assets/editor.js?d=20190103"></script>
+    <script src="/assets/editor.js?d=20190609"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -68,7 +68,23 @@
                                     </div>
                                 {% endif %}
 
-                                <button id="post-entry" class="btn btn-primary btn-md-2">{% if id %}Сохранить{% else %}Опубликовать{% endif %}</button>
+                                <input id="input-images" type="hidden" name="images" 
+                                    value="{% for image in images %}{{ image.id }},{% endfor %}"/>
+
+                                <div id="attached-images">
+                                    {% for image in images %}
+                                        {% include "images/attached.html" %}
+                                    {% endfor %}
+                                </div>
+
+								<div class="add-options-message news-feed-form">
+									<a href="#" class="options-message" data-toggle="modal" data-target="#upload-image-popup">
+										<svg class="olymp-camera-icon" data-toggle="tooltip" data-placement="top" data-original-title="Добавить изображение">
+                                            <use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-camera-icon"></use>
+                                        </svg>
+									</a>
+									<button id="post-entry" class="btn btn-primary btn-md-2">{% if id %}Сохранить{% else %}Опубликовать{% endif %}</button>
+								</div>
                             </form>
                             
                         </div>
@@ -76,6 +92,35 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal fade" id="upload-image-popup" tabindex="-1" role="dialog" aria-labelledby="upload-image-popup" aria-hidden="true">
+    <div class="modal-dialog window-popup edit-widget" role="document">
+        <div class="modal-content">
+            <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+            </a>
+
+            <div class="modal-header">
+                <h6 class="title">Прикрепить новое изображение</h6>
+            </div>
+
+            <div class="modal-body">
+                <form id="image-uploader" action="/images" method="post" enctype="multipart/form-data">
+                    <div class="file-upload">
+                        <label for="cover-file" class="btn btn-primary btn-sm">Выбрать файл</label>
+                        <label class="control-label"></label>
+                        <input id="cover-file" class="file-upload__input" type="file" name="file" 
+                            data-max-size="10" accept="image/jpeg, image/png, image/gif" required>
+                    </div>
+                    <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
+                    <button id="upload-image" class="btn btn-primary btn-lg full-width">Загрузить</button>
+                </form>
+            </div>
+
+        </div>
+
     </div>
 </div>
 {% endblock %}

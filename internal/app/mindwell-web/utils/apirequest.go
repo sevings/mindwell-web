@@ -294,6 +294,10 @@ func (api *APIRequest) ForwardTo(path string) {
 	api.MethodForwardTo(api.ctx.Request.Method, path)
 }
 
+func (api *APIRequest) ForwardImages() {
+	api.MethodForwardToImages(api.ctx.Request.Method, api.ctx.Request.URL.Path)
+}
+
 func (api *APIRequest) Forward() {
 	api.ForwardTo(api.ctx.Request.URL.Path)
 }

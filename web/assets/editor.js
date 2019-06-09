@@ -5,6 +5,7 @@ function contentElem()      { return $("textarea[name='content']") }
 function privacyElem()      { return $("select[name='privacy']") }
 function isVotableElem()    { return $("input[name='isVotable']") }
 function inLiveElem()       { return $("input[name='inLive']") }
+function imagesElem()       { return $("input[name='images']") }
 
 function entryId()          { return parseInt($("#entry-editor").data("entryId")) }
 function isCreating()       { return entryId() <= 0 }
@@ -14,6 +15,7 @@ function storeDraft() {
         title       : titleElem().val(),
         content     : contentElem().val(),
         privacy     : privacyElem().val(),
+        images      : imagesElem().val(),
         isVotable   : isVotableElem().prop("checked"),
         inLive      : inLiveElem().prop("checked"),
     }
@@ -31,6 +33,11 @@ function loadDraft() {
 
     if(draft.content)
         contentElem().val(draft.content)
+
+    if(draft.images) {
+        imagesElem().val(draft.images)
+        loadImages()
+    }
 
     privacyElem().val(draft.privacy)
     $('.selectpicker').selectpicker('refresh');
@@ -74,6 +81,28 @@ function init(){
 
 init()
 
+function loadImages(){
+    var inp = $("#input-images")
+    var ids = inp.val().split(",")
+
+    for(var i = 0; i < ids.length; i++) {
+        var id = ids[i]
+        if(!id)
+            continue
+
+        $.ajax({
+            method: "GET",
+            url: "/images/" + id,
+            dataType: "html",
+            success: function(data) {
+                var img = $(data)
+                $("#attached-images").append(img)
+            },
+            error: showAjaxError,
+        })
+    }
+}
+
 $("#post-entry").click(function() { 
     var btn = $(this)
     if(btn.hasClass("disabled"))
@@ -99,3 +128,58 @@ $("#post-entry").click(function() {
 
     return false;
 })
+
+$("#upload-image").click(function() { 
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false
+        
+    btn.addClass("disabled")
+
+    $("#image-uploader").ajaxSubmit({
+        dataType: "html",
+        success: function(data) {
+            var img = $(data)
+            $("#attached-images").append(img)
+
+            var id = img.data("imageId")
+            var inp = $("#input-images")
+            var ids = inp.val()
+            if(ids)
+                ids += "," + id
+            else
+                ids = id
+            inp.val(ids)
+        },
+        error: showAjaxError,
+        complete: function() {
+            btn.removeClass("disabled")
+            $("#upload-image-popup").modal("hide")
+        },
+    })
+
+    return false
+})
+
+function removeImage(id) {
+    if(!confirm("Удалить изображение?"))
+        return false
+
+    $.ajax({
+        method: "DELETE",
+        url: "/images/" + id,
+        success: function() {
+            $("#attached-image"+id).remove()
+            
+            var inp = $("#input-images")
+            var ids = inp.val().split(",")
+            var i = ids.indexOf(id + "")
+            if(i >= 0)
+                ids.splice(i, 1)
+            inp.val(ids.join(","))
+        },
+        error: showAjaxError,
+    })
+
+    return false
+}

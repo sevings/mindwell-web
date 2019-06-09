@@ -128,6 +128,10 @@ func main() {
 	router.GET("/notifications/:id", singleNotificationHandler(mdw))
 	router.PUT("/notifications/read", proxyHandler(mdw))
 
+	router.POST("/images", imageHandler(mdw))
+	router.GET("/images/:id", imageHandler(mdw))
+	router.DELETE("/images/:id", deleteImageHandler(mdw))
+
 	router.GET("/help/about", aboutHandler(mdw))
 	router.GET("/help/rules", rulesHandler(mdw))
 	router.GET("/help/faq/", faqHandler(mdw))
@@ -715,6 +719,27 @@ func singleNotificationHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("ntf", ntf)
 
 		api.WriteTemplate("notification")
+	}
+}
+
+func imageHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardImages()
+
+		image := api.Data()
+		api.ClearData()
+		api.SetData("image", image)
+
+		api.WriteTemplate("images/attached")
+	}
+}
+
+func deleteImageHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardImages()
+		api.WriteResponse()
 	}
 }
 
