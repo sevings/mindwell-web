@@ -2,8 +2,12 @@ html, body {
 	height: 100%;
 }
 
-.post img {
-    max-width: 100%;
+.post-content img, .post-thumb img {
+    display: block;
+    border-radius: 5px;
+    max-height: 80vh;
+    width: auto;
+    margin: auto;
 }
 
 .header-responsive {
@@ -153,12 +157,10 @@ div.post-add-icon:hover {
     margin: 1em 0;
 }
 
-.post-content p > img:first-child, .post-content p > iframe:first-child {
-    margin-left: -1em;
-}
-
 .yt-video {
     max-width: 100%;
+    display: block;
+    margin: auto;
 }
 
 .post-content ul {
