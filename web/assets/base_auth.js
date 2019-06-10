@@ -282,10 +282,10 @@ $("div.notifications").scroll(function() {
     notifications.loadHistory()
 });
 
-$("div.file-upload").parents("form").submit(function(){
+function checkFileSize(form) {
     var ok = true;
     var maxSize;
-    $("input[type=file][data-max-size]", this).each(function(){
+    $("input[type=file][data-max-size]", form).each(function(){
         if(typeof this.files[0] === "undefined")
             return true    
     
@@ -299,8 +299,12 @@ $("div.file-upload").parents("form").submit(function(){
         alert("Можно загружать файлы размером не более " + maxSize + " Мб.")
     }
 
-    return ok;
-});
+    return ok;    
+}
+
+$("div.file-upload").parents("form").submit(function(){
+    checkFileSize(this)
+})
 
 $(".file-upload__input").change(function(){
     var input = $(this)

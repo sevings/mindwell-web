@@ -1,15 +1,8 @@
 {% extends "base_auth.html" %}
 {% block title %}Редактор{% endblock %}
-{% block styles %}
-    {% comment %}<link rel="stylesheet" href="/assets/editor/css/editormd.min.css" />{% endcomment %}
-{% endblock %}
 {% block scripts %}
-{% comment %}
-    <script src="/assets/editor/editormd.min.js"></script>
-    <script src="/assets/editor/languages/en.js"></script>
-{% endcomment %}
     <script src="/assets/js/basil.min.js"></script>
-    <script src="/assets/editor.js?d=20190609"></script>
+    <script src="/assets/editor.js?d=20190610"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -117,6 +110,17 @@
                     <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
                     <button id="upload-image" class="btn btn-primary btn-lg full-width">Загрузить</button>
                 </form>
+                <div class="skills-item" hidden>
+                    <div class="skills-item-info">
+                        <span class="skills-item-title">Отправка...</span>
+                        <span class="skills-item-count">
+                            <span class="units"></span>
+                        </span>
+                    </div>
+                    <div class="skills-item-meter">
+                        <span class="skills-item-meter-active bg-primary" style="width: 0%; opacity: 1"></span>
+                    </div>
+                </div>
             </div>
 
         </div>
