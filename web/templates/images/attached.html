@@ -1,3 +1,4 @@
-<a id="attached-image{{ image.id }}" href="#" onclick="return removeImage({{ image.id }})" data-image-id="{{ image.id }}">
-    <img src="{{ image.thumbnail.url }}" alt="Прикрепленное изображение">
+<a id="attached-image{{ image.id }}" href="#" onclick="return removeImage({{ image.id }})" 
+        data-image-id="{{ image.id }}" data-processing="{{ image.processing }}">
+    <img src="{{ image.thumbnail.url }}" alt="{% if image.processing %}Изображение обрабатывается{% else %}Прикрепленное изображение{% endif %}">
 </a>

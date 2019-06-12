@@ -175,6 +175,8 @@ $("#upload-image").click(function() {
             else
                 ids = id
             inp.val(ids)
+
+            updateImage(id)
         },
         error: showAjaxError,
         complete: function() {
@@ -189,6 +191,32 @@ $("#upload-image").click(function() {
 
     return false
 })
+
+function updateImage(id, timeout) {
+    var img = $("#attached-image" + id)
+    if(!img.data("processing"))
+        return
+
+    if(!timeout)
+        timeout = 2000
+    else if(timeout > 60000)
+        timeout = 60000
+
+    function getImage() {
+        $.ajax({
+            method: "GET",
+            url: "/images/" + id,
+            dataType: "html",
+            success: function(html) {
+                img.replaceWith(html)
+                updateImage(id, timeout * 2)
+            },
+            error: showAjaxError,
+        })
+    }
+
+    setTimeout(getImage, timeout)
+}
 
 function removeImage(id) {
     if(!confirm("Удалить изображение?"))
