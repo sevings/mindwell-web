@@ -89,15 +89,23 @@
         {% if cutEntry %}
             {% with image = entry.images|first %}
                 <div class="post-thumb">
-                    <img src="{{ image.small.url }}" width="{{ image.small.width }}" height="{{ image.small.height }}">
+                    {% if image.small.preview %}
+                        <img class="gif-play-image" data-gif="{{ image.small.url }}" src="{{ image.small.preview }}"
+                    {% else %}
+                        <img src="{{ image.small.url }}"
+                    {% endif %}
+                    width="{{ image.small.width }}" height="{{ image.small.height }}">
                 </div>
             {% endwith %}
         {% else %}
             {% for image in entry.images %}
                 <div class="post-thumb">
-                    <img src="{{ image.medium.url }}" width="{{ image.medium.width }}" height="{{ image.medium.height }}"
-                        srcset="{{ image.small.url }} {{ image.small.width }}w, {{ image.medium.url }} {{ image.medium.width }}w, {{ image.large.url }} {{ image.large.width }}w"
-                        sizes="(max-width: 810px) calc(100% - 92px), 718px">
+                    {% if image.medium.preview %}
+                        <img class="gif-play-image" data-gif="{{ image.medium.url }}" src="{{ image.medium.preview }}"
+                    {% else %}
+                        <img src="{{ image.medium.url }}"
+                    {% endif %}
+                    width="{{ image.medium.width }}" height="{{ image.medium.height }}">
                 </div>
             {% endfor %}
         {% endif %}
