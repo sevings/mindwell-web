@@ -1,0 +1,42 @@
+<div class="modal fade" id="{{ modalID }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog window-popup edit-widget" role="document">
+        <div class="modal-content">
+            <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+            </a>
+
+            <div class="modal-header">
+                <h6 class="title">{{ title }}</h6>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ action }}" method="post" enctype="multipart/form-data">
+                    <div class="file-upload">
+                        <label for="{{ modalID }}-file" class="btn btn-primary btn-sm">Выбрать файл</label>
+                        <label class="control-label"></label>
+                        <input id="{{ modalID }}-file" class="file-upload__input" type="file" name="file" 
+                            data-max-size="10" accept="image/jpeg, image/png, image/gif" required>
+                    </div>
+                    <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
+                    <button class="upload-image btn btn-primary btn-lg full-width">Загрузить</button>
+                </form>
+                <div class="skills-item" hidden>
+                    <div class="skills-item-info">
+                        <span class="skills-item-title">Отправка...</span>
+                        <span class="skills-item-count">
+                            <span class="units"></span>
+                        </span>
+                    </div>
+                    <div class="skills-item-meter">
+                        <span class="skills-item-meter-active bg-primary" style="width: 0%; opacity: 1"></span>
+                    </div>
+                </div>
+                <p id="email-status" class="alert alert-success" role="alert" hidden>
+                    Изображение загружено и обрабатывается. Оно станет доступно в течение пары минут.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</div>

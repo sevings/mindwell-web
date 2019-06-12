@@ -3,7 +3,7 @@
 {% block scripts %}
     <script src="//youtube.com/iframe_api"></script>
     <script src="/assets/feed.js?d=20190612"></script>
-    <script src="/assets/tlog.js?d=20190609"></script>
+    <script src="/assets/tlog.js?d=20190612"></script>
 {% endblock %}
 {% block body %}
 <div id="profile" class="container" data-name="{{ profile.name }}" data-privacy="{{ profile.privacy }}" 
@@ -129,63 +129,8 @@
 {% block content %}{% endblock %}
 
 {% if me.id == profile.id %}
-    <div class="modal fade" id="update-avatar" tabindex="-1" role="dialog" aria-labelledby="update-avatar" aria-hidden="true">
-        <div class="modal-dialog window-popup edit-widget" role="document">
-            <div class="modal-content">
-                <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
-                    <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
-                </a>
-
-                <div class="modal-header">
-                    <h6 class="title">Загрузить новый аватар</h6>
-                </div>
-
-                <div class="modal-body">
-                    <form id="avatar-editor" action="/profile/avatar" method="post" enctype="multipart/form-data">
-                        <div class="file-upload">
-                            <label for="avatar-file" class="btn btn-primary btn-sm">Выбрать файл</label>
-                            <label class="control-label"></label>
-                            <input id="avatar-file" class="file-upload__input" type="file" name="file" 
-                                data-max-size="10" accept="image/jpeg, image/png, image/gif" required>
-                        </div>
-                        <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
-                        <input type="submit" class="btn btn-primary btn-lg full-width" value="Загрузить" />
-                    </form>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="modal fade" id="update-cover" tabindex="-1" role="dialog" aria-labelledby="update-cover" aria-hidden="true">
-        <div class="modal-dialog window-popup edit-widget" role="document">
-            <div class="modal-content">
-                <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
-                    <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
-                </a>
-
-                <div class="modal-header">
-                    <h6 class="title">Загрузить новую обложку профиля</h6>
-                </div>
-
-                <div class="modal-body">
-                    <form id="cover-editor" action="/profile/cover" method="post" enctype="multipart/form-data">
-                        <div class="file-upload">
-                            <label for="cover-file" class="btn btn-primary btn-sm">Выбрать файл</label>
-                            <label class="control-label"></label>
-                            <input id="cover-file" class="file-upload__input" type="file" name="file" 
-                                data-max-size="10" accept="image/jpeg, image/png, image/gif" required>
-                        </div>
-                        <p>Поддерживаются JPEG, PNG, GIF размером не&nbsp;более 10&nbsp;Мб.</p>
-                        <input type="submit" class="btn btn-primary btn-lg full-width" value="Загрузить" />
-                    </form>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
+    {% include "images/upload.html" with modalID="update-avatar" title="Загрузить новый аватар" action="/profile/avatar" %}
+    {% include "images/upload.html" with modalID="update-cover" title="Загрузить новую обложку профиля" action="/profile/cover" %}
 
     <div class="modal fade" id="edit-profile" tabindex="-1" role="dialog" aria-labelledby="edit-profile" aria-hidden="true">
         <div class="modal-dialog window-popup edit-widget" role="document">

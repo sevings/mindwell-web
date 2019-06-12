@@ -562,7 +562,7 @@ func avatarSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForwardToImages("PUT", "/me/avatar")
-		api.Redirect("/me")
+		api.WriteResponse()
 	}
 }
 
@@ -570,7 +570,7 @@ func coverSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForwardToImages("PUT", "/me/cover")
-		api.Redirect("/me")
+		api.WriteResponse()
 	}
 }
 

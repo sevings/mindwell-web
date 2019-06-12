@@ -208,6 +208,47 @@ $("#send-invite").click(function(){
     return false
 })
 
+$(".upload-image").click(function() { 
+    var btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false
+
+    var form = btn.parent()
+    if(!checkFileSize(form))
+        return false
+
+    btn.addClass("disabled")
+
+    var sk = btn.parents(".modal-body").find(".skills-item")
+    sk.attr("hidden", false)
+    var bar = sk.find(".skills-item-meter-active")
+    var units = sk.find(".units")
+
+    form.ajaxSubmit({
+        resetForm: true,
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        uploadProgress: function(e, pos, total, percent) {
+            bar.width(percent + "%")
+            units.text(Math.round(pos / 1024) + " из " + Math.round(total / 1024) + " Кб")
+        },
+        success: function() {
+            btn.parents(".modal-body").find(".alert").attr("hidden", false)
+        },
+        error: showAjaxError,
+        complete: function() {
+            btn.removeClass("disabled")
+            form.find(".control-label").text("")
+            bar.width(0)
+            units.text("")
+            sk.attr("hidden", true)
+        },
+    })
+
+    return false
+})
+
 $("#hide-follow-update").click(function(){
     document.cookie = "show-follow-update=false;path=/users/;max-age=15768000"
     $("#follow-update").remove()

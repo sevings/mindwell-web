@@ -141,12 +141,13 @@ $("#show-upload-image").click(function(){
     return false
 })
 
-$("#upload-image").click(function() { 
+$(".upload-image").click(function() { 
     var btn = $(this)
     if(btn.hasClass("disabled"))
         return false
-        
-    if(!checkFileSize(btn.parent()))
+
+    var form = btn.parent()
+    if(!checkFileSize(form))
         return false
 
     btn.addClass("disabled")
@@ -156,9 +157,11 @@ $("#upload-image").click(function() {
     var bar = sk.find(".skills-item-meter-active")
     var units = sk.find(".units")
 
-    $("#image-uploader").ajaxSubmit({
-        dataType: "html",
+    form.ajaxSubmit({
         resetForm: true,
+        headers: {
+            "X-Error-Type": "JSON",
+        },
         uploadProgress: function(e, pos, total, percent) {
             bar.width(percent + "%")
             units.text(Math.round(pos / 1024) + " из " + Math.round(total / 1024) + " Кб")
@@ -177,12 +180,12 @@ $("#upload-image").click(function() {
             inp.val(ids)
 
             updateImage(id)
+            btn.parents(".modal").modal("hide")
         },
         error: showAjaxError,
         complete: function() {
             btn.removeClass("disabled")
-            $("#upload-image-popup").modal("hide")
-            $("#image-file").prev().text("")
+            form.find(".control-label").text("")
             bar.width(0)
             units.text("")
             sk.attr("hidden", true)
