@@ -90,7 +90,8 @@
             {% with image = entry.images|first %}
                 <div class="post-thumb">
                     {% if image.small.preview %}
-                        <img class="gif-play-image" data-gif="{{ image.small.url }}" src="{{ image.small.preview }}"
+                        <img class="gif-play-image" data-gif="{{ image.small.url }}"  data-scope="attached" 
+                                src="{{ image.small.preview }}"
                     {% else %}
                         <img src="{{ image.small.url }}"
                     {% endif %}
@@ -101,7 +102,8 @@
             {% for image in entry.images %}
                 <div class="post-thumb">
                     {% if image.medium.preview %}
-                        <img class="gif-play-image" data-gif="{{ image.medium.url }}" src="{{ image.medium.preview }}"
+                        <img class="gif-play-image" data-gif="{{ image.medium.url }}" data-scope="attached" 
+                                src="{{ image.medium.preview }}"
                     {% else %}
                         <img src="{{ image.medium.url }}"
                     {% endif %}

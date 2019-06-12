@@ -465,6 +465,8 @@ $(".post-popup").on("show.bs.modal", function(event) {
     
     var entry = $(this).parents(".entry")
     updateComments(entry)
+
+    $(".gif-play-image").gifplayer("stop")
 })
 
 $(".post-popup").on("shown.bs.modal", function(event) {
@@ -498,9 +500,13 @@ $(".post-popup").on("shown.bs.modal", function(event) {
 })
 
 $(".post-popup").on("hide.bs.modal", function() {
-    $(this).find("iframe.yt-video").each(function(i) {
+    var modal = $(this)
+
+    modal.find("iframe.yt-video").each(function(i) {
         this.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
     });
+
+    modal.find(".gif-play-image").gifplayer("stop")
 
     if(window.location.hash == "")
         return
