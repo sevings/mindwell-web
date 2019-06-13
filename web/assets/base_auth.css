@@ -96,6 +96,17 @@ html, body {
     overflow-wrap: break-word;
 }
 
+.customize-feed {
+    height: 12px;
+    width: 12px;
+    margin-top: 4px;
+    fill: #888da8;
+}
+
+.cat-list__item:hover .customize-feed {
+    fill: #fff;
+}
+
 .post-add-icon svg {
     margin-left: 8px;
     height: 20px;

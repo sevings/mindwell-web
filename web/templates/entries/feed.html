@@ -9,18 +9,79 @@
         <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <ul class="cat-list-bg-style align-center sorting-menu">
                 {% block submenu %}{% endblock %}
+                <li class="cat-list__item">
+                    <a href="#" data-toggle="modal" data-target="#feed-settings">
+                        <svg class="customize-feed"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-settings-icon"></use></svg>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
 </div>
-    
-<div class="container">
-	<div id="feed" class="row sorting-container" data-layout="masonry">
-        {% if entries %}
-            {% include "feed_page.html" %}
-        {% else %}
-            <h6 class="title hcenter">Нет записей</h6>
-        {% endif %}
+
+{% if __view == "masonry" %}
+    <div class="container">
+        <div id="feed" class="row sorting-container" data-layout="masonry">
+            {% if entries %}
+                {% include "feed_page.html" %}
+            {% else %}
+                <h6 class="title hcenter">Нет записей</h6>
+            {% endif %}
+        </div>
     </div>
-</div>
+{% else %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 order-3">
+                <div id="feed">
+                    {% if entries %}
+                        {% include "tlog_page.html" %}
+                    {% else %}
+                        <h6 class="title hcenter">Нет записей</h6>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+
+
+<div class="modal fade" id="feed-settings" tabindex="-1" role="dialog">
+    <div class="modal-dialog window-popup edit-widget" role="document">
+        <div class="modal-content">
+            <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                <svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+            </a>
+
+            <div class="modal-header">
+                <h6 class="title">Настроить ленту</h6>
+            </div>
+
+            <div class="modal-body">
+                <form method="get" enctype="application/x-www-form-urlencoded">
+                    <fieldset class="form-group label-floating is-select">
+                        <label class="control-label">Количество записей на странице</label>
+                        <select name="limit" class="selectpicker form-control">
+                            <option value="10"  {% if __limit == "10" %}selected{% endif %}>Показывать 10 записей</option>
+                            <option value="30"  {% if __limit == "30" %}selected{% endif %}>Показывать 30 записей (по умолчанию)</option>
+                            <option value="50"  {% if __limit == "50" %}selected{% endif %}>Показывать 50 записей</option>
+                            <option value="100" {% if __limit == "100" %}selected{% endif %}>Показывать 100 записей</option>
+                        </select>
+                    </fieldset>
+
+                    <fieldset class="form-group label-floating is-select">
+                        <label class="control-label">Вид ленты</label>
+                        <select name="view" class="selectpicker form-control">
+                            <option value="masonry" {% if __view == "masonry" %}selected{% endif %}>Кратко (кирпичиками)</option>
+                            <option value="tlog" {% if __view == "tlog" %}selected{% endif %}>Полностью (как в тлоге)</option>
+                        </select>
+                    </fieldset>
+
+                    <input type="submit" class="btn btn-primary btn-lg full-width" value="Применить">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>    
 {% endblock %}

@@ -392,6 +392,9 @@ func feedHandler(mdw *utils.Mindwell, templateName, ajaxTemplateName string) fun
 			clbk(api)
 		}
 
+		api.SetDataFromQuery("limit", "30")
+		api.SetDataFromQuery("view", "masonry")
+
 		if isAjax {
 			api.WriteTemplate(ajaxTemplateName)
 		} else {
@@ -405,12 +408,7 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 	return func(ctx *gin.Context) {
 		clbk := func(api *utils.APIRequest) {
-			section, ok := ctx.GetQuery("section")
-			if !ok {
-				section = "entries"
-			}
-
-			api.SetData("__section", section)
+			api.SetDataFromQuery("section", "entries")
 		}
 
 		handle(ctx, "/entries/live", clbk)
@@ -422,12 +420,7 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 	return func(ctx *gin.Context) {
 		clbk := func(api *utils.APIRequest) {
-			category, ok := ctx.GetQuery("category")
-			if !ok {
-				category = "month"
-			}
-
-			api.SetData("__category", category)
+			api.SetDataFromQuery("category", "month")
 		}
 
 		handle(ctx, "/entries/best", clbk)

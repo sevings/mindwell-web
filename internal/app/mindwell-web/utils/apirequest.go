@@ -87,6 +87,19 @@ func (api *APIRequest) SetData(key string, value interface{}) {
 	data[key] = value
 }
 
+func (api *APIRequest) SetDataFromQuery(key, defaultValue string) {
+	if api.err != nil {
+		return
+	}
+
+	value, ok := api.ctx.GetQuery(key)
+	if !ok {
+		value = defaultValue
+	}
+
+	api.SetData("__"+key, value)
+}
+
 func (api *APIRequest) SetScrollHrefs() {
 	api.SetScrollHrefsWithData(api.ctx.Request.URL.Path, api.Data())
 }
