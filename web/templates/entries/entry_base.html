@@ -94,6 +94,7 @@
                                 src="{{ image.small.preview }}"
                     {% else %}
                         <img src="{{ image.small.url }}"
+                            srcset="{{ image.small.url }}, {{ image.medium.url }} 2x, {{ image.large.url }} 3x"
                     {% endif %}
                     width="{{ image.small.width }}" height="{{ image.small.height }}">
                 </div>
@@ -106,6 +107,7 @@
                                 src="{{ image.medium.preview }}"
                     {% else %}
                         <img src="{{ image.medium.url }}"
+                            srcset="{{ image.medium.url }}, {{ image.large.url }} 1.5x"
                     {% endif %}
                     width="{{ image.medium.width }}" height="{{ image.medium.height }}">
                 </div>
