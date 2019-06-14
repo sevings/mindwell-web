@@ -125,12 +125,16 @@ function unescapeHtml(text) {
     var btn = $(this)
     if(btn.hasClass("disabled"))
         return false;
-        
+
+    var form = $("#recover-email")
+    if(!form[0].reportValidity())
+        return false
+
     btn.addClass("disabled")
 
     var status = $("#recover-status")
     
-    $("#recover-email").ajaxSubmit({
+    form.ajaxSubmit({
         headers: {
             "X-Error-Type": "JSON",
         },
@@ -157,12 +161,16 @@ $("#send-reset").click(function() {
     var btn = $(this)
     if(btn.hasClass("disabled"))
         return false;
+
+    var form = $("#reset-password")
+    if(!form[0].reportValidity())
+        return false
         
     btn.addClass("disabled")
 
     var status = $("#reset-status")
     
-    $("#reset-password").ajaxSubmit({
+    form.ajaxSubmit({
         resetForm: true,
         headers: {
             "X-Error-Type": "JSON",
@@ -203,9 +211,8 @@ $(".register").click(function() {
     var btn = $(this)
     if(btn.hasClass("disabled"))
         return false;
-        
-    var form = btn.parents("form")
 
+    var form = btn.parents("form")
     if(!form[0].reportValidity())
         return false
 

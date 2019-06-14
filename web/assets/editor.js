@@ -107,10 +107,14 @@ $("#post-entry").click(function() {
     var btn = $(this)
     if(btn.hasClass("disabled"))
         return false;
-        
+
+    var form = $("#entry-editor")
+    if(!form[0].reportValidity())
+        return false
+
     btn.addClass("disabled")
 
-    $("#entry-editor").ajaxSubmit({
+    form.ajaxSubmit({
         dataType: "json",
         success: function(data) {
             if(isCreating()) {
@@ -225,19 +229,21 @@ function removeImage(id) {
     if(!confirm("Удалить изображение?"))
         return false
 
+    $("#attached-image"+id).remove()
+
+    var inp = $("#input-images")
+    var ids = inp.val().split(",")
+    var i = ids.indexOf(id + "")
+    if(i >= 0)
+        ids.splice(i, 1)
+    inp.val(ids.join(","))
+
+    if(!isCreating())
+        return false
+
     $.ajax({
         method: "DELETE",
         url: "/images/" + id,
-        success: function() {
-            $("#attached-image"+id).remove()
-            
-            var inp = $("#input-images")
-            var ids = inp.val().split(",")
-            var i = ids.indexOf(id + "")
-            if(i >= 0)
-                ids.splice(i, 1)
-            inp.val(ids.join(","))
-        },
         error: showAjaxError,
     })
 
