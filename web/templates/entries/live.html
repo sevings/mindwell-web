@@ -4,3 +4,6 @@
     <li class="cat-list__item {% if __section == "entries" %}active{% endif %}"><a href="/live?section=entries">Новое</a></li>
     <li class="cat-list__item {% if __section == "comments" %}active{% endif %}"><a href="/live?section=comments">Обсуждаемое</a></li>
 {% endblock %}
+{% block feed_settings %}
+    <input type="hidden" name="section" value="{{ __section }}">
+{% endblock %}

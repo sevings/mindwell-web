@@ -158,40 +158,53 @@ func (api *APIRequest) do(req *http.Request) {
 	api.read = false
 }
 
-func removeValues(query string) string {
-	v, err := url.ParseQuery(query)
-	if err != nil {
-		log.Println(err)
-		return ""
-	}
-
-	skipKeys := []string{"after", "before", "tag", "section", "query"}
-	for _, key := range skipKeys {
-		v.Del(key)
-	}
-
-	return v.Encode()
-}
-
 func (api *APIRequest) QueryCookie() {
 	url := api.ctx.Request.URL
 	path := strings.Split(url.Path, "/")
 	name := path[len(path)-1]
 
-	cookie, err := api.ctx.Request.Cookie(name)
+	api.QueryCookieName(name)
+}
 
-	if len(url.RawQuery) > 2 {
-		if err != nil || cookie.Value != url.RawQuery {
-			cookie = &http.Cookie{
-				Name:   name,
-				Value:  removeValues(url.RawQuery),
-				Path:   url.Path,
-				MaxAge: 60 * 60 * 24 * 90,
-			}
-			api.SetCookie(cookie)
+func (api *APIRequest) QueryCookieName(name string) {
+	urlValues := url.Values{}
+	cookieValues := url.Values{}
+
+	cookie, err := api.ctx.Request.Cookie(name)
+	if err == nil {
+		cookieValues, err = url.ParseQuery(cookie.Value)
+		if err != nil {
+			log.Println(err)
 		}
-	} else if err == nil {
-		url.RawQuery = removeValues(cookie.Value)
+	}
+
+	reqURL := api.ctx.Request.URL
+	urlValues, err = url.ParseQuery(reqURL.RawQuery)
+	if err != nil {
+		log.Println(err)
+	}
+
+	for k, v := range urlValues {
+		cookieValues[k] = v
+	}
+
+	urlValues = cookieValues
+	reqURL.RawQuery = urlValues.Encode()
+
+	skipKeys := []string{"after", "before", "tag", "section", "query"}
+	for _, key := range skipKeys {
+		cookieValues.Del(key)
+	}
+
+	saveVal := cookieValues.Encode()
+	if cookie == nil || saveVal != cookie.Value {
+		cookie = &http.Cookie{
+			Name:   name,
+			Value:  saveVal,
+			Path:   "/",
+			MaxAge: 60 * 60 * 24 * 90,
+		}
+		api.SetCookie(cookie)
 	}
 }
 
