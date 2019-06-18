@@ -151,6 +151,9 @@ $(".upload-image").click(function() {
         return false
 
     var form = btn.parent()
+    if(!form[0].reportValidity())
+        return false
+
     if(!checkFileSize(form))
         return false
 
