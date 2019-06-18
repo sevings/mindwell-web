@@ -106,13 +106,8 @@
                         {% endif %}
                         {% if profile.counts.ignored %}
                             <li>
-                            {% if me.id == profile.id %}
-                                <a href="/users/{{ profile.name }}/relations/ignored" class="title">Заблокированы:</a>
-                                <a href="/users/{{ profile.name }}/relations/ignored" class="text">{{ profile.counts.ignored }}</a>
-                            {% else %}
                                 <span class="title">Заблокированы:</span>
                                 <span class="text">{{ profile.counts.ignored }}</span>
-                            {% endif %}
                             </li>
                         {% endif %}
                         {% if profile.counts.invited %}
