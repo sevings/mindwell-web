@@ -9,6 +9,10 @@ img.mfp-img {
     max-height: calc(100vh - 40px);
 }
 
+.post-thumb+.btn {
+    margin-top: 25px;
+}
+
 .header-responsive {
     padding: 0px;
 }
