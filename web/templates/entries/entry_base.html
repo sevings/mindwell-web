@@ -121,7 +121,7 @@
         {% endif %}
     {% endif %}
 
-    {% if cutEntry && (entry.cutContent || entry.images|length) %}
+    {% if cutEntry && (entry.cutContent || entry.images|length > 1) %}
         <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}" 
             class="btn btn-md-2 btn-border-think c-grey btn-transparent custom-color">Дальше</a>
     {% endif %}
