@@ -83,34 +83,42 @@
     {% if entry.images %}
         {% if cutEntry %}
             {% with image = entry.images|first %}
-                <div class="post-thumb">
-                    {% if image.small.preview %}
+                {% if image.small.preview %}
+                    <div class="post-thumb">
                         <img class="gif-play-image" data-gif="{{ image.small.url }}"  data-scope="attached" 
-                                src="{{ image.small.preview }}"
-                    {% else %}
+                            src="{{ image.small.preview }}"
+                            width="{{ image.small.width }}" height="{{ image.small.height }}">
+                    </div>
+                {% else %}
+                    <a href="{{ image.large.url }}" target="__blank" class="post-thumb js-zoom-image">
                         <img src="{{ image.small.url }}"
                             srcset="{{ image.small.url }}, {{ image.medium.url }} 2x, {{ image.large.url }} 3x"
-                    {% endif %}
-                    width="{{ image.small.width }}" height="{{ image.small.height }}">
-                </div>
+                            width="{{ image.small.width }}" height="{{ image.small.height }}">
+                    </a>
+                {% endif %}
             {% endwith %}
         {% else %}
-            {% for image in entry.images %}
-                <div class="post-thumb">
+            <div class="post-block-photo js-zoom-gallery">
+                {% for image in entry.images %}
                     {% if image.medium.preview %}
-                        <img class="gif-play-image" data-gif="{{ image.medium.url }}" data-scope="attached" 
+                        <div class="post-thumb">
+                            <img class="gif-play-image" data-gif="{{ image.medium.url }}" data-scope="attached" 
                                 src="{{ image.medium.preview }}"
+                                width="{{ image.medium.width }}" height="{{ image.medium.height }}">
+                        </div>
                     {% else %}
-                        <img src="{{ image.medium.url }}"
-                            srcset="{{ image.medium.url }}, {{ image.large.url }} 1.5x"
+                        <a href="{{ image.large.url }}" target="__blank" class="post-thumb js-zoom-image">
+                            <img src="{{ image.medium.url }}"
+                                srcset="{{ image.medium.url }}, {{ image.large.url }} 1.5x"
+                                width="{{ image.medium.width }}" height="{{ image.medium.height }}">
+                        </a>
                     {% endif %}
-                    width="{{ image.medium.width }}" height="{{ image.medium.height }}">
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         {% endif %}
     {% endif %}
 
-    {% if cutEntry && entry.cutContent %}
+    {% if cutEntry && (entry.cutContent || entry.images|length) %}
         <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}" 
             class="btn btn-md-2 btn-border-think c-grey btn-transparent custom-color">Дальше</a>
     {% endif %}

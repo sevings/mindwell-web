@@ -171,8 +171,9 @@ function loadComments(href, a) {
         success: function(data) {
             var ul = a.parent()
 
-            var comments = formatTimeHtml(data)
-            $(comments).find("iframe.yt-video").each(prepareYtPlayer)
+            var comments = $(formatTimeHtml(data))
+            comments.find("iframe.yt-video").each(prepareYtPlayer)
+            comments.each(function(){ CRUMINA.mediaPopups(this) })
             ul.prepend(comments)
             addYtPlayers()
             a.remove()
@@ -207,8 +208,9 @@ function updateComments(entry) {
             var hasPrev = ul.find(".comment-item").length > 0
             var hasMore = ul.find(".more-comments").length > 0
 
-            var comments = formatTimeHtml(data)
-            $(comments).find("iframe.yt-video").each(prepareYtPlayer)
+            var comments = $(formatTimeHtml(data))
+            comments.find("iframe.yt-video").each(prepareYtPlayer)
+            comments.each(function(){ CRUMINA.mediaPopups(this) })
             ul.append(comments)
             addYtPlayers()
 
@@ -259,8 +261,9 @@ function postComment(entry) {
             "X-Error-Type": "JSON",
         },
         success: function(data) {
-            var cmt = formatTimeHtml(data)
-            $(cmt).find("iframe.yt-video").each(prepareYtPlayer)
+            var cmt = $(formatTimeHtml(data))
+            cmt.find("iframe.yt-video").each(prepareYtPlayer)
+            CRUMINA.mediaPopups(cmt)
             entry.find(".comments-list").append(cmt)
             addYtPlayers()
 
@@ -362,8 +365,9 @@ function saveComment(entry) {
             "X-Error-Type": "JSON",
         },
         success: function(data) {
-            var cmt = formatTimeHtml(data)
-            $(cmt).find("iframe.yt-video").each(prepareYtPlayer)
+            var cmt = $(formatTimeHtml(data))
+            cmt.find("iframe.yt-video").each(prepareYtPlayer)
+            CRUMINA.mediaPopups(cmt)
             var id = form.data("id")
             $("#comment"+id).replaceWith(cmt)
             addYtPlayers()

@@ -77,6 +77,7 @@ func gender(gender *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.E
 var aRe = regexp.MustCompile(`(?i)<a[^>]+>[^<]*</a>`)
 var hrefRe = regexp.MustCompile(`(?i)<a[^>]+href="([^"]+)"[^>]*>([^<]*)</a>`)
 var ytRe = regexp.MustCompile(`(?i)(?:https?://)?(?:www\.)?(?:m\.)?(?:youtube.com/watch\?.*v=|youtu.be/)([a-z0-9\-_]+).*`)
+var imgSrcRe = regexp.MustCompile(`(?i)<img[^>]+src="([^"]+)"[^>]*>`)
 
 func min(x, y int) int {
 	if x < y {
@@ -139,6 +140,8 @@ func media(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.E
 	html = aRe.ReplaceAllStringFunc(html, func(tag string) string {
 		return convertMediaTag(tag, embed)
 	})
+
+	html = imgSrcRe.ReplaceAllString(html, `<a href="$1" target="__blank" class="js-zoom-image">$0</a>`)
 
 	return pongo2.AsSafeValue(html), nil
 }

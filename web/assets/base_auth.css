@@ -1,12 +1,12 @@
-html, body {
-	height: 100%;
-}
-
 .post-content img, .post-thumb img {
     display: block;
     border-radius: 5px;
     max-height: 80vh;
     width: auto;
+}
+
+img.mfp-img {
+    max-height: calc(100vh - 40px);
 }
 
 .header-responsive {

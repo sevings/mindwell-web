@@ -535,3 +535,95 @@ CRUMINA.StickySidebar = function () {
 $(document).ready(function () {
 	CRUMINA.StickySidebar();
 });
+
+/* -----------------------------
+	* Lightbox popups for media
+	* Script file: jquery.magnific-popup.min.js
+	* Documentation about used plugin:
+	* http://dimsemenov.com/plugins/magnific-popup/documentation.html
+* ---------------------------*/
+
+CRUMINA.mediaPopups = function (element) {
+	$('.js-zoom-image', element).magnificPopup({
+		type: 'image',
+		removalDelay: 160,
+		callbacks: {
+			beforeOpen: function () {
+				this.st.image.markup = this.st.image.markup.replace('mfp-figure', 'mfp-figure mfp-with-anim');
+				this.st.mainClass = 'mfp-zoom-in';
+			},
+			open: function() {
+				$(".post-popup.show").attr("hidden", true)
+				window.history.pushState("js-zoom", "")
+			},
+			beforeClose: function() {
+				$(".post-popup.show").attr("hidden", false)
+				if(window.history.state == "js-zoom")
+					window.history.back()
+			},
+		},
+		closeOnContentClick: true,
+		midClick: true,
+		image: {
+			verticalFit: false,
+		},
+		autoFocusLast: false,
+	});
+	$('.js-zoom-gallery', element).each(function() {
+		$(this).magnificPopup({
+			delegate: 'a',
+			type: 'image',
+			gallery: {
+				enabled: true
+			},
+			removalDelay: 160,
+			callbacks: {
+				beforeOpen: function () {
+					this.st.image.markup = this.st.image.markup.replace('mfp-figure', 'mfp-figure mfp-with-anim');
+					this.st.mainClass = 'mfp-zoom-in';
+				},
+				open: function() {
+					$(".post-popup.show").attr("hidden", true)
+					window.history.pushState("js-zoom", "")
+				},
+				beforeClose: function() {
+					$(".post-popup.show").attr("hidden", false)
+					if(window.history.state == "js-zoom")
+						window.history.back()
+				},
+			},
+			closeOnContentClick: true,
+			midClick: true,
+			image: {
+				verticalFit: false,
+			},
+			autoFocusLast: false,
+			preload: [0,2],
+		});
+	});
+};
+
+$(document).ready(function () {
+	if (typeof $.fn.magnificPopup === 'undefined')
+		return;
+
+	$(window).on("popstate", function(){ $.magnificPopup.close() });
+
+	$.extend(true, $.magnificPopup.defaults, {
+		tClose: 'Закрыть (Esc)',
+		tLoading: 'Загрузка... (%curr% из %total%)',
+		gallery: {
+			tPrev: 'Предыдущее (стрелка влево)',
+			tNext: 'Следующее (стрелка вправо)',
+			tCounter: '%curr% из %total%'
+		},
+		image: {
+			tError: 'Не удалось загрузить <a href="%url%">изображение</a>.'
+		},
+		ajax: {
+			tError: 'Не удалось загрузить <a href="%url%">содержимое</a>.'
+		}
+	});
+
+	CRUMINA.mediaPopups();
+});
