@@ -554,6 +554,7 @@ CRUMINA.mediaPopups = function (element) {
 			},
 			open: function() {
 				$(".post-popup.show").attr("hidden", true)
+				$(".gif-play-image").gifplayer("stop")
 				window.history.pushState("js-zoom", "")
 			},
 			beforeClose: function() {
@@ -584,6 +585,7 @@ CRUMINA.mediaPopups = function (element) {
 				},
 				open: function() {
 					$(".post-popup.show").attr("hidden", true)
+					$(".gif-play-image").gifplayer("stop")
 					window.history.pushState("js-zoom", "")
 				},
 				beforeClose: function() {

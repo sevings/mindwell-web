@@ -83,7 +83,7 @@
     {% if entry.images %}
         {% if cutEntry %}
             {% with image = entry.images|first %}
-                {% if image.small.preview %}
+                {% if image.isAnimated %}
                     <div class="post-thumb">
                         <img class="gif-play-image" data-gif="{{ image.small.url }}"  data-scope="attached" 
                             src="{{ image.small.preview }}"
@@ -98,16 +98,19 @@
                 {% endif %}
             {% endwith %}
         {% else %}
+            {% for image in entry.images %}
+                {% if image.isAnimated %}
+                    <div class="post-thumb">
+                        <img class="gif-play-image" data-gif="{{ image.medium.url }}" data-scope="attached" 
+                            src="{{ image.medium.preview }}"
+                            width="{{ image.medium.width }}" height="{{ image.medium.height }}">
+                    </div>
+                {% endif %}
+            {% endfor %}
             <div class="post-block-photo js-zoom-gallery">
                 {% for image in entry.images %}
-                    {% if image.medium.preview %}
-                        <div class="post-thumb">
-                            <img class="gif-play-image" data-gif="{{ image.medium.url }}" data-scope="attached" 
-                                src="{{ image.medium.preview }}"
-                                width="{{ image.medium.width }}" height="{{ image.medium.height }}">
-                        </div>
-                    {% else %}
-                        <a href="{{ image.large.url }}" target="__blank" class="post-thumb js-zoom-image">
+                    {% if !image.isAnimated %}
+                        <a href="{{ image.large.url }}" target="__blank" class="post-thumb">
                             <img src="{{ image.medium.url }}"
                                 srcset="{{ image.medium.url }}, {{ image.large.url }} 1.5x"
                                 width="{{ image.medium.width }}" height="{{ image.medium.height }}">
