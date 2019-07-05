@@ -1,4 +1,4 @@
-.post-content img, a.post-thumb img, div.post-thumb img {
+.post-content img, .comment-content img, a.post-thumb img, div.post-thumb img {
     display: block;
     border-radius: 5px;
     max-height: 80vh;
