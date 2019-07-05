@@ -88,6 +88,12 @@ var notifications = {
             return
         }
 
+        if(notifications.loadingBefore && !notifications.after)
+        {
+            notifications.reloadAfter = true
+            return
+        }
+
         notifications.loadingAfter = true
         notifications.reloadAfter = false
         
