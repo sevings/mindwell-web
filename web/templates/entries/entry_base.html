@@ -1,15 +1,12 @@
-<article class="hentry post">
+<article class="hentry post {% if cutEntry %}cut-post{% endif %}">
     <div class="post__author author vcard inline-items">
         
         <a href="/users/{{ entry.author.name }}"><img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}"></a>
 
         <div class="author-date">
             <a class="h6 post__author-name fn" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
-                <div class="post__date">
-                    {% if cutEntry %}
-                        <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}">
-                    {% endif %}
-                    
+            <div class="post__date">
+                <a href="/entries/{{ entry.id }}"{% if cutEntry %} data-toggle="modal" data-target="#post-popup{{ entry.id }}"{% endif %}>
                     <time class="published" datetime="{{ entry.createdAt }}"></time>
                     {% if entry.cutContent %}
                         <span class="dot-divider"></span>
@@ -22,7 +19,7 @@
                             <i class="fas fa-bullhorn"></i>
                         </span>
                     {% endif %}
-                {% if cutEntry %}</a>{% endif %}
+                </a>
             </div>
         </div>
 
@@ -53,7 +50,7 @@
                 {% endif %}
                 {% if entry.rights.delete %}
                     <li>
-                        <a href="#" onclick="deletePost({{ entry.id }});return false;">Удалить</a>
+                        <a href="#" onclick="return deletePost({{ entry.id }})">Удалить</a>
                     </li>
                 {% endif %}
             </ul>
@@ -61,14 +58,16 @@
 
     </div>
 
-    {% if cutEntry %}
-        <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}"
-    {% else %}
-        <span
+    {% if entry.title %}
+        {% if cutEntry %}
+            <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}"
+        {% else %}
+            <span
+        {% endif %}
+            class="h2 post-title" {% if cutEntry && entry.cutTitle %} title="{{ entry.title|safe }}"{% endif %}>
+                {% if cutEntry && entry.cutTitle %}{{ entry.cutTitle|safe }}{% else %}{{ entry.title|safe }}{% endif %} 
+        {% if cutEntry %}</a>{% else %}</span>{% endif %}
     {% endif %}
-        class="h2 post-title" {% if cutEntry && entry.cutTitle %} title="{{ entry.title|safe }}"{% endif %}>
-            {% if cutEntry && entry.cutTitle %}{{ entry.cutTitle|safe }}{% else %}{{ entry.title|safe }}{% endif %} 
-    {% if cutEntry %}</a>{% else %}</span>{% endif %}
 
     <div class="post-content">
         {% if cutEntry && entry.cutContent %}
@@ -119,11 +118,6 @@
                 {% endfor %}
             </div>
         {% endif %}
-    {% endif %}
-
-    {% if cutEntry && (entry.cutContent || entry.images|length > 1) %}
-        <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}" 
-            class="btn btn-md-2 btn-border-think c-grey btn-transparent custom-color">Дальше</a>
     {% endif %}
 
     <div class="post-additional-info inline-items">

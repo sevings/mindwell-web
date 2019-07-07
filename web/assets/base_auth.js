@@ -68,6 +68,10 @@ var notifications = {
     },
     addClickHandler: function(ul) {
         $("a", ul).click(notifications.readAll)
+        ul.click(function(){
+            notifications.readAll()
+            window.location = $(this).find(".notification-action").prop("href")
+        })
     },
     readAll: function() {
         if(!notifications.unread)

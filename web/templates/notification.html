@@ -11,11 +11,11 @@
             <span class="notification-date">
                 <time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time>
                 {% if ntf.entry.title || ntf.entry.cutTitle %}
-                    к записи <a href="/entries/{{ ntf.entry.id }}">
+                    к записи <a href="/entries/{{ ntf.entry.id }}#comments" class="notification-action">
                         {% if ntf.entry.cutTitle %}{{ ntf.entry.cutTitle|safe }}{% else %}{{ ntf.entry.title|safe }}{% endif %}
                     </a>.
                 {% else %}
-                    к <a href="/entries/{{ ntf.entry.id }}">записи</a>.
+                    к <a href="/entries/{{ ntf.entry.id }}#comments" class="notification-action">записи</a>.
                 {% endif %}
             </span>
         </div>
@@ -26,7 +26,7 @@
         <div class="author-thumb">
         </div>
         <div class="notification-event">
-            У тебя <a href="/account/invites">появилось новое приглашение</a>! Используй его с умом.
+            У тебя <a href="/account/invites" class="notification-action">появилось новое приглашение</a>! Используй его с умом.
             <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
         </div>
         <span class="notification-icon">
@@ -39,7 +39,7 @@
             </a>
         </div>
         <div class="notification-event">
-            <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a><br>
+            <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend notification-action">{{ ntf.user.showName }}</a><br>
             Получено приглашение на Mindwell. Теперь тебе доступны все функции сайта (при отсутствии других ограничений).
             <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
         </div>
@@ -54,16 +54,16 @@
         </div>
         <div class="notification-event">
             {% if ntf.type == "follower" %}
-                <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a>
+                <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend notification-action">{{ ntf.user.showName }}</a>
                 теперь следит за твоим тлогом.
             {% elif ntf.type == "request" %}
-                <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a>
+                <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend notification-action">{{ ntf.user.showName }}</a>
                 просит разрешения на чтение твоего тлога.
             {% elif ntf.type == "accept" %}
                 Теперь ты можешь читать записи из тлога  
-                <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a>.
+                <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend notification-action">{{ ntf.user.showName }}</a>.
             {% elif ntf.type == "welcome" %}
-                <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend">{{ ntf.user.showName }}</a><br>
+                <a href="/users/{{ ntf.user.name }}" class="h6 notification-friend notification-action">{{ ntf.user.showName }}</a><br>
                 Твое приглашение использовано. 
             {% endif %}
             <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>

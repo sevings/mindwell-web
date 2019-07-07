@@ -100,6 +100,10 @@ img.mfp-img {
     overflow-wrap: break-word;
 }
 
+.notification-list li {
+    cursor: pointer;
+}
+
 .customize-feed {
     height: 12px;
     width: 12px;
@@ -164,6 +168,14 @@ div.post-add-icon:hover {
     word-wrap: break-word; /* Internet Explorer */
     overflow-wrap: break-word;
     text-align: justify;
+}
+
+.cut-post .post-content {
+    cursor: pointer;
+}
+
+.post-content a:hover {
+    text-decoration-line: underline;
 }
 
 .post-content p {

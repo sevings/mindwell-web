@@ -64,7 +64,7 @@ function deletePost(id) {
     if(!confirm("Пост будет удален навсегда."))
         return false
 
-    $(".post-popup.show").removeClass("fade").modal("hide");
+    $(".post-popup.show").removeClass("fade").modal("hide")
 
     $.ajax({
         url: "/entries/" + id,
@@ -85,7 +85,28 @@ function deletePost(id) {
             alert(resp.message)
         },
     })
+
+    return false
 }
+
+$(".cut-post .post-content").click(function(){
+    var selection = window.getSelection()
+    if(selection.toString().length > 0 && selection.containsNode(this, true))
+        return
+    
+    var info = $(this).parents(".entry")
+    var id = info.data("id")
+    $("#post-popup"+id).modal("show")
+})
+
+$(".cut-post .post-content a").click(function(){
+    var a = $(this)
+    if(a.hasClass("play-video"))
+        return true
+
+    window.open(a.prop("href"), "_blank")
+    return false
+})
 
 $("a.watch-post").click(function() {
     var info = $(this).parents(".entry")
