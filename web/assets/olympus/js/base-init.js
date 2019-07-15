@@ -75,9 +75,17 @@ var CRUMINA = {};
 
 	//Scroll to top.
         jQuery('.back-to-top').on('click', function () {
+			var btn = $(this);
+			if(btn.hasClass("disabled"))
+				return false;
+
+			btn.addClass("disabled");
+
             $('html,body').animate({
                 scrollTop: 0
-            }, 1200);
+            }, 1200, function(){
+				btn.removeClass("disabled")
+			});
             return false;
         });
 
