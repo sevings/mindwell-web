@@ -64,6 +64,7 @@
                         <label class="control-label">Количество записей на странице</label>
                         <select name="limit" class="selectpicker form-control">
                             <option value="10"  {% if __limit == "10" %}selected{% endif %}>Показывать 10 записей</option>
+                            <option value="20"  {% if __limit == "20" %}selected{% endif %}>Показывать 20 записей</option>
                             <option value="30"  {% if __limit == "30" %}selected{% endif %}>Показывать 30 записей (по умолчанию)</option>
                             <option value="50"  {% if __limit == "50" %}selected{% endif %}>Показывать 50 записей</option>
                             <option value="100" {% if __limit == "100" %}selected{% endif %}>Показывать 100 записей</option>
