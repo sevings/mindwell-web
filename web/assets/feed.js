@@ -77,8 +77,14 @@ function deletePost(id) {
                     loc.replace(loc.origin + "/me");
             else if(loc.pathname == "/entries/" + id)
                     window.history.back();
-            else
-                $("#post" + id).remove()
+            else {
+                var post = $("#post" + id)
+                var feed = $("#feed")
+                if(feed.hasClass("sorting-container"))
+                    feed.isotope("remove", post).isotope("layout")
+                else
+                    post.remove()
+            }
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
