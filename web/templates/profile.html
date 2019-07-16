@@ -19,36 +19,74 @@
 						<div class="row">
 							<div class="col col-lg-5 col-md-5 col-sm-12 col-12">
 								<ul class="profile-menu">
-                                    {% if profile.relations.isOpenForMe %}
+                                    {% if profile.counts.entries %}
                                         <li>
-                                            <a href="/users/{{ profile.name }}" {% if __tlog %}class="active"{% endif %}>Тлог</a>
+                                            {% if profile.relations.isOpenForMe %}
+                                                <a href="/users/{{ profile.name }}" 
+                                            {% else %}
+                                                <div
+                                            {% endif %}
+                                                    class="friend-count-item">
+                                                <div class="h6">{{ profile.counts.entries }}</div>
+                                                <div class="title">запис{{ profile.counts.entries|quantity:"ь,и,ей" }}</div>
+                                            {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
                                         </li>
-                                        {% if profile.counts.favorites %}
-                                            <li>
-                                                <a href="/users/{{ profile.name }}/favorites" {% if __favorites %}class="active"{% endif %}>Избранное</a>
-                                            </li>
-                                        {% endif %}
+                                    {% endif %}
+                                    {% if profile.counts.favorites %}
+                                        <li>
+                                            {% if profile.relations.isOpenForMe %}
+                                                <a href="/users/{{ profile.name }}/favorites" 
+                                            {% else %}
+                                                <div
+                                            {% endif %}
+                                                    class="friend-count-item">
+                                                <div class="h6">{{ profile.counts.favorites }}</div>
+                                                <div class="title">в избранном</div>
+                                            {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                        </li>
                                     {% endif %}
 								</ul>
 							</div>
 							<div class="col col-lg-5 ml-auto col-md-5 col-sm-12 col-12">
 								<ul class="profile-menu">
-                                    {% if profile.relations.isOpenForMe %}
-                                        {% if profile.counts.followings %}
-                                            <li>
-                                                <a href="/users/{{ profile.name }}/relations/followings" {% if relation == "followings" %}class="active"{% endif %}>Подписки</a>
-                                            </li>
-                                        {% endif %}
-                                        {% if profile.counts.followers %}
-                                            <li>
-                                                <a href="/users/{{ profile.name }}/relations/followers" {% if relation == "followers" %}class="active"{% endif %}>Подписчики</a>
-                                            </li>
-                                        {% endif %}
-                                        {% if profile.counts.invited %}
-                                            <li>
-                                                <a href="/users/{{ profile.name }}/relations/invited" {% if relation == "invited" %}class="active"{% endif %}>Приглашенные</a>
-                                            </li>
-                                        {% endif %}
+                                    {% if profile.counts.followings %}
+                                        <li>
+                                            {% if profile.relations.isOpenForMe %}
+                                                <a href="/users/{{ profile.name }}/relations/followings" 
+                                            {% else %}
+                                                <div
+                                            {% endif %}
+                                                    class="friend-count-item">
+                                                <div class="h6">{{ profile.counts.followings }}</div>
+                                                <div class="title">подпис{{ profile.counts.followings|quantity:"ка,ки,ок" }}</div>
+                                            {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                        </li>
+                                    {% endif %}
+                                    {% if profile.counts.followers %}
+                                        <li>
+                                            {% if profile.relations.isOpenForMe %}
+                                                <a href="/users/{{ profile.name }}/relations/followers" 
+                                            {% else %}
+                                                <div
+                                            {% endif %}
+                                                    class="friend-count-item">
+                                                <div class="h6">{{ profile.counts.followers }}</div>
+                                                <div class="title">подписчик{{ profile.counts.followers|quantity:",ка,ов" }}</div>
+                                            {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                        </li>
+                                    {% endif %}
+                                    {% if profile.counts.invited %}
+                                        <li>
+                                            {% if profile.relations.isOpenForMe %}
+                                                <a href="/users/{{ profile.name }}/relations/invited" 
+                                            {% else %}
+                                                <div
+                                            {% endif %}
+                                                    class="friend-count-item">
+                                                <div class="h6">{{ profile.counts.invited }}</div>
+                                                <div class="title">приглашенны{{ profile.counts.invited|quantity:"й,х,х" }}</div>
+                                            {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                        </li>
                                     {% endif %}
                                     {% if me.id != profile.id %}
                                         <div class="more">

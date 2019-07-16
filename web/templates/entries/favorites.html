@@ -1,2 +1,9 @@
 {% extends "tlog.html" %}
 {% block title %}Избранное {{ profile.showName }}{% endblock %}
+{% block feed_title %}
+    <div class="ui-block">
+        <div class="ui-block-title">
+            <h6 class="title">Избранное {{ profile.showName }}</h6>
+        </div>
+    </div>
+{% endblock %}

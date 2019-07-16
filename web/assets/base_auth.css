@@ -303,3 +303,7 @@ li.cat-list__item > a {
 .remove-user {
     float: right;
 }
+
+div.profile-section {
+    padding: 30px 0;
+}

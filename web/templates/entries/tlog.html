@@ -53,27 +53,10 @@
 							<span class="title">В рейтинге:</span>
 							<span class="text">{{ profile.rank }}</span>
                         </li>
-                        {% if profile.counts.entries %}
-                            <li>
-                                <span class="title">Записи:</span>
-                                <span class="text">{{ profile.counts.entries }}</span>
-                            </li>
-                        {% endif %}
                         {% if profile.counts.comments %}
                             <li>
                                 <span class="title">Комментарии:</span>
                                 <span class="text">{{ profile.counts.comments }}</span>
-                            </li>
-                        {% endif %}
-                        {% if profile.counts.favorites %}
-                            <li>
-                                {% if profile.relations.isOpenForMe %}
-                                    <a href="/users/{{ profile.name }}/favorites" class="title">Избранное:</a>
-                                    <a href="/users/{{ profile.name }}/favorites" class="text">{{ profile.counts.favorites }}</a>
-                                {% else %}
-                                    <span class="title">Избранное:</span>
-                                    <span class="text">{{ profile.counts.favorites }}</span>
-                                {% endif %}
                             </li>
                         {% endif %}
                         {% if profile.counts.tags %}
@@ -82,43 +65,10 @@
                                 <span class="text">{{ profile.counts.tags }}</span>
                             </li>
                         {% endif %}
-                        {% if profile.counts.followers %}
-                            <li>
-                                {% if profile.relations.isOpenForMe %}
-                                    <a href="/users/{{ profile.name }}/relations/followers" class="title">Подписчики:</a>
-                                    <a href="/users/{{ profile.name }}/relations/followers" class="text">{{ profile.counts.followers }}</a>
-                                {% else %}
-                                    <span class="title">Подписчики:</span>
-                                    <span class="text">{{ profile.counts.followers }}</span>
-                                {% endif %}
-                            </li>
-                        {% endif %}
-                        {% if profile.counts.followings %}
-                            <li>
-                                {% if profile.relations.isOpenForMe %}
-                                    <a href="/users/{{ profile.name }}/relations/followings" class="title">Подписки:</a>
-                                    <a href="/users/{{ profile.name }}/relations/followings" class="text">{{ profile.counts.followings }}</a>
-                                {% else %}
-                                    <span class="title">Подписки:</span>
-                                    <span class="text">{{ profile.counts.followings }}</span>
-                                {% endif %}
-                            </li>
-                        {% endif %}
                         {% if profile.counts.ignored %}
                             <li>
-                                <span class="title">Заблокированы:</span>
+                                <span class="title">В черном списке:</span>
                                 <span class="text">{{ profile.counts.ignored }}</span>
-                            </li>
-                        {% endif %}
-                        {% if profile.counts.invited %}
-                            <li>
-                                {% if profile.relations.isOpenForMe %}
-                                    <a href="/users/{{ profile.name }}/relations/invited" class="title">Приглашенные:</a>
-                                    <a href="/users/{{ profile.name }}/relations/invited" class="text">{{ profile.counts.invited }}</a>
-                                {% else %}
-                                    <span class="title">Приглашенные:</span>
-                                    <span class="text">{{ profile.counts.invited }}</span>
-                                {% endif %}
                             </li>
                         {% endif %}
                     </ul>
@@ -127,6 +77,7 @@
         </div>
 		<div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 order-3">
 			<div id="feed">
+                {% block feed_title %}{% endblock %}
                 {% if entries %}
                     {% include "tlog_page.html" %}
                 {% elif profile.id == me.id && !me.counts.entries %}
