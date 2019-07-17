@@ -60,41 +60,6 @@ function vote(counter, positive) {
     })
 }
 
-function deletePost(id) {
-    if(!confirm("Пост будет удален навсегда."))
-        return false
-
-    $(".post-popup.show").removeClass("fade").modal("hide")
-
-    $.ajax({
-        url: "/entries/" + id,
-        method: "DELETE",
-        success: function(resp) {
-            var loc = window.location;
-            if((loc.pathname == "/entries/" + id &&
-                document.referrer == loc.origin + loc.pathname) || // for ignore hash
-                document.referrer == loc.origin + loc.pathname + "/edit")
-                    loc.replace(loc.origin + "/me");
-            else if(loc.pathname == "/entries/" + id)
-                    window.history.back();
-            else {
-                var post = $("#post" + id)
-                var feed = $("#feed")
-                if(feed.hasClass("sorting-container"))
-                    feed.isotope("remove", post).isotope("layout")
-                else
-                    post.remove()
-            }
-        },
-        error: function(req) {
-            var resp = JSON.parse(req.responseText)
-            alert(resp.message)
-        },
-    })
-
-    return false
-}
-
 $(".cut-post .post-content").click(function(){
     var selection = window.getSelection()
     if(selection.toString().length > 0 && selection.containsNode(this, true))
@@ -180,6 +145,49 @@ $("a.favorite-post").click(function() {
         },
         complete: function() {
             info.data("enabled", true)
+        },
+    })
+
+    return false
+})
+
+$("a.delete-post").click(function() {
+    if(!confirm("Пост будет удален навсегда."))
+        return false
+
+    var info = $(this).parents(".entry")
+    if(info.data("enabled") == false)
+        return false
+
+    info.data("enabled", false)
+
+    var id = info.data("id")
+    
+    $(".post-popup.show").removeClass("fade").modal("hide")
+
+    $.ajax({
+        url: "/entries/" + id,
+        method: "DELETE",
+        success: function(resp) {
+            var loc = window.location;
+            if((loc.pathname == "/entries/" + id &&
+                document.referrer == loc.origin + loc.pathname) || // for ignore hash
+                document.referrer == loc.origin + loc.pathname + "/edit")
+                    loc.replace(loc.origin + "/me");
+            else if(loc.pathname == "/entries/" + id)
+                    window.history.back();
+            else {
+                var post = $("#post" + id)
+                var feed = $("#feed")
+                if(feed.hasClass("sorting-container"))
+                    feed.isotope("remove", post).isotope("layout")
+                else
+                    post.remove()
+            }
+        },
+        error: function(req) {
+            var resp = JSON.parse(req.responseText)
+            alert(resp.message)
         },
     })
 
