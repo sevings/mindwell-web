@@ -1,12 +1,25 @@
-$("a.post-down").click(function() {
-    vote($(this), false)
-    return false
-})
+function addFeedClickHandlers(feed) {
+    $("a.post-down", feed).click(function() {
+        return vote($(this), false)
+    })
 
-$("a.post-up").click(function() {
-    vote($(this), true)
-    return false
-})
+    $("a.post-up", feed).click(function() {
+        return vote($(this), true)
+    })
+
+    $(".cut-post .post-content", feed).click(onCutContentClick)
+    $(".cut-post .post-content a", feed).click(onCutContentLinkClick)
+    
+    $("a.watch-post", feed).click(onWatchPostClick)
+    $("a.favorite-post", feed).click(onFavoritePostClick)
+    $("a.delete-post", feed).click(onDeletePostClick)
+
+    $(".comment-form textarea", feed).on("keydown", onCommentFormKeyDown)
+    $(".post-comment", feed).click(onPostCommentClick)
+    $(".cancel-comment", feed).click(onCancelCommentClick)
+    
+    $(".play-video", feed).click(onPlayVideoClick)
+}
 
 function vote(counter, positive) {
     var info = counter.parents(".entry")
@@ -58,9 +71,11 @@ function vote(counter, positive) {
             info.data("enabled", true)
         },
     })
+
+    return false
 }
 
-$(".cut-post .post-content").click(function(){
+function onCutContentClick(){
     var selection = window.getSelection()
     if(selection.toString().length > 0 && selection.containsNode(this, true))
         return
@@ -68,18 +83,18 @@ $(".cut-post .post-content").click(function(){
     var info = $(this).parents(".entry")
     var id = info.data("id")
     $("#post-popup"+id).modal("show")
-})
+}
 
-$(".cut-post .post-content a").click(function(){
+function onCutContentLinkClick(){
     var a = $(this)
     if(a.hasClass("play-video"))
         return true
 
     window.open(a.prop("href"), "_blank")
     return false
-})
+}
 
-$("a.watch-post").click(function() {
+function onWatchPostClick() {
     var info = $(this).parents(".entry")
     if(info.data("enabled") == false)
         return false
@@ -113,9 +128,9 @@ $("a.watch-post").click(function() {
     })
 
     return false
-})
+}
 
-$("a.favorite-post").click(function() {
+function onFavoritePostClick() {
     var info = $(this).parents(".entry")
     if(info.data("enabled") == false)
         return false
@@ -149,9 +164,9 @@ $("a.favorite-post").click(function() {
     })
 
     return false
-})
+}
 
-$("a.delete-post").click(function() {
+function onDeletePostClick() {
     if(!confirm("Пост будет удален навсегда."))
         return false
 
@@ -192,7 +207,7 @@ $("a.delete-post").click(function() {
     })
 
     return false
-})
+}
 
 function loadComments(href, a) {
     a = $(a)
@@ -326,7 +341,7 @@ function sendComment(entry) {
     return postComment(entry)
 }
 
-$(".comment-form textarea").on("keydown", function(e){
+function onCommentFormKeyDown(e){
     if(e.key != "Enter")
         return
 
@@ -339,12 +354,12 @@ $(".comment-form textarea").on("keydown", function(e){
     var entry = $(this).parents(".entry")
     entry.find(".comment-form textarea").blur()
     return sendComment(entry)
-})
+}
 
-$(".post-comment").click(function(){
+function onPostCommentClick(){
     var entry = $(this).parents(".entry")
     return sendComment(entry)
-})
+}
 
 function scrollToCommentEdit(area) {
     var modal = $(".post-popup.show")
@@ -428,10 +443,10 @@ function clearCommentForm(entry) {
     return false
 }
 
-$(".cancel-comment").click(function(){
+function onCancelCommentClick(){
     var entry = $(this).parents(".entry")
     return clearCommentForm(entry)
-})
+}
 
 function deleteComment(id) {
     if(!confirm("Комментарий будет удален навсегда."))
@@ -564,11 +579,13 @@ $(window).on("hashchange", function () {
 })
 
 $(function(){
+    addFeedClickHandlers()
+
     if(window.location.hash != "")
         $(window.location.hash).modal("show")
 })
 
-$(".play-video").click(function(){
+function onPlayVideoClick(){
     var a = $(this)
     var video = a.data("video")
     var modal = a.parents(".entry").find(".modal")
@@ -576,7 +593,7 @@ $(".play-video").click(function(){
     modal.modal("show")
 
     return false
-})
+}
 
 var ytPlayers = []
 var nextYtIds = []
