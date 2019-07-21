@@ -70,7 +70,11 @@ var notifications = {
         $("a", ul).click(notifications.readAll)
         ul.click(function(){
             notifications.readAll()
-            window.location = $(this).find(".notification-action").prop("href")
+            var link = $(this).find(".notification-action").prop("href")
+            if(window.location.pathname == new URL(link).pathname)
+                window.location.reload()
+            else
+                window.location = link
         })
     },
     readAll: function() {
