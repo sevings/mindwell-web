@@ -11,9 +11,11 @@
 				</div>
 				<div id="profile-info" class="ui-block-content {% if __mobile %}collapse{% endif %}">
 					<ul class="widget w-personal-info">
-						<li>
-							<span class="text">{{ profile.title }}</span>
-                        </li>
+                        {% if profile.title %}
+                            <li>
+                                <span class="text">{{ profile.title }}</span>
+                            </li>
+                        {% endif %}
                         {% if profile.gender != "not set" %}
                             <li>
                                 <span class="title">Пол:</span>
@@ -47,7 +49,11 @@
                         {% endif %}
                         <li id="invited-by" {% if !profile.invitedBy.id %}class="hidden"{% endif %} >
                             <span class="title">Приглашен{{ profile.gender|gender }}:</span>
-                            <a href="/users/{{ profile.invitedBy.name }}" class="text">{{ profile.invitedBy.showName }}</a>
+                            {% if profile.invitedBy.name %}
+                                <a href="/users/{{ profile.invitedBy.name }}" class="text">{{ profile.invitedBy.showName }}</a>
+                            {% else %}
+                                <span class="text">(неизвестно)</span>
+                            {% endif %}
                         </li>
 						<li>
 							<span class="title">В рейтинге:</span>
