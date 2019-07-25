@@ -110,18 +110,24 @@ $("textarea").each(function() {
     })
 })
 
+// workaround for a Chrome bug
+// https://stackoverflow.com/questions/44245032/svg-symbols-not-loading-with-ajax-content-in-chrome#comment75501160_44245032
+function fixSvgUse(elem) {
+    elem.find("use").each((i, e) => e.replaceWith(e.cloneNode()))
+}
+
 function unescapeHtml(text) {
     return text
-         .replace(/&amp;/g,  "&")
-         .replace(/&lt;/g,   "<")
-         .replace(/&gt;/g,   ">")
-         .replace(/&quot;/g, '"')
-         .replace(/&#34;/g,  '"')
-         .replace(/&#039;/g, "'")
-         .replace(/&#39;/g,  "'")
- }
+        .replace(/&amp;/g,  "&")
+        .replace(/&lt;/g,   "<")
+        .replace(/&gt;/g,   ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#34;/g,  '"')
+        .replace(/&#039;/g, "'")
+        .replace(/&#39;/g,  "'")
+}
 
- $("#send-recover").click(function() { 
+ $("#send-recover").click(function() {
     var btn = $(this)
     if(btn.hasClass("disabled"))
         return false;

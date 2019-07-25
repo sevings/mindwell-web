@@ -225,6 +225,7 @@ function loadComments(href, a) {
             comments.find("iframe.yt-video").each(prepareYtPlayer)
             comments.each(function(){ CRUMINA.mediaPopups(this) })
             ul.prepend(comments)
+            fixSvgUse(comments)
             addYtPlayers()
             a.remove()
 
@@ -262,6 +263,7 @@ function updateComments(entry) {
             comments.find("iframe.yt-video").each(prepareYtPlayer)
             comments.each(function(){ CRUMINA.mediaPopups(this) })
             ul.append(comments)
+            fixSvgUse(comments)
             addYtPlayers()
 
             if(ul.find(".update-comments").length > 1)
@@ -315,6 +317,7 @@ function postComment(entry) {
             cmt.find("iframe.yt-video").each(prepareYtPlayer)
             CRUMINA.mediaPopups(cmt)
             entry.find(".comments-list").append(cmt)
+            fixSvgUse(cmt)
             addYtPlayers()
 
             var counter = entry.find(".comment-count")
@@ -420,6 +423,7 @@ function saveComment(entry) {
             CRUMINA.mediaPopups(cmt)
             var id = form.data("id")
             $("#comment"+id).replaceWith(cmt)
+            fixSvgUse(cmt)
             addYtPlayers()
         },
         error: showAjaxError,
