@@ -186,7 +186,10 @@ $(".upload-image").click(function() {
                 ids = id
             inp.val(ids)
 
-            updateImage(id)
+            updImageIDs.push(id)
+            if(updImageIDs.length == 1)
+                updateNextImage()    
+                        
             btn.parents(".modal").modal("hide")
         },
         error: showAjaxError,
@@ -202,24 +205,30 @@ $(".upload-image").click(function() {
     return false
 })
 
-function updateImage(id, timeout) {
-    var img = $("#attached-image" + id)
-    if(!img.data("processing"))
+var updImageIDs = []
+
+function updateNextImage(timeout = 1000) {
+    if(!updImageIDs.length)
         return
 
-    if(!timeout)
-        timeout = 2000
-    else if(timeout > 60000)
+    var id = updImageIDs[0]
+    var img = $("#attached-image" + id)
+    if(!img.data("processing")) {
+        updImageIDs.shift()
+        updateNextImage()
+        return
+    }
+
+    if(timeout > 60000)
         timeout = 60000
 
     function getImage() {
         $.ajax({
             method: "GET",
             url: "/images/" + id,
-            dataType: "html",
             success: function(html) {
                 img.replaceWith(html)
-                updateImage(id, timeout * 2)
+                updateNextImage(timeout * 2)
             },
             error: showAjaxError,
         })
@@ -234,9 +243,13 @@ function removeImage(id) {
 
     $("#attached-image"+id).remove()
 
+    var i = updImageIDs.indexOf(id)
+    if(i >= 0)
+        updImageIDs.splice(i, 1)
+
     var inp = $("#input-images")
     var ids = inp.val().split(",")
-    var i = ids.indexOf(id + "")
+    i = ids.indexOf(id + "")
     if(i >= 0)
         ids.splice(i, 1)
     inp.val(ids.join(","))
