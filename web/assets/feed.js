@@ -76,6 +76,9 @@ function vote(counter, positive) {
 }
 
 function onCutContentClick(){
+    if($(".fixed-sidebar").hasClass("open"))
+        return
+
     var selection = window.getSelection()
     if(selection.toString().length > 0 && selection.containsNode(this, true))
         return
