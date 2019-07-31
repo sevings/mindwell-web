@@ -8,6 +8,7 @@ function addFeedClickHandlers(feed) {
     })
 
     $(".cut-post .post-content", feed).click(onCutContentClick)
+    $(".cut-post .post-thumb", feed).click(onCutContentClick)
     $(".cut-post .post-content a", feed).click(onCutContentLinkClick)
     
     $("a.watch-post", feed).click(onWatchPostClick)
@@ -91,6 +92,9 @@ function onCutContentClick(){
 function onCutContentLinkClick(){
     var a = $(this)
     if(a.hasClass("play-video"))
+        return true
+
+    if(a.children("img").length)
         return true
 
     window.open(a.prop("href"), "_blank")

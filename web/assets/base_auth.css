@@ -170,7 +170,7 @@ div.post-add-icon:hover {
     text-align: justify;
 }
 
-.cut-post .post-content {
+.cut-post .post-content, .cut-post .post-thumb {
     cursor: pointer;
 }
 

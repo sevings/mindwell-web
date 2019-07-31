@@ -82,19 +82,17 @@
     {% if entry.images %}
         {% if cutEntry %}
             {% with image = entry.images|first %}
-                {% if image.isAnimated %}
-                    <div class="post-thumb">
+                <div class="post-thumb">
+                    {% if image.isAnimated %}
                         <img class="gif-play-image" data-gif="{{ image.small.url }}"  data-scope="attached" 
                             src="{{ image.small.preview }}"
                             width="{{ image.small.width }}" height="{{ image.small.height }}">
-                    </div>
-                {% else %}
-                    <a href="{{ image.large.url }}" target="__blank" class="post-thumb js-zoom-image">
+                    {% else %}
                         <img src="{{ image.small.url }}"
                             srcset="{{ image.small.url }}, {{ image.medium.url }} 2x, {{ image.large.url }} 3x"
                             width="{{ image.small.width }}" height="{{ image.small.height }}">
-                    </a>
-                {% endif %}
+                    {% endif %}
+                </div>
             {% endwith %}
         {% else %}
             {% for image in entry.images %}
