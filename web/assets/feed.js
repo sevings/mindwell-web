@@ -323,7 +323,14 @@ function postComment(entry) {
             var cmt = $(formatTimeHtml(data))
             cmt.find("iframe.yt-video").each(prepareYtPlayer)
             CRUMINA.mediaPopups(cmt)
-            entry.find(".comments-list").append(cmt)
+
+            let id = cmt.data("id")
+            let prev = entry.find("#comment" + id)
+            if(prev.length)
+                prev.replaceWith(cmt)
+            else
+                entry.find(".comments-list").append(cmt)
+
             fixSvgUse(cmt)
             addYtPlayers()
 
