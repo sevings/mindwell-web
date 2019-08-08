@@ -216,6 +216,13 @@ function onDeletePostClick() {
     return false
 }
 
+function incCommentCounter(entry, added = 1) {
+    let counter = entry.find(".comment-count")
+    let count = counter.text() - 0
+    count += added
+    counter.text(count)
+}
+
 function loadComments(href, a) {
     a = $(a)
     if(a.hasClass("disabled"))
@@ -284,16 +291,22 @@ function updateComments(entry) {
 
             // remove duplicates
             var items = {}
+            let added = comments.filter(".comment-item").length
             ul.find(".comment-item").each(function(){ 
                 var item = $(this)
                 var id = item.data("id")
 
                 var prev = items[id]
-                if(prev)
+                if(prev) {
                     prev.remove()
-                
+                    added--
+                }
+
                 items[id] = item
             })
+
+            if(hasPrev && added > 0)
+                incCommentCounter(entry, added)
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
@@ -328,16 +341,13 @@ function postComment(entry) {
             let prev = entry.find("#comment" + id)
             if(prev.length)
                 prev.replaceWith(cmt)
-            else
+            else {
                 entry.find(".comments-list").append(cmt)
+                incCommentCounter(entry)
+            }
 
             fixSvgUse(cmt)
             addYtPlayers()
-
-            var counter = entry.find(".comment-count")
-            var count = counter.text()
-            count++
-            counter.text(count)
         },
         error: showAjaxError,
         complete: function() {
