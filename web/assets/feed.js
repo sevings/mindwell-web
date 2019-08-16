@@ -20,10 +20,21 @@ function addFeedClickHandlers(feed) {
     $(".cancel-comment", feed).click(onCancelCommentClick)
     
     $(".play-video", feed).click(onPlayVideoClick)
+
+    $(".open-post", feed).click(openPost)
+}
+
+function findPostElement(elem) {
+    elem = $(elem)
+
+    let post = elem.parents(".entry")
+    let id = post.data("id")
+    post = $(".entry[data-id=\"" + id + "\"]")
+    return post
 }
 
 function vote(counter, positive) {
-    var info = counter.parents(".entry")
+    var info = findPostElement(counter)
     if(info.data("enabled") == false)
         return false
 
@@ -86,7 +97,7 @@ function onCutContentClick(){
     
     var info = $(this).parents(".entry")
     var id = info.data("id")
-    $("#post-popup"+id).modal("show")
+    openPost(id)
 }
 
 function onCutContentLinkClick(){
@@ -102,7 +113,7 @@ function onCutContentLinkClick(){
 }
 
 function onWatchPostClick() {
-    var info = $(this).parents(".entry")
+    var info = findPostElement(this)
     if(info.data("enabled") == false)
         return false
 
@@ -138,7 +149,7 @@ function onWatchPostClick() {
 }
 
 function onFavoritePostClick() {
-    var info = $(this).parents(".entry")
+    var info = findPostElement(this)
     if(info.data("enabled") == false)
         return false
 
@@ -177,7 +188,7 @@ function onDeletePostClick() {
     if(!confirm("Пост будет удален навсегда."))
         return false
 
-    var info = $(this).parents(".entry")
+    var info = findPostElement(this)
     if(info.data("enabled") == false)
         return false
 
@@ -185,7 +196,7 @@ function onDeletePostClick() {
 
     var id = info.data("id")
     
-    $(".post-popup.show").removeClass("fade").modal("hide")
+    $("#post-popup.show").removeClass("fade").modal("hide")
 
     $.ajax({
         url: "/entries/" + id,
@@ -216,7 +227,8 @@ function onDeletePostClick() {
     return false
 }
 
-function incCommentCounter(entry, added = 1) {
+function incCommentCounter(elem, added = 1) {
+    let entry = findPostElement(elem)
     let counter = entry.find(".comment-count")
     let count = counter.text() - 0
     count += added
@@ -306,7 +318,7 @@ function updateComments(entry) {
             })
 
             if(hasPrev && added > 0)
-                incCommentCounter(entry, added)
+                incCommentCounter(ul, added)
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
@@ -342,8 +354,9 @@ function postComment(entry) {
             if(prev.length)
                 prev.replaceWith(cmt)
             else {
-                entry.find(".comments-list").append(cmt)
-                incCommentCounter(entry)
+                let ul = entry.find(".comments-list")
+                ul.append(cmt)
+                incCommentCounter(ul)
             }
 
             fixSvgUse(cmt)
@@ -389,7 +402,7 @@ function onPostCommentClick(){
 }
 
 function scrollToCommentEdit(area) {
-    var modal = $(".post-popup.show")
+    var modal = $("#post-popup.show")
     if(modal.length > 0)
         modal.animate({ scrollTop: modal.children().outerHeight() }, 500)
     else
@@ -542,16 +555,11 @@ function voteComment(id, positive) {
     return false;
 }
 
-$(".post-popup").on("show.bs.modal", function(event) {
-    window.location.hash = this.id;
-    
-    var entry = $(this).parents(".entry")
-    updateComments(entry)
-
+$("#post-popup").on("show.bs.modal", function() {
     $(".gif-play-image").gifplayer("stop")
 })
 
-$(".post-popup").on("shown.bs.modal", function(event) {
+$("#post-popup").on("shown.bs.modal", function(event) {
     var modal = $(this)
     var video = modal.data("video")
     if(video) {
@@ -581,7 +589,7 @@ $(".post-popup").on("shown.bs.modal", function(event) {
     }
 })
 
-$(".post-popup").on("hide.bs.modal", function() {
+$("#post-popup").on("hide.bs.modal", function() {
     var modal = $(this)
 
     modal.find("iframe.yt-video").each(function(i) {
@@ -600,25 +608,71 @@ $(".post-popup").on("hide.bs.modal", function() {
 })
 
 $(window).on("hashchange", function () {
-    if(window.location.hash == "")
-        $(".post-popup.show").modal("hide");
-    else
-        $(window.location.hash).modal("show")
+    let hash = window.location.hash
+    if(!hash || hash == "#")
+        $("#post-popup.show").modal("hide")
+    else {
+        let id = hash.substring(11)
+        if($("#post-popup").data("id") != id)
+            openPost(id)
+    }
 })
 
 $(function(){
     addFeedClickHandlers()
 
-    if(window.location.hash != "")
-        $(window.location.hash).modal("show")
+    let hash = window.location.hash
+    if(hash && hash != "#")
+        openPost(hash.substring(11))
 })
 
-function onPlayVideoClick(){
-    var a = $(this)
-    var video = a.data("video")
-    var modal = a.parents(".entry").find(".modal")
-    modal.data("video", video)
+function openPost(id) {
+    if(typeof id != "string" && typeof id != "number")
+        id = $(this).data("entry")
+
+    let modal = $("#post-popup")
+    if(modal.data("id") == id) {
+        updateComments(modal)
+        window.location.hash = "post-popup" + id
+        modal.modal("show")
+        return false
+    }
+
+    let body = modal.find(".modal-body")
+    body.removeData("id")
+    body.empty().append(
+        "<div class=\"ui-block-title\">" +
+        "<h4 class=\"title\">Загрузка…</h4>" +
+        "</div>"
+    )
     modal.modal("show")
+
+    $.ajax({
+        method: "GET",
+        url: "/entries/" + id,
+        dataType: "HTML",
+        success: function(entry) {
+            window.location.hash = "post-popup" + id
+
+            modal.data("id", id)
+            body.replaceWith(entry)
+
+            $(entry).data("id", id)
+            addFeedClickHandlers(modal)
+            formatTimeElements(modal)
+        },
+        error: showAjaxError,
+    })
+
+    return false
+}
+
+function onPlayVideoClick(){
+    let a = $(this)
+    let video = a.data("video")
+    let id = a.parents(".entry").data("id")
+    $("#post-popup").data("video", video)
+    openPost(id)
 
     return false
 }

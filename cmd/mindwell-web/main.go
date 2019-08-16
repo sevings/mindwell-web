@@ -640,9 +640,9 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("entry", entry)
 
 		if entry != nil {
-			author := entry["author"].(map[string]interface{})
-			name := author["name"].(string)
-			api.SetField("profile", "/users/"+name)
+			//author := entry["author"].(map[string]interface{})
+			//name := author["name"].(string)
+			//api.SetField("profile", "/users/"+name)
 
 			entryID := entry["id"].(json.Number).String()
 			cmts := entry["comments"].(map[string]interface{})
@@ -650,7 +650,12 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		}
 
 		api.SetMe()
-		api.WriteTemplate("entries/entry")
+
+		if api.IsAjax() {
+			api.WriteTemplate("entries/entry_modal")
+		} else {
+			api.WriteTemplate("entries/entry")
+		}
 	}
 }
 

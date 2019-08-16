@@ -1,25 +1,9 @@
 {% for entry in entries %}
     <div id="post{{ entry.id }}" class="col col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 sorting-item entry" 
-            data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}" 
+            data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}"
             data-watching="{{ entry.isWatching }}" data-favorited="{{ entry.isFavorited }}">
         <div class="ui-block">
             {% include "entry_base.html" with cutEntry = true %}
-        </div>
-        <div class="modal fade post-popup" id="post-popup{{ entry.id }}" tabindex="-1" role="dialog" aria-labelledby="post-popup" aria-hidden="true">
-            <div class="modal-dialog window-popup blog-post-popup" role="document">
-                <div class="modal-content">
-
-                    <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Close">
-                        <svg class="olymp-close-icon">
-                            <use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use>
-                        </svg>
-                    </a>
-
-                    <div class="modal-body">
-                        {% include "entry_full.html" with cutEntry = false %}
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 {% endfor %}

@@ -1,0 +1,5 @@
+<div class="modal-body entry"
+     data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}"
+     data-watching="{{ entry.isWatching }}" data-favorited="{{ entry.isFavorited }}">
+        {% include "entry_full.html" with cutEntry = false %}
+</div>

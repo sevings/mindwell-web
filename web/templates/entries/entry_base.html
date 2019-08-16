@@ -6,7 +6,7 @@
         <div class="author-date">
             <a class="h6 post__author-name fn" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
             <div class="post__date">
-                <a href="/entries/{{ entry.id }}"{% if cutEntry %} data-toggle="modal" data-target="#post-popup{{ entry.id }}"{% endif %}>
+                <a href="/entries/{{ entry.id }}"{% if cutEntry %} class="open-post" data-entry="{{ entry.id }}"{% endif %}>
                     <time class="published" datetime="{{ entry.createdAt }}"></time>
                     {% if entry.cutContent %}
                         <span class="dot-divider"></span>
@@ -60,11 +60,11 @@
 
     {% if entry.title %}
         {% if cutEntry %}
-            <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}"
+            <a href="/entries/{{ entry.id }}" class="h2 post-title open-post" data-entry="{{ entry.id }}"
         {% else %}
-            <span
+            <span class="h2 post-title"
         {% endif %}
-            class="h2 post-title" {% if cutEntry && entry.cutTitle %} title="{{ entry.title|safe }}"{% endif %}>
+            {% if cutEntry && entry.cutTitle %}title="{{ entry.title|safe }}"{% endif %}>
                 {% if cutEntry && entry.cutTitle %}{{ entry.cutTitle|safe }}{% else %}{{ entry.title|safe }}{% endif %} 
         {% if cutEntry %}</a>{% else %}</span>{% endif %}
     {% endif %}
@@ -119,8 +119,8 @@
     {% endif %}
 
     {% if cutEntry && (entry.cutContent || entry.images|length > 1) %}
-        <a href="/entries/{{ entry.id }}" data-toggle="modal" data-target="#post-popup{{ entry.id }}" 
-            class="btn btn-md-2 btn-border-think c-grey btn-transparent custom-color">Дальше</a>
+        <a href="/entries/{{ entry.id }}" data-entry="{{ entry.id }}"
+            class="btn btn-md-2 btn-border-think c-grey btn-transparent custom-color open-post">Дальше</a>
     {% endif %}
 
     <div class="post-additional-info inline-items">
@@ -151,8 +151,8 @@
         {% endif %}
 
         {% block commentButton %}
-            <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button" 
-                    data-toggle="modal" data-target="#post-popup{{ entry.id }}">
+            <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button open-post"
+                    data-entry="{{ entry.id }}">
                 <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
                 <span class="comment-count">{{ entry.commentCount|default:0 }}</span>
             </a>
