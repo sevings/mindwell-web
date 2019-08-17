@@ -613,7 +613,7 @@ $(window).on("hashchange", function () {
         $("#post-popup.show").modal("hide")
     else {
         let id = hash.substring(11)
-        if($("#post-popup").data("id") != id)
+        if($("#post-popup.show").data("id") != id)
             openPost(id)
     }
 })
