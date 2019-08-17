@@ -151,7 +151,7 @@
         {% endif %}
 
         {% block commentButton %}
-            <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button open-post"
+            <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button"
                     data-entry="{{ entry.id }}">
                 <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
                 <span class="comment-count">{{ entry.commentCount|default:0 }}</span>

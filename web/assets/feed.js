@@ -21,6 +21,7 @@ function addFeedClickHandlers(feed) {
     
     $(".play-video", feed).click(onPlayVideoClick)
 
+    $(".comment-button").click(onCommentButtonClick)
     $(".open-post", feed).click(openPost)
 }
 
@@ -225,6 +226,12 @@ function onDeletePostClick() {
     })
 
     return false
+}
+
+function onCommentButtonClick() {
+    $("#post-popup").data("scroll", "comments")
+    let id = findPostElement(this).data("id")
+    return openPost(id)
 }
 
 function incCommentCounter(elem, added = 1) {
@@ -555,38 +562,48 @@ function voteComment(id, positive) {
     return false;
 }
 
-$("#post-popup").on("show.bs.modal", function() {
-    $(".gif-play-image").gifplayer("stop")
-})
+function scrollPost() {
+    let modal = $("#post-popup")
+    if(!modal.find(".entry").length)
+        return
 
-$("#post-popup").on("shown.bs.modal", function(event) {
-    var modal = $(this)
-    var video = modal.data("video")
-    if(video) {
+    let scroll = modal.data("scroll")
+    modal.removeData("scroll")
+
+    if(scroll == "comments") {
+        let comments = modal.find("ul.comments-list")
+        modal.animate({ scrollTop: comments.position().top }, 500);
+        return
+    }
+
+    if(scroll)
+    {
         modal.data("video", "")
-        var iframe = modal.find("iframe[data-video='" + video + "']")
+        let iframe = modal.find("iframe[data-video='" + scroll + "']")
         modal.animate({ scrollTop: iframe.position().top }, 500);
-        for(var i = 0; i < ytPlayers.length; i++)
+        for(let i = 0; i < ytPlayers.length; i++)
         {
             var player = ytPlayers[i]
-            if(player.getPlayerState() == YT.PlayerState.PLAYING)
+            if(player.getPlayerState() === YT.PlayerState.PLAYING)
                 break
-            
-            if(player.getIframe().id != iframe.attr("id"))
+
+            if(player.getIframe().id !== iframe.attr("id"))
                 continue
-                
+
             player.playVideo()
             break
         }
         return
     }
 
-    var a = $(event.relatedTarget)
-    if(a.hasClass("comment-button")) {
-        var comments = modal.find("ul.comments-list")
-        modal.animate({ scrollTop: comments.position().top }, 500);
-        return
-    }
+}
+
+$("#post-popup").on("show.bs.modal", function() {
+    $(".gif-play-image").gifplayer("stop")
+})
+
+$("#post-popup").on("shown.bs.modal", function(event) {
+    scrollPost()
 })
 
 $("#post-popup").on("hide.bs.modal", function() {
@@ -639,7 +656,7 @@ function openPost(id) {
     }
 
     let body = modal.find(".modal-body")
-    body.removeData("id")
+    body.removeData("id").removeClass("entry")
     body.empty().append(
         "<div class=\"ui-block-title\">" +
         "<h4 class=\"title\">Загрузка…</h4>" +
@@ -651,6 +668,9 @@ function openPost(id) {
         method: "GET",
         url: "/entries/" + id,
         dataType: "HTML",
+        headers: {
+            "X-Error-Type": "JSON",
+        },
         success: function(entry) {
             window.location.hash = "post-popup" + id
 
@@ -660,8 +680,14 @@ function openPost(id) {
             $(entry).data("id", id)
             addFeedClickHandlers(modal)
             formatTimeElements(modal)
+
+            if(modal.hasClass("show"))
+                scrollPost()
         },
-        error: showAjaxError,
+        error: function(req) {
+            modal.modal("hide")
+            showAjaxError(req)
+        }
     })
 
     return false
@@ -671,7 +697,7 @@ function onPlayVideoClick(){
     let a = $(this)
     let video = a.data("video")
     let id = a.parents(".entry").data("id")
-    $("#post-popup").data("video", video)
+    $("#post-popup").data("scroll", video)
     openPost(id)
 
     return false
