@@ -3,8 +3,12 @@
 {% block comments %}
     <a name="comments"></a>
     <ul class="comments-list">
-        {% include "comments_page.html" with data = entry.comments.data commentCount = entry.commentCount %}
-        <a href="/entries/{{ entry.id }}/comments?limit=5" class="update-comments"></a>
+        {% with data = entry.comments.data commentCount = entry.commentCount %}
+            {% include "comments_page.html" %}
+            {% if !data || !afterHref %}
+                <a href="/entries/{{ entry.id }}/comments?limit=5" class="update-comments"></a>
+            {% endif %}
+        {% endwith %}
     </ul>
     {% if entry.rights.comment %}
         <form class="comment-form inline-items" action="/entries/{{ entry.id }}/comments" method="post" enctype="application/x-www-form-urlencoded">
