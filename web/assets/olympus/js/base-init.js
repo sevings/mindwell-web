@@ -561,12 +561,12 @@ CRUMINA.mediaPopups = function (element) {
 				this.st.mainClass = 'mfp-zoom-in';
 			},
 			open: function() {
-				$(".post-popup.show").attr("hidden", true)
+				$("#post-popup.show").attr("hidden", true)
 				$(".gif-play-image").gifplayer("stop")
 				window.history.pushState("js-zoom", "")
 			},
 			beforeClose: function() {
-				$(".post-popup.show").attr("hidden", false)
+				$("#post-popup.show").attr("hidden", false)
 				if(window.history.state == "js-zoom")
 					window.history.back()
 			},

@@ -691,6 +691,10 @@ function openPost(id) {
 
             addFeedClickHandlers(modal)
             formatTimeElements(modal)
+            modal.find("iframe.yt-video").each(prepareYtPlayer)
+            modal.each(function(){ CRUMINA.mediaPopups(this) })
+            fixSvgUse(modal)
+            addYtPlayers()
 
             if(modal.hasClass("show"))
                 scrollPost()
@@ -742,6 +746,10 @@ $(window).scroll(function() {
                 feed.append(page)
 
             addFeedClickHandlers(page)
+            page.find("iframe.yt-video").each(prepareYtPlayer)
+            page.each(function(){ CRUMINA.mediaPopups(this) })
+            fixSvgUse(page)
+            addYtPlayers()
         },
         error: function(req) {
             let resp = JSON.parse(req.responseText)
