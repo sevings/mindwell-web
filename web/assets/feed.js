@@ -22,6 +22,7 @@ function addFeedClickHandlers(feed) {
     $(".play-video", feed).click(onPlayVideoClick)
 
     $(".comment-button").click(onCommentButtonClick)
+    $(".more-comments").click(loadComments)
     $(".open-post", feed).click(openPost)
 }
 
@@ -242,15 +243,15 @@ function incCommentCounter(elem, added = 1) {
     counter.text(count)
 }
 
-function loadComments(href, a) {
-    a = $(a)
+function loadComments() {
+    let a = $(this)
     if(a.hasClass("disabled"))
         return false
 
     a.addClass("disabled")
 
     $.ajax({
-        url: href,
+        url: a.attr("href"),
         success: function(data) {
             var ul = a.parent()
 
@@ -265,6 +266,8 @@ function loadComments(href, a) {
             var upd = ul.find(".update-comments")
             if(upd.length > 1)
                 upd.first().remove()
+
+            ul.find(".more-comments").click(loadComments)
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
