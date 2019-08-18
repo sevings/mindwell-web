@@ -279,12 +279,12 @@ function loadComments(href, a) {
 }
 
 function updateComments(entry) {
-    var a = entry.find(".update-comments")
-    if(a.hasClass("disabled"))
-        return false
+    if(entry.data("loading"))
+        return
 
-    a.addClass("disabled")
+    entry.data("loading", true)
 
+    let a = entry.find(".update-comments")
     $.ajax({
         url: a.attr("href"),
         success: function(data) {
@@ -299,9 +299,10 @@ function updateComments(entry) {
             fixSvgUse(comments)
             addYtPlayers()
 
-            if(ul.find(".update-comments").length > 1)
-                a.remove()
-            
+            let upd = ul.find(".update-comments")
+            if(upd.length > 1)
+                upd.first().remove()
+
             if(hasPrev) {
                 var more = ul.find(".more-comments")
                 if(!hasMore || more.length > 1)
@@ -327,12 +328,9 @@ function updateComments(entry) {
             if(hasPrev && added > 0)
                 incCommentCounter(ul, added)
         },
-        error: function(req) {
-            var resp = JSON.parse(req.responseText)
-            alert(resp.message)
-        },
+        error: showAjaxError,
         complete: function() {
-            a.removeClass("disabled")
+            entry.removeData("loading")
         },
     })
 
@@ -648,6 +646,9 @@ function openPost(id) {
         id = $(this).data("entry")
 
     let modal = $("#post-popup")
+    if(modal.data("loading"))
+        return false
+
     if(modal.data("id") == id) {
         updateComments(modal)
         window.location.hash = "post-popup" + id
@@ -655,14 +656,18 @@ function openPost(id) {
         return false
     }
 
+    modal.data("loading", true)
+    modal.data("id", id)
+    modal.modal("show")
+    window.location.hash = "post-popup" + id
+
     let body = modal.find(".modal-body")
     body.removeData("id").removeClass("entry")
     body.empty().append(
         "<div class=\"ui-block-title\">" +
-        "<h4 class=\"title\">Загрузка…</h4>" +
+        "<h4 class=\"title hcenter\">Загрузка…</h4>" +
         "</div>"
     )
-    modal.modal("show")
 
     $.ajax({
         method: "GET",
@@ -672,12 +677,11 @@ function openPost(id) {
             "X-Error-Type": "JSON",
         },
         success: function(entry) {
-            window.location.hash = "post-popup" + id
+            if(modal.data("id") != id)
+                return
 
-            modal.data("id", id)
             body.replaceWith(entry)
 
-            $(entry).data("id", id)
             addFeedClickHandlers(modal)
             formatTimeElements(modal)
 
@@ -687,6 +691,9 @@ function openPost(id) {
         error: function(req) {
             modal.modal("hide")
             showAjaxError(req)
+        },
+        complete: function() {
+            modal.removeData("loading")
         }
     })
 
