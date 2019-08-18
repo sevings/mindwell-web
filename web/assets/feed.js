@@ -644,7 +644,7 @@ $(function(){
     addFeedClickHandlers()
 
     let hash = window.location.hash
-    if(hash && hash != "#")
+    if(hash.startsWith("#post-popup"))
         openPost(hash.substring(11))
 })
 
@@ -706,6 +706,52 @@ function openPost(id) {
 
     return false
 }
+
+$(window).scroll(function() {
+    let scroll = $(this)
+    let feed = $("#feed")
+
+    if(scroll.scrollTop() < feed.height() - scroll.height() * 2)
+        return
+
+    if(feed.data("loading"))
+        return
+
+    let a = feed.find(".older")
+    if(!a.length)
+        return
+
+    if(a.parent().hasClass("disabled")) {
+        a.parents(".sorting-item").remove()
+        return
+    }
+
+    feed.data("loading", true)
+
+    $.ajax({
+        url: a.attr("href"),
+        method: "GET",
+        success: function(data) {
+            a.parents(".sorting-item").remove()
+
+            let page = $(formatTimeHtml(data))
+
+            if(feed.hasClass("sorting-container"))
+                feed.isotope("insert", page)
+            else
+                feed.append(page)
+
+            addFeedClickHandlers(page)
+        },
+        error: function(req) {
+            let resp = JSON.parse(req.responseText)
+            console.log(resp.message)
+        },
+        complete: function() {
+            feed.removeData("loading")
+        },
+    })
+})
 
 function onPlayVideoClick(){
     let a = $(this)
