@@ -344,7 +344,11 @@ function postComment(entry) {
         
     btn.addClass("disabled")
 
-    entry.find("form.comment-form").ajaxSubmit({
+    var form = entry.find("form.comment-form")
+    if(!form[0].reportValidity())
+        return false
+
+    form.ajaxSubmit({
         resetForm: true,
         headers: {
             "X-Error-Type": "JSON",
