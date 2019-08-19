@@ -20,10 +20,23 @@ function addFeedClickHandlers(feed) {
     $(".cancel-comment", feed).click(onCancelCommentClick)
     
     $(".play-video", feed).click(onPlayVideoClick)
+
+    $(".comment-button").click(onCommentButtonClick)
+    $(".more-comments").click(loadComments)
+    $(".open-post", feed).click(openPost)
+}
+
+function findPostElement(elem) {
+    elem = $(elem)
+
+    let post = elem.parents(".entry")
+    let id = post.data("id")
+    post = $(".entry[data-id=\"" + id + "\"]")
+    return post
 }
 
 function vote(counter, positive) {
-    var info = counter.parents(".entry")
+    var info = findPostElement(counter)
     if(info.data("enabled") == false)
         return false
 
@@ -86,7 +99,7 @@ function onCutContentClick(){
     
     var info = $(this).parents(".entry")
     var id = info.data("id")
-    $("#post-popup"+id).modal("show")
+    openPost(id)
 }
 
 function onCutContentLinkClick(){
@@ -102,7 +115,7 @@ function onCutContentLinkClick(){
 }
 
 function onWatchPostClick() {
-    var info = $(this).parents(".entry")
+    var info = findPostElement(this)
     if(info.data("enabled") == false)
         return false
 
@@ -138,7 +151,7 @@ function onWatchPostClick() {
 }
 
 function onFavoritePostClick() {
-    var info = $(this).parents(".entry")
+    var info = findPostElement(this)
     if(info.data("enabled") == false)
         return false
 
@@ -177,7 +190,7 @@ function onDeletePostClick() {
     if(!confirm("Пост будет удален навсегда."))
         return false
 
-    var info = $(this).parents(".entry")
+    var info = findPostElement(this)
     if(info.data("enabled") == false)
         return false
 
@@ -185,7 +198,7 @@ function onDeletePostClick() {
 
     var id = info.data("id")
     
-    $(".post-popup.show").removeClass("fade").modal("hide")
+    $("#post-popup.show").removeClass("fade").modal("hide")
 
     $.ajax({
         url: "/entries/" + id,
@@ -216,15 +229,29 @@ function onDeletePostClick() {
     return false
 }
 
-function loadComments(href, a) {
-    a = $(a)
+function onCommentButtonClick() {
+    $("#post-popup").data("scroll", "comments")
+    let id = findPostElement(this).data("id")
+    return openPost(id)
+}
+
+function incCommentCounter(elem, added = 1) {
+    let entry = findPostElement(elem)
+    let counter = entry.find(".comment-count")
+    let count = counter.text() - 0
+    count += added
+    counter.text(count)
+}
+
+function loadComments() {
+    let a = $(this)
     if(a.hasClass("disabled"))
         return false
 
     a.addClass("disabled")
 
     $.ajax({
-        url: href,
+        url: a.attr("href"),
         success: function(data) {
             var ul = a.parent()
 
@@ -239,6 +266,8 @@ function loadComments(href, a) {
             var upd = ul.find(".update-comments")
             if(upd.length > 1)
                 upd.first().remove()
+
+            ul.find(".more-comments").click(loadComments)
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
@@ -253,12 +282,12 @@ function loadComments(href, a) {
 }
 
 function updateComments(entry) {
-    var a = entry.find(".update-comments")
-    if(a.hasClass("disabled"))
-        return false
+    if(entry.data("loading"))
+        return
 
-    a.addClass("disabled")
+    entry.data("loading", true)
 
+    let a = entry.find(".update-comments")
     $.ajax({
         url: a.attr("href"),
         success: function(data) {
@@ -273,9 +302,10 @@ function updateComments(entry) {
             fixSvgUse(comments)
             addYtPlayers()
 
-            if(ul.find(".update-comments").length > 1)
-                a.remove()
-            
+            let upd = ul.find(".update-comments")
+            if(upd.length > 1)
+                upd.first().remove()
+
             if(hasPrev) {
                 var more = ul.find(".more-comments")
                 if(!hasMore || more.length > 1)
@@ -284,23 +314,26 @@ function updateComments(entry) {
 
             // remove duplicates
             var items = {}
+            let added = comments.filter(".comment-item").length
             ul.find(".comment-item").each(function(){ 
                 var item = $(this)
                 var id = item.data("id")
 
                 var prev = items[id]
-                if(prev)
+                if(prev) {
                     prev.remove()
-                
+                    added--
+                }
+
                 items[id] = item
             })
+
+            if(hasPrev && added > 0)
+                incCommentCounter(ul, added)
         },
-        error: function(req) {
-            var resp = JSON.parse(req.responseText)
-            alert(resp.message)
-        },
+        error: showAjaxError,
         complete: function() {
-            a.removeClass("disabled")
+            entry.removeData("loading")
         },
     })
 
@@ -314,7 +347,11 @@ function postComment(entry) {
         
     btn.addClass("disabled")
 
-    entry.find("form.comment-form").ajaxSubmit({
+    var form = entry.find("form.comment-form")
+    if(!form[0].reportValidity())
+        return false
+
+    form.ajaxSubmit({
         resetForm: true,
         headers: {
             "X-Error-Type": "JSON",
@@ -324,20 +361,18 @@ function postComment(entry) {
             cmt.find("iframe.yt-video").each(prepareYtPlayer)
             CRUMINA.mediaPopups(cmt)
 
-            var id = cmt.data("id")
-            var prev = entry.find("#comment"+id)
+            let id = cmt.data("id")
+            let prev = entry.find("#comment" + id)
             if(prev.length)
                 prev.replaceWith(cmt)
-            else
-                entry.find(".comments-list").append(cmt)
+            else {
+                let ul = entry.find(".comments-list")
+                ul.append(cmt)
+                incCommentCounter(ul)
+            }
 
             fixSvgUse(cmt)
             addYtPlayers()
-
-            var counter = entry.find(".comment-count")
-            var count = counter.text()
-            count++
-            counter.text(count)
         },
         error: showAjaxError,
         complete: function() {
@@ -379,7 +414,7 @@ function onPostCommentClick(){
 }
 
 function scrollToCommentEdit(area) {
-    var modal = $(".post-popup.show")
+    var modal = $("#post-popup.show")
     if(modal.length > 0)
         modal.animate({ scrollTop: modal.children().outerHeight() }, 500)
     else
@@ -532,46 +567,51 @@ function voteComment(id, positive) {
     return false;
 }
 
-$(".post-popup").on("show.bs.modal", function(event) {
-    window.location.hash = this.id;
-    
-    var entry = $(this).parents(".entry")
-    updateComments(entry)
+function scrollPost() {
+    let modal = $("#post-popup")
+    if(!modal.find(".entry").length)
+        return
 
-    $(".gif-play-image").gifplayer("stop")
-})
+    let scroll = modal.data("scroll")
+    modal.removeData("scroll")
 
-$(".post-popup").on("shown.bs.modal", function(event) {
-    var modal = $(this)
-    var video = modal.data("video")
-    if(video) {
+    if(scroll == "comments") {
+        let comments = modal.find("ul.comments-list")
+        modal.animate({ scrollTop: comments.position().top }, 500);
+        return
+    }
+
+    if(scroll)
+    {
         modal.data("video", "")
-        var iframe = modal.find("iframe[data-video='" + video + "']")
+        let iframe = modal.find("iframe[data-video='" + scroll + "']")
         modal.animate({ scrollTop: iframe.position().top }, 500);
-        for(var i = 0; i < ytPlayers.length; i++)
+        for(let i = 0; i < ytPlayers.length; i++)
         {
             var player = ytPlayers[i]
-            if(player.getPlayerState() == YT.PlayerState.PLAYING)
+            if(player.getPlayerState() === YT.PlayerState.PLAYING)
                 break
-            
-            if(player.getIframe().id != iframe.attr("id"))
+
+            if(player.getIframe().id !== iframe.attr("id"))
                 continue
-                
+
             player.playVideo()
             break
         }
         return
     }
 
-    var a = $(event.relatedTarget)
-    if(a.hasClass("comment-button")) {
-        var comments = modal.find("ul.comments-list")
-        modal.animate({ scrollTop: comments.position().top }, 500);
-        return
-    }
+}
+
+$("#post-popup").on("show.bs.modal", function() {
+    $(".gif-play-image").gifplayer("stop")
 })
 
-$(".post-popup").on("hide.bs.modal", function() {
+$("#post-popup").on("shown.bs.modal", function(event) {
+    scrollPost()
+})
+
+$("#post-popup").on("hide.bs.modal", function() {
     var modal = $(this)
 
     modal.find("iframe.yt-video").each(function(i) {
@@ -590,25 +630,143 @@ $(".post-popup").on("hide.bs.modal", function() {
 })
 
 $(window).on("hashchange", function () {
-    if(window.location.hash == "")
-        $(".post-popup.show").modal("hide");
-    else
-        $(window.location.hash).modal("show")
+    let hash = window.location.hash
+    if(!hash || hash == "#")
+        $("#post-popup.show").modal("hide")
+    else {
+        let id = hash.substring(11)
+        if($("#post-popup.show").data("id") != id)
+            openPost(id)
+    }
 })
 
 $(function(){
     addFeedClickHandlers()
 
-    if(window.location.hash != "")
-        $(window.location.hash).modal("show")
+    let hash = window.location.hash
+    if(hash.startsWith("#post-popup"))
+        openPost(hash.substring(11))
+})
+
+function openPost(id) {
+    if(typeof id != "string" && typeof id != "number")
+        id = $(this).data("entry")
+
+    let modal = $("#post-popup")
+    if(modal.data("loading"))
+        return false
+
+    if(modal.data("id") == id) {
+        updateComments(modal)
+        window.location.hash = "post-popup" + id
+        modal.modal("show")
+        return false
+    }
+
+    modal.data("loading", true)
+    modal.data("id", id)
+    modal.modal("show")
+    window.location.hash = "post-popup" + id
+
+    let body = modal.find(".modal-body")
+    body.removeData("id").removeClass("entry")
+    body.empty().append(
+        "<div class=\"ui-block-title\">" +
+        "<h4 class=\"title hcenter\">Загрузка…</h4>" +
+        "</div>"
+    )
+
+    $.ajax({
+        method: "GET",
+        url: "/entries/" + id,
+        dataType: "HTML",
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function(entry) {
+            if(modal.data("id") != id)
+                return
+
+            body.replaceWith(entry)
+
+            addFeedClickHandlers(modal)
+            formatTimeElements(modal)
+            modal.find("iframe.yt-video").each(prepareYtPlayer)
+            modal.each(function(){ CRUMINA.mediaPopups(this) })
+            fixSvgUse(modal)
+            addYtPlayers()
+
+            if(modal.hasClass("show"))
+                scrollPost()
+        },
+        error: function(req) {
+            modal.modal("hide")
+            showAjaxError(req)
+        },
+        complete: function() {
+            modal.removeData("loading")
+        }
+    })
+
+    return false
+}
+
+$(window).scroll(function() {
+    let scroll = $(this)
+    let feed = $("#feed")
+
+    if(scroll.scrollTop() < feed.height() - scroll.height() * 2)
+        return
+
+    if(feed.data("loading"))
+        return
+
+    let a = feed.find(".older")
+    if(!a.length)
+        return
+
+    if(a.parent().hasClass("disabled")) {
+        a.parents(".sorting-item").remove()
+        return
+    }
+
+    feed.data("loading", true)
+
+    $.ajax({
+        url: a.attr("href"),
+        method: "GET",
+        success: function(data) {
+            a.parents(".sorting-item").remove()
+
+            let page = $(formatTimeHtml(data))
+
+            if(feed.hasClass("sorting-container"))
+                feed.isotope("insert", page)
+            else
+                feed.append(page)
+
+            addFeedClickHandlers(page)
+            page.find("iframe.yt-video").each(prepareYtPlayer)
+            page.each(function(){ CRUMINA.mediaPopups(this) })
+            fixSvgUse(page)
+            addYtPlayers()
+        },
+        error: function(req) {
+            let resp = JSON.parse(req.responseText)
+            console.log(resp.message)
+        },
+        complete: function() {
+            feed.removeData("loading")
+        },
+    })
 })
 
 function onPlayVideoClick(){
-    var a = $(this)
-    var video = a.data("video")
-    var modal = a.parents(".entry").find(".modal")
-    modal.data("video", video)
-    modal.modal("show")
+    let a = $(this)
+    let video = a.data("video")
+    let id = a.parents(".entry").data("id")
+    $("#post-popup").data("scroll", video)
+    openPost(id)
 
     return false
 }

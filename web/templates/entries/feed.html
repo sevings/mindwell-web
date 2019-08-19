@@ -1,7 +1,7 @@
 {% extends "../base_auth.html" %}
 {% block scripts %}
     <script src="//youtube.com/iframe_api"></script>
-    <script src="/assets/feed.js?d=20190802"></script>
+    <script src="/assets/feed.js?d=20190818"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -86,5 +86,7 @@
             </div>
         </div>
     </div>
-</div>    
+</div>
+
+{% include "entry_popup.html" %}
 {% endblock %}

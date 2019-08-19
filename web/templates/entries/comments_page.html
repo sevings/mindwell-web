@@ -1,5 +1,5 @@
 {% if data && beforeHref %}
-    <a href="#" class="more-comments" onclick="return loadComments('{{ beforeHref }}', this)">
+    <a href="{{ beforeHref }}" class="more-comments">
         {% if commentCount > 0 and commentCount <= 30 %}
             {% with cnt = commentCount - 5 %}
                 Показать {{ cnt }} комментари{{ cnt|quantity:"й,я,ев" }}

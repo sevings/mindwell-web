@@ -3,10 +3,10 @@
         <nav aria-label="Навигация по страницам">
             <ul class="pagination justify-content-center">
                 <li class="page-item {% if !hasAfter %}disabled{% endif %}">
-                    <a class="page-link" href="{{ afterHref }}">Новее</a>
+                    <a class="page-link newer" href="{{ afterHref }}">Новее</a>
                 </li>
                 <li class="page-item {% if !hasBefore %}disabled{% endif %}">
-                    <a class="page-link" href="{{ beforeHref }}">Старее</a>
+                    <a class="page-link older" href="{{ beforeHref }}">Старее</a>
                 </li>
             </ul>
         </nav>
