@@ -692,6 +692,7 @@ function openPost(id) {
             addFeedClickHandlers(modal)
             formatTimeElements(modal)
             modal.find("iframe.yt-video").each(prepareYtPlayer)
+            modal.find(".gif-play-image").gifplayer()
             modal.each(function(){ CRUMINA.mediaPopups(this) })
             fixSvgUse(modal)
             addYtPlayers()
@@ -747,6 +748,7 @@ $(window).scroll(function() {
 
             addFeedClickHandlers(page)
             page.find("iframe.yt-video").each(prepareYtPlayer)
+            page.find(".gif-play-image").gifplayer()
             page.each(function(){ CRUMINA.mediaPopups(this) })
             fixSvgUse(page)
             addYtPlayers()
