@@ -712,7 +712,7 @@ function openPost(id) {
     return false
 }
 
-$(window).scroll(function() {
+function onWindowScroll() {
     let scroll = $(this)
     let feed = $("#feed")
 
@@ -761,6 +761,10 @@ $(window).scroll(function() {
             feed.removeData("loading")
         },
     })
+}
+
+$(document).ready(function(){
+    $(window).scroll(onWindowScroll)
 })
 
 function onPlayVideoClick(){
