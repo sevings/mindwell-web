@@ -370,8 +370,6 @@ func feedHandler(mdw *utils.Mindwell, templateName, queryName string) func(ctx *
 	return func(ctx *gin.Context, apiPath string, clbk func(*utils.APIRequest)) {
 		api := utils.NewRequest(mdw, ctx)
 
-		isAjax := api.IsAjax()
-
 		if len(queryName) > 0 {
 			api.QueryCookieName(queryName)
 		}
@@ -384,6 +382,8 @@ func feedHandler(mdw *utils.Mindwell, templateName, queryName string) func(ctx *
 			api = utils.NewRequest(mdw, ctx)
 		}
 
+		isAjax := api.IsAjax()
+
 		if !isAjax {
 			api.SetMe()
 		}
@@ -392,11 +392,8 @@ func feedHandler(mdw *utils.Mindwell, templateName, queryName string) func(ctx *
 			clbk(api)
 		}
 
-		api.SetDataFromQuery("limit", "30")
-		api.SetDataFromQuery("view", "masonry")
-
 		if isAjax {
-			view, ok := ctx.GetQuery("view")
+			view, ok := api.Data()["__view"].(string)
 			if ok && view == "masonry" {
 				api.WriteTemplate("entries/feed_page")
 			} else {
@@ -414,6 +411,8 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		clbk := func(api *utils.APIRequest) {
 			api.SetDataFromQuery("section", "entries")
+			api.SetDataFromQuery("limit", "30")
+			api.SetDataFromQuery("view", "masonry")
 		}
 
 		handle(ctx, "/entries/live", clbk)
@@ -426,6 +425,8 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		clbk := func(api *utils.APIRequest) {
 			api.SetDataFromQuery("category", "month")
+			api.SetDataFromQuery("limit", "30")
+			api.SetDataFromQuery("view", "masonry")
 		}
 
 		handle(ctx, "/entries/best", clbk)
@@ -435,11 +436,13 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	handle := feedHandler(mdw, "entries/friends", "friends_feed")
 
-	return func(ctx *gin.Context) {
-		clbk := func(api *utils.APIRequest) {
-			api.SetData("__section", "friends")
-		}
+	clbk := func(api *utils.APIRequest) {
+		api.SetData("__section", "friends")
+		api.SetDataFromQuery("limit", "30")
+		api.SetDataFromQuery("view", "masonry")
+	}
 
+	return func(ctx *gin.Context) {
 		handle(ctx, "/entries/friends", clbk)
 	}
 }
@@ -447,11 +450,13 @@ func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func watchingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	handle := feedHandler(mdw, "entries/friends", "friends_feed")
 
-	return func(ctx *gin.Context) {
-		clbk := func(api *utils.APIRequest) {
-			api.SetData("__section", "watching")
-		}
+	clbk := func(api *utils.APIRequest) {
+		api.SetData("__section", "watching")
+		api.SetDataFromQuery("limit", "30")
+		api.SetDataFromQuery("view", "masonry")
+	}
 
+	return func(ctx *gin.Context) {
 		handle(ctx, "/entries/watching", clbk)
 	}
 }
