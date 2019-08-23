@@ -741,8 +741,11 @@ function onWindowScroll() {
 
             let page = $(formatTimeHtml(data))
 
-            if(feed.hasClass("sorting-container"))
+            if(feed.hasClass("sorting-container")) {
                 feed.isotope("insert", page)
+                page.find(".post-content,.post-thumb").imagesLoaded()
+                    .progress(function() { feed.isotope('layout') })
+            }
             else
                 feed.append(page)
 
