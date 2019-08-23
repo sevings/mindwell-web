@@ -472,9 +472,19 @@ func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/tlog", "")
+	handle := feedHandler(mdw, "entries/tlog", "tlog_feed")
 
 	return func(ctx *gin.Context) {
+		if _, err := ctx.Request.Cookie("tlog_feed"); err == nil {
+			cookie := &http.Cookie{
+				Name:   "tlog_feed",
+				Value:  "limit=10",
+				Path:   "/",
+				MaxAge: 60 * 60 * 24 * 90,
+			}
+			http.SetCookie(ctx.Writer, cookie)
+		}
+
 		name := ctx.Param("name")
 
 		clbk := func(api *utils.APIRequest) {
@@ -490,9 +500,19 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/favorites", "")
+	handle := feedHandler(mdw, "entries/favorites", "tlog_feed")
 
 	return func(ctx *gin.Context) {
+		if _, err := ctx.Request.Cookie("tlog_feed"); err == nil {
+			cookie := &http.Cookie{
+				Name:   "tlog_feed",
+				Value:  "limit=10",
+				Path:   "/",
+				MaxAge: 60 * 60 * 24 * 90,
+			}
+			http.SetCookie(ctx.Writer, cookie)
+		}
+
 		name := ctx.Param("name")
 
 		clbk := func(api *utils.APIRequest) {
