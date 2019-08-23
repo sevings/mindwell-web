@@ -137,7 +137,11 @@ func media(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.E
 	embed := param.String() == "embed"
 
 	html := content.String()
-	html = imgSrcRe.ReplaceAllString(html, `<a href="$1" target="__blank" class="js-zoom-image">$0</a>`)
+
+	if embed {
+		html = imgSrcRe.ReplaceAllString(html, `<a href="$1" target="__blank" class="js-zoom-image">$0</a>`)
+	}
+
 	html = aRe.ReplaceAllStringFunc(html, func(tag string) string {
 		return convertMediaTag(tag, embed)
 	})
