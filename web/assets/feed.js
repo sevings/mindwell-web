@@ -692,6 +692,7 @@ function openPost(id) {
             addFeedClickHandlers(modal)
             formatTimeElements(modal)
             modal.find("iframe.yt-video").each(prepareYtPlayer)
+            modal.find(".gif-play-image").gifplayer()
             modal.each(function(){ CRUMINA.mediaPopups(this) })
             fixSvgUse(modal)
             addYtPlayers()
@@ -711,7 +712,7 @@ function openPost(id) {
     return false
 }
 
-$(window).scroll(function() {
+function onWindowScroll() {
     let scroll = $(this)
     let feed = $("#feed")
 
@@ -740,13 +741,17 @@ $(window).scroll(function() {
 
             let page = $(formatTimeHtml(data))
 
-            if(feed.hasClass("sorting-container"))
+            if(feed.hasClass("sorting-container")) {
                 feed.isotope("insert", page)
+                page.find(".post-content,.post-thumb").imagesLoaded()
+                    .progress(function() { feed.isotope('layout') })
+            }
             else
                 feed.append(page)
 
             addFeedClickHandlers(page)
             page.find("iframe.yt-video").each(prepareYtPlayer)
+            page.find(".gif-play-image").gifplayer()
             page.each(function(){ CRUMINA.mediaPopups(this) })
             fixSvgUse(page)
             addYtPlayers()
@@ -759,6 +764,10 @@ $(window).scroll(function() {
             feed.removeData("loading")
         },
     })
+}
+
+$(document).ready(function(){
+    $(window).scroll(onWindowScroll)
 })
 
 function onPlayVideoClick(){
