@@ -461,6 +461,7 @@ func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.QueryCookie()
 		api.Forward()
+		api.SetScrollHrefs()
 		api.SetMe()
 		api.WriteTemplate("users/top_users")
 	}
@@ -509,6 +510,7 @@ func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/users/" + name + "/" + relation)
+		api.SetScrollHrefs()
 		api.SetMe()
 		api.SetField("profile", "/users/"+name)
 		api.WriteTemplate("users/friendlist")
