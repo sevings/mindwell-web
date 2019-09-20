@@ -29,16 +29,16 @@
                 <div class="friend-count">
                     <a href="/users/{{ user.name }}" class="friend-count-item">
                         <div class="h6">{{ user.counts.entries|default:0 }}</div>
-                        <div class="title">Запис{{ user.counts.entries|quantity:"ь,и,ей" }}</div>
+                        <div class="title">запис{{ user.counts.entries|quantity:"ь,и,ей" }}</div>
                     </a>
                     {% if user.privacy == "all" %}<a href="/users/{{ user.name }}/relations/followers"{% else %}<span{% endif %}
                         class="friend-count-item">
                         <div class="h6">{{ user.counts.followers|default:0 }}</div>
-                        <div class="title">Подписчик{{ user.counts.followers|quantity:",а,ов" }}</div>
+                        <div class="title">подписчик{{ user.counts.followers|quantity:",а,ов" }}</div>
                     {% if user.privacy == "all" %}</a>{% else %}</span>{% endif %}
                     <a href="/users/{{ user.name }}" class="friend-count-item">
                         <div class="h6">{{ user.rank }}</div>
-                        <div class="title">В рейтинге</div>
+                        <div class="title">в рейтинге</div>
                     </a>
                 </div>
 
