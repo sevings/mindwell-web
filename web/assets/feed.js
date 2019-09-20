@@ -712,17 +712,19 @@ function openPost(id) {
     return false
 }
 
-function onWindowScroll() {
+function onFeedWindowScroll() {
+    let container = $("#feed")
+    if(!container.length)
+        return
+
     let scroll = $(this)
-    let feed = $("#feed")
-
-    if(scroll.scrollTop() < feed.height() - scroll.height() * 2)
+    if(scroll.scrollTop() < container.height() - scroll.height() * 2)
         return
 
-    if(feed.data("loading"))
+    if(container.data("loading"))
         return
 
-    let a = feed.find(".older")
+    let a = container.find(".older")
     if(!a.length)
         return
 
@@ -731,7 +733,7 @@ function onWindowScroll() {
         return
     }
 
-    feed.data("loading", true)
+    container.data("loading", true)
 
     $.ajax({
         url: a.attr("href"),
@@ -741,13 +743,13 @@ function onWindowScroll() {
 
             let page = $(formatTimeHtml(data))
 
-            if(feed.hasClass("sorting-container")) {
-                feed.isotope("insert", page)
+            if(container.hasClass("sorting-container")) {
+                container.isotope("insert", page)
                 page.find(".post-content,.post-thumb").imagesLoaded()
-                    .progress(function() { feed.isotope('layout') })
+                    .progress(function() { container.isotope('layout') })
             }
             else
-                feed.append(page)
+                container.append(page)
 
             addFeedClickHandlers(page)
             page.find("iframe.yt-video").each(prepareYtPlayer)
@@ -761,13 +763,63 @@ function onWindowScroll() {
             console.log(resp.message)
         },
         complete: function() {
-            feed.removeData("loading")
+            container.removeData("loading")
+        },
+    })
+}
+
+function onUsersWindowScroll() {
+    let container = $("#users")
+    if(!container.length)
+        return
+
+    let scroll = $(this)
+    if(scroll.scrollTop() < container.height() - scroll.height() * 2)
+        return
+
+    if(container.data("loading"))
+        return
+
+    let a = container.find(".older")
+    if(!a.length)
+        return
+
+    if(a.parent().hasClass("disabled")) {
+        a.parents(".sorting-item").remove()
+        return
+    }
+
+    container.data("loading", true)
+
+    $.ajax({
+        url: a.attr("href"),
+        method: "GET",
+        success: function(data) {
+            a.parents(".sorting-item").remove()
+
+            let page = $(formatTimeHtml(data))
+
+            if(container.hasClass("sorting-container")) {
+                container.isotope("insert", page)
+                page.find(".friend-header-thumb").imagesLoaded()
+                    .progress(function() { container.isotope('layout') })
+            }
+            else
+                container.append(page)
+        },
+        error: function(req) {
+            let resp = JSON.parse(req.responseText)
+            console.log(resp.message)
+        },
+        complete: function() {
+            container.removeData("loading")
         },
     })
 }
 
 $(document).ready(function(){
-    $(window).scroll(onWindowScroll)
+    $(window).scroll(onFeedWindowScroll)
+    $(window).scroll(onUsersWindowScroll)
 })
 
 function onPlayVideoClick(){

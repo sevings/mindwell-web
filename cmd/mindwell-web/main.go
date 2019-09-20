@@ -536,9 +536,14 @@ func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/users/" + name + "/" + relation)
 		api.SetScrollHrefs()
-		api.SetMe()
-		api.SetField("profile", "/users/"+name)
-		api.WriteTemplate("users/friendlist")
+
+		if api.IsAjax() {
+			api.WriteTemplate("users/users_page")
+		} else {
+			api.SetMe()
+			api.SetField("profile", "/users/"+name)
+			api.WriteTemplate("users/friendlist")
+		}
 	}
 }
 
