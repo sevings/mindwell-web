@@ -31,13 +31,18 @@ type APIRequest struct {
 	read bool // whether resp is read
 	data map[string]interface{}
 	uKey string
+	st   *ServerTiming
 }
 
 func NewRequest(mdw *Mindwell, ctx *gin.Context) *APIRequest {
+	st := NewServerTiming()
+	st.Add("api").Start()
+
 	return &APIRequest{
 		mdw:  mdw,
 		ctx:  ctx,
 		read: false,
+		st:   st,
 	}
 }
 
@@ -145,7 +150,9 @@ func (api *APIRequest) setUserKey() {
 	api.uKey = token.Value
 }
 
-func (api *APIRequest) do(req *http.Request) {
+func (api *APIRequest) doNamed(req *http.Request, name string) {
+	defer api.st.Add(name).Start().Stop()
+
 	if api.mdw.DevMode {
 		log.Print(req.Method + " " + req.URL.String())
 	}
@@ -156,6 +163,10 @@ func (api *APIRequest) do(req *http.Request) {
 	}
 
 	api.read = false
+}
+
+func (api *APIRequest) do(req *http.Request) {
+	api.doNamed(req, "main")
 }
 
 func (api *APIRequest) QueryCookie() {
@@ -245,7 +256,7 @@ func (api *APIRequest) checkError() {
 	}
 }
 
-func (api *APIRequest) Get(path string) {
+func (api *APIRequest) GetNamed(path, name string) {
 	api.setUserKey()
 	if api.err != nil {
 		return
@@ -262,8 +273,12 @@ func (api *APIRequest) Get(path string) {
 	req.Header.Add("X-User-Key", api.uKey)
 	req.Header.Add("X-Forwarded-For", api.ctx.ClientIP())
 
-	api.do(req)
+	api.doNamed(req, name)
 	api.checkError()
+}
+
+func (api *APIRequest) Get(path string) {
+	api.GetNamed(path, "main")
 }
 
 func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
@@ -367,7 +382,7 @@ func (api *APIRequest) SetField(key, path string) {
 		api.data = map[string]interface{}{}
 	}
 
-	api.Get(path)
+	api.GetNamed(path, key)
 	api.data[key] = api.parseResponse()
 }
 
@@ -465,6 +480,7 @@ func (api *APIRequest) WriteTemplate(name string) {
 
 	api.ctx.Header("Cache-Control", "no-store")
 	api.ctx.Header("Content-Type", "text/html; charset=utf-8")
+	api.st.WriteHeader(api.ctx.Writer)
 
 	templ.ExecuteWriter(pongo2.Context(api.Data()), api.ctx.Writer)
 }
@@ -481,6 +497,8 @@ func (api *APIRequest) WriteResponse() {
 		}
 	}
 
+	api.st.WriteHeader(api.ctx.Writer)
+
 	api.ctx.Status(api.resp.StatusCode)
 
 	if jsonData != nil {
@@ -495,6 +513,7 @@ func (api *APIRequest) WriteJson() {
 
 	api.ctx.Header("Cache-Control", "no-store")
 	api.ctx.Header("Content-Type", "application/json")
+	api.st.WriteHeader(api.ctx.Writer)
 
 	encoder := json.NewEncoder(api.ctx.Writer)
 	api.err = encoder.Encode(api.Data())
