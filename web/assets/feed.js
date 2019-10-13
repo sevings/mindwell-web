@@ -14,6 +14,7 @@ function addFeedClickHandlers(feed) {
     $("a.watch-post", feed).click(onWatchPostClick)
     $("a.favorite-post", feed).click(onFavoritePostClick)
     $("a.delete-post", feed).click(onDeletePostClick)
+    $("a.complain-post", feed).click(onComplainPostClick)
 
     $(".comment-form textarea", feed).on("keydown", onCommentFormKeyDown)
     $(".post-comment", feed).click(onPostCommentClick)
@@ -227,6 +228,10 @@ function onDeletePostClick() {
     })
 
     return false
+}
+
+function onComplainPostClick() {
+    $("#complain-popup").modal("show")
 }
 
 function onCommentButtonClick() {

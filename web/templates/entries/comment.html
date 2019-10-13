@@ -11,7 +11,7 @@
             </div>
         </div>
 
-        {% if comment.rights.edit || comment.rights.delete %}
+        {% if comment.rights.edit || comment.rights.delete || comment.rights.complain %}
             <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
                 <ul class="more-dropdown">
                     {% if comment.rights.edit %}
@@ -22,6 +22,11 @@
                     {% if comment.rights.delete %}
                         <li>
                             <a href="#" onclick="return deleteComment({{ comment.id }})">Удалить</a>
+                        </li>
+                    {% endif %}
+                    {% if comment.rights.complain %}
+                        <li>
+                            <a href="#" onclick="return complainComment({{ comment.id }})">Пожаловаться</a>
                         </li>
                     {% endif %}
                 </ul>

@@ -53,6 +53,11 @@
                         <a href="#" class="delete-post">Удалить</a>
                     </li>
                 {% endif %}
+                {% if entry.rights.complain %}
+                    <li>
+                        <a href="#" class="complain-post">Пожаловаться</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
 

@@ -1,0 +1,40 @@
+<div class="modal fade" id="complain-popup" tabindex="-1" role="dialog" aria-labelledby="complain-popup" aria-hidden="true">
+    <div class="modal-dialog window-popup blog-post-popup" role="document">
+        <div class="modal-content">
+
+            <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Close">
+                <svg class="olymp-close-icon">
+                    <use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use>
+                </svg>
+            </a>
+
+            <div class="modal-body">
+                <div class="contact-form-wrap">
+                    <div class="contact-form-thumb">
+                        <h2 class="title">Пожаловаться модераторам</h2>
+                        <p>
+                            Заметил{{ me.gender|gender }} нарушение правил сайта? Сообщи нам, и наши модераторы
+                            примут все необходимые меры.
+                        </p>
+                        <img src="/assets/olympus/img/crew.png" alt="crew" class="crew">
+                    </div>
+                    <form class="contact-form">
+                        <p id="complain-info" class="title h5">
+                            Жалоба на комментарий binque
+                        </p>
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Пояснение (необязательно)</label>
+                            <textarea class="form-control" placeholder=""></textarea>
+                        </div>
+
+                        <p class="alert alert-secondary" role="alert">
+                            Актуальная редакция правил сайта всегда доступна <a href="/help/rules">здесь</a>.
+                        </p>
+
+                        <button class="btn btn-purple btn-lg full-width">Пожаловаться</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
