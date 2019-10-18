@@ -113,6 +113,7 @@ var notifications = {
                 notifications.addClickHandler(ul)
                 notifications.setUnread(ul)
                 notifications.setAfter(ul)
+                fixSvgUse(ul)
 
                 var list = $("ul.notification-list")
                 list.prepend(ul).children(".data-helper").remove()
@@ -161,6 +162,7 @@ var notifications = {
                 notifications.addClickHandler(ul)
                 notifications.setUnread(ul)
                 notifications.setBefore(ul)
+                fixSvgUse(ul)
 
                 var list = $("ul.notification-list")
                 list.append(ul).children(".data-helper").remove()
