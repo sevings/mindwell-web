@@ -231,13 +231,38 @@ function onDeletePostClick() {
 }
 
 function onComplainPostClick() {
-    $("#complain-popup").modal("show")
+    let info = findPostElement(this)
+    let name = info.find(".post__author-name").first().text();
+    $("#complain-user").text(name)
+    $("#complain-type").text("запись")
+
+    let id = info.data("id")
+    $("#complain-popup").data("ready", true)
+        .find(".contact-form").attr("target", "/entries/" + id + "/complain")
+
+    window.location.hash = "complain-popup"
+
+    return false
 }
 
 function onCommentButtonClick() {
     $("#post-popup").data("scroll", "comments")
     let id = findPostElement(this).data("id")
     return openPost(id)
+}
+
+function complainComment(id) {
+    let info = $("#comment" + id)
+    let name = info.find(".post__author-name").text();
+    $("#complain-user").text(name)
+    $("#complain-type").text("комментарий")
+
+    $("#complain-popup").data("ready", true)
+        .find(".contact-form").attr("target", "/comments/" + id + "/complain")
+
+    window.location.hash = "complain-popup"
+
+    return false
 }
 
 function incCommentCounter(elem, added = 1) {
@@ -624,25 +649,29 @@ $("#post-popup").on("hide.bs.modal", function() {
     });
 
     modal.find(".gif-play-image").gifplayer("stop")
+})
 
-    if(window.location.hash == "")
-        return
+$("#post-popup").on("hidden.bs.modal", function() {
+    if(window.location.hash.startsWith("#post-popup"))
+        window.history.back()
+    else
+        openHashModal()
+})
 
-    window.history.back()
-
-    if(window.location.hash != "")
-        window.location.hash = ""
+$("#complain-popup").on("hidden.bs.modal", function(){
+    if(window.location.hash.startsWith("#complain-popup"))
+        window.history.back()
+    else
+        openHashModal()
 })
 
 $(window).on("hashchange", function () {
     let hash = window.location.hash
-    if(!hash || hash == "#")
-        $("#post-popup.show").modal("hide")
-    else {
-        let id = hash.substring(11)
-        if($("#post-popup.show").data("id") != id)
-            openPost(id)
-    }
+    let shown = $(".modal.show")
+    if(shown.length && !hash.startsWith("#" + shown.attr("id")))
+        shown.modal("hide")
+    else
+        openHashModal()
 })
 
 $(function(){
@@ -652,6 +681,20 @@ $(function(){
     if(hash.startsWith("#post-popup"))
         openPost(hash.substring(11))
 })
+
+function openHashModal() {
+    let hash = window.location.hash
+    if(hash.startsWith("#post-popup")) {
+        let id = hash.substring(11)
+        if($("#post-popup.show").data("id") != id)
+            openPost(id)
+    }
+    else if(hash == "#complain-popup") {
+        let modal = $(hash)
+        if(modal.data("ready"))
+            modal.modal("show")
+    }
+}
 
 function openPost(id) {
     if(typeof id != "string" && typeof id != "number")
