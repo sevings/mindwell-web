@@ -164,6 +164,9 @@ var notifications = {
                 notifications.setBefore(ul)
                 fixSvgUse(ul)
 
+                if(!notifications.after)
+                    notifications.setAfter(ul)
+
                 var list = $("ul.notification-list")
                 list.append(ul).children(".data-helper").remove()
 
