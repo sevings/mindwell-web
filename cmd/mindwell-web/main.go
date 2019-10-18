@@ -114,6 +114,9 @@ func main() {
 	router.PUT("/entries/:id/favorite", proxyHandler(mdw))
 	router.DELETE("/entries/:id/favorite", proxyHandler(mdw))
 
+	router.POST("/entries/:id/complain", proxyHandler(mdw))
+	router.POST("/comments/:id/complain", proxyHandler(mdw))
+
 	router.GET("/relations/to/:name", proxyHandler(mdw))
 	router.PUT("/relations/to/:name", proxyHandler(mdw))
 	router.DELETE("/relations/to/:name", proxyHandler(mdw))

@@ -238,7 +238,7 @@ function onComplainPostClick() {
 
     let id = info.data("id")
     $("#complain-popup").data("ready", true)
-        .find(".contact-form").attr("target", "/entries/" + id + "/complain")
+        .find(".contact-form").attr("action", "/entries/" + id + "/complain")
 
     window.location.hash = "complain-popup"
 
@@ -258,7 +258,7 @@ function complainComment(id) {
     $("#complain-type").text("комментарий")
 
     $("#complain-popup").data("ready", true)
-        .find(".contact-form").attr("target", "/comments/" + id + "/complain")
+        .find(".contact-form").attr("action", "/comments/" + id + "/complain")
 
     window.location.hash = "complain-popup"
 
@@ -659,6 +659,8 @@ $("#post-popup").on("hidden.bs.modal", function() {
 })
 
 $("#complain-popup").on("hidden.bs.modal", function(){
+    $("#complain-popup").data("ready", false)
+                
     if(window.location.hash.startsWith("#complain-popup"))
         window.history.back()
     else
@@ -868,6 +870,36 @@ function onUsersWindowScroll() {
 $(document).ready(function(){
     $(window).scroll(onFeedWindowScroll)
     $(window).scroll(onUsersWindowScroll)
+})
+
+$("#complain").click(function() {
+    let popup = $("#complain-popup")
+    if(!popup.data("ready"))
+        return false
+
+    let btn = $("#complain")
+    if(btn.hasClass("disabled"))
+        return false
+    
+    btn.addClass("disabled")
+
+    popup.find(".contact-form").ajaxSubmit({
+        resetForm: true,
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function() {
+            popup.modal("hide")
+
+            alert("Модераторы рассмотрят твою жалобу в ближайшее время.")
+        },
+        error: showAjaxError,
+        complete: function() {
+            btn.removeClass("disabled")
+        },
+    })
+
+    return false
 })
 
 function onPlayVideoClick(){
