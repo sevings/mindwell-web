@@ -35,12 +35,15 @@ var notifications = {
         else
             unread = val.data("unreadCount")
         
+        if(unread < 0)
+            unread = 0
+
         if(unread == notifications.unread)
             return
 
         $(".notifications-counter")
             .text(unread)
-            .toggleClass("hidden", !unread || unread < 0)
+            .toggleClass("hidden", !unread)
 
         var title = document.title
         var repl = unread ? "(" + unread + ") " : ""
