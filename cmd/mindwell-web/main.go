@@ -234,11 +234,20 @@ func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func SetAdm(mdw *utils.Mindwell, api *utils.APIRequest) {
-	regFin := mdw.ConfigBool("adm.reg_finished")
-	admFin := mdw.ConfigBool("adm.adm_finished")
+func SetAdm(mdw *utils.Mindwell, ctx *gin.Context, api *utils.APIRequest) {
+	if mdw.ConfigBool("adm.adm_finished") {
+		return
+	}
 
-	api.SetData("__adm", !regFin || !admFin)
+	req := utils.NewRequest(mdw, ctx)
+
+	if mdw.ConfigBool("adm.reg_finished") {
+		req.Get("/adm/grandfather")
+	} else {
+		req.Get("/adm/grandson")
+	}
+
+	api.SetData("__adm", req.Error() == nil)
 }
 
 func invitesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
@@ -250,7 +259,7 @@ func invitesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.WriteResponse()
 		} else {
 			api.SetMe()
-			SetAdm(mdw, api)
+			SetAdm(mdw, ctx, api)
 			api.WriteTemplate("settings/invites")
 		}
 	}
@@ -260,7 +269,7 @@ func passwordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
-		SetAdm(mdw, api)
+		SetAdm(mdw, ctx, api)
 		api.WriteTemplate("settings/password")
 	}
 }
@@ -269,7 +278,7 @@ func emailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
-		SetAdm(mdw, api)
+		SetAdm(mdw, ctx, api)
 		api.WriteTemplate("settings/email")
 	}
 }
@@ -279,7 +288,7 @@ func ignoredHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/me/ignored")
 		api.SetMe()
-		SetAdm(mdw, api)
+		SetAdm(mdw, ctx, api)
 		api.WriteTemplate("settings/ignored")
 	}
 }
@@ -289,7 +298,7 @@ func hiddenHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/me/hidden")
 		api.SetMe()
-		SetAdm(mdw, api)
+		SetAdm(mdw, ctx, api)
 		api.WriteTemplate("settings/hidden")
 	}
 }
@@ -303,7 +312,7 @@ func notificationsSettingsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetMe()
 		api.SetField("telegram", "/account/subscribe/telegram")
 		api.SetData("__tg", bot)
-		SetAdm(mdw, api)
+		SetAdm(mdw, ctx, api)
 		api.WriteTemplate("settings/notifications")
 	}
 }
