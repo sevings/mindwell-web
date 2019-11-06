@@ -50,13 +50,11 @@ func main() {
 
 	router.GET("/account/subscribe/token", proxyHandler(mdw))
 
-	router.GET("/adm/grandson", grandsonHandler(mdw))
-	router.POST("/adm/grandson", grandsonSaverHandler(mdw))
+	router.GET("/adm", admHandler(mdw))
 
+	router.POST("/adm/grandson", grandsonSaverHandler(mdw))
 	router.GET("/adm/grandson/status", proxyHandler(mdw))
 	router.POST("/adm/grandson/status", proxyHandler(mdw))
-
-	router.GET("/adm/grandfather", grandfatherHandler(mdw))
 
 	router.GET("/adm/grandfather/status", proxyHandler(mdw))
 	router.POST("/adm/grandfather/status", proxyHandler(mdw))
@@ -236,12 +234,11 @@ func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func SetAdm(mdw *utils.Mindwell, ctx *gin.Context, origAPI *utils.APIRequest) {
-	api := utils.NewRequest(mdw, ctx)
-	api.Get("/adm/grandfather/status")
-	adm := api.Error() == nil
+func SetAdm(mdw *utils.Mindwell, api *utils.APIRequest) {
+	regFin := mdw.ConfigBool("adm.reg_finished")
+	admFin := mdw.ConfigBool("adm.adm_finished")
 
-	origAPI.SetData("__adm", adm)
+	api.SetData("__adm", !regFin || !admFin)
 }
 
 func invitesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
@@ -253,7 +250,7 @@ func invitesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.WriteResponse()
 		} else {
 			api.SetMe()
-			SetAdm(mdw, ctx, api)
+			SetAdm(mdw, api)
 			api.WriteTemplate("settings/invites")
 		}
 	}
@@ -263,7 +260,7 @@ func passwordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
-		SetAdm(mdw, ctx, api)
+		SetAdm(mdw, api)
 		api.WriteTemplate("settings/password")
 	}
 }
@@ -272,7 +269,7 @@ func emailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
-		SetAdm(mdw, ctx, api)
+		SetAdm(mdw, api)
 		api.WriteTemplate("settings/email")
 	}
 }
@@ -282,7 +279,7 @@ func ignoredHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/me/ignored")
 		api.SetMe()
-		SetAdm(mdw, ctx, api)
+		SetAdm(mdw, api)
 		api.WriteTemplate("settings/ignored")
 	}
 }
@@ -292,7 +289,7 @@ func hiddenHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/me/hidden")
 		api.SetMe()
-		SetAdm(mdw, ctx, api)
+		SetAdm(mdw, api)
 		api.WriteTemplate("settings/hidden")
 	}
 }
@@ -306,7 +303,7 @@ func notificationsSettingsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetMe()
 		api.SetField("telegram", "/account/subscribe/telegram")
 		api.SetData("__tg", bot)
-		SetAdm(mdw, ctx, api)
+		SetAdm(mdw, api)
 		api.WriteTemplate("settings/notifications")
 	}
 }
@@ -319,27 +316,35 @@ func emailSettingsSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func grandsonHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.Forward()
-		api.SetField("stat", "/adm/stat")
-		api.SetMe()
-		api.SetData("__adm", true)
-		api.WriteTemplate("settings/grandson")
-	}
-}
+func admHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	regFinished := mdw.ConfigBool("adm.reg_finished")
 
-func grandfatherHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.Forward()
+
+		if regFinished {
+			api.ForwardTo("/adm/grandfather")
+		} else {
+			api.ForwardTo("/adm/grandson")
+		}
+
+		if api.Error() != nil {
+			api.WriteTemplate("error")
+			return
+		}
+
 		api.SetField("stat", "/adm/stat")
-		api.SetField("son", "/adm/grandson/status")
-		api.SetField("father", "/adm/grandfather/status")
 		api.SetMe()
 		api.SetData("__adm", true)
-		api.WriteTemplate("settings/grandfather")
+
+		if regFinished {
+			api.SetField("son", "/adm/grandson/status")
+			api.SetField("father", "/adm/grandfather/status")
+
+			api.WriteTemplate("settings/grandfather")
+		} else {
+			api.WriteTemplate("settings/grandson")
+		}
 	}
 }
 

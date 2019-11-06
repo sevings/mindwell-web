@@ -65,6 +65,15 @@ func (m *Mindwell) ConfigString(key string) string {
 	return confString(m.config, key)
 }
 
+func (m *Mindwell) ConfigBool(key string) bool {
+	value, err := m.config.Bool(key)
+	if err != nil {
+		log.Print(err)
+	}
+
+	return value
+}
+
 func (m *Mindwell) Template(name string) (*pongo2.Template, error) {
 	if !m.DevMode {
 		if t := m.templates[name]; t != nil {
