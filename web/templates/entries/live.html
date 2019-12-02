@@ -1,7 +1,8 @@
 {% extends "feed.html" %}
 {% block title %}Прямой эфир{% endblock %}
 {% block submenu %}
-    <li class="cat-list__item {% if __section == "entries" %}active{% endif %}"><a href="/live?section=entries">Новое</a></li>
+    <li class="cat-list__item {% if __section == "entries" %}active{% endif %}"><a href="/live?section=entries">Приглашенные</a></li>
+    <li class="cat-list__item {% if __section == "waiting" %}active{% endif %}"><a href="/live?section=waiting">Ожидающие</a></li>
     <li class="cat-list__item {% if __section == "comments" %}active{% endif %}"><a href="/live?section=comments">Обсуждаемое</a></li>
 {% endblock %}
 {% block feed_settings %}
