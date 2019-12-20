@@ -54,7 +54,7 @@
         <i class="{% if comment.rating.vote >= 0 && comment.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-down fa-2x"></i>
         {% if comment.rights.vote %}</a>{% else %}</div>{% endif %}
 
-        <a href="#" class="reply" onclick="return replyComment('{{ comment.author.showName }}', this);">Ответить</a>
+        <a href="#" class="reply" onclick="return replyComment('{{ comment.author.showName|escapejs }}', this);">Ответить</a>
     </div>
 
 </li>
