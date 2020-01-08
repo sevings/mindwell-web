@@ -49,6 +49,7 @@ func main() {
 	router.POST("/account/settings/email", emailSettingsSaverHandler(mdw))
 
 	router.GET("/account/subscribe/token", proxyHandler(mdw))
+	router.GET("/account/subscribe/im", proxyHandler(mdw))
 
 	router.GET("/adm", admHandler(mdw))
 
@@ -128,6 +129,8 @@ func main() {
 	router.GET("/notifications", notificationsHandler(mdw))
 	router.GET("/notifications/:id", singleNotificationHandler(mdw))
 	router.PUT("/notifications/read", proxyHandler(mdw))
+
+	router.GET("/im", imHandler(mdw))
 
 	router.POST("/images", imageHandler(mdw))
 	router.GET("/images/:id", imageHandler(mdw))
@@ -767,6 +770,14 @@ func singleNotificationHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("ntf", ntf)
 
 		api.WriteTemplate("notification")
+	}
+}
+
+func imHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.SetMe()
+		api.WriteTemplate("im")
 	}
 }
 
