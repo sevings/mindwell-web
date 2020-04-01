@@ -699,14 +699,21 @@ function openHashModal() {
 }
 
 function openPost(id) {
+    let randomPost = (id === 0)
+    if(randomPost)
+        id = Math.ceil(Math.random() * 30000);
+
     if(typeof id != "string" && typeof id != "number")
         id = $(this).data("entry")
 
     let modal = $("#post-popup")
-    if(modal.data("loading"))
+    if(!randomPost && modal.data("loading"))
         return false
 
     if(modal.data("id") == id) {
+        if(randomPost)
+            return openPost(0)
+
         updateComments(modal)
         window.location.hash = "post-popup" + id
         modal.modal("show")
@@ -716,7 +723,9 @@ function openPost(id) {
     modal.data("loading", true)
     modal.data("id", id)
     modal.modal("show")
-    window.location.hash = "post-popup" + id
+
+    if(!randomPost)
+        window.location.hash = "post-popup" + id
 
     let body = modal.find(".modal-body")
     body.removeData("id").removeClass("entry")
@@ -751,8 +760,12 @@ function openPost(id) {
                 scrollPost()
         },
         error: function(req) {
-            modal.modal("hide")
-            showAjaxError(req)
+            if(randomPost)
+                openPost(0)
+            else {
+                modal.modal("hide")
+                showAjaxError(req)
+            }
         },
         complete: function() {
             modal.removeData("loading")
