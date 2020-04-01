@@ -699,7 +699,7 @@ function openHashModal() {
 }
 
 function openPost(id) {
-    let randomPost = (id === 0)
+    let randomPost = (id === 0) || (id === "0")
     if(randomPost)
         id = Math.ceil(Math.random() * 30000);
 
@@ -724,8 +724,10 @@ function openPost(id) {
     modal.data("id", id)
     modal.modal("show")
 
-    if(!randomPost)
-        window.location.hash = "post-popup" + id
+    if(randomPost)
+        window.location.hash = "post-popup" + 0
+    else
+       window.location.hash = "post-popup" + id
 
     let body = modal.find(".modal-body")
     body.removeData("id").removeClass("entry")
@@ -760,8 +762,9 @@ function openPost(id) {
                 scrollPost()
         },
         error: function(req) {
-            if(randomPost)
+            if(randomPost) {
                 openPost(0)
+            }
             else {
                 modal.modal("hide")
                 showAjaxError(req)
