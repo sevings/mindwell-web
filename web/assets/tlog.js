@@ -181,6 +181,30 @@ $("#invite-user").on("show.bs.modal", function() {
     })
 })
 
+$("#send-message").click(function(){
+    let uid = $("#message-uid")
+    if(!uid.val())
+        uid.val(Date.now())
+
+    let form = $("#message-sender")
+    if(!form[0].reportValidity())
+        return false
+
+    $("#message-sender").ajaxSubmit({
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function() {
+            $("#private-message").modal("hide")
+            uid.val(0)
+        },
+        error: showAjaxError,
+        clearForm: true,
+    })
+
+    return false
+})
+
 $("#send-invite").click(function(){
     if($(this).hasClass("disabled"))
         return false

@@ -133,6 +133,8 @@ func main() {
 	router.GET("/images/:id", imageHandler(mdw))
 	router.DELETE("/images/:id", deleteImageHandler(mdw))
 
+	router.POST("/chats/:name/messages", proxyHandler(mdw))
+
 	router.GET("/help/about", aboutHandler(mdw))
 	router.GET("/help/rules", rulesHandler(mdw))
 	router.GET("/help/faq/", faqHandler(mdw))
