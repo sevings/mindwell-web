@@ -700,8 +700,10 @@ function openHashModal() {
 
 function openPost(id) {
     let randomPost = (id === 0) || (id === "0")
-    if(randomPost)
-        id = Math.ceil(Math.random() * 30000);
+    if(randomPost) {
+        let max = $(".entry").data("id") || 50000
+        id = Math.ceil(Math.random() * max);
+    }
 
     if(typeof id != "string" && typeof id != "number")
         id = $(this).data("entry")
