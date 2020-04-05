@@ -1,0 +1,42 @@
+{% extends "../base_auth.html" %}
+{% block title %}Сообщения{% endblock %}
+{% block scripts %}
+<script src="/assets/chats.js?d=20200404"></script>
+{% endblock %}
+{% block body %}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 ">
+            <div class="ui-block" style="margin-bottom: 0; height: calc(100vh - 70px)">
+                <div class="ui-block-title">
+                    <h6 class="title">{{ chat.partner.showName }}</h6>
+                </div>
+
+                <div id="chat-wrapper">
+                    <div>
+                        <div class="mCustomScrollbar" data-mcs-theme="dark">
+                            <ul class="comments-list">
+                                {% for message in messages.data reversed %}
+                                    {% include "message.html" %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="message-form">
+                    <div class="form-group label-floating is-empty">
+                        <label class="control-label">Написать сообщение…</label>
+                        <textarea class="form-control"></textarea>
+                    </div>
+
+                    <button id="send-message" class="btn btn-md-2 btn-primary">Отправить</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

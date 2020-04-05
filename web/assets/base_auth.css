@@ -311,3 +311,36 @@ div.top-header-thumb::after {
 div.profile-section {
     padding: 30px 0;
 }
+
+.ps.ps--active-x > .ps__scrollbar-x-rail, .ps.ps--active-y > .ps__scrollbar-y-rail {
+    top: 0px !important;
+    left: 0px;
+}
+
+#chat-wrapper {
+    position: relative;
+    height: calc(100vh - 265px - 5rem);
+}
+
+#chat-wrapper>div {
+    position: absolute;
+    bottom: 0;
+}
+
+#chat-wrapper .mCustomScrollbar {
+    max-height: calc(100vh - 265px - 5rem);
+}
+
+#message-form {
+    overflow: hidden;
+    padding: 25px;
+}
+
+#message-form textarea {
+    min-height: 65px;
+}
+
+#send-message {
+    float: right;
+    margin-bottom: 0;
+}

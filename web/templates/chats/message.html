@@ -1,0 +1,34 @@
+<li class="comment-item">
+    <div class="post__author author vcard inline-items">
+        <img src="{{ message.author.avatar.x42 }}" alt="{{ message.author.showName }}">
+
+        <div class="author-date">
+            <a class="h6 post__author-name fn" href="/users/{{ message.author.name }}">{{ message.author.showName }}</a>
+            <div class="post__date">
+                <time class="published" datetime="{{ message.createdAt }}"></time>
+            </div>
+        </div>
+
+        {% if message.rights.edit || message.rights.delete %}
+            <div class="more">
+                <svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
+                <ul class="more-dropdown">
+                    {% if message.rights.edit %}
+                    <li>
+                        <a href="#" onclick="return editMessage({{ message.id }})">Редактировать</a>
+                    </li>
+                    {% endif %}
+                    {% if message.rights.delete %}
+                    <li>
+                        <a href="#" onclick="return deleteMessage({{ message.id }})">Удалить</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+
+    </div>
+
+    {{ message.content|safe }}
+
+</li>
