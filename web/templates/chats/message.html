@@ -1,4 +1,5 @@
-<li class="comment-item">
+<li class="comment-item" id="message{{ message.id }}" data-id="{{ message.id }}"
+        {% if message.rights.edit %} data-content="{{ message.editContent }}" {% endif %}>
     <div class="post__author author vcard inline-items">
         <img src="{{ message.author.avatar.x42 }}" alt="{{ message.author.showName }}">
 

@@ -196,7 +196,7 @@ $("#send-message").click(function(){
         },
         success: function() {
             $("#private-message").modal("hide")
-            uid.val(0)
+            uid.val("")
         },
         error: showAjaxError,
         clearForm: true,
