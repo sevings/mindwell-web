@@ -1,7 +1,7 @@
 {% extends "../base_auth.html" %}
 {% block title %}Сообщения{% endblock %}
 {% block scripts %}
-<script src="/assets/chats.js?d=20200405"></script>
+<script src="/assets/chats.js?d=20200411"></script>
 {% endblock %}
 {% block body %}
 
@@ -10,22 +10,19 @@
         <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 ">
             <div class="ui-block" style="margin-bottom: 0; height: calc(100vh - 70px)">
                 <div class="ui-block-title">
-                    <h6 class="title">{{ chat.partner.showName }}</h6>
+                    <h6 class="title">{{ partner.showName }}</h6>
                 </div>
 
-                <div id="chat-wrapper">
+                <div id="chat-wrapper" data-name="{{ partner.name }}">
                     <div>
-                        <div class="mCustomScrollbar" data-mcs-theme="dark">
+                        <div class="mCustomScrollbar messages" data-mcs-theme="dark">
                             <ul class="comments-list">
-                                {% for message in messages.data reversed %}
-                                    {% include "message.html" %}
-                                {% endfor %}
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <form id="message-form" action="/chats/{{ chat.partner.name }}/messages" method="POST" enctype="multipart/form-data">
+                <form id="message-form" action="/chats/{{ partner.name }}/messages" method="POST" enctype="multipart/form-data">
                     <div class="form-group label-floating is-empty">
                         <label class="control-label">Написать сообщение…</label>
                         <textarea class="form-control" name="content"></textarea>

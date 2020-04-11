@@ -1,0 +1,7 @@
+<div class="data-helper" data-unread-count="{{ unreadCount|default:0 }}"
+     data-after="{{ nextAfter }}" data-has-after="{{ hasAfter }}"
+     data-before="{{ nextBefore }}" data-has-before="{{ hasBefore }}"></div>
+
+{% for msg in data %}
+    {% include "message.html" %}
+{% endfor %}

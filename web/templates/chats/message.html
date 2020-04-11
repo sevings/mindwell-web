@@ -1,27 +1,27 @@
-<li class="comment-item" id="message{{ message.id }}" data-id="{{ message.id }}"
-        {% if message.rights.edit %} data-content="{{ message.editContent }}" {% endif %}>
+<li class="comment-item" id="message{{ msg.id }}" data-id="{{ msg.id }}"
+        {% if msg.rights.edit %} data-content="{{ msg.editContent }}" {% endif %}>
     <div class="post__author author vcard inline-items">
-        <img src="{{ message.author.avatar.x42 }}" alt="{{ message.author.showName }}">
+        <img src="{{ msg.author.avatar.x42 }}" alt="{{ msg.author.showName }}">
 
         <div class="author-date">
-            <a class="h6 post__author-name fn" href="/users/{{ message.author.name }}">{{ message.author.showName }}</a>
+            <a class="h6 post__author-name fn" href="/users/{{ msg.author.name }}">{{ msg.author.showName }}</a>
             <div class="post__date">
-                <time class="published" datetime="{{ message.createdAt }}"></time>
+                <time class="published" datetime="{{ msg.createdAt }}"></time>
             </div>
         </div>
 
-        {% if message.rights.edit || message.rights.delete %}
+        {% if msg.rights.edit || msg.rights.delete %}
             <div class="more">
                 <svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
                 <ul class="more-dropdown">
-                    {% if message.rights.edit %}
+                    {% if msg.rights.edit %}
                     <li>
-                        <a href="#" onclick="return editMessage({{ message.id }})">Редактировать</a>
+                        <a href="#" onclick="return editMessage({{ msg.id }})">Редактировать</a>
                     </li>
                     {% endif %}
-                    {% if message.rights.delete %}
+                    {% if msg.rights.delete %}
                     <li>
-                        <a href="#" onclick="return deleteMessage({{ message.id }})">Удалить</a>
+                        <a href="#" onclick="return deleteMessage({{ msg.id }})">Удалить</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -30,6 +30,6 @@
 
     </div>
 
-    {{ message.content|safe }}
+    {{ msg.content|safe }}
 
 </li>

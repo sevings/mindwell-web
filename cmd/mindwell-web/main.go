@@ -134,7 +134,13 @@ func main() {
 	router.DELETE("/images/:id", deleteImageHandler(mdw))
 
 	router.GET("/chats/:name", chatHandler(mdw))
+
+	router.GET("/chats/:name/messages", messagesHandler(mdw))
 	router.POST("/chats/:name/messages", sendMessageHandler(mdw))
+
+	router.GET("/messages/:id", singleMessageHandler(mdw))
+	router.POST("/messages/:id", editMessageHandler(mdw))
+	router.DELETE("/messages/:id", proxyHandler(mdw))
 
 	router.GET("/help/about", aboutHandler(mdw))
 	router.GET("/help/rules", rulesHandler(mdw))
@@ -796,12 +802,31 @@ func deleteImageHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 func chatHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		name := ctx.Param("name")
 		api := utils.NewRequest(mdw, ctx)
-		api.SetField("chat", "/chats/"+name)
-		api.SetField("messages", "/chats/"+name+"/messages")
+		api.Forward()
 		api.SetMe()
 		api.WriteTemplate("chats/chat")
+	}
+}
+
+func messagesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+		api.WriteTemplate("chats/messages")
+	}
+}
+
+func singleMessageHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+
+		msg := api.Data()
+		api.ClearData()
+		api.SetData("msg", msg)
+
+		api.WriteTemplate("chats/message")
 	}
 }
 
@@ -812,7 +837,20 @@ func sendMessageHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 		msg := api.Data()
 		api.ClearData()
-		api.SetData("message", msg)
+		api.SetData("msg", msg)
+
+		api.WriteTemplate("chats/message")
+	}
+}
+
+func editMessageHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.MethodForward("PUT")
+
+		msg := api.Data()
+		api.ClearData()
+		api.SetData("msg", msg)
 
 		api.WriteTemplate("chats/message")
 	}
