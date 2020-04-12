@@ -29,7 +29,7 @@ $(function() {
     })
 })
 
-class Notifications {
+class Feed {
     constructor() {
         this.after = ""
         this.hasAfter = true
@@ -50,27 +50,14 @@ class Notifications {
             unread = val
         else
             unread = val.data("unreadCount")
-        
+
         if(unread < 0)
             unread = 0
 
         if(unread === this.unread)
             return
 
-        $(".notifications-counter")
-            .text(unread)
-            .toggleClass("hidden", !unread)
-
-        let title = document.title
-        let repl = unread ? "(" + unread + ") " : ""
-        
-        if(this.unread > 0)
-            title = title.replace(/^\(\d+\) /, repl)
-        else
-            title = repl + title
-
-        document.title = title
-
+        this.updateCounter(unread)
         this.unread = unread
     }
     setBefore(ul) {
@@ -84,6 +71,99 @@ class Notifications {
         let nextAfter = ul.data("after")
         if(nextAfter)
             this.after = nextAfter
+    }
+    preCheck() {
+        if(this.loadingAfter) {
+            this.reloadAfter = true
+            return false
+        }
+
+        if(this.loadingBefore && !this.after)
+        {
+            this.reloadAfter = true
+            return false
+        }
+
+        this.loadingAfter = true
+        this.reloadAfter = false
+
+        return true
+    }
+    postCheck(data) {
+        let ul = $(formatTimeHtml(data))
+        this.addClickHandler(ul)
+        this.setUnread(ul)
+        this.setAfter(ul)
+        fixSvgUse(ul)
+
+        return ul
+    }
+    preLoadHistory() {
+        if(this.loadingBefore)
+            return false
+
+        if(!this.hasBefore)
+            return false
+
+        if(this.loadingAfter && !notifications.before)
+        {
+            this.reloadBefore = true
+            return false
+        }
+
+        this.loadingBefore = true
+        this.reloadBefore = false
+
+        return true
+    }
+    postLoadHistory(data) {
+        let ul = $(formatTimeHtml(data))
+        this.addClickHandler(ul)
+        this.setUnread(ul)
+        this.setBefore(ul)
+        fixSvgUse(ul)
+
+        if(!this.after)
+            this.setAfter(ul)
+
+        return ul
+    }
+    postLoadList() {
+        this.loadingAfter = false
+        this.loadingBefore = false
+        if(this.reloadAfter)
+            this.check()
+        else if(this.reloadBefore)
+            this.loadHistory()
+    }
+    postLoadItem(data) {
+        let li = $(formatTimeHtml(data))
+        this.addClickHandler(li)
+        fixSvgUse(li)
+
+        return li
+    }
+    updateCounter(unread) {}
+    addClickHandler(element) {}
+    check() {}
+    loadHistory() {}
+}
+
+class Notifications extends Feed {
+    updateCounter(unread) {
+        $(".notifications-counter")
+            .text(unread)
+            .toggleClass("hidden", !unread)
+
+        let title = document.title
+        let repl = unread ? "(" + unread + ") " : ""
+
+        if(this.unread > 0)
+            title = title.replace(/^\(\d+\) /, repl)
+        else
+            title = repl + title
+
+        document.title = title
     }
     addClickHandler(ul) {
         $("a", ul).click(() => { this.readAll() })
@@ -111,30 +191,14 @@ class Notifications {
         })        
     }
     check() {
-        if(this.loadingAfter) {
-            this.reloadAfter = true
+        if(!this.preCheck())
             return
-        }
-
-        if(this.loadingBefore && !this.after)
-        {
-            this.reloadAfter = true
-            return
-        }
-
-        this.loadingAfter = true
-        this.reloadAfter = false
 
         $.ajax({
             url: "/notifications?unread=true&after=" + this.after,
             method: "GET",
             success: (data) => {
-                let ul = $(formatTimeHtml(data))
-                this.addClickHandler(ul)
-                this.setUnread(ul)
-                this.setAfter(ul)
-                fixSvgUse(ul)
-
+                let ul = this.postCheck(data)
                 let list = $("ul.notification-list")
                 list.prepend(ul).children(".data-helper").remove()
 
@@ -149,44 +213,18 @@ class Notifications {
                 let resp = JSON.parse(req.responseText)
                 console.log(resp.message)
             },
-            complete: () => {
-                this.loadingAfter = false
-                if(this.reloadAfter)
-                    this.check()
-                else if(this.reloadBefore)
-                    this.loadHistory()
-            },
+            complete: () => { this.postLoadList() },
         })
     }
     loadHistory() {
-        if(this.loadingBefore)
+        if(!this.preLoadHistory())
             return
-
-        if(!this.hasBefore)
-            return
-    
-        if(this.loadingAfter && !notifications.before)
-        {
-            this.reloadBefore = true
-            return
-        }
-
-        this.loadingBefore = true
-        this.reloadBefore = false
 
         $.ajax({
             url: "/notifications?limit=10&before=" + this.before,
             method: "GET",
             success: (data) => {
-                let ul = $(formatTimeHtml(data))
-                this.addClickHandler(ul)
-                this.setUnread(ul)
-                this.setBefore(ul)
-                fixSvgUse(ul)
-
-                if(!this.after)
-                    this.setAfter(ul)
-
+                let ul = this.postLoadHistory(data)
                 let list = $("ul.notification-list")
                 list.append(ul).children(".data-helper").remove()
 
@@ -197,9 +235,7 @@ class Notifications {
                 let resp = JSON.parse(req.responseText)
                 console.log(resp.message)
             },
-            complete: () => {
-                this.loadingBefore = false
-            },
+            complete: () => { this.postLoadList() },
         })
     }
     read(id) {
@@ -218,8 +254,7 @@ class Notifications {
             url: "/notifications/" + id,
             method: "GET",
             success: (data) => {
-                let li = $(formatTimeHtml(data))
-                this.addClickHandler(li)
+                let li = this.postLoadItem(data)
                 old.replaceWith(li)                
             },
             error: (req) => {
@@ -245,7 +280,7 @@ class Notifications {
             let ntf = message.data
             if(ntf.state === "new") {
                 this.check()
-                this.setUnread(notifications.unread + 1)
+                this.setUnread(this.unread + 1)
                 this.sound.play()
             } else if(ntf.state === "read") {
                 this.read(ntf.id)

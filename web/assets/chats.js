@@ -1,19 +1,4 @@
-class Messages {
-    constructor() {
-        this.after = ""
-        this.hasAfter = true
-        this.loadingAfter = false
-        this.reloadAfter = false
-
-        this.before = ""
-        this.hasBefore = true
-        this.loadingBefore = false
-        this.reloadBefore = false
-
-        this.name = ""
-        this.unread = 0
-        this.sound = null
-    }
+class Messages extends Feed {
     send() {
         let btn = $("#send-message")
         if(btn.hasClass("disabled"))
@@ -41,14 +26,12 @@ class Messages {
                 "X-Error-Type": "JSON",
             },
             success: (data) => {
-                let msg = $(formatTimeHtml(data))
-                this.addClickHandler(msg)
+                let msg = this.postLoadItem(data)
                 let id = form.data("id")
                 $("#message"+id).replaceWith(msg)
 
                 msg.find("iframe.yt-video").each(prepareYtPlayer)
                 CRUMINA.mediaPopups(msg)
-                fixSvgUse(msg)
                 addYtPlayers()
 
                 if(wasAtBottom) {
@@ -79,8 +62,7 @@ class Messages {
             success: (data) => {
                 uid.val("")
 
-                let msg = $(formatTimeHtml(data))
-                this.addClickHandler(msg)
+                let msg = this.postLoadItem(data)
 
                 let ul = $("ul.comments-list")
                 let id = msg.data("id")
@@ -92,7 +74,6 @@ class Messages {
 
                 msg.find("iframe.yt-video").each(prepareYtPlayer)
                 CRUMINA.mediaPopups(msg)
-                fixSvgUse(msg)
                 addYtPlayers()
 
                 $("#messages-placeholder").remove()
@@ -164,33 +145,6 @@ class Messages {
         $("a.delete-message", ul).click((e) => { return this.delete(e.target) })
         $("a.edit-message", ul).click((e) => { return this.edit(e.target) })
     }
-    setUnread(val) {
-        let unread
-        if(typeof val == "number")
-            unread = val
-        else
-            unread = val.data("unreadCount")
-
-        if(unread < 0)
-            unread = 0
-
-        if(unread === this.unread)
-            return
-
-        this.unread = unread
-    }
-    setBefore(ul) {
-        this.hasBefore = ul.data("hasBefore")
-        let nextBefore = ul.data("before")
-        if(nextBefore)
-            this.before = nextBefore
-    }
-    setAfter(ul) {
-        this.hasAfter = ul.data("hasAfter")
-        let nextAfter = ul.data("after")
-        if(nextAfter)
-            this.after = nextAfter
-    }
     readAll() {
         if(!this.unread)
             return
@@ -205,19 +159,8 @@ class Messages {
         })
     }
     check() {
-        if(this.loadingAfter) {
-            this.reloadAfter = true
+        if(!this.preCheck())
             return
-        }
-
-        if(this.loadingBefore && !this.after)
-        {
-            this.reloadAfter = true
-            return
-        }
-
-        this.loadingAfter = true
-        this.reloadAfter = false
 
         let wasAtBottom = this.atBottom()
 
@@ -225,17 +168,12 @@ class Messages {
             url: "/chats/" + this.name + "/messages?after=" + this.after,
             method: "GET",
             success: (data) => {
-                let ul = $(formatTimeHtml(data))
-                this.addClickHandler(ul)
-                this.setUnread(ul)
-                this.setAfter(ul)
-
+                let ul = this.postCheck(data)
                 let list = $("ul.comments-list")
                 list.append(ul).children(".data-helper").remove()
 
                 ul.find("iframe.yt-video").each(prepareYtPlayer)
                 ul.each(function(){ CRUMINA.mediaPopups(this) })
-                fixSvgUse(ul)
                 addYtPlayers()
 
                 if(list.children().length > 0) {
@@ -254,49 +192,23 @@ class Messages {
                 let resp = JSON.parse(req.responseText)
                 console.log(resp.message)
             },
-            complete: () => {
-                this.loadingAfter = false
-                if(this.reloadAfter)
-                    this.check()
-                else if(this.reloadBefore)
-                    this.loadHistory()
-            },
+            complete: () => { this.postLoadList() },
         })
     }
     loadHistory() {
-        if(this.loadingBefore)
+        if(!this.preLoadHistory())
             return
-
-        if(!this.hasBefore)
-            return
-
-        if(this.loadingAfter && !notifications.before)
-        {
-            this.reloadBefore = true
-            return
-        }
-
-        this.loadingBefore = true
-        this.reloadBefore = false
 
         $.ajax({
             url: "/chats/" + this.name + "/messages?before=" + this.before,
             method: "GET",
             success: (data) => {
-                let ul = $(formatTimeHtml(data))
-                this.addClickHandler(ul)
-                this.setUnread(ul)
-                this.setBefore(ul)
-
-                if(!this.after)
-                    this.setAfter(ul)
-
+                let ul = this.postLoadHistory(data)
                 let list = $("ul.comments-list")
                 list.prepend(ul).children(".data-helper").remove()
 
                 ul.find("iframe.yt-video").each(prepareYtPlayer)
                 ul.each(function(){ CRUMINA.mediaPopups(this) })
-                fixSvgUse(ul)
                 addYtPlayers()
 
                 if(list.children().length > 0)
@@ -306,9 +218,7 @@ class Messages {
                 let resp = JSON.parse(req.responseText)
                 console.log(resp.message)
             },
-            complete: () => {
-                this.loadingBefore = false
-            },
+            complete: () => { this.postLoadList() },
         })
     }
     read(id) {
@@ -327,8 +237,7 @@ class Messages {
             url: "/messages/" + id,
             method: "GET",
             success: (data) => {
-                let li = $(formatTimeHtml(data))
-                this.addClickHandler(li)
+                let li = this.postLoadItem(data)
                 old.replaceWith(li)
             },
             error: (req) => {
