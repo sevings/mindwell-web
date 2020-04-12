@@ -15,15 +15,53 @@ class Messages {
         this.sound = null
     }
     send() {
-        let uid = $("#message-uid")
-        if(!uid.val())
-            uid.val(Date.now())
+        let btn = $("#send-message")
+        if(btn.hasClass("disabled"))
+            return false
 
         let form = $("#message-form")
         if(!form[0].reportValidity())
             return false
 
+        btn.addClass("disabled")
+
+        let save = form.data("id") > 0
+        if(save)
+            return this.save()
+
+        return this.post()
+    }
+    save() {
+        let form = $("#message-form")
+
         form.ajaxSubmit({
+            resetForm: true,
+            headers: {
+                "X-Error-Type": "JSON",
+            },
+            success: (data) => {
+                let msg = $(formatTimeHtml(data))
+                this.addClickHandler(msg)
+                let id = form.data("id")
+                $("#message"+id).replaceWith(msg)
+                fixSvgUse(msg)
+            },
+            error: showAjaxError,
+            complete: () => {
+                $("#send-message").removeClass("disabled")
+                this.clearForm()
+            },
+        })
+
+        return false
+    }
+    post() {
+        let uid = $("#message-uid")
+        if(!uid.val())
+            uid.val(Date.now())
+
+        $("#message-form").ajaxSubmit({
+            resetForm: true,
             headers: {
                 "X-Error-Type": "JSON",
             },
@@ -31,9 +69,9 @@ class Messages {
                 uid.val("")
 
                 let msg = $(formatTimeHtml(data))
-                CRUMINA.mediaPopups(msg)
+                this.addClickHandler(msg)
 
-                let ul = $("#chat-wrapper ul")
+                let ul = $("ul.comments-list")
                 let id = msg.data("id")
                 let prev = ul.find("#message" + id)
                 if(prev.length)
@@ -45,7 +83,9 @@ class Messages {
                 this.scrollToBottom()
             },
             error: showAjaxError,
-            clearForm: true,
+            complete: () => {
+                $("#send-message").removeClass("disabled")
+            },
         })
 
         return false
@@ -53,6 +93,15 @@ class Messages {
     edit(a) {
         let msg = $(a).parents(".comment-item")
         let id = msg.data("id")
+        let content = unescapeHtml(msg.data("content") + "")
+        let form = $("#message-form")
+        form.attr("action", "/messages/"+id)
+        form.data("id", id)
+        form.find("textarea").val(content)
+        $("#cancel-message").toggleClass("hidden", false)
+        $("#send-message").text("Сохранить")
+
+        return false
     }
     delete(a) {
         if(!confirm("Сообщение будет удалено навсегда."))
@@ -69,6 +118,17 @@ class Messages {
             },
             error: showAjaxError,
         })
+
+        return false
+    }
+    clearForm() {
+        let form = $("#message-form")
+        let name = $("#chat-wrapper").data("name")
+        form.attr("action", "/chats/" + name + "/messages")
+        form.data("id", "")
+        form[0].reset()
+        $("#cancel-message").toggleClass("hidden", true)
+        $("#send-message").text("Отправить")
 
         return false
     }
@@ -268,7 +328,8 @@ $(function() {
     window.messages.start()
 })
 
-$("#send-message").click(() => { window.messages.send() })
+$("#send-message").click(() => { return  window.messages.send() })
+$("#cancel-message").click(() => { return window.messages.clearForm() })
 
 $("#message-form textarea").on("keydown", (e) => {
     if(e.key != "Enter")

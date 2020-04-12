@@ -1,7 +1,7 @@
 {% extends "../base_auth.html" %}
 {% block title %}Сообщения{% endblock %}
 {% block scripts %}
-<script src="/assets/chats.js?d=20200411"></script>
+<script src="/assets/chats.js?d=20200412"></script>
 {% endblock %}
 {% block body %}
 
@@ -25,10 +25,11 @@
                 <form id="message-form" action="/chats/{{ partner.name }}/messages" method="POST" enctype="multipart/form-data">
                     <div class="form-group label-floating is-empty">
                         <label class="control-label">Написать сообщение…</label>
-                        <textarea class="form-control" name="content"></textarea>
+                        <textarea class="form-control" name="content" required></textarea>
                     </div>
                     <input id="message-uid" type="hidden" name="uid">
                     <button id="send-message" class="btn btn-md-2 btn-primary">Отправить</button>
+                    <button id="cancel-message" class="btn btn-md-2 btn-secondary hidden">Отмена</button>
                 </form>
 
             </div>

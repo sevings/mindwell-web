@@ -340,7 +340,8 @@ div.profile-section {
     min-height: 65px;
 }
 
-#send-message {
+#message-form button {
     float: right;
     margin-bottom: 0;
+    margin-right: 15px;
 }
