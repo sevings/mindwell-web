@@ -805,7 +805,7 @@ func chatHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
 		api.SetMe()
-		api.WriteTemplate("chats/chat")
+		api.WriteTemplate("chats/chat_page")
 	}
 }
 
