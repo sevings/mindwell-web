@@ -330,3 +330,43 @@ $(".file-upload__input").change(function(){
     let fileName = input.val().split('/').pop().split('\\').pop();
     input.prev().text(fileName)
 })
+
+var ytPlayers = []
+var nextYtIds = []
+
+function onYtStateChange(event) {
+    if(event.data != YT.PlayerState.PLAYING)
+        return
+
+    var id = event.target.getIframe().id
+    $.each(ytPlayers, function() {
+        if (this.getPlayerState() == YT.PlayerState.PLAYING
+            && this.getIframe().id != id)
+            this.pauseVideo()
+    })
+}
+
+function prepareYtPlayer() {
+    if(!this.id)
+        this.id="yt-video" + (ytPlayers.length + nextYtIds.length)
+
+    nextYtIds.push(this.id)
+}
+
+function addYtPlayers() {
+    for(var i = 0; i < nextYtIds.length; i++)
+    {
+        ytPlayers.push(new YT.Player(nextYtIds[i], {
+            events: {
+                "onStateChange": onYtStateChange
+            }
+        }))
+    }
+
+    nextYtIds = []
+}
+
+function onYouTubeIframeAPIReady() {
+    $("iframe.yt-video").each(prepareYtPlayer)
+    addYtPlayers()
+}

@@ -33,6 +33,7 @@ class Messages {
     }
     save() {
         let form = $("#message-form")
+        let wasAtBottom = this.atBottom()
 
         form.ajaxSubmit({
             resetForm: true,
@@ -44,7 +45,17 @@ class Messages {
                 this.addClickHandler(msg)
                 let id = form.data("id")
                 $("#message"+id).replaceWith(msg)
+
+                msg.find("iframe.yt-video").each(prepareYtPlayer)
+                CRUMINA.mediaPopups(msg)
                 fixSvgUse(msg)
+                addYtPlayers()
+
+                if(wasAtBottom) {
+                    this.scrollToBottom()
+                    msg.find(".message-content").imagesLoaded()
+                        .progress(() => { this.scrollToBottom() })
+                }
             },
             error: showAjaxError,
             complete: () => {
@@ -79,8 +90,14 @@ class Messages {
                 else
                     ul.append(msg)
 
+                msg.find("iframe.yt-video").each(prepareYtPlayer)
+                CRUMINA.mediaPopups(msg)
                 fixSvgUse(msg)
+                addYtPlayers()
+
                 this.scrollToBottom()
+                msg.find(".message-content").imagesLoaded()
+                    .progress(() => { this.scrollToBottom() })
             },
             error: showAjaxError,
             complete: () => {
@@ -211,10 +228,14 @@ class Messages {
                 this.addClickHandler(ul)
                 this.setUnread(ul)
                 this.setAfter(ul)
-                fixSvgUse(ul)
 
                 let list = $("ul.comments-list")
                 list.append(ul).children(".data-helper").remove()
+
+                ul.find("iframe.yt-video").each(prepareYtPlayer)
+                ul.each(function(){ CRUMINA.mediaPopups(this) })
+                fixSvgUse(ul)
+                addYtPlayers()
 
                 if(list.children().length > 0) {
                     $(".messages-placeholder").remove()
@@ -224,6 +245,8 @@ class Messages {
                 }
                 if(wasAtBottom) {
                     this.scrollToBottom()
+                    ul.find(".message-content").imagesLoaded()
+                        .progress(() => { this.scrollToBottom() })
                 }
             },
             error: (req) => {
@@ -263,13 +286,17 @@ class Messages {
                 this.addClickHandler(ul)
                 this.setUnread(ul)
                 this.setBefore(ul)
-                fixSvgUse(ul)
 
                 if(!this.after)
                     this.setAfter(ul)
 
                 let list = $("ul.comments-list")
                 list.prepend(ul).children(".data-helper").remove()
+
+                ul.find("iframe.yt-video").each(prepareYtPlayer)
+                ul.each(function(){ CRUMINA.mediaPopups(this) })
+                fixSvgUse(ul)
+                addYtPlayers()
 
                 if(list.children().length > 0)
                     $(".messages-placeholder").remove()
