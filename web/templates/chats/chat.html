@@ -11,7 +11,9 @@
         <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 ">
             <div class="ui-block" style="margin-bottom: 0; height: calc(100vh - 70px)">
                 <div class="ui-block-title">
-                    <h6 class="title">{{ partner.showName }}</h6>
+                    <a href="/users/{{ partner.name }}">
+                        <h6 class="title">{{ partner.showName }}</h6>
+                    </a>
                 </div>
 
                 <div id="chat-wrapper" data-name="{{ partner.name }}">

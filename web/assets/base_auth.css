@@ -317,6 +317,11 @@ div.profile-section {
     left: 0px;
 }
 
+#open-dialog {
+    font-size: .875rem;
+    line-height: 1.3;
+}
+
 #chat-wrapper {
     position: relative;
     height: calc(100vh - 265px - 5rem);
