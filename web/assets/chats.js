@@ -50,6 +50,28 @@ class Messages {
 
         return false
     }
+    edit(a) {
+        let msg = $(a).parents(".comment-item")
+        let id = msg.data("id")
+    }
+    delete(a) {
+        if(!confirm("Сообщение будет удалено навсегда."))
+            return false
+
+        let msg = $(a).parents(".comment-item")
+        let id = msg.data("id")
+
+        $.ajax({
+            url: "/messages/" + id,
+            method: "DELETE",
+            success: function() {
+                msg.remove()
+            },
+            error: showAjaxError,
+        })
+
+        return false
+    }
     atBottom() {
         let scroll = $("div.messages")
         let list = $("ul", scroll)
@@ -59,6 +81,10 @@ class Messages {
         let scroll = $("div.messages")
         let list = $("ul", scroll)
         scroll.scrollTop(list.height() - scroll.height())
+    }
+    addClickHandler(ul) {
+        $("a.delete-message", ul).click((e) => { return this.delete(e.target) })
+        $("a.edit-message", ul).click((e) => { return this.edit(e.target) })
     }
     setUnread(val) {
         let unread
@@ -122,6 +148,7 @@ class Messages {
             method: "GET",
             success: (data) => {
                 let ul = $(formatTimeHtml(data))
+                this.addClickHandler(ul)
                 this.setUnread(ul)
                 this.setAfter(ul)
                 fixSvgUse(ul)
@@ -173,6 +200,7 @@ class Messages {
             method: "GET",
             success: (data) => {
                 let ul = $(formatTimeHtml(data))
+                this.addClickHandler(ul)
                 this.setUnread(ul)
                 this.setBefore(ul)
                 fixSvgUse(ul)
@@ -212,6 +240,7 @@ class Messages {
             method: "GET",
             success: (data) => {
                 let li = $(formatTimeHtml(data))
+                this.addClickHandler(li)
                 old.replaceWith(li)
             },
             error: (req) => {

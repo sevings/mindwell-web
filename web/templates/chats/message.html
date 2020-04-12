@@ -16,12 +16,12 @@
                 <ul class="more-dropdown">
                     {% if msg.rights.edit %}
                     <li>
-                        <a href="#" onclick="return editMessage({{ msg.id }})">Редактировать</a>
+                        <a href="#" class="edit-message">Редактировать</a>
                     </li>
                     {% endif %}
                     {% if msg.rights.delete %}
                     <li>
-                        <a href="#" onclick="return deleteMessage({{ msg.id }})">Удалить</a>
+                        <a href="#" class="delete-message">Удалить</a>
                     </li>
                     {% endif %}
                 </ul>
