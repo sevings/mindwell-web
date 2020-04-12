@@ -345,3 +345,10 @@ div.profile-section {
     margin-bottom: 0;
     margin-right: 15px;
 }
+
+#messages-placeholder {
+    padding: 25px;
+    text-align: center;
+    width: 100%;
+    color: #888da8;
+}

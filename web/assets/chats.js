@@ -95,6 +95,7 @@ class Messages {
                 fixSvgUse(msg)
                 addYtPlayers()
 
+                $("#messages-placeholder").remove()
                 this.scrollToBottom()
                 msg.find(".message-content").imagesLoaded()
                     .progress(() => { this.scrollToBottom() })
@@ -238,7 +239,7 @@ class Messages {
                 addYtPlayers()
 
                 if(list.children().length > 0) {
-                    $(".messages-placeholder").remove()
+                    $("#messages-placeholder").remove()
                     if(!this.before) {
                         this.setBefore(ul)
                     }
@@ -299,7 +300,7 @@ class Messages {
                 addYtPlayers()
 
                 if(list.children().length > 0)
-                    $(".messages-placeholder").remove()
+                    $("#messages-placeholder").remove()
             },
             error: (req) => {
                 let resp = JSON.parse(req.responseText)
