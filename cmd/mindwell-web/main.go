@@ -133,7 +133,9 @@ func main() {
 	router.GET("/images/:id", imageHandler(mdw))
 	router.DELETE("/images/:id", deleteImageHandler(mdw))
 
+	router.GET("/chats", chatsHandler(mdw))
 	router.GET("/chats/:name", chatHandler(mdw))
+	router.PUT("/chats/:name/read", proxyHandler(mdw))
 
 	router.GET("/chats/:name/messages", messagesHandler(mdw))
 	router.POST("/chats/:name/messages", sendMessageHandler(mdw))
@@ -804,8 +806,25 @@ func chatHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.Forward()
-		api.SetMe()
-		api.WriteTemplate("chats/chat_page")
+
+		if api.IsAjax() {
+			chat := api.Data()
+			api.ClearData()
+			api.SetData("chat", chat)
+
+			api.WriteTemplate("chats/chat")
+		} else {
+			api.SetMe()
+			api.WriteTemplate("chats/chat_page")
+		}
+	}
+}
+
+func chatsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+		api.WriteTemplate("chats/chats")
 	}
 }
 

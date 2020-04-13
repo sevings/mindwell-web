@@ -181,7 +181,7 @@ class Notifications extends Feed {
         if(!this.unread)
             return 
 
-        $("ul.notification-list > li.un-read").removeClass("un-read")
+        $(".notifications li.un-read").removeClass("un-read")
 
         this.setUnread(0)
 
@@ -199,7 +199,7 @@ class Notifications extends Feed {
             method: "GET",
             success: (data) => {
                 let ul = this.postCheck(data)
-                let list = $("ul.notification-list")
+                let list = $(".notifications > .notification-list")
                 list.prepend(ul).children(".data-helper").remove()
 
                 if(list.children().length > 0) {
@@ -225,7 +225,7 @@ class Notifications extends Feed {
             method: "GET",
             success: (data) => {
                 let ul = this.postLoadHistory(data)
-                let list = $("ul.notification-list")
+                let list = $(".notifications > .notification-list")
                 list.append(ul).children(".data-helper").remove()
 
                 if(list.children().length > 0)
@@ -311,7 +311,7 @@ $(function() {
 $(".more-dropdown .notifications").mouseout(() => { window.notifications.readAll() })
 
 $(".notifications-control").mouseenter(function() {
-    if($("ul.notification-list").children().length < 5)
+    if($(".notifications > .notification-list").children().length < 5)
         window.notifications.loadHistory()
 })
 
@@ -322,7 +322,7 @@ $("a[href='#notifications']").click(function() {
     
     if(read)
         window.notifications.readAll()
-    else if($("ul.notification-list").children().length < 5)
+    else if($(".notifications > .notification-list").children().length < 5)
         window.notifications.loadHistory()
 })
 
@@ -334,6 +334,143 @@ $("div.notifications").scroll(function() {
         return
 
     window.notifications.loadHistory()
+});
+
+class Chats extends Feed {
+    updateCounter(unread) {
+        $(".chats-counter")
+            .text(unread)
+            .toggleClass("hidden", !unread)
+    }
+    addClickHandler(ul) {
+        ul.click(function() {
+            let link = $(this).find(".notification-action").prop("href")
+            if(window.location.pathname === new URL(link).pathname)
+                window.location.reload()
+            else
+                window.location = link
+        })
+    }
+    check() {
+        if(!this.preCheck())
+            return
+
+        $.ajax({
+            url: "/chats?limit=10&after=" + this.after,
+            method: "GET",
+            success: (data) => {
+                let ul = this.postCheck(data)
+                ul.each(function() {
+                    let id = $(this).data("id")
+                    if(id)
+                        $("#" + id).remove()
+                })
+
+                let list = $(".chats > .notification-list")
+                list.prepend(ul).children(".data-helper").remove()
+
+                if(list.children().length > 0) {
+                    $(".chats-placeholder").remove()
+                    if(!this.before) {
+                        this.setBefore(ul)
+                    }
+                }
+            },
+            error: (req) => {
+                let resp = JSON.parse(req.responseText)
+                console.log(resp.message)
+            },
+            complete: () => { this.postLoadList() },
+        })
+    }
+    loadHistory() {
+        if(!this.preLoadHistory())
+            return
+
+        $.ajax({
+            url: "/chats?limit=10&before=" + this.before,
+            method: "GET",
+            success: (data) => {
+                let ul = this.postLoadHistory(data)
+                let list = $(".chats > .notification-list")
+                list.append(ul).children(".data-helper").remove()
+
+                if(list.children().length > 0)
+                    $(".chats-placeholder").remove()
+            },
+            error: (req) => {
+                let resp = JSON.parse(req.responseText)
+                console.log(resp.message)
+            },
+            complete: () => { this.postLoadList() },
+        })
+    }
+    read(id) {
+        let li = $("#chat" + id)
+        if(li.hasClass("message-unread")) {
+            li.removeClass("message-unread")
+            this.setUnread(this.unread - 1)
+        }
+    }
+    update(id) {
+        let old = $("#chat" + id)
+        if(!old.length)
+            return
+
+        let name = old.data("name")
+
+        $.ajax({
+            url: "/chats/" + name,
+            method: "GET",
+            success: (data) => {
+                old.remove()
+
+                let li = this.postLoadItem(data)
+                let list = $(".chats > .notification-list")
+                list.prepend(li)
+            },
+            error: (req) => {
+                let resp = JSON.parse(req.responseText)
+                console.log(resp.message)
+            },
+        })
+    }
+    remove(id) {
+        let li = $("#chat" + id)
+        if(li.hasClass("message-unread"))
+            this.setUnread(this.unread - 1)
+
+        li.remove()
+    }
+    start() {
+        this.sound = new Audio("/assets/notification.mp3")
+        this.check()
+    }
+}
+
+$(function() {
+    window.chats = new Chats()
+    window.chats.start()
+})
+
+$(".chats-control").mouseenter(function() {
+    if($(".chats > .notification-list").children().length < 5)
+        window.chats.loadHistory()
+})
+
+$("a[href='#chats']").click(function() {
+     if($(".chats > .notification-list").children().length < 5)
+        window.chats.loadHistory()
+})
+
+$("div.chats").scroll(function() {
+    let scroll = $(this)
+    let list = $("ul", scroll)
+
+    if(scroll.scrollTop() < list.height() - scroll.height() - 300)
+        return
+
+    window.chats.loadHistory()
 });
 
 function checkFileSize(form) {

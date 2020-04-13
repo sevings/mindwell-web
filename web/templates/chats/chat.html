@@ -1,0 +1,21 @@
+<li id="chat{{ chat.id }}" {% if chat.unreadCount > 0 %}class="message-unread"{% endif %}
+    data-id="{{ chat.id }}" data-name="{{ chat.partner.name }}">
+    <div class="author-thumb">
+        <a href="/users/{{ chat.partner.name }}">
+            <img class="avatar-x34" src="{{ chat.partner.avatar.x42 }}" alt="{{ chat.partner.showName }}">
+        </a>
+    </div>
+    <div class="notification-event">
+        <a href="/users/{{ chat.partner.name }}" class="h6 notification-friend">{{ chat.partner.showName }}</a><br>
+        <div class="chat-message-item">
+            {{ chat.lastMessage.content|safe }}
+        </div>
+        <span class="notification-date">
+            <time class="entry-date updated" datetime="{{ chat.lastMessage.createdAt }}"></time>
+            <a href="/chats/{{ chat.partner.name }}" class="notification-action"></a>
+        </span>
+    </div>
+    <span class="notification-icon">
+        <svg class="olymp-chat---messages-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-chat---messages-icon"></use></svg>
+    </span>
+</li>

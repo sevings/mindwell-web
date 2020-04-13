@@ -53,7 +53,7 @@ img.mfp-img {
 }
 
 .mobile-app-tabs {
-    justify-content: space-evenly
+    padding: 0 0 0 70px;
 }
 
 .hcenter {
@@ -77,7 +77,7 @@ img.mfp-img {
     top: 0px !important;
 }
 
-.notifications-placeholder {
+.notifications-placeholder,.chats-placeholder {
     padding: 25px;
     text-align: center;
 }

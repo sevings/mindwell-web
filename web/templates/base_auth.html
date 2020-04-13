@@ -222,11 +222,22 @@
 
 		<div class="control-block">
 
+			<div class="control-icon more has-items chats-control">
+				<svg class="olymp-chat---messages-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-chat---messages-icon"></use></svg>
+				<div class="label-avatar bg-purple hidden chats-counter"></div>
+				<div class="more-dropdown more-with-triangle triangle-top-center">
+					<div class="mCustomScrollbar chats" data-mcs-theme="dark">
+						<ul class="notification-list chat-message"></ul>
+						<div class="chats-placeholder">
+							Здесь будут показаны твои переписки.
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="control-icon more has-items notifications-control">
 				<svg class="olymp-thunder-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-thunder-icon"></use></svg>
-
 				<div class="label-avatar bg-primary hidden notifications-counter"></div>
-
 				<div class="more-dropdown more-with-triangle triangle-top-center">
 					<div class="mCustomScrollbar notifications" data-mcs-theme="dark">
 						<ul class="notification-list"></ul>
@@ -310,6 +321,15 @@
 	<div class="header-content-wrapper">
 		<ul class="nav nav-tabs mobile-app-tabs" role="tablist">
 			<li class="nav-item">
+				<a class="nav-link" data-toggle="tab" href="#chats" role="tab">
+					<div class="control-icon has-items">
+						<svg class="olymp-chat---messages-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-chat---messages-icon"></use></svg>
+						<div class="label-avatar bg-purple hidden chats-counter"></div>
+					</div>
+				</a>
+			</li>
+
+			<li class="nav-item">
 				<a class="nav-link" data-toggle="tab" href="#notifications" role="tab">
 					<div class="control-icon has-items">
 						<svg class="olymp-thunder-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-thunder-icon"></use></svg>
@@ -328,6 +348,15 @@
 	</div>
 
 	<div class="tab-content tab-content-responsive">
+
+		<div class="tab-pane " id="chats" role="tabpanel">
+			<div class="mCustomScrollbar chats" data-mcs-theme="dark">
+				<ul class="notification-list chat-message"></ul>
+				<div class="chats-placeholder">
+					Здесь будут показаны твои переписки.
+				</div>
+			</div>
+		</div>
 
 		<div class="tab-pane " id="notifications" role="tabpanel">
 			<div class="mCustomScrollbar notifications" data-mcs-theme="dark">
