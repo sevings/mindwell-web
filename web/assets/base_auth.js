@@ -404,12 +404,17 @@ class Chats extends Feed {
             complete: () => { this.postLoadList() },
         })
     }
-    read(id) {
-        let li = $("#chat" + id)
-        if(li.hasClass("message-unread")) {
-            li.removeClass("message-unread")
-            this.setUnread(this.unread - 1)
-        }
+    read(chatID, msgID) {
+        let li = $("#chat" + chatID)
+        if(!li.hasClass("message-unread"))
+            return
+
+        if(li.data("lastMessage") !== msgID)
+            return
+
+        li.removeClass("message-unread")
+        li.find(".messages-counter").text("").addClass("hidden")
+        this.setUnread(this.unread - 1)
     }
     update(id) {
         let old = $("#chat" + id)
@@ -454,7 +459,7 @@ class Chats extends Feed {
                 this.setUnread(this.unread + 1)
                 this.sound.play()
             } else if(ntf.state === "read") {
-                this.read(ntf.id)
+                this.read(ntf.id, ntf.subject)
             } else if(ntf.state === "updated") {
                 this.update(ntf.id)
             } else if(ntf.state === "removed") {

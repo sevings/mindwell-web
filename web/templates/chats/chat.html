@@ -1,9 +1,13 @@
 <li id="chat{{ chat.id }}" {% if chat.unreadCount > 0 %}class="message-unread"{% endif %}
-    data-id="{{ chat.id }}" data-name="{{ chat.partner.name }}">
+    data-id="{{ chat.id }}" data-name="{{ chat.partner.name }}"
+    data-last-message="{{ chat.lastMessage.id }}">
     <div class="author-thumb">
         <a href="/users/{{ chat.partner.name }}">
             <img class="avatar-x34" src="{{ chat.partner.avatar.x42 }}" alt="{{ chat.partner.showName }}">
         </a>
+    </div>
+    <div class="label-avatar bg-purple messages-counter {% if !chat.unreadCount %}hidden{% endif %}">
+        {{ chat.unreadCount }}
     </div>
     <div class="notification-event">
         <a href="/users/{{ chat.partner.name }}" class="h6 notification-friend">{{ chat.partner.showName }}</a><br>

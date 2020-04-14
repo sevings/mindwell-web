@@ -357,3 +357,12 @@ div.profile-section {
     width: 100%;
     color: #888da8;
 }
+
+.label-avatar.messages-counter {
+    top: calc(50% - 9px);
+    right: 27px;
+}
+
+.label-avatar.messages-counter.hidden {
+    display: none;
+}
