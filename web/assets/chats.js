@@ -254,7 +254,41 @@ class Messages extends Feed {
         li.remove()
     }
     start() {
-        this.name = $("#chat-wrapper").data("name")
+        let name = $("body").data("meName")
+        if(!name)
+            return
+
+        let wrapper = $("#chat-wrapper")
+        let chatID = wrapper.data("id")
+
+        let channel = "messages#" + name
+        let subs = window.centrifuge.subscribe(channel, (message) => {
+            let ntf = message.data
+            if(ntf.id !== chatID)
+                return
+
+            if(ntf.state === "new") {
+                this.check()
+                this.setUnread(this.unread + 1)
+                this.sound.play()
+            } else if(ntf.state === "read") {
+                this.read(ntf.subject)
+            } else if(ntf.state === "updated") {
+                this.update(ntf.subject)
+            } else if(ntf.state === "removed") {
+                this.remove(ntf.subject)
+            } else {
+                console.log("Unknown notification state:", ntf.state)
+            }
+        })
+
+        subs.on("subscribe", () => { this.check() })
+        subs.on("error", (err) => {
+            console.log("Subscribe to " + channel + ":", err.error)
+            this.check()
+        })
+
+        this.name = wrapper.data("name")
         this.sound = new Audio("/assets/notification.mp3")
         this.check()
     }

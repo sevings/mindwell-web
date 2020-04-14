@@ -361,9 +361,8 @@ class Chats extends Feed {
             success: (data) => {
                 let ul = this.postCheck(data)
                 ul.each(function() {
-                    let id = $(this).data("id")
-                    if(id)
-                        $("#" + id).remove()
+                    if(this.id)
+                        $("#" + this.id).remove()
                 })
 
                 let list = $(".chats > .notification-list")
@@ -443,8 +442,35 @@ class Chats extends Feed {
         li.remove()
     }
     start() {
+        let name = $("body").data("meName")
+        if(!name)
+            return
+
+        let channel = "messages#" + name
+        let subs = window.centrifuge.subscribe(channel, (message) => {
+            let ntf = message.data
+            if(ntf.state === "new") {
+                this.check()
+                this.setUnread(this.unread + 1)
+                this.sound.play()
+            } else if(ntf.state === "read") {
+                this.read(ntf.id)
+            } else if(ntf.state === "updated") {
+                this.update(ntf.id)
+            } else if(ntf.state === "removed") {
+                this.remove(ntf.id)
+            } else {
+                console.log("Unknown notification state:", ntf.state)
+            }
+        })
+
+        subs.on("subscribe", () => { this.check() })
+        subs.on("error", (err) => {
+            console.log("Subscribe to " + channel + ":", err.error)
+            this.check()
+        })
+
         this.sound = new Audio("/assets/notification.mp3")
-        this.check()
     }
 }
 
