@@ -7,11 +7,11 @@
         </a>
     </div>
     <div class="label-avatar bg-purple messages-counter {% if !chat.unreadCount %}hidden{% endif %}">
-        {{ chat.unreadCount }}
+        {{ chat.unreadCount|default:0 }}
     </div>
     <div class="notification-event">
         <a href="/users/{{ chat.partner.name }}" class="h6 notification-friend">{{ chat.partner.showName }}</a><br>
-        <div class="chat-message-item">
+        <div class="chat-message-item {% if !chat.unreadCount && !chat.lastMessage.read %}message-unread{% endif %}">
             {{ chat.lastMessage.content|safe }}
         </div>
         <span class="notification-date">

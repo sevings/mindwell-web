@@ -51,6 +51,9 @@ class Feed {
         else
             unread = val.data("unreadCount")
 
+        if(unread === undefined)
+            return
+
         if(unread < 0)
             unread = 0
 
@@ -454,6 +457,9 @@ class Chats extends Feed {
         let channel = "messages#" + name
         let subs = window.centrifuge.subscribe(channel, (message) => {
             let ntf = message.data
+            if(ntf.id === this.chat)
+                return
+
             if(ntf.state === "new") {
                 this.check()
                 this.setUnread(this.unread + 1)
@@ -475,6 +481,7 @@ class Chats extends Feed {
             this.check()
         })
 
+        this.chat = $("#chat-wrapper").data("id")
         this.sound = new Audio("/assets/notification.mp3")
     }
 }

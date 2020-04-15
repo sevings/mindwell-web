@@ -146,17 +146,23 @@ class Messages extends Feed {
         $("a.edit-message", ul).click((e) => { return this.edit(e.target) })
     }
     readAll() {
-        if(!this.unread)
+        if(!ifvisible.now())
             return
 
-        $("ul.comments-list > li.un-read").removeClass("un-read")
+        let list = $("ul.comments-list > li.message-unread")
+        if(!list.length)
+            return
 
-        this.setUnread(0)
+        let last = list.last().data("id")
 
-        $.ajax({
-            url: "/chats/" + this.name + "/read?message=" + this.after,
-            method: "PUT",
-        })
+        setTimeout(() => {
+            $.ajax({
+                url: "/chats/" + this.name + "/read?message=" + last,
+                method: "PUT",
+            })
+
+            list.removeClass("message-unread")
+        }, this.unread * 500)
     }
     check() {
         if(!this.preCheck())
@@ -187,6 +193,7 @@ class Messages extends Feed {
                     ul.find(".message-content").imagesLoaded()
                         .progress(() => { this.scrollToBottom() })
                 }
+                this.readAll()
             },
             error: (req) => {
                 let resp = JSON.parse(req.responseText)
@@ -270,7 +277,8 @@ class Messages extends Feed {
             if(ntf.state === "new") {
                 this.check()
                 this.setUnread(this.unread + 1)
-                this.sound.play()
+                if(!ifvisible.now())
+                    this.sound.play()
             } else if(ntf.state === "read") {
                 this.read(ntf.subject)
             } else if(ntf.state === "updated") {
@@ -319,3 +327,6 @@ $("div.messages").scroll(function() {
     if($(this).scrollTop() < 300)
         window.messages.loadHistory()
 });
+
+ifvisible.setIdleDuration(10)
+ifvisible.on("wakeup", () => { window.messages.readAll() })
