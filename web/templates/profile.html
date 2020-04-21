@@ -134,10 +134,12 @@
                                 <a id="follow" href="#" class="btn btn-control">
                                     <svg class="olymp-happy-face-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-happy-face-icon"></use></svg>
                                 </a>
-                                <a href="#" class="btn btn-control bg-purple" title="Отправить сообщение"
-                                        data-toggle="modal" data-target="#private-message">
-                                    <svg class="olymp-chat---messages-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-chat---messages-icon"></use></svg>
-                                </a>
+                                {% if me.invitedBy.id && profile.relations.isOpenForMe %}
+                                    <a href="#" class="btn btn-control bg-purple" title="Отправить сообщение"
+                                            data-toggle="modal" data-target="#private-message">
+                                        <svg class="olymp-chat---messages-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-chat---messages-icon"></use></svg>
+                                    </a>
+                                {% endif %}
                                 {% if !profile.invitedBy.id && me.invitedBy.id %}
                                     <a id="give-invite" href="#" class="btn btn-control bg-primary" title="Отправить приглашение" 
                                             data-toggle="modal" data-target="#invite-user">
@@ -224,7 +226,7 @@
             </div>
         </div>
     </div>
-{% else %}
+{% elif me.invitedBy.id && profile.relations.isOpenForMe %}
     <div class="modal fade" id="private-message" tabindex="-1" role="dialog" aria-labelledby="private-message" aria-hidden="true">
         <div class="modal-dialog modal-sm window-popup edit-widget" role="document">
             <div class="modal-content">
