@@ -2,7 +2,13 @@ function setOnline() {
     function sendRequest() {
         $.ajax({
             url: "/me/online",
-            method: "PUT"
+            method: "PUT",
+            dataType: "json",
+            success: function(resp) {
+                window.chats.updateCounter(resp.chats)
+                window.notifications.updateCounter(resp.notifications)
+            },
+            error: showAjaxError,
         })    
     }
 
@@ -10,8 +16,6 @@ function setOnline() {
 
     sendRequest()
 }
-
-$(setOnline)
 
 $(function() {
     let proto = (document.location.protocol === "https:" ? "wss:" : "ws:")
@@ -25,6 +29,8 @@ $(function() {
         success: function(resp) {
             window.centrifuge.setToken(resp.token)
             window.centrifuge.connect()
+
+            setOnline()
         }
     })
 })
@@ -296,10 +302,9 @@ class Notifications extends Feed {
             }
         })
 
-        subs.on("subscribe", () => { this.check() })
+        subs.on("subscribe", () => { })
         subs.on("error", (err) => {
             console.log("Subscribe to " + channel + ":", err.error)
-            this.check()
         })
 
         this.sound = new Audio("/assets/notification.mp3")
@@ -475,10 +480,9 @@ class Chats extends Feed {
             }
         })
 
-        subs.on("subscribe", () => { this.check() })
+        subs.on("subscribe", () => { })
         subs.on("error", (err) => {
             console.log("Subscribe to " + channel + ":", err.error)
-            this.check()
         })
 
         this.chat = $("#chat-wrapper").data("id")
