@@ -1,20 +1,17 @@
 function setOnline() {
-    function sendRequest() {
-        $.ajax({
-            url: "/me/online",
-            method: "PUT",
-            dataType: "json",
-            success: function(resp) {
-                window.chats.updateCounter(resp.chats)
-                window.notifications.updateCounter(resp.notifications)
-            },
-            error: showAjaxError,
-        })    
-    }
-
-    setInterval(sendRequest, 180000)
-
-    sendRequest()
+    $.ajax({
+        url: "/me/online",
+        method: "PUT",
+        dataType: "json",
+        success: function(resp) {
+            window.chats.updateCounter(resp.chats)
+            window.notifications.updateCounter(resp.notifications)
+        },
+        error: (req) => {
+            let resp = JSON.parse(req.responseText)
+            console.log(resp.message)
+        },
+    })
 }
 
 $(function() {
@@ -30,6 +27,7 @@ $(function() {
             window.centrifuge.setToken(resp.token)
             window.centrifuge.connect()
 
+            setInterval(setOnline, 180000)
             setOnline()
         }
     })
@@ -417,7 +415,7 @@ class Chats extends Feed {
         if(!li.hasClass("message-unread"))
             return
 
-        if(li.data("lastMessage") !== msgID)
+        if(li.data("lastMessage") > msgID)
             return
 
         li.removeClass("message-unread")

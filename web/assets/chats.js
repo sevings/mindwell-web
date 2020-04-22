@@ -162,6 +162,7 @@ class Messages extends Feed {
             })
 
             list.removeClass("message-unread")
+            window.chats.read(this.chat, last)
         }, this.unread * 500)
     }
     check() {
@@ -266,12 +267,12 @@ class Messages extends Feed {
             return
 
         let wrapper = $("#chat-wrapper")
-        let chatID = wrapper.data("id")
+        this.chat = wrapper.data("id")
 
         let channel = "messages#" + name
         let subs = window.centrifuge.subscribe(channel, (message) => {
             let ntf = message.data
-            if(ntf.id !== chatID)
+            if(ntf.id !== this.chat)
                 return
 
             if(ntf.state === "new") {
@@ -290,7 +291,10 @@ class Messages extends Feed {
             }
         })
 
-        subs.on("subscribe", () => { this.check() })
+        subs.on("subscribe", () => {
+            window.chats.check()
+            this.check()
+        })
         subs.on("error", (err) => {
             console.log("Subscribe to " + channel + ":", err.error)
             this.check()
@@ -298,7 +302,6 @@ class Messages extends Feed {
 
         this.name = wrapper.data("name")
         this.sound = new Audio("/assets/notification.mp3")
-        this.check()
     }
 }
 
