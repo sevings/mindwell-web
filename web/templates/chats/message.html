@@ -1,8 +1,10 @@
-<li id="message{{ msg.id }}"  class="comment-item {% if !msg.read %}message-unread{% endif %}"
+<li id="message{{ msg.id }}"  class="comment-item {% if true %}message-unread{% endif %}"
         data-id="{{ msg.id }}"
         {% if msg.rights.edit %} data-content="{{ msg.editContent }}" {% endif %}>
     <div class="post__author author vcard inline-items">
-        <img src="{{ msg.author.avatar.x42 }}" alt="{{ msg.author.showName }}">
+        <a class="h6 post__author-name fn" href="/users/{{ msg.author.name }}">
+            <img src="{{ msg.author.avatar.x42 }}" alt="{{ msg.author.showName }}">
+        </a>
 
         <div class="author-date">
             <a class="h6 post__author-name fn" href="/users/{{ msg.author.name }}">{{ msg.author.showName }}</a>

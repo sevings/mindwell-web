@@ -100,7 +100,7 @@ img.mfp-img {
     overflow-wrap: break-word;
 }
 
-.notification-list li {
+.notifications li, .chats li {
     cursor: pointer;
 }
 
@@ -314,7 +314,6 @@ div.profile-section {
 
 .ps.ps--active-x > .ps__scrollbar-x-rail, .ps.ps--active-y > .ps__scrollbar-y-rail {
     top: 0px !important;
-    left: 0px;
 }
 
 #open-dialog {
@@ -330,10 +329,15 @@ div.profile-section {
 #chat-wrapper>div {
     position: absolute;
     bottom: 0;
+    width: 100%;
 }
 
 #chat-wrapper .mCustomScrollbar {
     max-height: calc(100vh - 265px - 5rem);
+}
+
+.message-unread {
+    background-color: #f7f9fc;
 }
 
 #message-form {
