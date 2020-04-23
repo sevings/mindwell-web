@@ -29,11 +29,13 @@
 
                 <form id="message-form" action="/chats/{{ partner.name }}/messages" method="POST" enctype="multipart/form-data">
                     <div class="form-group label-floating is-empty">
-                        <label class="control-label">Написать сообщение…</label>
-                        <textarea class="form-control" name="content" maxlength="1000" required></textarea>
+                        <label class="control-label">
+                            {% if rights.send %}Написать сообщение…{% else %}Тебе нельзя отправлять сообщения в этот чат.{% endif %}
+                        </label>
+                        <textarea class="form-control" name="content" maxlength="1000" required{% if !rights.send %} disabled{% endif %}></textarea>
                     </div>
                     <input id="message-uid" type="hidden" name="uid">
-                    <button id="send-message" class="btn btn-md-2 btn-primary">Отправить</button>
+                    <button id="send-message" class="btn btn-md-2 btn-primary"{% if !rights.send %} disabled{% endif %}>Отправить</button>
                     <button id="cancel-message" class="btn btn-md-2 btn-secondary hidden">Отмена</button>
                 </form>
 
