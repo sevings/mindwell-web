@@ -484,7 +484,7 @@ class Chats extends Feed {
         })
 
         this.chat = $("#chat-wrapper").data("id")
-        this.sound = new Audio("/assets/notification.mp3")
+        this.sound = new Audio("/assets/message.mp3")
     }
 }
 

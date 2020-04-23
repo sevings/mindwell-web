@@ -302,7 +302,7 @@ class Messages extends Feed {
         })
 
         this.name = wrapper.data("name")
-        this.sound = new Audio("/assets/notification.mp3")
+        this.sound = new Audio("/assets/message.mp3")
     }
 }
 
