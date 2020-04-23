@@ -150,6 +150,7 @@ class Messages extends Feed {
             return
 
         let list = $("ul.comments-list > li.message-unread")
+            .filter((i, e) => $(e).data("author") === this.name)
         if(!list.length)
             return
 

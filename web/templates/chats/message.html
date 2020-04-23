@@ -1,5 +1,5 @@
 <li id="message{{ msg.id }}"  class="comment-item {% if true %}message-unread{% endif %}"
-        data-id="{{ msg.id }}"
+        data-id="{{ msg.id }}" data-author="{{ msg.author.name }}"
         {% if msg.rights.edit %} data-content="{{ msg.editContent }}" {% endif %}>
     <div class="post__author author vcard inline-items">
         <a class="h6 post__author-name fn" href="/users/{{ msg.author.name }}">
