@@ -1,4 +1,4 @@
-<li id="chat{{ chat.id }}" {% if chat.unreadCount > 0 %}class="message-unread"{% endif %}
+<li id="chat{{ chat.id }}" {% if !chat.lastMessage.read %}class="message-unread"{% endif %}
     data-id="{{ chat.id }}" data-name="{{ chat.partner.name }}"
     data-last-message="{{ chat.lastMessage.id }}">
     <div class="author-thumb">
@@ -11,7 +11,7 @@
     </div>
     <div class="notification-event">
         <a href="/users/{{ chat.partner.name }}" class="h6 notification-friend">{{ chat.partner.showName }}</a><br>
-        <div class="chat-message-item {% if !chat.unreadCount && !chat.lastMessage.read %}message-unread{% endif %}">
+        <div class="chat-message-item">
             {{ chat.lastMessage.content|safe }}
         </div>
         <span class="notification-date">
