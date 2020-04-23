@@ -232,8 +232,8 @@ class Messages extends Feed {
     }
     read(id) {
         let li = $("#message" + id)
-        if(li.hasClass("un-read")) {
-            li.removeClass("un-read")
+        if(li.hasClass("message-unread")) {
+            li.removeClass("message-unread")
             this.setUnread(this.unread - 1)
         }
     }
@@ -257,7 +257,7 @@ class Messages extends Feed {
     }
     remove(id) {
         let li = $("#message" + id)
-        if(li.hasClass("un-read"))
+        if(li.hasClass("message-unread"))
             this.setUnread(this.unread - 1)
 
         li.remove()

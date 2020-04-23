@@ -336,8 +336,8 @@ div.profile-section {
     max-height: calc(100vh - 265px - 5rem);
 }
 
-.message-unread {
-    background-color: #f7f9fc;
+.message-unread, .comments-list .comment-item.message-unread {
+    background-color: #e6ecf5;
 }
 
 #message-form {
