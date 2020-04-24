@@ -325,6 +325,10 @@ div.profile-section {
     background-color: #e6ecf5;
 }
 
+#chat-wrapper p {
+    margin-bottom: 0;
+}
+
 #chat-block {
     margin-bottom: 0;
     height: calc(100vh - 70px);
