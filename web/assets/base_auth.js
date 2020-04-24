@@ -433,11 +433,8 @@ class Chats extends Feed {
             url: "/chats/" + name,
             method: "GET",
             success: (data) => {
-                old.remove()
-
                 let li = this.postLoadItem(data)
-                let list = $(".chats > .notification-list")
-                list.prepend(li)
+                old.replaceWith(li)
             },
             error: (req) => {
                 let resp = JSON.parse(req.responseText)

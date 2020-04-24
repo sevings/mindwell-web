@@ -321,27 +321,50 @@ div.profile-section {
     line-height: 1.3;
 }
 
-#chat-wrapper {
-    position: relative;
-    height: calc(100vh - 265px - 5rem);
-}
-
-#chat-wrapper>div {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-}
-
-#chat-wrapper .mCustomScrollbar {
-    max-height: calc(100vh - 265px - 5rem);
-}
-
 .message-unread, .comments-list .comment-item.message-unread {
     background-color: #e6ecf5;
 }
 
+#chat-block {
+    margin-bottom: 0;
+    height: calc(100vh - 70px);
+}
+
+.chat-fixed {
+    position: fixed;
+    z-index: 3;
+    background-color: #fff;
+    margin-left: -1px;
+}
+
+@media (min-width: 1400px)                         { .chat-fixed { width: 620px } }
+@media (min-width: 1200px) and (max-width: 1399px) { .chat-fixed { width: 525px } }
+@media (min-width: 1024px) and (max-width: 1199px) { .chat-fixed { width: 570px } }
+@media (min-width:  800px) and (max-width: 1023px) { .chat-fixed { width: 650px } }
+@media (min-width:  600px) and (max-width:  799px) { .chat-fixed { width: 570px } }
+@media                         (max-width:  599px) { .chat-fixed { width: calc(100vw - 32px) } }
+
+#chat-title {
+    padding-top: 93px;
+    top: 0;
+}
+
+#chat-wrapper {
+    padding-bottom: calc(83px + 7rem);
+    padding-top: calc(49px + 1rem);
+}
+
+#messages-placeholder {
+    position: absolute;
+    bottom: calc(83px + 7rem);
+    width: calc(100% - 32px);
+    padding: 25px;
+    text-align: center;
+    color: #888da8;
+}
+
 #message-form {
-    overflow: hidden;
+    bottom: 0;
     padding: 25px;
 }
 
@@ -353,13 +376,6 @@ div.profile-section {
     float: right;
     margin-bottom: 0;
     margin-right: 15px;
-}
-
-#messages-placeholder {
-    padding: 25px;
-    text-align: center;
-    width: 100%;
-    color: #888da8;
 }
 
 .label-avatar.messages-counter {

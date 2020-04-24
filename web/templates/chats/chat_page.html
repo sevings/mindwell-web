@@ -3,31 +3,28 @@
 {% block scripts %}
     <script src="//youtube.com/iframe_api"></script>
     <script src="/assets/js/ifvisible.min.js"></script>
-    <script src="/assets/chats.js?d=20200423"></script>
+    <script src="/assets/chats.js?d=20200424"></script>
 {% endblock %}
 {% block body %}
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 ">
-            <div class="ui-block" style="margin-bottom: 0; height: calc(100vh - 70px)">
-                <div class="ui-block-title">
+        <div class="col col-xl-6 col-lg-8 col-md-12 col-sm-12 col-12 ">
+            <div id="chat-block" class="ui-block">
+                <div id="chat-title" class="ui-block-title chat-fixed">
                     <a href="/users/{{ partner.name }}">
                         <h6 class="title">{{ partner.showName }}</h6>
                     </a>
                 </div>
 
                 <div id="chat-wrapper" data-id="{{ id }}" data-name="{{ partner.name }}">
-                    <div id="messages-placeholder">Здесь будет показана ваша переписка.</div>
-                    <div>
-                        <div class="mCustomScrollbar messages" data-mcs-theme="dark">
-                            <ul class="comments-list">
-                            </ul>
-                        </div>
-                    </div>
+                    <ul class="comments-list">
+                    </ul>
                 </div>
 
-                <form id="message-form" action="/chats/{{ partner.name }}/messages" method="POST" enctype="multipart/form-data">
+                <div id="messages-placeholder">Здесь будет показана ваша переписка.</div>
+
+                <form id="message-form" class="chat-fixed" action="/chats/{{ partner.name }}/messages" method="POST" enctype="multipart/form-data">
                     <div class="form-group label-floating is-empty">
                         <label class="control-label">
                             {% if rights.send %}Написать сообщение…{% else %}Тебе нельзя отправлять сообщения в этот чат.{% endif %}

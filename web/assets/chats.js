@@ -132,14 +132,14 @@ class Messages extends Feed {
         return false
     }
     atBottom() {
-        let scroll = $("div.messages")
-        let list = $("ul", scroll)
-        return scroll.scrollTop() >= list.height() - scroll.height()
+        let scroll = $(window)
+        let wrapper = $("#chat-wrapper")
+        return scroll.scrollTop() >= wrapper.outerHeight() - scroll.height() + 70
     }
     scrollToBottom() {
-        let scroll = $("div.messages")
-        let list = $("ul", scroll)
-        scroll.scrollTop(list.height() - scroll.height())
+        let scroll = $(window)
+        let wrapper = $("#chat-wrapper")
+        scroll.scrollTop(wrapper.outerHeight() - scroll.height() + 100)
     }
     addClickHandler(ul) {
         $("a.delete-message", ul).click((e) => { return this.delete(e.target) })
@@ -327,10 +327,10 @@ $("#message-form textarea").on("keydown", (e) => {
     return window.messages.send()
 })
 
-$("div.messages").scroll(function() {
+$(window).scroll(function() {
     if($(this).scrollTop() < 300)
         window.messages.loadHistory()
-});
+})
 
 ifvisible.setIdleDuration(10)
 ifvisible.on("wakeup", () => { window.messages.readAll() })
