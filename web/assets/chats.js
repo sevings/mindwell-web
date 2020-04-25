@@ -334,3 +334,15 @@ $(window).scroll(function() {
 
 ifvisible.setIdleDuration(10)
 ifvisible.on("wakeup", () => { window.messages.readAll() })
+
+$('#chat-title').headroom(
+    {
+        "offset": 210,
+        "tolerance": 5,
+        "classes": {
+            "initial": "always-animated",
+            "pinned": "slideDown",
+            "unpinned": "slideUp"
+        }
+    }
+)

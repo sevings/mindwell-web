@@ -23,7 +23,7 @@ $(document).ready(function () {
 
 
 $(document).ready(function () {
-	var $header = $('#header--standard,#chat-title');
+	var $header = $('#header--standard');
 
 	if ($header.length) {
 		$header.headroom(
