@@ -4,8 +4,8 @@ function setOnline() {
         method: "PUT",
         dataType: "json",
         success: function(resp) {
-            window.chats.updateCounter(resp.chats)
-            window.notifications.updateCounter(resp.notifications)
+            window.chats.setUnread(resp.chats)
+            window.notifications.setUnread(resp.notifications)
         },
         error: (req) => {
             let resp = JSON.parse(req.responseText)
