@@ -27,8 +27,8 @@ body {
     z-index: -1;
 }
 
-@media (min-width: 1001px) { .home { padding: 12vw 0 } }
-@media (max-width: 1000px) { .home { padding: 120px 0 } }
+@media (min-width: 1001px) { .home { padding: 10vw 0 } }
+@media (max-width: 1000px) { .home { padding: 100px 0 } }
 
 .opinions .bg-image {
     background-image: url('/assets/images/index-2.jpg');

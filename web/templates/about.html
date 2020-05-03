@@ -1,38 +1,5 @@
-{% extends "base.html" %}
+{% extends "base_no_auth.html" %}
 {% block title %}О нас{% endblock %}
-{% block body_class %}class="body-bg-white"{% endblock %}
-{% block base_scripts %}
-    <script src="/assets/olympus/js/ScrollMagic.js"></script>
-{% endblock %}
-{% block header %}
-	<div class="stunning-header bg-primary-opacity">
-		
-		<div class="header--standard header--standard-landing" id="header--standard">
-			<div class="container">
-				<div class="header--standard-wrap">
-                    <a href="/" class="logo m-2">
-                        <div class="img-wrap">
-                            <img src="/assets/icons/header-white.png" width="42" height="45" alt="Mindwell">
-                            <img src="/assets/icons/android-chrome-192x192.png" alt="Mindwell" class="logo-colored">
-                        </div>
-                        <div class="title-block">
-                            <h6 class="logo-title">mindwell</h6>
-                            <div class="sub-title">ДОМ МЫСЛЕЙ</div>
-                        </div>
-                    </a>
-				</div>
-			</div>
-		</div>
-		
-		<div class="header-spacer--standard"></div>
-
-		<div class="stunning-header-content">
-			<h1 class="stunning-header-title">О нас</h1>
-		</div>
-
-		<div class="content-bg-wrap stunning-header-bg1"></div>
-	</div>
-{% endblock %}
 {% block body %}
 	<section class="medium-padding120">
 		<div class="container">

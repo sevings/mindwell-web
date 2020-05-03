@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block body_class %}class="body-bg-white"{% endblock %}
+{% block header %}
+<div id="header--standard" class="header--standard header--standard-landing">
+    <div class="container">
+        <div class="header--standard-wrap">
+            <a href="/" class="logo m-2">
+                <div class="img-wrap">
+                    <img src="/assets/icons/header-white.png" width="42" height="45" alt="Mindwell">
+                    <img src="/assets/icons/android-chrome-192x192.png" alt="Mindwell" class="logo-colored">
+                </div>
+                <div class="title-block">
+                    <h6 class="logo-title">mindwell</h6>
+                    <div class="sub-title">ДОМ МЫСЛЕЙ</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<section class="home">
+    <div class="stunning-header-content">
+        <h1 class="stunning-header-title text-white">{% block title %}{% endblock %}</h1>
+    </div>
+    <div class="bg-image"></div>
+</section>
+{% endblock %}
