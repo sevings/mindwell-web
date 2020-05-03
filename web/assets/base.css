@@ -2,6 +2,80 @@ body {
     color: #252632;
 }
 
+#header--standard.header--standard-landing {
+    animation: none;
+}
+
+.home, .opinions {
+    background-color: rgba(255, 94, 58, 0.9);
+}
+
+.home .bg-image {
+    background-image: url('/assets/images/index-1.jpg');
+    background-position: center;
+    background-size: cover;
+}
+
+.bg-image {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+@media (min-width: 1001px) { .home { padding: 12vw 0 } }
+@media (max-width: 1000px) { .home { padding: 120px 0 } }
+
+.opinions .bg-image {
+    background-image: url('/assets/images/index-2.jpg');
+    background-position: center;
+    background-size: cover;
+}
+
+#opinions {
+    background-color: #0008;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    border-radius: .3rem;
+}
+
+.opinions .carousel-item {
+    padding-left: 15%;
+    padding-right: 15%;
+    color: #e6ecf5;
+    height: 400px;
+}
+
+.opinions .carousel-item img {
+    border-radius: 50%;
+    width: 62px;
+    height: 62px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.opinions .carousel-item p {
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: .5rem;
+    font-family: inherit;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.opinions .carousel-item span {
+    float: right;
+    font-weight: 300;
+    font-size: 1.375rem;
+    line-height: 1.3;
+}
+
 .accordion-faqs ul {
     list-style-type: disc;
     list-style-position: inside;

@@ -127,6 +127,10 @@ function unescapeHtml(text) {
         .replace(/&#39;/g,  "'")
 }
 
+$("#login-scroll").click(function() {
+    return $("#login-section").velocity("scroll", { duration: 1000, easing: "easeInOutSine" })
+})
+
  $("#send-recover").click(function() {
     var btn = $(this)
     if(btn.hasClass("disabled"))

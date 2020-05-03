@@ -1,63 +1,206 @@
 {% extends "base.html" %}
 {% block pagetitle %}Mindwell — дом мыслей{% endblock %}
-{% block body_class %}class="landing-page"{% endblock %}
+{% block body_class %}class="body-bg-white"{% endblock %}
 {% block header %}
-	<div class="content-bg-wrap"></div>
+<div id="header--standard" class="header--standard header--standard-landing">
+	<div class="container">
+		<div class="header--standard-wrap">
+			<a href="/" class="logo m-2">
+				<div class="img-wrap">
+					<img src="/assets/icons/header-white.png" width="42" height="45" alt="Mindwell">
+					<img src="/assets/icons/android-chrome-192x192.png" alt="Mindwell" class="logo-colored">
+				</div>
+				<div class="title-block">
+					<h6 class="logo-title">mindwell</h6>
+					<div class="sub-title">ДОМ МЫСЛЕЙ</div>
+				</div>
+			</a>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block body %}
+<section class="home">
+	<div class="stunning-header-content">
+		<h1 class="stunning-header-title text-white">Место для твоих мыслей</h1>
+	</div>
+	<div class="bg-image"></div>
+</section>
 
-	<div class="header--standard header--standard-landing" id="header--standard">
-		<div class="container">
-			<div class="header--standard-wrap">
-
-				<a href="/" class="logo">
-					<div class="img-wrap">
-						<img src="/assets/icons/header-white.png" width="42" height="45" alt="Mindwell">
-					</div>
-					<div class="title-block">
-						<h6 class="logo-title">mindwell</h6>
-						<div class="sub-title">ДОМ МЫСЛЕЙ</div>
-					</div>
-				</a>
-
+<section class="medium-padding80 bg-body">
+	<div class="container">
+		<div class="row">
+			<div class="col col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 m-auto">
+				<div class="crumina-module crumina-heading align-center">
+					<h4>
+						Здесь ты можешь вести свой дневник,
+						делиться переживаниями, рассказывать истории и общаться с другими людьми. Присоединяйся!
+					</h4>
+				</div>
+			</div>
+			<div class="col col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 m-auto align-center">
+				<a id="login-scroll" class="btn btn-primary btn-lg" href="#login-section">Войти или зарегистрироваться</a>
+			</div>
+			<div class="col col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 m-auto align-center">
+				<a class="btn btn-secondary btn-lg" href="/help/about">Узнать подробнее</a>
 			</div>
 		</div>
 	</div>
+</section>
 
-	<div class="header-spacer--standard"></div>
-{% endblock %}
-{% block body %}
+<section class="pt120">
 	<div class="container">
-		<div class="row display-flex">
-			<div class="col col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-				<div class="landing-content">
-					<h1>Место для твоих мыслей</h1>
-					<p>
-						Добро пожаловать на сайт Mindwell. Здесь ты можешь вести свой дневник, 
-						делиться переживаниями, рассказывать истории и общаться с другими людьми. Присоединяйся!
-					</p>
-					<a href="/help/about" class="btn btn-md btn-border c-white">О нас</a>
+		<div class="info-box-wrap">
+			<div class="row">
+				<div class="col col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+					<div class="crumina-module crumina-info-box" data-mh="box--classic">
+						<div class="info-box-image">
+							<img src="/assets/olympus/img/info5.png" alt="icon">
+						</div>
+						<div class="info-box-content">
+							<h3 class="info-box-title">Дружеское общение</h3>
+							<p class="info-box-text">Люди свободно делятся с другими тем, что у них на душе, и находят понимание.</p>
+						</div>
+					</div>
+				</div>
+				<div class="col col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+					<div class="crumina-module crumina-info-box" data-mh="box--classic">
+						<div class="info-box-image">
+							<img src="/assets/olympus/img/info4.png" alt="icon">
+						</div>
+						<div class="info-box-content">
+							<h3 class="info-box-title">Адаптивный дизайн</h3>
+							<p class="info-box-text">Мы стараемся, чтобы сайт работал одинаково хорошо и на мобильных устройствах, и на компьютерах.</p>
+						</div>
+					</div>
+				</div>
+				<div class="col col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+					<div class="crumina-module crumina-info-box" data-mh="box--classic">
+						<div class="info-box-image">
+							<img src="/assets/olympus/img/info3.png" alt="icon">
+						</div>
+						<div class="info-box-content">
+							<h3 class="info-box-title">Отзывчивая администрация</h3>
+							<p class="info-box-text">Команда разработки отвечает на вопросы о сайте и учитывает пожелания пользователей.</p>
+						</div>
+					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+</section>
 
-			<div class="col col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12">
-				
+<section class="medium-padding100 opinions">
+	<div class="container">
+		<div class="row">
+			<div class="col col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12 m-auto">
+				<div id="opinions" class="carousel slide" data-ride="carousel" data-interval="10000">
+					<div class="carousel-inner">
+						<div class="carousel-item active">
+							<img src="/assets/images/Aerinn.jpg">
+							<p>
+								я здесь нахожусь почти с самого его появления, и до сих пор это место остаётся
+								для меня самой уютной и тёплой хижиной посреди бескрайних просторов интернета.
+								я люблю этот домик мыслей и воспоминаний, как и своих собственных, так и близких
+								моему сердцу людей. именно здесь я впервые повстречала очень многих творческих
+								личностей, которые теперь надолго задержались в моей жизни, чему я бесконечно рада
+								и благодарна ♡
+							</p>
+							<p>
+								спасибо, что вы есть ♡
+							</p>
+							<span>Aerinn</span>
+						</div>
+						<div class="carousel-item">
+							<img src="/assets/images/KatyaOgnerubova.jpg">
+							<p>
+								Майндвелл для меня то место, где можно общаться более открыто и напрямую, без
+								всяких этих дурацких приличий, запретов, этикетов... Тут легче открыть душу, и
+								легче увидеть души других.
+							</p>
+							<span>KatyaOgnerubova</span>
+						</div>
+						<div class="carousel-item">
+							<img src="/assets/images/zhivite.jpg">
+							<p >
+								Я безумно рада, что подружилась со многими из вас, что чат стал классной частью
+								моей жизни, что вижу ваше творчество и крутую работу. Не без косяков, но я полюбила
+								это место всей душой, где можно быть собой, отдавать собственные кусочки, делиться,
+								открывать себя и себе что-то новое.
+							</p>
+							<p>
+								Мне близко то, что здесь происходит, тексты до мурашек или что-то неимоверное
+								смешное/берущее за душу/глупое, но нужное. Когда-то отвыкшая от этого рада, что
+								вернулась вновь.
+							</p>
+							<p >
+								Ис крен нее, люблю!
+							</p>
+							<span>zhivite</span>
+						</div>
+						<div class="carousel-item">
+							<img src="/assets/images/Nord.jpg">
+							<p>
+								На Миндвелле с самого начала. И мне нравится, что этот сайт постепенно развивается.
+								Сегодня сообщения, «завтра» теги, «послезавтра» потоки и анонимки. Видно, что
+								администрация занимается проектом.
+							</p>
+							<span>Nord</span>
+						</div>
+						<div class="carousel-item">
+							<img src="/assets/images/controverse.jpg">
+							<p>
+								У нас название нового проекта - Shelter of Memories. Когда просили привести
+								свои ассоциации с ним, я так и не смогла уйти куда-либо от майндвелла,
+								потому что он оно и есть буквально :)
+							</p>
+							<span>controverse</span>
+						</div>
+						<div class="carousel-item">
+							<img src="/assets/images/Cheerful.jpg">
+							<p>
+								Mindwell - это волшебный колодец мнений и судеб. Искренние строчки со всех
+								уголков мира, воспоминания, которые всегда хранишь в сердце и здесь. Переполняющая
+								радость, грусть, которую сложно облечь в слова. Волны поддержки и что-то очень
+								теплое и светлое.
+							</p>
+							<span>Cheerful</span>
+						</div>
+					</div>
+					<a class="carousel-control-prev" href="#opinions" role="button" data-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="sr-only">Назад</span>
+					</a>
+					<a class="carousel-control-next" href="#opinions" role="button" data-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="sr-only">Вперед</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="bg-image"></div>
+</section>
+
+<section id="login-section" class="medium-padding80 bg-body">
+	<div class="container">
+		<div class="row">
+			<div class="col col-xl-6 col-lg-8 col-md-8 col-sm-10 col-12 m-auto">
 				<div class="registration-login-form">
-					<!-- Nav tabs -->
 					<ul class="nav nav-tabs" role="tablist">
 						<li class="nav-item">
-							<a class="nav-link active" data-toggle="tab" href="#login" role="tab">
+							<a class="nav-link" data-toggle="tab" href="#login" role="tab">
 								<svg class="olymp-login-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-login-icon"></use></svg>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" data-toggle="tab" href="#register" role="tab">
+							<a class="nav-link active" data-toggle="tab" href="#register" role="tab">
 								<svg class="olymp-register-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-register-icon"></use></svg>
 							</a>
 						</li>
 					</ul>
-				
-					<!-- Tab panes -->
 					<div class="tab-content">
-						<div class="tab-pane active" id="login" role="tabpanel" data-mh="log-tab">
+						<div class="tab-pane" id="login" role="tabpanel" data-mh="log-tab">
 							<div class="title h6">Войти в аккаунт</div>
 							<form class="content" action="/account/login" method="post">
 								<div class="row">
@@ -79,22 +222,22 @@
 											<a href="#" class="forgot" data-toggle="modal" data-target="#recover">Не получается войти</a>
 										</div>
 										<input class="btn btn-lg btn-primary full-width register" type="submit" value="Войти" />
-				
+
 									</div>
 								</div>
 							</form>
 						</div>
 
-						<div class="tab-pane" id="register" role="tabpanel" data-mh="log-tab">
+						<div class="tab-pane active" id="register" role="tabpanel" data-mh="log-tab">
 							<div class="title h6">Зарегистрироваться</div>
 							<form class="content" name="register" action="/account/register" method="post">
 								<div class="row">
 									<div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
 										<div class="form-group label-floating is-empty">
 											<label class="control-label">Логин</label>
-											<input class="form-control" maxlength="20" pattern="[a-zA-Z][a-zA-Z0-9\-_]*" 
-												title="Разрешены латинские буквы, цифры, дефис и нижнее подчеркивание" 
-												data-toggle="tooltip" data-placement="top" name="name" type="text" required />
+											<input class="form-control" maxlength="20" pattern="[a-zA-Z][a-zA-Z0-9\-_]*"
+												   title="Разрешены латинские буквы, цифры, дефис и нижнее подчеркивание"
+												   data-toggle="tooltip" data-placement="top" name="name" type="text" required />
 										</div>
 										<div class="form-group label-floating is-empty">
 											<select class="selectpicker form-control" name="gender">
@@ -109,16 +252,16 @@
 										</div>
 										<div class="form-group label-floating is-empty">
 											<label class="control-label">Пароль</label>
-											<input class="form-control" title="Не менее 6 символов" 
-												data-toggle="tooltip" data-placement="top" 
-												name="password" type="password" pattern=".{6,}" required />
-										</div>			
+											<input class="form-control" title="Не менее 6 символов"
+												   data-toggle="tooltip" data-placement="top"
+												   name="password" type="password" pattern=".{6,}" required />
+										</div>
 										<div class="checkbox">
 											<label>
 												<input type="checkbox" class="show-password">Показать пароль
 											</label>
 										</div>
-						
+
 										<div class="remember">
 											<div class="checkbox">
 												<label>
@@ -135,33 +278,33 @@
 						</div>
 					</div>
 				</div>
-				
 			</div>
 		</div>
 	</div>
+</section>
 
-	<div class="modal fade" id="recover" tabindex="-1" role="dialog" aria-labelledby="recover" aria-hidden="true">
-		<div class="modal-dialog window-popup edit-widget modal-dialog-centered" role="document">
-			<div class="modal-content">
+<div class="modal fade" id="recover" tabindex="-1" role="dialog" aria-labelledby="recover" aria-hidden="true">
+	<div class="modal-dialog window-popup edit-widget modal-dialog-centered" role="document">
+		<div class="modal-content">
 
-				<a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
-					<svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
-				</a>
+			<a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+				<svg class="olymp-close-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-close-icon"></use></svg>
+			</a>
 
-				<div class="modal-header">
-					<h6 class="title">Сбросить пароль</h6>
-				</div>
-
-				<div class="modal-body">
-					<p>На данную почту будет отправлено письмо с инструкцией для сброса пароля.</p>
-					<form id="recover-email" action="/account/recover" method="POST" enctype="multipart/form-data">
-						<input class="form-control" name="email" type="email" required />
-						<button id="send-recover" class="btn btn-primary btn-lg full-width">Отправить</button>
-					</form>
-                    <h6 id="recover-status" role="alert"></h6>
-				</div>
-
+			<div class="modal-header">
+				<h6 class="title">Сбросить пароль</h6>
 			</div>
+
+			<div class="modal-body">
+				<p>На данную почту будет отправлено письмо с инструкцией для сброса пароля.</p>
+				<form id="recover-email" action="/account/recover" method="POST" enctype="multipart/form-data">
+					<input class="form-control" name="email" type="email" required />
+					<button id="send-recover" class="btn btn-primary btn-lg full-width">Отправить</button>
+				</form>
+				<h6 id="recover-status" role="alert"></h6>
+			</div>
+
 		</div>
 	</div>
+</div>
 {% endblock %}
