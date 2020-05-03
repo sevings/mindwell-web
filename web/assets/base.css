@@ -104,3 +104,7 @@ body {
     overflow-wrap: break-word;
     text-align: justify;
 }
+
+#screenshots {
+    margin-bottom: 1rem;
+}
