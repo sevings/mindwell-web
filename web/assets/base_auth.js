@@ -48,7 +48,7 @@ class Feed {
         this.unread = 0
         this.sound = null
     }
-    setUnread(val) {
+    setUnread(val = 0) {
         let unread
         if(typeof val == "number")
             unread = val
