@@ -480,6 +480,7 @@ func (api *APIRequest) WriteTemplate(name string) {
 
 	api.ctx.Header("Cache-Control", "no-store")
 	api.ctx.Header("Content-Type", "text/html; charset=utf-8")
+	api.ctx.Header("Referrer-Policy", "origin")
 	api.st.WriteHeader(api.ctx.Writer)
 
 	templ.ExecuteWriter(pongo2.Context(api.Data()), api.ctx.Writer)
@@ -497,6 +498,7 @@ func (api *APIRequest) WriteResponse() {
 		}
 	}
 
+	api.ctx.Header("Cache-Control", "no-store")
 	api.st.WriteHeader(api.ctx.Writer)
 
 	api.ctx.Status(api.resp.StatusCode)
