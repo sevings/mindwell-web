@@ -177,16 +177,18 @@ class Notifications extends Feed {
         let ntf = this
         ul.click(function() {
             ntf.readAll()
-            let link = $(this).find(".notification-action").prop("href")
-            if(window.location.pathname === new URL(link).pathname)
-                window.location.reload()
-            else
-                window.location = link
+            setTimeout(() => {
+                let link = $(this).find(".notification-action").prop("href")
+                if(window.location.pathname === new URL(link).pathname)
+                    window.location.reload()
+                else
+                    window.location = link
+            }, 0)
         })
     }
     readAll() {
         if(!this.unread)
-            return 
+            return
 
         $(".notifications li.un-read").removeClass("un-read")
 
@@ -195,7 +197,7 @@ class Notifications extends Feed {
         $.ajax({
             url: "/notifications/read?time=" + this.after,
             method: "PUT",
-        })        
+        })
     }
     check() {
         if(!this.preCheck())
