@@ -288,6 +288,15 @@ li.cat-list__item > a {
     display: inline-block;
 }
 
+#notification-settings {
+    width: 100%;
+}
+
+#notification-settings th:not(:first-child) {
+    padding-left: 5px;
+    padding-bottom: 20px;
+}
+
 .invite {
     padding: 1.1rem;
 }

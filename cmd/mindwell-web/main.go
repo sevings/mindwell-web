@@ -46,7 +46,8 @@ func main() {
 	router.GET("/account/hidden", hiddenHandler(mdw))
 
 	router.GET("/account/notifications", notificationsSettingsHandler(mdw))
-	router.POST("/account/settings/email", emailSettingsSaverHandler(mdw))
+	router.PUT("/account/settings/email", proxyHandler(mdw))
+	router.PUT("/account/settings/telegram", proxyHandler(mdw))
 
 	router.GET("/account/subscribe/token", proxyHandler(mdw))
 
@@ -319,20 +320,13 @@ func notificationsSettingsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo("/account/settings/email")
 		api.SetMe()
-		api.SetField("telegram", "/account/subscribe/telegram")
+		api.SetField("email", "/account/settings/email")
+		api.SetField("telegram", "/account/settings/telegram")
+		api.SetField("bot", "/account/subscribe/telegram")
 		api.SetData("__tg", bot)
 		SetAdm(mdw, ctx, api)
 		api.WriteTemplate("settings/notifications")
-	}
-}
-
-func emailSettingsSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.MethodForward("PUT")
-		api.WriteResponse()
 	}
 }
 

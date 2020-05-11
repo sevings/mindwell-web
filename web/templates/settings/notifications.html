@@ -8,44 +8,90 @@
     </div>
 
     <div class="ui-block-content">
-        <form id="email-settings" action="/account/settings/email" method="post" enctype="application/x-www-form-urlencoded">
-            <div class="row">
-                <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                    <p>Присылать мне на почту уведомление, когда…</p>
+        <div class="row">
+            <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <table id="notification-settings">
+                    <tr>
+                        <th>Присылать мне уведомления, когда…</th><th>На почту</th><th>В Телеграм</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="h6 title">кто-то комментирует запись, за которой я слежу</div>
+                        </td>
+                        <td>
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" name="comments" class="email" {% if email.comments %}checked{% endif %}>
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" name="comments" class="telegram" {% if telegram.comments %}checked{% endif %}>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="h6 title">кто-то подписывается на мой тлог</div>
+                        </td>
+                        <td>
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" name="followers" class="email" {% if email.followers %}checked{% endif %}>
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" name="followers" class="telegram" {% if telegram.followers %}checked{% endif %}>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="h6 title">кто-то присылает мне личное сообщение</div>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" name="messages" class="telegram" {% if telegram.messages %}checked{% endif %}>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="h6 title">мне выдается новое приглашение</div>
+                        </td>
+                        <td>
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" name="invites" class="email" {% if email.invites %}checked{% endif %}>
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" name="invites" class="telegram" {% if telegram.invites %}checked{% endif %}>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
 
-                    <div class="switcher-block">
-                        <div class="h6 title">кто-то комментирует запись, за которой я слежу</div>
-                        <div class="togglebutton">
-                            <label>
-                                <input type="checkbox" name="comments" {% if comments %}checked{% endif %}>
-                            </label>
-                        </div>
-                    </div>
+                <button id="save-notification-settings" class="btn btn-primary btn-lg full-width">Сохранить</button>
 
-                    <div class="switcher-block">
-                        <div class="h6 title">кто-то подписывается на мой тлог</div>
-                        <div class="togglebutton">
-                            <label>
-                                <input type="checkbox" name="followers" {% if followers %}checked{% endif %}>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="switcher-block">
-                        <div class="h6 title">мне выдается новое приглашение</div>
-                        <div class="togglebutton">
-                            <label>
-                                <input type="checkbox" name="invites" {% if invites %}checked{% endif %}>
-                            </label>
-                        </div>
-                    </div>
-
-                    <button id="save-email-settings" class="btn btn-primary btn-lg full-width">Сохранить</button>
-
-                    <h6 id="email-settings-status" role="alert"></h6>
-                </div>
+                <h6 id="notification-settings-status" role="alert"></h6>
             </div>
-        </form>
+        </div>
     </div>
 
 
@@ -54,11 +100,11 @@
             <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <h6 class="title">Телеграм-бот</h6>
                 <p>
-                    Также уведомления можно получать с помощью бота в Телеграм. Для этого открой ссылку
-                    <a href="https://t.me/{{ __tg }}?start={{ telegram.token }}" target="__blank">
-                        t.me/{{ __tg }}?start={{ telegram.token }}
+                    Чтобы получать уведомления в Телеграме, открой ссылку
+                    <a href="https://t.me/{{ __tg }}?start={{ bot.token }}" target="__blank">
+                        t.me/{{ __tg }}?start={{ bot.token }}
                     </a> или добавь себе в контакты бота @{{ __tg }} и отправь ему команду 
-                    <code>/login?{{ telegram.token }}</code>.
+                    <code>/login?{{ bot.token }}</code>.
                 </p>
                 <p>
                     Ссылка и команда содержат автоматически сгенерированный пароль. Любой, кто отправит

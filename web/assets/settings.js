@@ -60,29 +60,59 @@ $("#save-email").click(function() {
     return false;
 })
 
-$("#save-email-settings").click(function() { 
-    var btn = $(this)
+$("#save-notification-settings").click(function() {
+    let btn = $(this)
     if(btn.hasClass("disabled"))
         return false;
         
     btn.addClass("disabled")
 
-    var status = $("#email-settings-status")
-    
-    $("#email-settings").ajaxSubmit({
-        resetForm: false,
-        success: function() {
-            status.text("Настройки сохранены.")
-            status.removeClass("alert-danger").addClass("alert-success")
+    let status = $("#notification-settings-status")
+
+    function onSuccess() {
+        status.text("Настройки сохранены.")
+        status.removeClass("alert-danger").addClass("alert-success")
+        status.toggleClass("alert", true)
+        btn.removeClass("disabled")
+    }
+
+    function onError(req) {
+        let resp = JSON.parse(req.responseText)
+        status.text(resp.message)
+        status.addClass("alert-danger").removeClass("alert-success")
+        status.toggleClass("alert", true)
+        btn.removeClass("disabled")
+    }
+
+    $.ajax({
+        method: "PUT",
+        data: $("#notification-settings .email").fieldSerialize(),
+        url: "/account/settings/email",
+        success: () => {
+            status.data("email", "success")
+            if(status.data("telegram") === "success")
+                onSuccess()
         },
-        error: function(req) {
-            var resp = JSON.parse(req.responseText)
-            status.text(resp.message)
-            status.addClass("alert-danger").removeClass("alert-success")
+        error: (req) => {
+            status.data("email", "error")
+            if(status.data("telegram") !== "error")
+                onError(req)
         },
-        complete: function() {
-            status.toggleClass("alert", true)
-            btn.removeClass("disabled")
+    })
+
+    $.ajax({
+        method: "PUT",
+        data: $("#notification-settings .telegram").fieldSerialize(),
+        url: "/account/settings/telegram",
+        success: () => {
+            status.data("telegram", "success")
+            if(status.data("email") === "success")
+                onSuccess()
+        },
+        error: (req) => {
+            status.data("telegram", "error")
+            if(status.data("email") !== "error")
+                onError(req)
         },
     })
 
