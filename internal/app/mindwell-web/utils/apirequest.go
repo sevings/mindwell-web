@@ -256,31 +256,6 @@ func (api *APIRequest) checkError() {
 	}
 }
 
-func (api *APIRequest) GetNamed(path, name string) {
-	api.setUserKey()
-	if api.err != nil {
-		return
-	}
-
-	var req *http.Request
-	url := api.mdw.url + path
-	req, api.err = http.NewRequest("GET", url, nil)
-	if api.err != nil {
-		api.ctx.Writer.WriteString(api.err.Error())
-		return
-	}
-
-	req.Header.Add("X-User-Key", api.uKey)
-	req.Header.Add("X-Forwarded-For", api.ctx.ClientIP())
-
-	api.doNamed(req, name)
-	api.checkError()
-}
-
-func (api *APIRequest) Get(path string) {
-	api.GetNamed(path, "main")
-}
-
 func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 	req := api.ctx.Request.WithContext(api.ctx.Request.Context())
 	req.URL.Scheme = api.mdw.scheme
@@ -290,7 +265,7 @@ func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 	req.Close = false
 
 	req.Header = make(map[string][]string)
-	headers := [...]string{"Accept", "Content-Length", "Content-Type", "X-Forwarded-For"}
+	headers := [...]string{"Accept", "Content-Length", "Content-Type", "Referer", "User-Agent", "X-Forwarded-For"}
 	for _, k := range headers {
 		vv := api.ctx.Request.Header[k]
 		vv2 := make([]string, len(vv))
@@ -321,6 +296,20 @@ func (api *APIRequest) MethodForwardToHost(method, path, host string) {
 
 func (api *APIRequest) MethodForwardToImages(method, path string) {
 	api.MethodForwardToHost(method, path, api.mdw.imgHost)
+}
+
+func (api *APIRequest) MethodForwardToNamed(method, path, name string) {
+	api.setUserKey()
+	if api.err != nil {
+		return
+	}
+
+	req := api.copyRequest(path)
+	req.Header.Set("X-User-Key", api.uKey)
+	req.Method = method
+
+	api.doNamed(req, name)
+	api.checkError()
 }
 
 func (api *APIRequest) MethodForwardTo(method, path string) {
@@ -382,7 +371,7 @@ func (api *APIRequest) SetField(key, path string) {
 		api.data = map[string]interface{}{}
 	}
 
-	api.GetNamed(path, key)
+	api.MethodForwardToNamed("GET", path, key)
 	api.data[key] = api.parseResponse()
 }
 

@@ -254,9 +254,9 @@ func SetAdm(mdw *utils.Mindwell, ctx *gin.Context, api *utils.APIRequest) {
 	req := utils.NewRequest(mdw, ctx)
 
 	if mdw.ConfigBool("adm.reg_finished") {
-		req.Get("/adm/grandfather")
+		req.ForwardTo("/adm/grandfather")
 	} else {
-		req.Get("/adm/grandson")
+		req.ForwardTo("/adm/grandson")
 	}
 
 	api.SetData("__adm", req.Error() == nil)
@@ -625,7 +625,7 @@ func coverSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func designEditorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.Get("/design")
+		api.ForwardTo("/design")
 		api.WriteTemplate("design")
 	}
 }
@@ -666,7 +666,7 @@ func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func editorExistingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.Get("/entries/" + ctx.Param("id"))
+		api.ForwardTo("/entries/" + ctx.Param("id"))
 		api.SetMe()
 		api.WriteTemplate("editor")
 	}
