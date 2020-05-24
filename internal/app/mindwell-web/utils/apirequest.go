@@ -3,8 +3,8 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
+	"go.uber.org/zap"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -153,13 +153,14 @@ func (api *APIRequest) setUserKey() {
 func (api *APIRequest) doNamed(req *http.Request, name string) {
 	defer api.st.Add(name).Start().Stop()
 
-	if api.mdw.DevMode {
-		log.Print(req.Method + " " + req.URL.String())
-	}
+	api.mdw.LogWeb().Debug("api",
+		zap.String("method", req.Method),
+		zap.String("url", req.URL.String()),
+	)
 
 	api.resp, api.err = http.DefaultTransport.RoundTrip(req)
 	if api.err != nil {
-		log.Print(api.err)
+		api.mdw.LogWeb().Error(api.err.Error())
 	}
 
 	api.read = false
@@ -185,14 +186,14 @@ func (api *APIRequest) QueryCookieName(name string) {
 	if err == nil {
 		cookieValues, err = url.ParseQuery(cookie.Value)
 		if err != nil {
-			log.Println(err)
+			api.mdw.LogWeb().Warn(api.err.Error())
 		}
 	}
 
 	reqURL := api.ctx.Request.URL
 	urlValues, err = url.ParseQuery(reqURL.RawQuery)
 	if err != nil {
-		log.Println(err)
+		api.mdw.LogWeb().Warn(api.err.Error())
 	}
 
 	for k, v := range urlValues {
@@ -251,7 +252,7 @@ func (api *APIRequest) checkError() {
 		api.ClearCookieToken()
 		api.Redirect("/index.html")
 	case code >= 400:
-		log.Print(api.resp.Status)
+		api.mdw.LogWeb().Warn(api.err.Error())
 		api.err = http.ErrNotSupported
 	}
 }
@@ -390,7 +391,7 @@ func (api *APIRequest) readResponse() []byte {
 	jsonData, api.err = ioutil.ReadAll(api.resp.Body)
 	api.resp.Body.Close()
 	if api.err != nil {
-		log.Print(api.err)
+		api.mdw.LogWeb().Error(api.err.Error())
 	}
 
 	return jsonData
@@ -410,8 +411,9 @@ func (api *APIRequest) parseResponse() map[string]interface{} {
 		return data
 	}
 
-	log.Print(api.err)
-	log.Print(string(jsonData))
+	api.mdw.LogWeb().Error(api.err.Error(),
+		zap.ByteString("json", jsonData),
+	)
 
 	return data
 }
@@ -509,7 +511,7 @@ func (api *APIRequest) WriteJson() {
 	encoder := json.NewEncoder(api.ctx.Writer)
 	api.err = encoder.Encode(api.Data())
 	if api.err != nil {
-		log.Println(api.err)
+		api.mdw.LogWeb().Error(api.err.Error())
 	}
 }
 
