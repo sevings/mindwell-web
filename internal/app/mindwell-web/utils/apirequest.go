@@ -252,7 +252,9 @@ func (api *APIRequest) checkError() {
 		api.ClearCookieToken()
 		api.Redirect("/index.html")
 	case code >= 400:
-		api.mdw.LogWeb().Warn(api.err.Error())
+		if api.err != nil {
+			api.mdw.LogWeb().Warn(api.err.Error())
+		}
 		api.err = http.ErrNotSupported
 	}
 }
