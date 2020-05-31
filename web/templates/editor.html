@@ -48,6 +48,7 @@
                                     <input type="hidden" name="isVotable" value="true" />
                                 {% endif %}
 
+                                {% if me.account.verified %}
                                 <div class="switcher-block for-public-only">
                                     <div class="h6 title">Отправить в Прямой эфир</div>
                                     <div class="togglebutton">
@@ -56,6 +57,12 @@
                                         </label>
                                     </div>
                                 </div>
+                                {% else %}
+                                    <p class="alert alert-secondary" role="alert">
+                                        Чтобы публиковать записи в Прямой эфир, <a href="/account/email">подтверди адрес своей почты</a>.
+                                    </p>
+                                    <input type="hidden" name="inLive" value="false" />
+                                {% endif %}
 
                                 <input id="input-images" type="hidden" name="images" 
                                     value="{% for image in images %}{{ image.id }},{% endfor %}"/>

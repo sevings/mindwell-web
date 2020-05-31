@@ -65,7 +65,21 @@
             <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
         </div>
         <span class="notification-icon">
-            <svg class="olymp-cupcake-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-cupcake-icon"></use></svg>
+            <svg class="olymp-cupcake-icon"><use xlink:href="#olymp-cupcake-icon"></use></svg>
+        </span>
+    {% elif ntf.type == "info" %}
+        <div class="author-thumb">
+        </div>
+        <div class="notification-event">
+            {{ ntf.info.content }}
+            <span class="notification-date">
+                <a href="{{ ntf.info.link }}" class="notification-action">
+                    <time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time>
+                </a>
+            </span>
+        </div>
+        <span class="notification-icon">
+            <svg class="olymp-info-icon"><use xlink:href="#olymp-info-icon"></use></svg>
         </span>
     {% else %}
         <div class="author-thumb">
