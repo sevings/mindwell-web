@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-three-dots-icon"></use></svg>
+        <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
             <ul class="more-dropdown">
                 <li>
                     <a href="#" class="favorite-post">
@@ -158,7 +158,7 @@
         {% block commentButton %}
             <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button"
                     data-entry="{{ entry.id }}">
-                <svg class="olymp-speech-balloon-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-speech-balloon-icon"></use></svg>
+                <svg class="olymp-speech-balloon-icon"><use xlink:href="#olymp-speech-balloon-icon"></use></svg>
                 <span class="comment-count">{{ entry.commentCount|default:0 }}</span>
             </a>
         {% endblock commentButton %}
