@@ -701,13 +701,11 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("entry", entry)
 
 		if entry != nil {
-			//author := entry["author"].(map[string]interface{})
-			//name := author["name"].(string)
-			//api.SetField("profile", "/users/"+name)
-
 			entryID := entry["id"].(json.Number).String()
-			cmts := entry["comments"].(map[string]interface{})
-			api.SetScrollHrefsWithData("/entries/"+entryID+"/comments", cmts)
+			cmts, ok := entry["comments"].(map[string]interface{})
+			if ok {
+				api.SetScrollHrefsWithData("/entries/"+entryID+"/comments", cmts)
+			}
 		}
 
 		api.SetMe()

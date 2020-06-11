@@ -171,8 +171,8 @@ func (api *APIRequest) do(req *http.Request) {
 }
 
 func (api *APIRequest) QueryCookie() {
-	url := api.ctx.Request.URL
-	path := strings.Split(url.Path, "/")
+	link := api.ctx.Request.URL
+	path := strings.Split(link.Path, "/")
 	name := path[len(path)-1]
 
 	api.QueryCookieName(name)
@@ -476,7 +476,7 @@ func (api *APIRequest) WriteTemplate(name string) {
 	api.ctx.Header("Referrer-Policy", "origin")
 	api.st.WriteHeader(api.ctx.Writer)
 
-	templ.ExecuteWriter(pongo2.Context(api.Data()), api.ctx.Writer)
+	templ.ExecuteWriter(api.Data(), api.ctx.Writer)
 }
 
 func (api *APIRequest) WriteResponse() {
