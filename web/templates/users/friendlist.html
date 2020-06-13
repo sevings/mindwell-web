@@ -1,15 +1,15 @@
 {% extends "../profile.html" %}
 {% block title %}
     {% if relation == "followers" %}
-        Подписчики {{ subject.showName }}
+        Подписчики
     {% elif relation == "followings" %}
-        Подписки {{ subject.showName }}
+        Подписки
     {% elif relation == "requested" %}
-        Заявки {{ subject.showName }}
+        Заявки
     {% elif relation == "ignored" %}
         Заблокированные пользователи
     {% elif relation == "invited" %}
-        Приглашенные {{ subject.showName }}
+        Приглашенные
     {% endif %}
 {% endblock %}
 {% block content %}
@@ -20,15 +20,15 @@
 				<div class="ui-block-title">
 					<div class="h6 title">
                         {% if relation == "followers" %}
-                            Подписчики {{ subject.showName }}
+                            Подписчики
                         {% elif relation == "followings" %}
-                            Подписки {{ subject.showName }}
+                            Подписки
                         {% elif relation == "requested" %}
-                            Заявки {{ subject.showName }}
+                            Заявки
                         {% elif relation == "ignored" %}
                             Заблокированные пользователи
                         {% elif relation == "invited" %}
-                            Приглашенные {{ subject.showName }}
+                            Приглашенные
                         {% endif %}                        
                     </div>
 				</div>
