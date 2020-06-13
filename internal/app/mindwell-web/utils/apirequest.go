@@ -113,10 +113,16 @@ func (api *APIRequest) SetScrollHrefsWithData(webPath string, data map[string]in
 	_, setBefore := api.ctx.Params.Get("before")
 	_, setAfter := api.ctx.Params.Get("after")
 
+	tag := api.ctx.Query("tag")
+
 	if setBefore || setAfter == setBefore {
 		if has, ok := data["hasBefore"].(bool); has && ok {
 			if before, ok := data["nextBefore"].(string); ok {
 				href := webPath + "?before=" + before
+				if tag != "" {
+					href += "&tag=" + tag
+				}
+
 				api.SetData("beforeHref", href)
 			}
 		}
@@ -126,6 +132,11 @@ func (api *APIRequest) SetScrollHrefsWithData(webPath string, data map[string]in
 		afterHref := webPath
 		if after, ok := data["nextAfter"].(string); ok {
 			afterHref += "?after=" + after
+			if tag != "" {
+				afterHref += "&tag=" + tag
+			}
+		} else if tag != "" {
+			afterHref += "?tag=" + tag
 		}
 		api.SetData("afterHref", afterHref)
 	}

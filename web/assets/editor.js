@@ -6,14 +6,16 @@ function privacyElem()      { return $("select[name='privacy']") }
 function isVotableElem()    { return $("input[name='isVotable']") }
 function inLiveElem()       { return $("input[name='inLive']") }
 function imagesElem()       { return $("input[name='images']") }
+function tagsElem()         { return $("input[name='tags']") }
 
 function entryId()          { return parseInt($("#entry-editor").data("entryId")) }
 function isCreating()       { return entryId() <= 0 }
 
 function storeDraft() {
-    var draft = {
+    let draft = {
         title       : titleElem().val(),
         content     : contentElem().val(),
+        tags        : tagsElem().val(),
         privacy     : privacyElem().val(),
         images      : imagesElem().val(),
         isVotable   : isVotableElem().prop("checked"),
@@ -24,7 +26,7 @@ function storeDraft() {
 }
 
 function loadDraft() {
-    var draft = store.get("draft")
+    let draft = store.get("draft")
     if(!draft)
         return
 
@@ -33,6 +35,9 @@ function loadDraft() {
 
     if(draft.content)
         contentElem().val(draft.content)
+
+    if(draft.tags)
+        tagsElem().val(draft.tags)
 
     if(draft.images) {
         imagesElem().val(draft.images)
@@ -48,7 +53,7 @@ function loadDraft() {
 }
 
 function removeDraft() {
-    var draft = {
+    let draft = {
         privacy     : privacyElem().val(),
         isVotable   : isVotableElem().prop("checked"),
         inLive      : inLiveElem().prop("checked"),
@@ -58,8 +63,8 @@ function removeDraft() {
 }
 
 function togglePublicOnly() {
-    var elems= $(".for-public-only")
-    var privacy = privacyElem().val()
+    let elems= $(".for-public-only")
+    let privacy = privacyElem().val()
     if(privacy == "me") {
         elems.hide()
     } else {

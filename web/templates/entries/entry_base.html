@@ -128,6 +128,15 @@
             class="btn btn-md-2 btn-border-think c-grey btn-transparent custom-color open-post">Дальше</a>
     {% endif %}
 
+    {% if !cutEntry && entry.tags %}
+        <div class="post-tags">Теги:
+            {% for tag in entry.tags %}
+                <a href="/users/{{ entry.author.name }}?tag={{ tag }}">{{ tag }}</a>
+                {% if !forloop.Last %}<span class="dot-divider"></span>{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <div class="post-additional-info inline-items">
 
         {% if entry.privacy == "me" %}

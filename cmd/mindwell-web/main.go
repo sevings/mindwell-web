@@ -401,6 +401,9 @@ func feedHandler(mdw *utils.Mindwell, templateName, queryName string) func(ctx *
 		api.ForwardTo(apiPath)
 		api.SetScrollHrefs()
 
+		tag := ctx.Query("tag")
+		api.SetData("__tag", tag)
+
 		if api.StatusCode() == 404 {
 			// private tlog, skip error
 			api = utils.NewRequest(mdw, ctx)

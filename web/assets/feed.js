@@ -22,9 +22,11 @@ function addFeedClickHandlers(feed) {
     
     $(".play-video", feed).click(onPlayVideoClick)
 
-    $(".comment-button").click(onCommentButtonClick)
-    $(".more-comments").click(loadComments)
+    $(".comment-button", feed).click(onCommentButtonClick)
+    $(".more-comments", feed).click(loadComments)
     $(".open-post", feed).click(openPost)
+
+    $(".post-tags a", feed).each(setTagHref)
 }
 
 function findPostElement(elem) {
@@ -249,6 +251,15 @@ function onCommentButtonClick() {
     $("#post-popup").data("scroll", "comments")
     let id = findPostElement(this).data("id")
     return openPost(id)
+}
+
+function setTagHref() {
+    let path = document.location.pathname
+    if(path.startsWith("/entries"))
+        return
+
+    let tag = $(this).text()
+    this.href = "?tag=" + tag
 }
 
 function complainComment(id) {

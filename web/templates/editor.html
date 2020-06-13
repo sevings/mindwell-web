@@ -2,7 +2,7 @@
 {% block title %}Редактор{% endblock %}
 {% block scripts %}
     <script src="/assets/js/basil.min.js"></script>
-    <script src="/assets/editor.js?d=20190726"></script>
+    <script src="/assets/editor.js?d=20200612"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -25,7 +25,12 @@
                                     <textarea class="form-control" rows="20" cols="80" maxlength="30000"
                                         name="content" placeholder="Текст поста" required>{{ editContent|safe }}</textarea>
                                 </div>
-                            	
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" maxlength="255" autocomplete="off"
+                                           name="tags" placeholder="Теги через запятую, не более пяти" value="{{ tags|join:", " }}"/>
+                                </div>
+
                                 <fieldset class="form-group label-floating is-select">
                                     <label class="control-label">Пост будет виден</label>
                                     <select class="selectpicker form-control" name="privacy">

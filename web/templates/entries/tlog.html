@@ -83,7 +83,15 @@
         </div>
 		<div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 order-3">
 			<div id="feed">
-                {% block feed_title %}{% endblock %}
+                {% block feed_title %}
+                    {% if __tag %}
+                        <div class="ui-block">
+                            <div class="ui-block-title">
+                                <h6 class="title">Записи с тегом [{{ __tag }}]</h6>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endblock %}
                 {% if entries %}
                     {% include "tlog_page.html" %}
                 {% elif profile.id == me.id && !me.counts.entries %}

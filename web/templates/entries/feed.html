@@ -1,13 +1,16 @@
 {% extends "../base_auth.html" %}
 {% block scripts %}
     <script src="//youtube.com/iframe_api"></script>
-    <script src="/assets/feed.js?d=20200412"></script>
+    <script src="/assets/feed.js?d=20200613"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
     <div class="row">
         <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <ul class="cat-list-bg-style align-center sorting-menu">
+                {% if __tag %}
+                    <li class="cat-list__item active"><a href="?tag={{ __tag }}">[{{ __tag }}]</a></li>
+                {% endif %}
                 {% block submenu %}{% endblock %}
                 <li class="cat-list__item">
                     <a href="#" data-toggle="modal" data-target="#feed-settings">

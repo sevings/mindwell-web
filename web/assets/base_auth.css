@@ -198,6 +198,14 @@ div.post-add-icon:hover {
     font-size: .875rem;    
 }
 
+.post-tags {
+    margin: 1em 0;
+}
+
+.post-tags a:not(:hover) {
+    color: #888da8;
+}
+
 .blog-post-popup .post .post-title {
     display: inline-block;
 }
