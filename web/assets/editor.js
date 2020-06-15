@@ -108,6 +108,24 @@ function loadImages(){
     }
 }
 
+$(".editor-tags a").click(function() {
+    let newTag = $(this).text().trim()
+    let tags = tagsElem().val().split(",")
+
+    tags.forEach((tag, i) => { tags[i] = tag.trim() })
+    if(tags.includes(newTag))
+        return false
+
+    tags = tags.filter(t => t !== "")
+    if(tags.length >= 5)
+        return false
+
+    tags.push(newTag)
+    tagsElem().val(tags.join(", "))
+
+    return false
+})
+
 $("#post-entry").click(function() { 
     var btn = $(this)
     if(btn.hasClass("disabled"))

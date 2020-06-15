@@ -2,7 +2,7 @@
 {% block title %}Редактор{% endblock %}
 {% block scripts %}
     <script src="/assets/js/basil.min.js"></script>
-    <script src="/assets/editor.js?d=20200612"></script>
+    <script src="/assets/editor.js?d=20200615"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -29,6 +29,16 @@
                                 <div class="form-group">
                                     <input type="text" class="form-control" maxlength="255" autocomplete="off"
                                            name="tags" placeholder="Теги через запятую, не более пяти" value="{{ tags|join:", " }}"/>
+
+                                    {% if suggestedTags.data %}
+                                        <div class="editor-tags">
+                                            {% for tag in suggestedTags.data %}
+                                                <a href="#">{{ tag.tag }}</a>
+                                                {% if !forloop.Last %}<span class="dot-divider"></span>{% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
                                 </div>
 
                                 <fieldset class="form-group label-floating is-select">

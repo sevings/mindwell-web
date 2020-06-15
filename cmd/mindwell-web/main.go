@@ -643,10 +643,20 @@ func designSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
+func suggestTags(api *utils.APIRequest) {
+	api.SetField("suggestedTags", "/me/tags")
+	tags := api.Data()["suggestedTags"].(map[string]interface{})
+	data, ok := tags["data"].([]interface{})
+	if !ok || len(data) == 0 {
+		api.SetField("suggestedTags", "/entries/tags")
+	}
+}
+
 func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
+		suggestTags(api)
 		api.WriteTemplate("editor")
 	}
 }
@@ -673,6 +683,7 @@ func editorExistingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/entries/" + ctx.Param("id"))
 		api.SetMe()
+		suggestTags(api)
 		api.WriteTemplate("editor")
 	}
 }

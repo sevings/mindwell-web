@@ -284,6 +284,17 @@ li.cat-list__item > a {
     color: #ff5e3a; 
 }
 
+.editor-tags {
+    margin: 0 1.1rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.editor-tags a:not(:hover) {
+    color: #888da8;
+}
+
 #attached-images {
     display: block;
     width: 100%;
