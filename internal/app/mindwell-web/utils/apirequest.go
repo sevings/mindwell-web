@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -476,7 +477,7 @@ func (api *APIRequest) WriteTemplate(name string) {
 		api.ctx.Status(api.resp.StatusCode)
 	}
 
-	api.SetData("__mobile", api.IsMobile())
+	api.SetData("__large_screen", api.IsLargeScreen())
 
 	_, updHiddenErr := api.ctx.Cookie("profile_update_hidden")
 	if updHiddenErr == nil {
@@ -552,16 +553,25 @@ func (api *APIRequest) ExpectsJsonError() bool {
 	return errType == "JSON"
 }
 
-func (api *APIRequest) IsMobile() bool {
+func (api *APIRequest) IsLargeScreen() bool {
+	vpw, err := api.ctx.Cookie("vpw")
+	if err == nil {
+		width, err := strconv.Atoi(vpw)
+		if err == nil {
+			const bootstrapExtraLargeWidth = 1199
+			return width >= bootstrapExtraLargeWidth
+		}
+	}
+
 	ua := api.ctx.GetHeader("User-Agent")
 
 	if mobReFull.MatchString(ua) {
-		return true
-	}
-
-	if len(ua) < 4 {
 		return false
 	}
 
-	return mobRe4.MatchString(ua[:4])
+	if len(ua) < 4 {
+		return true
+	}
+
+	return !mobRe4.MatchString(ua[:4])
 }

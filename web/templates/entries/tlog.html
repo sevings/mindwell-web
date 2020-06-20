@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-        {% if !__mobile || !__tlog %}
+        {% if __large_screen || !__tlog %}
             <div class="col col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 order-1">
                 <div class="ui-block">
                     <div class="ui-block-title">
@@ -88,7 +88,7 @@
                         </div>
                         <div id="profile-tags" class="ui-block-content wrapped-text">
                             {% for tag in tags.data %}
-                                <a href="/users/{{ profile.name }}{% if __mobile %}/entries{% endif %}?tag={{ tag.tag }}">{{ tag.tag }}</a>
+                                <a href="/users/{{ profile.name }}{% if !__large_screen %}/entries{% endif %}?tag={{ tag.tag }}">{{ tag.tag }}</a>
                                 {% if !forloop.Last %}<span class="dot-divider"></span>{% endif %}
                             {% endfor %}
                         </div>
@@ -96,7 +96,7 @@
                 </div>
             {% endif %}
         {% endif %}
-        {% if __mobile && !__tlog && !__profile_update_hidden %}
+        {% if !__large_screen && !__tlog && !__profile_update_hidden %}
             <div id="profile-update" class="col col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 order-3">
                 <div class="ui-block">
                     <div class="ui-block-title">
@@ -112,7 +112,7 @@
                 </div>
             </div>
         {% endif %}
-        {% if !__mobile || __tlog %}
+        {% if __large_screen || __tlog %}
             <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 order-xl-2 order-last">
                 <div id="feed">
                     {% block feed_title %}

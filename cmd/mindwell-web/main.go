@@ -518,7 +518,7 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 
 		if !isTlog {
 			api := utils.NewRequest(mdw, ctx)
-			if api.IsMobile() {
+			if !api.IsLargeScreen() {
 				api.SetMe()
 				api.SetField("profile", "/users/"+name)
 				api.SetField("tags", "/users/"+name+"/tags")
@@ -532,7 +532,7 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 				api.SetField("profile", "/users/"+name)
 			}
 
-			if !api.IsMobile() {
+			if api.IsLargeScreen() {
 				api.SetField("tags", "/users/"+name+"/tags")
 			}
 

@@ -127,6 +127,13 @@ function unescapeHtml(text) {
         .replace(/&#39;/g,  "'")
 }
 
+$(function() {
+    let width = Math.round($(window).width())
+    let date = new Date()
+    date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000)
+    document.cookie = "vpw=" + width + ";expires=" + date.toUTCString() + ";path=/"
+})
+
 $("#login-scroll").click(function() {
     return $("#login-section").velocity("scroll", { duration: 1000, easing: "easeInOutSine" })
 })
