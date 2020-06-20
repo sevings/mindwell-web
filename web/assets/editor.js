@@ -108,16 +108,22 @@ function loadImages(){
     }
 }
 
+function simplifiedTags() {
+    let tags = tagsElem().val().split(",")
+    tags.forEach((tag, i) => { tags[i] = tag.trim() })
+    tags = tags.filter(t => t !== "")
+
+    return tags
+}
+
 $(".editor-tags a").click(function() {
     let newTag = $(this).text().trim()
-    let tags = tagsElem().val().split(",")
+    let tags = simplifiedTags()
 
-    tags.forEach((tag, i) => { tags[i] = tag.trim() })
-    if(tags.includes(newTag))
+    if(tags.length >= 5)
         return false
 
-    tags = tags.filter(t => t !== "")
-    if(tags.length >= 5)
+    if(tags.includes(newTag))
         return false
 
     tags.push(newTag)
@@ -126,6 +132,21 @@ $(".editor-tags a").click(function() {
     return false
 })
 
+function checkTags() {
+    let tags = simplifiedTags()
+    if(tags.length > 5) {
+        alert("Можно использовать не более пяти тегов.")
+        return false
+    }
+
+    if(!tags.every(tag => tag.length <= 50)) {
+        alert("Длина тега не может превышать 50 символов.")
+        return false
+    }
+
+    return true
+}
+
 $("#post-entry").click(function() { 
     var btn = $(this)
     if(btn.hasClass("disabled"))
@@ -133,6 +154,9 @@ $("#post-entry").click(function() {
 
     var form = $("#entry-editor")
     if(!form[0].reportValidity())
+        return false
+
+    if(!checkTags())
         return false
 
     btn.addClass("disabled")
