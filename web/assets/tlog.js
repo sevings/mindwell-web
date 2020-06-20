@@ -275,3 +275,13 @@ $(".upload-image").click(function() {
 
     return false
 })
+
+$("#hide-profile-update").click(function() {
+    let date = new Date()
+    date.setTime(date.getTime() + 180 * 24 * 60 * 60 * 1000)
+    document.cookie = "profile_update_hidden=true;expires=" + date.toUTCString() + ";path=/users/"
+
+    $("#profile-update").remove()
+
+    return false
+})
