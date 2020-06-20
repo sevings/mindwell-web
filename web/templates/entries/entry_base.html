@@ -131,7 +131,7 @@
     {% if !cutEntry && entry.tags %}
         <div class="post-tags wrapped-text">
             {% for tag in entry.tags %}
-                <a href="/users/{{ entry.author.name }}?tag={{ tag }}">{{ tag }}</a>
+                <a href="/users/{{ entry.author.name }}{% if __mobile %}/entries{% endif %}?tag={{ tag }}">{{ tag }}</a>
                 {% if !forloop.Last %}<span class="dot-divider"></span>{% endif %}
             {% endfor %}
         </div>
