@@ -59,7 +59,12 @@ function removeDraft() {
         inLive      : inLiveElem().prop("checked"),
     }
 
-    store.set("draft", draft)   
+    store.set("draft", draft)
+
+    titleElem().val("")
+    contentElem().val("")
+    imagesElem().val("")
+    tagsElem().val("")
 }
 
 function togglePublicOnly() {
