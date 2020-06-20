@@ -68,12 +68,12 @@ function removeDraft() {
 }
 
 function togglePublicOnly() {
-    let elems= $(".for-public-only")
+    let elements = $(".for-public-only")
     let privacy = privacyElem().val()
-    if(privacy == "me") {
-        elems.hide()
+    if(privacy === "me") {
+        elements.hide()
     } else {
-        elems.show()
+        elements.show()
     }    
 }
 
@@ -92,11 +92,11 @@ function init(){
 init()
 
 function loadImages(){
-    var inp = $("#input-images")
-    var ids = inp.val().split(",")
+    let inp = $("#input-images")
+    let ids = inp.val().split(",")
 
-    for(var i = 0; i < ids.length; i++) {
-        var id = ids[i]
+    for(let i = 0; i < ids.length; i++) {
+        let id = ids[i]
         if(!id)
             continue
 
@@ -105,7 +105,7 @@ function loadImages(){
             url: "/images/" + id,
             dataType: "html",
             success: function(data) {
-                var img = $(data)
+                let img = $(data)
                 $("#attached-images").append(img)
             },
             error: showAjaxError,
@@ -153,11 +153,11 @@ function checkTags() {
 }
 
 $("#post-entry").click(function() { 
-    var btn = $(this)
+    let btn = $(this)
     if(btn.hasClass("disabled"))
         return false;
 
-    var form = $("#entry-editor")
+    let form = $("#entry-editor")
     if(!form[0].reportValidity())
         return false
 
@@ -186,7 +186,7 @@ $("#post-entry").click(function() {
 })
 
 $("#show-upload-image").click(function(){
-    var cnt = $("#attached-images").children().length
+    let cnt = $("#attached-images").children().length
     if(cnt < 5)
     {
         $("#upload-image-popup").modal("show")
@@ -198,11 +198,11 @@ $("#show-upload-image").click(function(){
 })
 
 $(".upload-image").click(function() { 
-    var btn = $(this)
+    let btn = $(this)
     if(btn.hasClass("disabled"))
         return false
 
-    var form = btn.parent()
+    let form = btn.parent()
     if(!form[0].reportValidity())
         return false
 
@@ -211,10 +211,10 @@ $(".upload-image").click(function() {
 
     btn.addClass("disabled")
 
-    var sk = btn.parents(".modal-body").find(".skills-item")
+    let sk = btn.parents(".modal-body").find(".skills-item")
     sk.attr("hidden", false)
-    var bar = sk.find(".skills-item-meter-active")
-    var units = sk.find(".units")
+    let bar = sk.find(".skills-item-meter-active")
+    let units = sk.find(".units")
 
     form.ajaxSubmit({
         resetForm: true,
@@ -226,12 +226,12 @@ $(".upload-image").click(function() {
             units.text(Math.round(pos / 1024) + " из " + Math.round(total / 1024) + " Кб")
         },
         success: function(data) {
-            var img = $(data)
+            let img = $(data)
             $("#attached-images").append(img)
 
-            var id = img.data("imageId")
-            var inp = $("#input-images")
-            var ids = inp.val()
+            let id = img.data("imageId")
+            let inp = $("#input-images")
+            let ids = inp.val()
             if(ids)
                 ids += "," + id
             else
@@ -239,7 +239,7 @@ $(".upload-image").click(function() {
             inp.val(ids)
 
             updImageIDs.push(id)
-            if(updImageIDs.length == 1)
+            if(updImageIDs.length === 1)
                 updateNextImage()    
                         
             btn.parents(".modal").modal("hide")
@@ -257,14 +257,14 @@ $(".upload-image").click(function() {
     return false
 })
 
-var updImageIDs = []
+let updImageIDs = []
 
 function updateNextImage(timeout = 1000) {
     if(!updImageIDs.length)
         return
 
-    var id = updImageIDs[0]
-    var img = $("#attached-image" + id)
+    let id = updImageIDs[0]
+    let img = $("#attached-image" + id)
     if(!img.data("processing")) {
         updImageIDs.shift()
         updateNextImage()
@@ -295,12 +295,12 @@ function removeImage(id) {
 
     $("#attached-image"+id).remove()
 
-    var i = updImageIDs.indexOf(id)
+    let i = updImageIDs.indexOf(id)
     if(i >= 0)
         updImageIDs.splice(i, 1)
 
-    var inp = $("#input-images")
-    var ids = inp.val().split(",")
+    let inp = $("#input-images")
+    let ids = inp.val().split(",")
     i = ids.indexOf(id + "")
     if(i >= 0)
         ids.splice(i, 1)
