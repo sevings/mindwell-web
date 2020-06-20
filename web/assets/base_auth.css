@@ -157,16 +157,17 @@ div.post-add-icon:hover {
     margin-left: auto;
 }
 
-.post-title {
+.wrapped-text {
     word-wrap: break-word; /* Internet Explorer */
     overflow-wrap: break-word;
+}
+
+.post-title {
     display: inline-block;
     width: 100%;
 }
 
 .post-content, .comment-content{
-    word-wrap: break-word; /* Internet Explorer */
-    overflow-wrap: break-word;
     text-align: justify;
 }
 
@@ -202,7 +203,7 @@ div.post-add-icon:hover {
     margin: 1em 0;
 }
 
-.post-tags a:not(:hover) {
+.post-tags a:not(:hover), #profile-tags a:not(:hover) {
     color: #888da8;
 }
 

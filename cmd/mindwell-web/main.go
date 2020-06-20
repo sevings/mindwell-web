@@ -70,7 +70,8 @@ func main() {
 	router.GET("/watching", watchingHandler(mdw))
 
 	router.GET("/users", topsHandler(mdw))
-	router.GET("/users/:name", tlogHandler(mdw))
+	router.GET("/users/:name", tlogHandler(mdw, false))
+	router.GET("/users/:name/entries", tlogHandler(mdw, true))
 	router.GET("/users/:name/favorites", favoritesHandler(mdw))
 	router.GET("/users/:name/relations/:relation", usersHandler(mdw))
 
@@ -499,7 +500,7 @@ func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 	handle := feedHandler(mdw, "entries/tlog", "tlog_feed")
 
 	return func(ctx *gin.Context) {
@@ -515,12 +516,27 @@ func tlogHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 		name := ctx.Param("name")
 
+		if !isTlog {
+			api := utils.NewRequest(mdw, ctx)
+			if api.IsMobile() {
+				api.SetMe()
+				api.SetField("profile", "/users/"+name)
+				api.SetField("tags", "/users/"+name+"/tags")
+				api.WriteTemplate("entries/tlog")
+				return
+			}
+		}
+
 		clbk := func(api *utils.APIRequest) {
 			if !api.IsAjax() {
 				api.SetField("profile", "/users/"+name)
 			}
 
-			api.SetData("__tlog", true)
+			if !api.IsMobile() {
+				api.SetField("tags", "/users/"+name+"/tags")
+			}
+
+			api.SetData("__tlog", isTlog)
 		}
 
 		handle(ctx, "/users/"+name+"/tlog", clbk)

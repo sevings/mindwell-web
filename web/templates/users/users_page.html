@@ -27,7 +27,7 @@
                 </div>
         
                 <div class="friend-count">
-                    <a href="/users/{{ user.name }}" class="friend-count-item">
+                    <a href="/users/{{ user.name }}{% if __mobile %}/entries{% endif %}" class="friend-count-item">
                         <div class="h6">{{ user.counts.entries|default:0 }}</div>
                         <div class="title">запис{{ user.counts.entries|quantity:"ь,и,ей" }}</div>
                     </a>

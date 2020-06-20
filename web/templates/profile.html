@@ -22,7 +22,7 @@
                                     {% if profile.counts.entries %}
                                         <li>
                                             {% if profile.relations.isOpenForMe %}
-                                                <a href="/users/{{ profile.name }}" 
+                                                <a href="/users/{{ profile.name }}{% if __mobile %}/entries{% endif %}"
                                             {% else %}
                                                 <div
                                             {% endif %}

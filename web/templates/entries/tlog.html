@@ -2,160 +2,177 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-        <div class="col col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 order-1">
-			<div class="ui-block">
-				<div class="ui-block-title">
-                    {% if __mobile %}<a data-toggle="collapse" href="#profile-info">{% endif %}
-                    <h6 class="title">Информация</h6>
-                    {% if __mobile %}</a>{% endif %}
-				</div>
-				<div id="profile-info" class="ui-block-content {% if __mobile %}collapse{% endif %}">
-					<ul class="widget w-personal-info">
-                        {% if profile.title %}
-                            <li>
-                                <span class="text">{{ profile.title }}</span>
-                            </li>
-                        {% endif %}
-                        {% if profile.gender != "not set" %}
-                            <li>
-                                <span class="title">Пол:</span>
-                                <span class="text">{% if profile.gender == "male" %}Мужской{% else %}Женский{% endif %}</span>
-                            </li>                           
-                        {% endif %}
-                        {% if profile.ageLowerBound %}
-                            <li>
-                                <span class="title">Возраст:</span>
-                                <span class="text">{{ profile.ageLowerBound }}—{{ profile.ageUpperBound }} лет</span>
-                            </li>
-                        {% endif %}
-                        {% if profile.country %}
-                            <li>
-                                <span class="title">Страна:</span>
-                                <a href="/users?query={{ profile.country }}" class="text">{{ profile.country }}</a>
-                            </li>
-                        {% endif %}
-                        {% if profile.city %}
-                            <li>
-                                <span class="title">Город:</span>
-                                <a href="/users?query={{ profile.city }}" class="text">{{ profile.city }}</a>
-                            </li>
-                        {% endif %}
-                        {% if profile.counts.days > 0 %}
-                            <li>
-                                <span class="title">С нами:</span>
-                                <span id="user-days" class="text" data-created-at="{{ profile.createdAt }}">
-                                    {{ profile.counts.days }} д{{profile.counts.days|quantity:"ень,ня,ней"}}</span>
-                            </li>
-                        {% endif %}
-                        <li id="invited-by" {% if !profile.invitedBy.id %}class="hidden"{% endif %} >
-                            <span class="title">Приглашен{{ profile.gender|gender }}:</span>
-                            {% if profile.invitedBy.name %}
-                                <a href="/users/{{ profile.invitedBy.name }}" class="text">{{ profile.invitedBy.showName }}</a>
-                            {% else %}
-                                <span class="text">(неизвестно)</span>
+        {% if !__mobile || !__tlog %}
+            <div class="col col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 order-1">
+                <div class="ui-block">
+                    <div class="ui-block-title">
+                        <h6 class="title">Информация</h6>
+                    </div>
+                    <div id="profile-info" class="ui-block-content">
+                        <ul class="widget w-personal-info">
+                            {% if profile.title %}
+                                <li>
+                                    <span class="text">{{ profile.title }}</span>
+                                </li>
                             {% endif %}
-                        </li>
-						<li>
-							<span class="title">В рейтинге:</span>
-							<span class="text">{{ profile.rank }}</span>
-                        </li>
-                        {% if profile.counts.comments %}
-                            <li>
-                                <span class="title">Комментарии:</span>
-                                <span class="text">{{ profile.counts.comments }}</span>
+                            {% if profile.gender != "not set" %}
+                                <li>
+                                    <span class="title">Пол:</span>
+                                    <span class="text">{% if profile.gender == "male" %}Мужской{% else %}Женский{% endif %}</span>
+                                </li>
+                            {% endif %}
+                            {% if profile.ageLowerBound %}
+                                <li>
+                                    <span class="title">Возраст:</span>
+                                    <span class="text">{{ profile.ageLowerBound }}—{{ profile.ageUpperBound }} лет</span>
+                                </li>
+                            {% endif %}
+                            {% if profile.country %}
+                                <li>
+                                    <span class="title">Страна:</span>
+                                    <a href="/users?query={{ profile.country }}" class="text">{{ profile.country }}</a>
+                                </li>
+                            {% endif %}
+                            {% if profile.city %}
+                                <li>
+                                    <span class="title">Город:</span>
+                                    <a href="/users?query={{ profile.city }}" class="text">{{ profile.city }}</a>
+                                </li>
+                            {% endif %}
+                            {% if profile.counts.days > 0 %}
+                                <li>
+                                    <span class="title">С нами:</span>
+                                    <span id="user-days" class="text" data-created-at="{{ profile.createdAt }}">
+                                        {{ profile.counts.days }} д{{profile.counts.days|quantity:"ень,ня,ней"}}</span>
+                                </li>
+                            {% endif %}
+                            <li id="invited-by" {% if !profile.invitedBy.id %}class="hidden"{% endif %} >
+                                <span class="title">Приглашен{{ profile.gender|gender }}:</span>
+                                {% if profile.invitedBy.name %}
+                                    <a href="/users/{{ profile.invitedBy.name }}" class="text">{{ profile.invitedBy.showName }}</a>
+                                {% else %}
+                                    <span class="text">(неизвестно)</span>
+                                {% endif %}
                             </li>
-                        {% endif %}
-                        {% if profile.counts.tags %}
                             <li>
-                                <span class="title">Теги:</span>
-                                <span class="text">{{ profile.counts.tags }}</span>
+                                <span class="title">В рейтинге:</span>
+                                <span class="text">{{ profile.rank }}</span>
                             </li>
-                        {% endif %}
-                        {% if profile.counts.ignored %}
-                            <li>
-                                <span class="title">В черном списке:</span>
-                                <span class="text">{{ profile.counts.ignored }}</span>
-                            </li>
-                        {% endif %}
-                    </ul>
+                            {% if profile.counts.comments %}
+                                <li>
+                                    <span class="title">Комментарии:</span>
+                                    <span class="text">{{ profile.counts.comments }}</span>
+                                </li>
+                            {% endif %}
+                            {% if profile.counts.tags %}
+                                <li>
+                                    <span class="title">Теги:</span>
+                                    <span class="text">{{ profile.counts.tags }}</span>
+                                </li>
+                            {% endif %}
+                            {% if profile.counts.ignored %}
+                                <li>
+                                    <span class="title">В черном списке:</span>
+                                    <span class="text">{{ profile.counts.ignored }}</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-		<div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 order-3">
-			<div id="feed">
-                {% block feed_title %}
-                    {% if __tag %}
+            {% if tags.data %}
+                <div class="col col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 order-xl-3 order-2">
+                    <div class="ui-block">
+                        <div class="ui-block-title">
+                            <h6 class="title">Теги</h6>
+                        </div>
+                        <div id="profile-tags" class="ui-block-content wrapped-text">
+                            {% for tag in tags.data %}
+                                <a href="/users/{{ profile.name }}?tag={{ tag.tag }}">{{ tag.tag }}</a>
+                                {% if !forloop.Last %}<span class="dot-divider"></span>{% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+        {% if !__mobile || __tlog %}
+            <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 order-xl-2 order-last">
+                <div id="feed">
+                    {% block feed_title %}
+                        {% if __tag %}
+                            <div class="ui-block">
+                                <div class="ui-block-title">
+                                    <h6 class="title">Записи с тегом [{{ __tag }}]</h6>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                    {% if entries %}
+                        {% include "tlog_page.html" %}
+                    {% elif profile.id == me.id && !me.counts.entries %}
+                        <div class="jumbotron">
+                            <h1>Приветствуем, {{ me.showName }}!</h1>
+                            <p class="lead">
+                                Мы понимаем, как трудно бывает привыкнуть к&nbsp;новой обстановке. Поэтому
+                                вот несколько полезных ссылок, с&nbsp;которых можно начать использовать
+                                Майндвелл.
+                            </p>
+                            <hr class="my-4">
+                            <p>
+                                Ты&nbsp;можешь настроить свой тлог под&nbsp;себя, загрузив красивую
+                                <a href="#" data-toggle="modal" data-target="#update-cover">фотографию на&nbsp;обложку</a>
+                                и свою любимую
+                                <a href="#" data-toggle="modal" data-target="#update-avatar">картинку на&nbsp;аватар</a>.
+                                А&nbsp;еще можно
+                                <a href="#" data-toggle="modal" data-target="#edit-profile">заполнить информацию</a>
+                                в&nbsp;своем профиле.
+                            </p>
+                            {% if !me.counts.followings %}
+                                <p>
+                                    Твои подписки пока еще пусты. Посмотри <a href="/users?top=rank">эти тлоги</a>,
+                                    возможно, тебе что-то понравится. Или почитай раздел <a href="/best?category=month">Лучшее</a>,
+                                    там ты наверняка найдешь что-то интересное.
+                                </p>
+                            {% endif %}
+                            <p>
+                                Возможно, тебе уже не&nbsp;терпится что-то написать. Тогда следуй сразу в&nbsp;
+                                <a href="/editor">редактор постов</a>. А&nbsp;<a href="/help/faq/md">вот&nbsp;тут</a>
+                                можно узнать, как оформлять свои записи.
+                            </p>
+                            {% if !me.invitedBy.id %}
+                                <p>
+                                    Тебя пока никто не&nbsp;пригласил. Какие ограничения это накладывает
+                                    и как&nbsp;же их снять, написано в&nbsp;другом
+                                    <a href="/help/faq/invites">разделе справки</a>.
+                                </p>
+                            {% endif %}
+                            <p>
+                                А&nbsp;если ты еще не&nbsp;прочитал{{ me.gender|gender }}
+                                <a href="/help/rules">правила сайта</a>, самое время сделать это сейчас.
+                                Настоятельно просим их соблюдать. Там нет ничего сложного.
+                            </p>
+                            <p>
+                                Надеемся, что мы подружимся, и Майндвелл станет для&nbsp;тебя тем местом,
+                                в&nbsp;которое всегда хочется возвращаться.
+                            </p>
+                        </div>
+                    {% else %}
                         <div class="ui-block">
                             <div class="ui-block-title">
-                                <h6 class="title">Записи с тегом [{{ __tag }}]</h6>
+                                <h6 class="title">
+                                    {% if !profile.relations.isOpenForMe %}
+                                        {{ profile.showName }} скрыл{{ profile.gender|gender }} свои записи.
+                                    {% else %}
+                                        Нет записей
+                                    {% endif %}
+                                </h6>
                             </div>
                         </div>
                     {% endif %}
-                {% endblock %}
-                {% if entries %}
-                    {% include "tlog_page.html" %}
-                {% elif profile.id == me.id && !me.counts.entries %}
-                    <div class="jumbotron">
-                        <h1>Приветствуем, {{ me.showName }}!</h1>
-                        <p class="lead">
-                            Мы понимаем, как трудно бывает привыкнуть к&nbsp;новой обстановке. Поэтому
-                            вот несколько полезных ссылок, с&nbsp;которых можно начать использовать 
-                            Майндвелл. 
-                        </p>
-                        <hr class="my-4">
-                        <p>
-                            Ты&nbsp;можешь настроить свой тлог под&nbsp;себя, загрузив красивую 
-                            <a href="#" data-toggle="modal" data-target="#update-cover">фотографию на&nbsp;обложку</a>
-                            и свою любимую 
-                            <a href="#" data-toggle="modal" data-target="#update-avatar">картинку на&nbsp;аватар</a>. 
-                            А&nbsp;еще можно 
-                            <a href="#" data-toggle="modal" data-target="#edit-profile">заполнить информацию</a> 
-                            в&nbsp;своем профиле.
-                        </p>
-                        {% if !me.counts.followings %}
-                            <p>
-                                Твои подписки пока еще пусты. Посмотри <a href="/users?top=rank">эти тлоги</a>, 
-                                возможно, тебе что-то понравится. Или почитай раздел <a href="/best?category=month">Лучшее</a>, 
-                                там ты наверняка найдешь что-то интересное. 
-                            </p>
-                        {% endif %}
-                        <p>
-                            Возможно, тебе уже не&nbsp;терпится что-то написать. Тогда следуй сразу в&nbsp;
-                            <a href="/editor">редактор постов</a>. А&nbsp;<a href="/help/faq/md">вот&nbsp;тут</a> 
-                            можно узнать, как оформлять свои записи. 
-                        </p>
-                        {% if !me.invitedBy.id %}
-                            <p>
-                                Тебя пока никто не&nbsp;пригласил. Какие ограничения это накладывает
-                                и как&nbsp;же их снять, написано в&nbsp;другом 
-                                <a href="/help/faq/invites">разделе справки</a>.
-                            </p>
-                        {% endif %}
-                        <p>
-                            А&nbsp;если ты еще не&nbsp;прочитал{{ me.gender|gender }} 
-                            <a href="/help/rules">правила сайта</a>, самое время сделать это сейчас. 
-                            Настоятельно просим их соблюдать. Там нет ничего сложного.
-                        </p>
-                        <p>
-                            Надеемся, что мы подружимся, и Майндвелл станет для&nbsp;тебя тем местом,
-                            в&nbsp;которое всегда хочется возвращаться. 
-                        </p>
-                    </div>
-                {% else %}
-                    <div class="ui-block">
-                        <div class="ui-block-title">
-                            <h6 class="title">
-                                {% if !profile.relations.isOpenForMe %}
-                                    {{ profile.showName }} скрыл{{ profile.gender|gender }} свои записи.
-                                {% else %}
-                                    Нет записей
-                                {% endif %}
-                            </h6>
-                        </div>
-                    </div>
-                {% endif %}
+                </div>
             </div>
-        </div>
+        {% endif %}
     </div>
 </div>
 

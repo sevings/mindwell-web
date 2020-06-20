@@ -65,16 +65,16 @@
 
     {% if entry.title %}
         {% if cutEntry %}
-            <a href="/entries/{{ entry.id }}" class="h2 post-title open-post" data-entry="{{ entry.id }}"
-        {% else %}
-            <span class="h2 post-title"
+            <a href="/entries/{{ entry.id }}" class="h2 post-title open-post wrapped-text" data-entry="{{ entry.id }}"
+               {% else %}
+            <span class="h2 post-title wrapped-text"
         {% endif %}
             {% if cutEntry && entry.cutTitle %}title="{{ entry.title|safe }}"{% endif %}>
                 {% if cutEntry && entry.cutTitle %}{{ entry.cutTitle|safe }}{% else %}{{ entry.title|safe }}{% endif %} 
         {% if cutEntry %}</a>{% else %}</span>{% endif %}
     {% endif %}
 
-    <div class="post-content">
+    <div class="post-content wrapped-text">
         {% if cutEntry && entry.cutContent %}
             {{ entry.cutContent|media }}
         {% elif cutEntry %}
@@ -129,7 +129,7 @@
     {% endif %}
 
     {% if !cutEntry && entry.tags %}
-        <div class="post-tags">
+        <div class="post-tags wrapped-text">
             {% for tag in entry.tags %}
                 <a href="/users/{{ entry.author.name }}?tag={{ tag }}">{{ tag }}</a>
                 {% if !forloop.Last %}<span class="dot-divider"></span>{% endif %}
