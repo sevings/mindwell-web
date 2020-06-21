@@ -39,6 +39,8 @@ function loadDraft() {
     if(draft.tags)
         tagsElem().val(draft.tags)
 
+    simplifiedTags().forEach(tag => removeSuggestedTag(tag))
+
     if(draft.images) {
         imagesElem().val(draft.images)
         loadImages()
@@ -121,6 +123,23 @@ function simplifiedTags() {
     return tags
 }
 
+function removeSuggestedTag(tag) {
+    if(typeof tag === "string")
+        tag = $(".editor-tags a").filter(function() { return $(this).text() === tag })
+    else
+        tag = $(tag)
+
+    if(!tag.length)
+        return
+
+    let dot = tag.next(".dot-divider")
+    if(!dot.length)
+        dot = tag.prev(".dot-divider")
+
+    dot.remove()
+    tag.remove()
+}
+
 $(".editor-tags a").click(function() {
     let newTag = $(this).text().trim()
     let tags = simplifiedTags()
@@ -133,6 +152,8 @@ $(".editor-tags a").click(function() {
 
     tags.push(newTag)
     tagsElem().val(tags.join(", "))
+
+    removeSuggestedTag(this)
 
     return false
 })
