@@ -223,10 +223,11 @@ func (api *APIRequest) QueryCookieName(name string) {
 	saveVal := cookieValues.Encode()
 	if cookie == nil || saveVal != cookie.Value {
 		cookie = &http.Cookie{
-			Name:   name,
-			Value:  saveVal,
-			Path:   "/",
-			MaxAge: 60 * 60 * 24 * 90,
+			Name:     name,
+			Value:    saveVal,
+			Path:     "/",
+			MaxAge:   60 * 60 * 24 * 90,
+			SameSite: http.SameSiteStrictMode,
 		}
 		api.SetCookie(cookie)
 	}

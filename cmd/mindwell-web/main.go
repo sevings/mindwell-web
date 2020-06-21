@@ -232,6 +232,7 @@ func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Cont
 			Expires:  exp,
 			HttpOnly: true,
 			Path:     "/",
+			SameSite: http.SameSiteStrictMode,
 		}
 		api.SetCookie(&cookie)
 
@@ -506,10 +507,11 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		if _, err := ctx.Request.Cookie("tlog_feed"); err == nil {
 			cookie := &http.Cookie{
-				Name:   "tlog_feed",
-				Value:  "limit=10",
-				Path:   "/",
-				MaxAge: 60 * 60 * 24 * 90,
+				Name:     "tlog_feed",
+				Value:    "limit=10",
+				Path:     "/",
+				MaxAge:   60 * 60 * 24 * 90,
+				SameSite: http.SameSiteStrictMode,
 			}
 			http.SetCookie(ctx.Writer, cookie)
 		}
@@ -549,10 +551,11 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		if _, err := ctx.Request.Cookie("tlog_feed"); err == nil {
 			cookie := &http.Cookie{
-				Name:   "tlog_feed",
-				Value:  "limit=10",
-				Path:   "/",
-				MaxAge: 60 * 60 * 24 * 90,
+				Name:     "tlog_feed",
+				Value:    "limit=10",
+				Path:     "/",
+				MaxAge:   60 * 60 * 24 * 90,
+				SameSite: http.SameSiteStrictMode,
 			}
 			http.SetCookie(ctx.Writer, cookie)
 		}
