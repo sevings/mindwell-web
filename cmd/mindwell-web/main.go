@@ -536,7 +536,7 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 				api.SetField("tags", "/users/"+name+"/tags")
 			}
 
-			api.SetData("__tlog", isTlog)
+			api.SetData("__feed", isTlog)
 		}
 
 		handle(ctx, "/users/"+name+"/tlog", clbk)
@@ -564,7 +564,7 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 				api.SetField("profile", "/users/"+name)
 			}
 
-			api.SetData("__favorites", true)
+			api.SetData("__feed", true)
 		}
 
 		handle(ctx, "/users/"+name+"/favorites", clbk)
