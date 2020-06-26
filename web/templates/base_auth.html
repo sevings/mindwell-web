@@ -26,6 +26,13 @@
 
 		<div class="mCustomScrollbar" data-mcs-theme="dark">
 			<ul class="left-menu">
+				{% if !__large_screen %}
+					<li>
+						<a href="/users/{{ me.name }}/entries">
+							<svg class="olymp-blog-icon left-menu-icon" data-toggle="tooltip" data-placement="right" data-original-title="Мои записи"><use xlink:href="#olymp-blog-icon"></use></svg>
+						</a>
+					</li>
+				{% endif %}
 				<li>
 					<a href="/friends">
 						<svg class="olymp-newsfeed-icon left-menu-icon" data-toggle="tooltip" data-placement="right"   data-original-title="Подписки"><use xlink:href="#olymp-newsfeed-icon"></use></svg>
@@ -62,6 +69,14 @@
 
 		<div class="mCustomScrollbar" data-mcs-theme="dark">
 			<ul class="left-menu">
+				{% if !__large_screen %}
+					<li>
+						<a href="/users/{{ me.name }}/entries">
+							<svg class="olymp-blog-icon left-menu-icon"><use xlink:href="#olymp-blog-icon"></use></svg>
+							<span class="left-menu-title">Мои записи</span>
+						</a>
+					</li>
+				{% endif %}
 				<li>
 					<a href="/friends">
 						<svg class="olymp-newsfeed-icon left-menu-icon"><use xlink:href="#olymp-newsfeed-icon"></use></svg>
@@ -122,7 +137,7 @@
 							{{ me.showName }} <svg class="olymp-dropdown-arrow-icon"><use xlink:href="#olymp-dropdown-arrow-icon"></use></svg>
 						</div>
 				    </div>
-                </a>
+				</a>
 			</div>
 
 			<hr>
@@ -132,6 +147,12 @@
 					<a href="/editor">
 						<svg class="olymp-add-to-conversation-icon left-menu-icon"><use xlink:href="#olymp-add-to-conversation-icon"></use></svg>
 						<span>Новая запись</span>
+					</a>
+				</li>
+				<li>
+					<a href="/users/{{ me.name }}/entries">
+						<svg class="olymp-blog-icon left-menu-icon"><use xlink:href="#olymp-blog-icon"></use></svg>
+						<span>Мои записи</span>
 					</a>
 				</li>
 				<li>
