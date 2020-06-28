@@ -34,7 +34,7 @@
         {% endif %}
     </div>
 
-    <div class="comment-content">{{ comment.content|media:"embed" }}</div>
+    <div class="comment-content wrapped-text">{{ comment.content|media:"embed" }}</div>
 
     <div class="comment-additional-info inline-items">
         {% if comment.rights.vote  %}<a href="#" onclick="return voteComment({{ comment.id }}, true);"{% else %}<div{% endif %} 
