@@ -25,11 +25,11 @@
                 <div id="messages-placeholder">Здесь будет показана ваша переписка.</div>
 
                 <form id="message-form" class="chat-fixed" action="/chats/{{ partner.name }}/messages" method="POST" enctype="multipart/form-data">
-                    <div class="form-group label-floating is-empty">
-                        <label class="control-label">
-                            {% if rights.send %}Написать сообщение…{% else %}Тебе нельзя отправлять сообщения в этот чат.{% endif %}
-                        </label>
-                        <textarea class="form-control" name="content" maxlength="1000" required{% if !rights.send %} disabled{% endif %}></textarea>
+                    <div class="form-group">
+                        <textarea class="form-control" name="content" maxlength="1000" required
+                                  placeholder="{% if rights.send %}Написать сообщение…{% else %}Тебе нельзя отправлять сообщения в этот чат.{% endif %}"
+                                  {% if !rights.send %} disabled{% endif %}
+                        ></textarea>
                     </div>
                     <input id="message-uid" type="hidden" name="uid">
                     <button id="send-message" class="btn btn-md-2 btn-primary"{% if !rights.send %} disabled{% endif %}>Отправить</button>
