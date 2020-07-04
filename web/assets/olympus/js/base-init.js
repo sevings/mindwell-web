@@ -266,6 +266,33 @@ var CRUMINA = {};
 		return false
 	});
 
+	// Toggle notification boxes
+	$('.js-notification-open').on('click', function () {
+		let btn = $(this)
+		let dropdown = btn.find('.more-dropdown')
+		if(dropdown.hasClass('open')) {
+			dropdown.removeClass('open')
+			return
+		}
+
+		btn.closest('.control-block').find('.more-dropdown.open').removeClass('open');
+		dropdown.addClass('open');
+	});
+
+	// Close on click outside elements.
+	$document.on('click', function (event) {
+		if (!$(event.target).closest('.js-notification-open').length) {
+			$('.js-notification-open').find('.more-dropdown').removeClass('open');
+		}
+	});
+
+	// Close on "Esc" click
+	$window.keydown(function (eventObject) {
+		if (eventObject.which == 27) {
+			$('.js-notification-open').find('.more-dropdown').removeClass('open');
+		}
+	});
+
 
 	/* -----------------------------
 		 * Scrollmagic scenes animation

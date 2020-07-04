@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block base_styles %}
-    <link rel="stylesheet" type="text/css" href="/assets/base_auth.css?d=20200620">
+    <link rel="stylesheet" type="text/css" href="/assets/base_auth.css?d=20200704">
     {% block styles %}{% endblock %}
 {% endblock %}
 {% block base_scripts %}
@@ -26,6 +26,11 @@
 
 		<div class="mCustomScrollbar" data-mcs-theme="dark">
 			<ul class="left-menu">
+				<li>
+					<a href="/users/{{ me.name }}">
+						<svg class="olymp-home-icon left-menu-icon" data-toggle="tooltip" data-placement="right" data-original-title="Мой профиль"><use xlink:href="#olymp-home-icon"></use></svg>
+					</a>
+				</li>
 				{% if !__large_screen %}
 					<li>
 						<a href="/users/{{ me.name }}/entries">
@@ -69,6 +74,12 @@
 
 		<div class="mCustomScrollbar" data-mcs-theme="dark">
 			<ul class="left-menu">
+				<li>
+					<a href="/users/{{ me.name }}">
+						<svg class="olymp-home-icon left-menu-icon"><use xlink:href="#olymp-home-icon"></use></svg>
+						<span class="left-menu-title">Мой профиль</span>
+					</a>
+				</li>
 				{% if !__large_screen %}
 					<li>
 						<a href="/users/{{ me.name }}/entries">
@@ -243,7 +254,7 @@
 
 		<div class="control-block">
 
-			<div class="control-icon more has-items chats-control">
+			<div class="control-icon has-items js-notification-open chats-control">
 				<svg class="olymp-chat---messages-icon"><use xlink:href="#olymp-chat---messages-icon"></use></svg>
 				<div class="label-avatar bg-purple hidden chats-counter"></div>
 				<div class="more-dropdown more-with-triangle triangle-top-center">
@@ -256,7 +267,7 @@
 				</div>
 			</div>
 
-			<div class="control-icon more has-items notifications-control">
+			<div class="control-icon has-items js-notification-open notifications-control">
 				<svg class="olymp-thunder-icon"><use xlink:href="#olymp-thunder-icon"></use></svg>
 				<div class="label-avatar bg-primary hidden notifications-counter"></div>
 				<div class="more-dropdown more-with-triangle triangle-top-center">
@@ -269,11 +280,9 @@
 				</div>
 			</div>
 
-			<div class="author-page author vcard inline-items more">
+			<div class="author-page author vcard inline-items js-notification-open">
 				<div class="author-thumb">
-                    <a href="/users/{{ me.name }}" class="fn">
-                        <img alt="author" src="{{ me.avatar.x42 }}" class="avatar">
-                    </a>
+					<img alt="author" src="{{ me.avatar.x42 }}" class="avatar">
 					<div class="more-dropdown more-with-triangle">
 						<div class="mCustomScrollbar" data-mcs-theme="dark">
 
@@ -325,11 +334,9 @@
 
 					</div>
 				</div>
-				<a href="/users/{{ me.name }}" class="author-name fn">
-					<div class="author-title">
-						{{ me.showName }} <svg class="olymp-dropdown-arrow-icon"><use xlink:href="#olymp-dropdown-arrow-icon"></use></svg>
-					</div>
-				</a>
+				<div class="author-title">
+					{{ me.showName }} <svg class="olymp-dropdown-arrow-icon"><use xlink:href="#olymp-dropdown-arrow-icon"></use></svg>
+				</div>
 			</div>
 
 		</div>

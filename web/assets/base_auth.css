@@ -1,3 +1,14 @@
+.js-notification-open {
+    position: relative;
+    cursor: pointer;
+}
+
+.js-notification-open .more-dropdown.open {
+    opacity: 1;
+    visibility: visible;
+    transition: .3s ease;
+}
+
 .post-content img, .comment-content img, a.post-thumb img, div.post-thumb img {
     display: block;
     border-radius: 5px;
