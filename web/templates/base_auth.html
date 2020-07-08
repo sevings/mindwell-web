@@ -4,7 +4,7 @@
     {% block styles %}{% endblock %}
 {% endblock %}
 {% block base_scripts %}
-	<script src="/assets/base_auth.js?d=20200511"></script>
+	<script src="/assets/base_auth.js?d=20200708"></script>
 	{% block scripts %}{% endblock %}
 {% endblock %}
 {% block body_data %}
@@ -411,6 +411,32 @@
 
 {% endblock %}
 {% block footer %}
+
+{% if !__notifications_update_hidden %}
+	<div class="modal fade" id="notifications-update" tabindex="-1" role="dialog">
+		<div class="modal-dialog window-popup edit-widget" role="document">
+			<div class="modal-content">
+				<a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+					<svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
+				</a>
+
+				<div class="modal-header">
+					<h6 class="title">Обновление</h6>
+				</div>
+
+				<div class="modal-body">
+					<p>
+						Список уведомлений, список чатов и меню профиля теперь открываются по клику,
+						а не по наведению мышкой. Ссылка на твой профиль переехала в боковое меню.
+					</p>
+					<button id="hide-notifications-update" class="btn btn-primary btn-lg full-width">Понятно</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+{% endif %}
+
     <a class="back-to-top" href="#">
         <img src="/assets/olympus/svg-icons/back-to-top.svg" alt="arrow" class="back-icon">
     </a>

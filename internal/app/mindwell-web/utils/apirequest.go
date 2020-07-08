@@ -485,6 +485,11 @@ func (api *APIRequest) WriteTemplate(name string) {
 		api.SetData("__profile_update_hidden", true)
 	}
 
+	_, updHiddenErr = api.ctx.Cookie("notifications_update_hidden")
+	if updHiddenErr == nil {
+		api.SetData("__notifications_update_hidden", true)
+	}
+
 	if api.mdw.DevMode {
 		api.SetData("__test", true)
 	}
