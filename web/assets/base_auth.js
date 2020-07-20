@@ -123,7 +123,7 @@ class Feed {
     }
     postCheck(data) {
         let ul = $(formatTimeHtml(data))
-        this.addClickHandler(ul)
+        ul.filter("li").each((i, li) => { this.addClickHandler($(li)) })
         this.setUnread(ul)
         this.setAfter(ul)
         fixSvgUse(ul)
@@ -150,7 +150,7 @@ class Feed {
     }
     postLoadHistory(data) {
         let ul = $(formatTimeHtml(data))
-        this.addClickHandler(ul)
+        ul.filter("li").each((i, li) => { this.addClickHandler($(li)) })
         this.setUnread(ul)
         this.setBefore(ul)
         fixSvgUse(ul)
@@ -176,7 +176,7 @@ class Feed {
         return li
     }
     updateCounter(unread) {}
-    addClickHandler(element) {}
+    addClickHandler(li) {}
     check() {}
     loadHistory() {}
 }
@@ -197,13 +197,12 @@ class Notifications extends Feed {
 
         document.title = title
     }
-    addClickHandler(ul) {
-        $("a", ul).click(() => { this.readAll() })
-        let ntf = this
-        ul.click(function() {
-            ntf.readAll()
+    addClickHandler(li) {
+        li.find("a").click(() => { this.readAll() })
+        let link = li.find(".notification-action").prop("href")
+        li.click(() => {
+            this.readAll()
             setTimeout(() => {
-                let link = $(this).find(".notification-action").prop("href")
                 if(window.location.pathname === new URL(link).pathname)
                     window.location.reload()
                 else
@@ -341,22 +340,14 @@ $(function() {
     window.notifications.start()
 })
 
-$(".more-dropdown .notifications").mouseout(() => { window.notifications.readAll() })
+$("a[href='#notifications'], .notifications-control").click(function() {
+    let feed = window.notifications
 
-$(".notifications-control").mouseenter(function() {
+    if(feed.unread > 0)
+        setTimeout(() => { feed.readAll() }, feed.unread * 500)
+
     if($(".notifications > .notification-list").children().length < 5)
-        window.notifications.loadHistory()
-})
-
-$("a[href='#notifications']").click(function() {
-    let a = $(this)
-    let read = a.data("read")
-    a.data("read", !read)
-    
-    if(read)
-        window.notifications.readAll()
-    else if($(".notifications > .notification-list").children().length < 5)
-        window.notifications.loadHistory()
+        feed.loadHistory()
 })
 
 $("div.notifications").scroll(function() { 
@@ -375,9 +366,9 @@ class Chats extends Feed {
             .text(unread)
             .toggleClass("hidden", !unread)
     }
-    addClickHandler(ul) {
-        ul.click(function() {
-            let link = $(this).find(".notification-action").prop("href")
+    addClickHandler(li) {
+        let link = li.find(".notification-action").prop("href")
+        li.click(() => {
             if(window.location.pathname === new URL(link).pathname)
                 window.location.reload()
             else
@@ -517,12 +508,7 @@ $(function() {
     window.chats.start()
 })
 
-$(".chats-control").mouseenter(function() {
-    if($(".chats > .notification-list").children().length < 5)
-        window.chats.loadHistory()
-})
-
-$("a[href='#chats']").click(function() {
+$("a[href='#chats'], .chats-control").click(function() {
      if($(".chats > .notification-list").children().length < 5)
         window.chats.loadHistory()
 })

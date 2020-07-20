@@ -89,8 +89,7 @@ class Messages extends Feed {
 
         return false
     }
-    edit(a) {
-        let msg = $(a).parents(".comment-item")
+    edit(msg) {
         let id = msg.data("id")
         let content = unescapeHtml(msg.data("content") + "")
         let form = $("#message-form")
@@ -102,11 +101,10 @@ class Messages extends Feed {
 
         return false
     }
-    delete(a) {
+    delete(msg) {
         if(!confirm("Сообщение будет удалено навсегда."))
             return false
 
-        let msg = $(a).parents(".comment-item")
         let id = msg.data("id")
 
         $.ajax({
@@ -141,9 +139,9 @@ class Messages extends Feed {
         let wrapper = $("#chat-wrapper")
         scroll.scrollTop(wrapper.outerHeight() - scroll.height() + 100)
     }
-    addClickHandler(ul) {
-        $("a.delete-message", ul).click((e) => { return this.delete(e.target) })
-        $("a.edit-message", ul).click((e) => { return this.edit(e.target) })
+    addClickHandler(li) {
+        li.find("a.delete-message").click(() => { return this.delete(li) })
+        li.find("a.edit-message").click(() => { return this.edit(li) })
     }
     readAll() {
         if(!ifvisible.now())
