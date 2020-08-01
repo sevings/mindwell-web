@@ -123,7 +123,7 @@ class Feed {
     }
     postCheck(data) {
         let ul = $(formatTimeHtml(data))
-        ul.filter("li").each((i, li) => { this.addClickHandler($(li)) })
+        this.addClickHandler(ul)
         this.setUnread(ul)
         this.setAfter(ul)
         fixSvgUse(ul)
@@ -150,7 +150,7 @@ class Feed {
     }
     postLoadHistory(data) {
         let ul = $(formatTimeHtml(data))
-        ul.filter("li").each((i, li) => { this.addClickHandler($(li)) })
+        this.addClickHandler(ul)
         this.setUnread(ul)
         this.setBefore(ul)
         fixSvgUse(ul)
@@ -199,9 +199,9 @@ class Notifications extends Feed {
     }
     addClickHandler(li) {
         li.find("a").click(() => { this.readAll() })
-        let link = li.find(".notification-action").prop("href")
-        li.click(() => {
+        li.click((event) => {
             this.readAll()
+            let link = $(".notification-action", event.currentTarget).prop("href")
             setTimeout(() => {
                 if(window.location.pathname === new URL(link).pathname)
                     window.location.reload()
@@ -367,8 +367,8 @@ class Chats extends Feed {
             .toggleClass("hidden", !unread)
     }
     addClickHandler(li) {
-        let link = li.find(".notification-action").prop("href")
-        li.click(() => {
+        li.click((event) => {
+            let link = $(".notification-action", event.currentTarget).prop("href")
             if(window.location.pathname === new URL(link).pathname)
                 window.location.reload()
             else

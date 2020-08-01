@@ -140,8 +140,14 @@ class Messages extends Feed {
         scroll.scrollTop(wrapper.outerHeight() - scroll.height() + 100)
     }
     addClickHandler(li) {
-        li.find("a.delete-message").click(() => { return this.delete(li) })
-        li.find("a.edit-message").click(() => { return this.edit(li) })
+        li.find("a.delete-message").click((event) => {
+            let msg = $(event.currentTarget).closest(".comment-item")
+            return this.delete(msg)
+        })
+        li.find("a.edit-message").click((event) => {
+            let msg = $(event.currentTarget).closest(".comment-item")
+            return this.edit(msg)
+        })
     }
     readAll() {
         if(!ifvisible.now())
