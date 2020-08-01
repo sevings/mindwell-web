@@ -188,6 +188,19 @@ class Messages extends Feed {
                 ul.each(function(){ CRUMINA.mediaPopups(this) })
                 addYtPlayers()
 
+                // remove duplicates
+                let items = {}
+                list.find(".comment-item").each(function(){
+                    let item = $(this)
+                    let id = item.data("id")
+
+                    let prev = items[id]
+                    if(prev)
+                        prev.remove()
+
+                    items[id] = item
+                })
+
                 if(list.children().length > 0) {
                     $("#messages-placeholder").remove()
                     if(!this.before) {
