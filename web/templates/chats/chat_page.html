@@ -19,10 +19,19 @@
 
                 <div id="chat-wrapper" data-id="{{ id }}" data-name="{{ partner.name }}">
                     <ul class="comments-list">
+                        <div class="data-helper" data-unread-count="{{ messages.unreadCount|default:0 }}"
+                             data-after="{{ messages.nextAfter }}" data-has-after="{{ messages.hasAfter }}"
+                             data-before="{{ messages.nextBefore }}" data-has-before="{{ messages.hasBefore }}"></div>
+
+                        {% for msg in messages.data %}
+                            {% include "message.html" %}
+                        {% endfor %}
                     </ul>
                 </div>
 
-                <div id="messages-placeholder">Здесь будет показана ваша переписка.</div>
+                {% if !messages.data %}
+                    <div id="messages-placeholder">Здесь будет показана ваша переписка.</div>
+                {% endif %}
 
                 <form id="message-form" class="chat-fixed" action="/chats/{{ partner.name }}/messages" method="POST" enctype="multipart/form-data">
                     <div class="form-group">

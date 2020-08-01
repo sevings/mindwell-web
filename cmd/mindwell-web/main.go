@@ -841,6 +841,8 @@ func chatHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 			api.WriteTemplate("chats/chat")
 		} else {
+			name := ctx.Param("name")
+			api.SetField("messages", "/chats/"+name+"/messages")
 			api.SetMe()
 			api.WriteTemplate("chats/chat_page")
 		}

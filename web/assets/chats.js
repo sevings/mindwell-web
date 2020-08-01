@@ -280,6 +280,20 @@ class Messages extends Feed {
         li.remove()
     }
     start() {
+        let ul = $("ul.comments-list")
+        this.addClickHandler(ul)
+        this.setUnread(ul)
+        this.setBefore(ul)
+        this.setAfter(ul)
+        fixSvgUse(ul)
+        ul.children(".data-helper").remove()
+
+        ul.find("iframe.yt-video").each(prepareYtPlayer)
+        ul.each(function(){ CRUMINA.mediaPopups(this) })
+        addYtPlayers()
+
+        this.scrollToBottom()
+
         let name = $("body").data("meName")
         if(!name)
             return
