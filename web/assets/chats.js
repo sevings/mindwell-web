@@ -225,6 +225,10 @@ class Messages extends Feed {
         if(!this.preLoadHistory())
             return
 
+        let scroll = $(window)
+        let wrapper = $("#chat-wrapper")
+        let position = wrapper.outerHeight() - scroll.scrollTop()
+
         $.ajax({
             url: "/chats/" + this.name + "/messages?before=" + this.before,
             method: "GET",
@@ -239,6 +243,8 @@ class Messages extends Feed {
 
                 if(list.children().length > 0)
                     $("#messages-placeholder").remove()
+
+                scroll.scrollTop(wrapper.outerHeight() - position)
             },
             error: (req) => {
                 let resp = JSON.parse(req.responseText)
@@ -280,13 +286,13 @@ class Messages extends Feed {
         li.remove()
     }
     start() {
-        let ul = $("ul.comments-list")
+        let ul = $("ul.comments-list").children()
         this.addClickHandler(ul)
         this.setUnread(ul)
         this.setBefore(ul)
         this.setAfter(ul)
         fixSvgUse(ul)
-        ul.children(".data-helper").remove()
+        ul.filter(".data-helper").remove()
 
         ul.find("iframe.yt-video").each(prepareYtPlayer)
         ul.each(function(){ CRUMINA.mediaPopups(this) })
