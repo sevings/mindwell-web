@@ -137,7 +137,7 @@ class Feed {
         if(!this.hasBefore)
             return false
 
-        if(this.loadingAfter && !notifications.before)
+        if(this.loadingAfter && !this.before)
         {
             this.reloadBefore = true
             return false
