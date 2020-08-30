@@ -12,7 +12,7 @@
     <div class="notification-event">
         <a href="/users/{{ chat.partner.name }}" class="h6 notification-friend">{{ chat.partner.showName }}</a><br>
         <div class="chat-message-item">
-            {{ chat.lastMessage.content|safe }}
+            {{ chat.lastMessage.content|cut_html:"32x4" }}
         </div>
         <span class="notification-date">
             <time class="entry-date updated" datetime="{{ chat.lastMessage.createdAt }}"></time>

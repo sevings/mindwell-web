@@ -7,16 +7,20 @@
         </div>
         <div class="notification-event">
             <a href="/users/{{ ntf.comment.author.name }}" class="h6 notification-friend">{{ ntf.comment.author.showName }}</a><br>
-            {{ ntf.comment.content|safe }}
+            {{ ntf.comment.content|cut_html:"32x4" }}
             <span class="notification-date">
                 <time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time>
-                {% if ntf.entry.title || ntf.entry.cutTitle %}
                     к записи <a href="/entries/{{ ntf.entry.id }}#comments" class="notification-action">
-                        {% if ntf.entry.cutTitle %}{{ ntf.entry.cutTitle|safe }}{% else %}{{ ntf.entry.title|safe }}{% endif %}
-                    </a>.
-                {% else %}
-                    к <a href="/entries/{{ ntf.entry.id }}#comments" class="notification-action">записи</a>.
-                {% endif %}
+                        {% if ntf.entry.cutTitle %}
+                            {{ ntf.entry.cutTitle|safe }}
+                        {% elif ntf.entry.title %}
+                            {{ ntf.entry.title|safe }}
+                        {% elif ntf.entry.cutContent %}
+                            {{ ntf.entry.cutContent|cut_text:50 }}
+                        {% else %}
+                            {{ ntf.entry.content|cut_text:50 }}
+                        {% endif %}
+                    </a>
             </span>
         </div>
         <span class="notification-icon">
