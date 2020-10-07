@@ -131,7 +131,7 @@ $(function() {
     let width = Math.round($(window).width())
     let date = new Date()
     date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000)
-    document.cookie = "vpw=" + width + ";expires=" + date.toUTCString() + ";path=/;sameSite=strict"
+    document.cookie = "vpw=" + width + ";expires=" + date.toUTCString() + ";path=/;sameSite=Lax"
 })
 
 $("#login-scroll").click(function() {

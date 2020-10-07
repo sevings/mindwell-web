@@ -155,7 +155,8 @@ func (api *APIRequest) setUserKey() {
 	var token *http.Cookie
 	token, api.err = api.ctx.Request.Cookie("api_token")
 	if api.err != nil {
-		api.ctx.Redirect(http.StatusSeeOther, "/index.html")
+		to := url.QueryEscape(api.ctx.Request.URL.String())
+		api.ctx.Redirect(http.StatusSeeOther, "/index.html?to="+to)
 		return
 	}
 
@@ -227,7 +228,7 @@ func (api *APIRequest) QueryCookieName(name string) {
 			Value:    saveVal,
 			Path:     "/",
 			MaxAge:   60 * 60 * 24 * 90,
-			SameSite: http.SameSiteStrictMode,
+			SameSite: http.SameSiteLaxMode,
 		}
 		api.SetCookie(cookie)
 	}

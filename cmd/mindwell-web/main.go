@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"time"
@@ -199,7 +200,12 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		_, err := ctx.Request.Cookie("api_token")
 		if err == nil {
-			ctx.Redirect(http.StatusSeeOther, "/live")
+			to, err := url.QueryUnescape(ctx.Query("to"))
+			if to == "" || err != nil {
+				to = "/live"
+			}
+
+			ctx.Redirect(http.StatusSeeOther, to)
 		} else {
 			api.WriteTemplate("index")
 		}
@@ -232,7 +238,7 @@ func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Cont
 			Expires:  exp,
 			HttpOnly: true,
 			Path:     "/",
-			SameSite: http.SameSiteStrictMode,
+			SameSite: http.SameSiteLaxMode,
 		}
 		api.SetCookie(&cookie)
 
@@ -511,7 +517,7 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 				Value:    "limit=10",
 				Path:     "/",
 				MaxAge:   60 * 60 * 24 * 90,
-				SameSite: http.SameSiteStrictMode,
+				SameSite: http.SameSiteLaxMode,
 			}
 			http.SetCookie(ctx.Writer, cookie)
 		}
@@ -555,7 +561,7 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 				Value:    "limit=10",
 				Path:     "/",
 				MaxAge:   60 * 60 * 24 * 90,
-				SameSite: http.SameSiteStrictMode,
+				SameSite: http.SameSiteLaxMode,
 			}
 			http.SetCookie(ctx.Writer, cookie)
 		}
