@@ -16,9 +16,9 @@
                         {% elif ntf.entry.title %}
                             {{ ntf.entry.title|safe }}
                         {% elif ntf.entry.cutContent %}
-                            {{ ntf.entry.cutContent|cut_text:50 }}
+                            {{ ntf.entry.cutContent|cut_text:100 }}
                         {% else %}
-                            {{ ntf.entry.content|cut_text:50 }}
+                            {{ ntf.entry.content|cut_text:100 }}
                         {% endif %}
                     </a>
             </span>
