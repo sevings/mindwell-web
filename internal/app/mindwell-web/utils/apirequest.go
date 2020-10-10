@@ -216,7 +216,7 @@ func (api *APIRequest) QueryCookieName(name string) {
 	urlValues = cookieValues
 	reqURL.RawQuery = urlValues.Encode()
 
-	skipKeys := []string{"after", "before", "tag", "section", "query"}
+	skipKeys := []string{"after", "before", "tag", "section", "query", "to"}
 	for _, key := range skipKeys {
 		cookieValues.Del(key)
 	}
