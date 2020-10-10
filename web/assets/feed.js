@@ -710,37 +710,30 @@ function openHashModal() {
 }
 
 function openPost(id) {
-    let randomPost = (id === 0) || (id === "0")
-    if(randomPost) {
-        let max = $(".entry").data("id") || 50000
-        id = Math.ceil(Math.random() * max);
-    }
+    let randomPost = id === 0 || id === "0"
 
     if(typeof id != "string" && typeof id != "number")
         id = $(this).data("entry")
 
     let modal = $("#post-popup")
-    if(!randomPost && modal.data("loading"))
-        return false
+    if(modal.data("id") == id)
+    {
+        if(modal.data("loading"))
+            return false
 
-    if(modal.data("id") == id) {
-        if(randomPost)
-            return openPost(0)
-
-        updateComments(modal)
-        window.location.hash = "post-popup" + id
-        modal.modal("show")
-        return false
+        if(!randomPost) {
+            updateComments(modal)
+            window.location.hash = "post-popup" + id
+            modal.modal("show")
+            return false
+        }
     }
 
     modal.data("loading", true)
     modal.data("id", id)
     modal.modal("show")
 
-    if(randomPost)
-        window.location.hash = "post-popup" + 0
-    else
-       window.location.hash = "post-popup" + id
+   window.location.hash = "post-popup" + id
 
     let body = modal.find(".modal-body")
     body.removeData("id").removeClass("entry")
@@ -752,7 +745,7 @@ function openPost(id) {
 
     $.ajax({
         method: "GET",
-        url: "/entries/" + id,
+        url: "/entries/" + (randomPost ? "random" : id),
         dataType: "HTML",
         headers: {
             "X-Error-Type": "JSON",
@@ -775,13 +768,8 @@ function openPost(id) {
                 scrollPost()
         },
         error: function(req) {
-            if(randomPost) {
-                openPost(0)
-            }
-            else {
-                modal.modal("hide")
-                showAjaxError(req)
-            }
+            modal.modal("hide")
+            showAjaxError(req)
         },
         complete: function() {
             modal.removeData("loading")
