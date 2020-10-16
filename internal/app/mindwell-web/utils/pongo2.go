@@ -57,7 +57,7 @@ func quantity(num *pongo2.Value, end *pongo2.Value) (*pongo2.Value, *pongo2.Erro
 }
 
 // usage: сделал{{ profile.gender|gender }}
-func gender(gender *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
+func gender(gender *pongo2.Value, _ *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
 	if gender.IsNil() {
 		return gender, nil
 	}
@@ -153,9 +153,6 @@ func media(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.E
 	return pongo2.AsSafeValue(html), nil
 }
 
-var tagRe = regexp.MustCompile(`<[^>]+>`)
-var imgRe = regexp.MustCompile(`(?i)<img[^>]+>`)
-
 func cutHtml(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
 	if content.IsNil() {
 		return content, nil
@@ -225,10 +222,9 @@ func cutText(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2
 	}
 
 	text := content.String()
-	maxLength := param.Integer()
+	text = utils.RemoveHTML(text)
 
-	text = imgRe.ReplaceAllString(text, "[изображение]")
-	text = tagRe.ReplaceAllString(text, "")
+	maxLength := param.Integer()
 	text, _ = utils.CutText(text, maxLength)
 
 	return pongo2.AsSafeValue(text), nil
