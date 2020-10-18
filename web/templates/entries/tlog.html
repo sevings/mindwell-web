@@ -116,10 +116,33 @@
             <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 order-xl-2 order-last">
                 <div id="feed">
                     {% block feed_title %}
-                        {% if __tag %}
-                            <div class="ui-block">
+                        {% if entries %}
+                            <div class="ui-block responsive-flex1200">
                                 <div class="ui-block-title">
-                                    <h6 class="title">Записи с тегом [{{ __tag }}]</h6>
+                                    {% if __tag %}
+                                        <div class="w-search">
+                                            <h6 class="title">Записи с тегом [{{ __tag }}]</h6>
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="w-select">
+                                        <select id="feed-sort" class="selectpicker form-control">
+                                            <option value="new" {% if __sort == "new" %}class="selected" {% endif %}>Сначала новые</option>
+                                            <option value="old" {% if __sort == "old" %}class="selected" {% endif %}>Сначала старые</option>
+                                            <option value="best" {% if __sort == "best" %}class="selected" {% endif %}>Лучшие</option>
+                                        </select>
+                                    </div>
+
+                                    {% comment %}
+                                        <form class="w-search">
+                                            <div class="form-group with-button">
+                                                <input class="form-control" type="text" placeholder="Поиск записей">
+                                                <button>
+                                                    <svg class="olymp-magnifying-glass-icon"><use xlink:href="#olymp-magnifying-glass-icon"></use></svg>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    {% endcomment%}
                                 </div>
                             </div>
                         {% endif %}

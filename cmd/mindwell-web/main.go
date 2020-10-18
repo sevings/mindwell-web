@@ -412,6 +412,9 @@ func feedHandler(mdw *utils.Mindwell, templateName, queryName string) func(ctx *
 		tag := ctx.Query("tag")
 		api.SetData("__tag", tag)
 
+		sort := ctx.Query("sort")
+		api.SetData("__sort", sort)
+
 		if api.StatusCode() == 404 {
 			// private tlog, skip error
 			api = utils.NewRequest(mdw, ctx)

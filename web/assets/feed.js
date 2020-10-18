@@ -779,49 +779,37 @@ function openPost(id) {
     return false
 }
 
-function onFeedWindowScroll() {
+function loadFeed(url, onSuccess) {
     let container = $("#feed")
-    if(!container.length)
-        return
-
-    let scroll = $(this)
-    if(scroll.scrollTop() < container.height() - scroll.height() * 2)
-        return
-
     if(container.data("loading"))
         return
-
-    let a = container.find(".older")
-    if(!a.length)
-        return
-
-    if(a.parent().hasClass("disabled")) {
-        a.parents(".sorting-item").remove()
-        return
-    }
 
     container.data("loading", true)
 
     $.ajax({
-        url: a.attr("href"),
+        url: url,
         method: "GET",
         success: function(data) {
-            a.parents(".sorting-item").remove()
+            if(onSuccess)
+                onSuccess()
 
             let page = $(formatTimeHtml(data))
 
             if(container.hasClass("sorting-container")) {
                 container.isotope("insert", page)
                 page.find(".post-content,.post-thumb").imagesLoaded()
-                    .progress(function() { container.isotope('layout') })
-            }
-            else
+                    .progress(function() {
+                        container.isotope('layout')
+                    })
+            } else
                 container.append(page)
 
             addFeedClickHandlers(page)
             page.find("iframe.yt-video").each(prepareYtPlayer)
             page.find(".gif-play-image").gifplayer()
-            page.each(function(){ CRUMINA.mediaPopups(this) })
+            page.each(function() {
+                CRUMINA.mediaPopups(this)
+            })
             fixSvgUse(page)
             addYtPlayers()
         },
@@ -833,6 +821,28 @@ function onFeedWindowScroll() {
             container.removeData("loading")
         },
     })
+}
+
+function onFeedWindowScroll() {
+    let container = $("#feed")
+    if(!container.length)
+        return
+
+    let scroll = $(this)
+    if(scroll.scrollTop() < container.height() - scroll.height() * 2)
+        return
+
+    let sort = container.data("sort")
+    let a = (!sort || sort === "new") ? container.find(".older") : container.find(".newer")
+    if(!a.length)
+        return
+
+    if(a.parent().hasClass("disabled")) {
+        a.parents(".sorting-item").remove()
+        return
+    }
+
+    loadFeed(a.attr("href"), () => { a.parents(".sorting-item").remove() })
 }
 
 function onUsersWindowScroll() {

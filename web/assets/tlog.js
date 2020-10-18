@@ -285,3 +285,18 @@ $("#hide-profile-update").click(function() {
 
     return false
 })
+
+$("#feed-sort").on("change", function(){
+    let container = $("#feed")
+    let sort = this.value
+    container.data("sort", sort)
+
+    container.find(".pagination").parents(".sorting-item").remove()
+
+    let params = new URLSearchParams(document.location.search)
+    params.set("sort", sort)
+    let url = document.location.pathname + "?" + params.toString()
+
+    let old = container.children(".entry")
+    loadFeed(url, () => { old.remove() })
+})
