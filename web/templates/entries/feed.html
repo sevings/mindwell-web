@@ -33,7 +33,7 @@
             {% if entries %}
                 {% include "feed_page.html" %}
             {% else %}
-                <h6 class="title hcenter">Нет записей</h6>
+                <h6 id="empty-feed" class="title hcenter">Нет записей</h6>
             {% endif %}
         </div>
     </div>
@@ -45,7 +45,7 @@
                     {% if entries %}
                         {% include "tlog_page.html" %}
                     {% else %}
-                        <h6 class="title hcenter">Нет записей</h6>
+                        <h6 id="empty-feed" class="title hcenter">Нет записей</h6>
                     {% endif %}
                 </div>
             </div>

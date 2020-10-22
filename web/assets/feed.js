@@ -688,6 +688,11 @@ $(window).on("hashchange", function () {
         openHashModal()
 })
 
+$("#feed").on("removeComplete", function(){
+    if(!$("#empty-feed").length)
+        $("#feed").append("<h6 id=\"empty-feed\" class=\"title hcenter\">Нет записей</h6>")
+})
+
 $(function(){
     addFeedClickHandlers()
 
@@ -813,6 +818,14 @@ function loadFeed(url, onSuccess) {
             })
             fixSvgUse(page)
             addYtPlayers()
+
+            let empty = $("#empty-feed")
+            if(!container.children(".entry").length){
+                if(!empty.length)
+                    container.append("<h6 id=\"empty-feed\" class=\"title hcenter\">Нет записей</h6>")
+            } else {
+                empty.remove()
+            }
         },
         error: function(req) {
             let resp = JSON.parse(req.responseText)
