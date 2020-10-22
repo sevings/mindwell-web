@@ -472,6 +472,7 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetDataFromQuery("category", "month")
 			api.SetDataFromQuery("limit", "30")
 			api.SetDataFromQuery("view", "masonry")
+			api.SetData("__search", true)
 		}
 
 		handle(ctx, "/entries/best", clbk)
