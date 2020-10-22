@@ -294,6 +294,7 @@ $("#feed-sort").on("change", function(){
     let params = new URLSearchParams(document.location.search)
     params.set("sort", sort)
     params.delete("query")
+    params.delete("tag")
     let url = document.location.pathname + "?" + params.toString()
 
     let clear = () => {

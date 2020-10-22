@@ -27,6 +27,7 @@ function addFeedClickHandlers(feed) {
     $(".open-post", feed).click(openPost)
 
     $(".post-tags a", feed).each(setTagHref)
+    $(".post-tags a", feed).click(onTagClick)
 }
 
 function findPostElement(elem) {
@@ -938,14 +939,23 @@ $("#feed-search").submit(function(){
     let container = $("#feed")
     container.data("sort", "search")
 
+    let params = new URLSearchParams
     let query = $("#feed-search").find("input").val()
-    let url = document.location.pathname + "?query=" + query
+    let tag = query.match(/\[(.+)]/)
+    if(tag)
+        params.set("tag", tag[1])
+    else
+        params.set("query", query)
 
     let section = $("#feed-settings input[name='section']").val()
     if(section)
-        url += "&section=" + section
+        params.set("section", section)
+
+    let url = document.location.pathname + "?" + params.toString()
 
     let clear = () => {
+        $("#post-popup").modal("hide")
+
         container.find(".pagination").parents(".sorting-item").remove()
         $("#empty-feed").remove()
         $("#search-popup").modal("hide")
@@ -971,6 +981,17 @@ $("#feed-search").submit(function(){
 
     return loadFeed(url, clear)
 })
+
+function onTagClick(){
+    let search = $("#feed-search")
+    if(!search.length)
+        return true
+
+    let tag = $(this).text()
+    $("input", search).val("[" + tag + "]")
+    search.submit()
+    return false
+}
 
 function onPlayVideoClick(){
     let a = $(this)

@@ -119,18 +119,12 @@
                         {% if entries %}
                             <div class="ui-block responsive-flex1200">
                                 <div class="ui-block-title">
-                                    {% if __tag %}
-                                        <div class="w-search">
-                                            <h6 class="title">Записи с тегом [{{ __tag }}]</h6>
-                                        </div>
-                                    {% endif %}
-
                                     <div class="w-select">
                                         <select id="feed-sort" class="selectpicker form-control">
                                             <option value="new" {% if __sort == "new" && !__query %}selected{% endif %}>Сначала новые</option>
                                             <option value="old" {% if __sort == "old" && !__query %}selected{% endif %}>Сначала старые</option>
                                             <option value="best" {% if __sort == "best" && !__query %}selected{% endif %}>Лучшие</option>
-                                            {% if __query %}
+                                            {% if __query || __tag %}
                                                 <option value="search" selected>Результаты поиска</option>
                                             {% endif %}
                                         </select>
