@@ -941,6 +941,10 @@ $("#feed-search").submit(function(){
     let query = $("#feed-search").find("input").val()
     let url = document.location.pathname + "?query=" + query
 
+    let section = $("#feed-settings input[name='section']").val()
+    if(section)
+        url += "&section=" + section
+
     let clear = () => {
         container.find(".pagination").parents(".sorting-item").remove()
         $("#empty-feed").remove()
