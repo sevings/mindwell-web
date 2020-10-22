@@ -782,7 +782,7 @@ function openPost(id) {
 function loadFeed(url, onSuccess) {
     let container = $("#feed")
     if(container.data("loading"))
-        return
+        return false
 
     container.data("loading", true)
 
@@ -821,6 +821,8 @@ function loadFeed(url, onSuccess) {
             container.removeData("loading")
         },
     })
+
+    return false
 }
 
 function onFeedWindowScroll() {
@@ -927,6 +929,43 @@ $("#complain").click(function() {
     })
 
     return false
+})
+
+$("#feed-search").submit(function(){
+    if(!this.reportValidity())
+        return false
+
+    let container = $("#feed")
+    container.data("sort", "search")
+
+    let query = $("#feed-search").find("input").val()
+    let url = document.location.pathname + "?query=" + query
+
+    let clear = () => {
+        container.find(".pagination").parents(".sorting-item").remove()
+        $("#empty-feed").remove()
+        $("#search-popup").modal("hide")
+
+        $("#search-button").toggleClass("active", true)
+            .find("span").toggleClass("hidden", false)
+
+        let feedSort = $("#feed-sort")
+        if(feedSort.length && !feedSort.find("option[value='search'").length) {
+            feedSort
+                .append("<option value='search' selected>Результаты поиска</option>")
+                .selectpicker("refresh")
+        }
+
+        let old = container.children(".entry")
+        if(container.hasClass("sorting-container")) {
+            container.isotope("remove", old)
+                .isotope('layout')
+        } else {
+            old.remove()
+        }
+    }
+
+    return loadFeed(url, clear)
 })
 
 function onPlayVideoClick(){

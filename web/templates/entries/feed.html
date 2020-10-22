@@ -1,7 +1,7 @@
 {% extends "../base_auth.html" %}
 {% block scripts %}
     <script src="//youtube.com/iframe_api"></script>
-    <script src="/assets/feed.js?d=20201018"></script>
+    <script src="/assets/feed.js?d=20201022"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -12,6 +12,14 @@
                     <li class="cat-list__item active"><a href="?tag={{ __tag }}">[{{ __tag }}]</a></li>
                 {% endif %}
                 {% block submenu %}{% endblock %}
+                {% if __search %}
+                    <li id="search-button" class="cat-list__item {% if __query%}active{% endif %}">
+                        <a href="#" data-toggle="modal" data-target="#search-popup">
+                            <svg class="customize-feed"><use xlink:href="#olymp-magnifying-glass-icon"></use></svg>
+                            <span {% if !__query %}class="hidden"{% endif %}>Результаты</span>
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="cat-list__item">
                     <a href="#" data-toggle="modal" data-target="#feed-settings">
                         <svg class="customize-feed"><use xlink:href="#olymp-settings-icon"></use></svg>
@@ -50,7 +58,7 @@
 
 
 
-<div class="modal fade" id="feed-settings" tabindex="-1" role="dialog">
+<div class="modal fade" id="feed-settings" tabindex="-1" role="dialog" aria-labelledby="feed-settings" aria-hidden="true">
     <div class="modal-dialog window-popup edit-widget" role="document">
         <div class="modal-content">
             <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
@@ -90,6 +98,21 @@
         </div>
     </div>
 </div>
+
+{% if __search %}
+    <div class="modal fade" id="search-popup" tabindex="-1" role="dialog" aria-labelledby="search-popup" aria-hidden="true">
+        <div class="modal-dialog window-popup" role="document">
+            <div class="modal-content">
+                <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                    <svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
+                </a>
+                <div class="modal-body">
+                    {% include "feed_search.html" with __placeholder = "Поиск записей" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 
 {% include "entry_popup.html" %}
 {% include "complain_popup.html" %}

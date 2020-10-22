@@ -1,9 +1,9 @@
 {% extends "tlog.html" %}
 {% block title %}Избранное{% endblock %}
 {% block feed_title %}
-    <div class="ui-block">
+    <div class="ui-block responsive-flex1200">
         <div class="ui-block-title">
-            <h6 class="title">Избранное</h6>
+            {% include "feed_search.html" with __class = "w-search" __placeholder = "Поиск в избранном" %}
         </div>
     </div>
 {% endblock %}

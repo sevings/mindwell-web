@@ -127,22 +127,16 @@
 
                                     <div class="w-select">
                                         <select id="feed-sort" class="selectpicker form-control">
-                                            <option value="new" {% if __sort == "new" %}class="selected" {% endif %}>Сначала новые</option>
-                                            <option value="old" {% if __sort == "old" %}class="selected" {% endif %}>Сначала старые</option>
-                                            <option value="best" {% if __sort == "best" %}class="selected" {% endif %}>Лучшие</option>
+                                            <option value="new" {% if __sort == "new" && !__query %}selected{% endif %}>Сначала новые</option>
+                                            <option value="old" {% if __sort == "old" && !__query %}selected{% endif %}>Сначала старые</option>
+                                            <option value="best" {% if __sort == "best" && !__query %}selected{% endif %}>Лучшие</option>
+                                            {% if __query %}
+                                                <option value="search" selected>Результаты поиска</option>
+                                            {% endif %}
                                         </select>
                                     </div>
 
-                                    {% comment %}
-                                        <form class="w-search">
-                                            <div class="form-group with-button">
-                                                <input class="form-control" type="text" placeholder="Поиск записей">
-                                                <button>
-                                                    <svg class="olymp-magnifying-glass-icon"><use xlink:href="#olymp-magnifying-glass-icon"></use></svg>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    {% endcomment%}
+                                    {% include "feed_search.html" with __class = "w-search" __placeholder = "Поиск в тлоге" %}
                                 </div>
                             </div>
                         {% endif %}
@@ -197,7 +191,7 @@
                             </p>
                         </div>
                     {% else %}
-                        <div class="ui-block">
+                        <div id="empty-feed" class="ui-block">
                             <div class="ui-block-title">
                                 <h6 class="title">
                                     {% if !profile.relations.isOpenForMe %}

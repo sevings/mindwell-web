@@ -123,7 +123,7 @@ img.mfp-img {
     fill: #888da8;
 }
 
-.cat-list__item:hover .customize-feed {
+.cat-list__item:hover .customize-feed, .cat-list__item.active .customize-feed {
     fill: #fff;
 }
 
@@ -277,6 +277,18 @@ li.cat-list__item > a {
 
 .comments-list + .alert {
     margin: 25px;
+}
+
+#search-popup>div {
+    width: 770px;
+}
+
+#search-popup form {
+    padding: 30px;
+}
+
+#search-popup .form-group {
+    margin-bottom: 0;
 }
 
 .jumbotron {

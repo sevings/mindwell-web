@@ -415,6 +415,9 @@ func feedHandler(mdw *utils.Mindwell, templateName, queryName string) func(ctx *
 		sort := ctx.Query("sort")
 		api.SetData("__sort", sort)
 
+		query := ctx.Query("query")
+		api.SetData("__query", query)
+
 		if api.StatusCode() == 404 {
 			// private tlog, skip error
 			api = utils.NewRequest(mdw, ctx)
@@ -451,6 +454,10 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetDataFromQuery("section", "entries")
 			api.SetDataFromQuery("limit", "30")
 			api.SetDataFromQuery("view", "masonry")
+
+			if ctx.Query("section") != "comments" {
+				api.SetData("__search", true)
+			}
 		}
 
 		handle(ctx, "/entries/live", clbk)
@@ -476,6 +483,7 @@ func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 	clbk := func(api *utils.APIRequest) {
 		api.SetData("__section", "friends")
+		api.SetData("__search", true)
 		api.SetDataFromQuery("limit", "30")
 		api.SetDataFromQuery("view", "masonry")
 	}
@@ -548,6 +556,7 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 			}
 
 			api.SetData("__feed", isTlog)
+			api.SetData("__search", true)
 		}
 
 		handle(ctx, "/users/"+name+"/tlog", clbk)
@@ -577,6 +586,7 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			}
 
 			api.SetData("__feed", true)
+			api.SetData("__search", true)
 		}
 
 		handle(ctx, "/users/"+name+"/favorites", clbk)

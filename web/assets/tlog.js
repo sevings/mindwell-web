@@ -291,12 +291,18 @@ $("#feed-sort").on("change", function(){
     let sort = this.value
     container.data("sort", sort)
 
-    container.find(".pagination").parents(".sorting-item").remove()
-
     let params = new URLSearchParams(document.location.search)
     params.set("sort", sort)
+    params.delete("query")
     let url = document.location.pathname + "?" + params.toString()
 
-    let old = container.children(".entry")
-    loadFeed(url, () => { old.remove() })
+    let clear = () => {
+        container.find(".pagination").parents(".sorting-item").remove()
+        $("#feed-search").resetForm()
+        container.find("option[value='search'").remove()
+        $(this).selectpicker("refresh")
+        container.children(".entry").remove()
+    }
+
+    loadFeed(url, clear)
 })
