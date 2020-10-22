@@ -962,6 +962,7 @@ $("#feed-search").submit(function(){
 
         $("#search-button").toggleClass("active", true)
             .find("span").toggleClass("hidden", false)
+            .prev().toggleClass("hidden", true)
 
         let feedSort = $("#feed-sort")
         if(feedSort.length && !feedSort.find("option[value='search'").length) {
