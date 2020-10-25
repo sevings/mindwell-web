@@ -96,22 +96,6 @@
                 </div>
             {% endif %}
         {% endif %}
-        {% if !__large_screen && !__feed && !__profile_update_hidden %}
-            <div id="profile-update" class="col col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 order-3">
-                <div class="ui-block">
-                    <div class="ui-block-title">
-                        <h6 class="title">Обновление</h6>
-                    </div>
-                    <div class="ui-block-content">
-                        <p>
-                            Лента записей теперь находится на отдельной странице. Тап по аватару пользователя
-                            открывает информацию профиля. Тап по счетчику записей открывает тлог.
-                        </p>
-                        <button id="hide-profile-update" class="btn btn-primary btn-lg full-width">Понятно!</button>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
         {% if __large_screen || __feed %}
             <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 order-xl-2 order-last">
                 <div id="feed">

@@ -33,16 +33,6 @@ $(function() {
     })
 })
 
-$("#hide-notifications-update").click(function() {
-    let date = new Date()
-    date.setTime(date.getTime() + 180 * 24 * 60 * 60 * 1000)
-    document.cookie = "notifications_update_hidden=true;expires=" + date.toUTCString() + ";path=/"
-
-    $("#notifications-update").modal("hide")
-
-    return false
-})
-
 $(function() {
     let modal = $("#notifications-update")
     if(!modal.length)
