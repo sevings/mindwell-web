@@ -820,11 +820,11 @@ function loadFeed(url, onSuccess) {
             addYtPlayers()
 
             let empty = $("#empty-feed")
-            if(!container.children(".entry").length){
+            if(container.children(".entry").length){
+                empty.remove()
+            } else {
                 if(!empty.length)
                     container.append("<h6 id=\"empty-feed\" class=\"title hcenter\">Нет записей</h6>")
-            } else {
-                empty.remove()
             }
         },
         error: function(req) {
