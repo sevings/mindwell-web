@@ -207,6 +207,8 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 			ctx.Redirect(http.StatusSeeOther, to)
 		} else {
+			api.SetCsrfToken("/account/login")
+			api.SetCsrfToken("/account/register")
 			api.WriteTemplate("index")
 		}
 	}
@@ -223,6 +225,13 @@ func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
+
+		api.CheckCsrfToken()
+		if api.Error() != nil {
+			api.WriteTemplate("error")
+			return
+		}
+
 		api.ForwardNotAuthorized()
 		if api.Error() != nil {
 			return

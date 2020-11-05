@@ -1,8 +1,11 @@
 package utils
 
 import (
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"go.uber.org/zap"
 	"log"
+	"time"
 
 	"github.com/flosch/pongo2"
 	goconf "github.com/zpatrick/go-config"
@@ -81,6 +84,10 @@ func (m *Mindwell) ConfigString(key string) string {
 	return value
 }
 
+func (m *Mindwell) ConfigBytes(key string) []byte {
+	return []byte(m.ConfigString(key))
+}
+
 func (m *Mindwell) ConfigBool(key string) bool {
 	value, err := m.config.Bool(key)
 	if err != nil {
@@ -113,4 +120,59 @@ func (m *Mindwell) LogWeb() *zap.Logger {
 
 func (m *Mindwell) LogSystem() *zap.Logger {
 	return m.log.With(zap.String("type", "system"))
+}
+
+func (m *Mindwell) CreateCsrfToken(action string) string {
+	now := time.Now().Unix()
+	exp := now + 60*60*3
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iat": now,
+		"exp": exp,
+		"act": action,
+	})
+
+	secret := m.ConfigBytes("csrf_secret")
+	tokenString, err := token.SignedString(secret)
+	if err != nil {
+		log.Print(err)
+	}
+
+	return tokenString
+}
+
+func (m *Mindwell) IsCsrfTokenValid(tokenString, action string) bool {
+	secret := m.ConfigBytes("csrf_secret")
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return secret, nil
+	})
+
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+
+	if !token.Valid {
+		log.Printf("Invalid token: %s\n", tokenString)
+		return false
+
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || claims.Valid() != nil {
+		log.Printf("Error get claims: %s\n", tokenString)
+		return false
+	}
+
+	act, ok := claims["act"].(string)
+	if !ok || act != action {
+		log.Printf("Action mismatch: expected %s, got %s\n", action, act)
+		return false
+	}
+
+	return true
 }
