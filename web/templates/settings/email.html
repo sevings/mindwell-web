@@ -19,6 +19,7 @@
                         <input class="form-control" type="password" name="password" required>
                     </div>
 
+                    <input type="hidden" name="csrf" value="{{ __csrf_email }}">
                     <button id="save-email" class="btn btn-primary btn-lg full-width">Сохранить</button>
                 </div>
             </div>

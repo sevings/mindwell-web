@@ -9,6 +9,9 @@ $("#save-password").click(function() {
     
     $("#change-password").ajaxSubmit({
         resetForm: true,
+        headers: {
+            "X-Error-Type": "JSON",
+        },
         success: function() {
             status.text("Пароль изменен.")
             status.removeClass("alert-danger").addClass("alert-success")
@@ -38,6 +41,9 @@ $("#save-email").click(function() {
     
     $("#change-email").ajaxSubmit({
         resetForm: true,
+        headers: {
+            "X-Error-Type": "JSON",
+        },
         success: function() {
             status.text("На новую почту отправлено письмо с кодом для подтверждения.")
             status.removeClass("alert-danger")

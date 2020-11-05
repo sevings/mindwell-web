@@ -38,10 +38,10 @@ func main() {
 	router.GET("/account/invites", invitesHandler(mdw))
 
 	router.GET("/account/password", passwordHandler(mdw))
-	router.POST("/account/password", proxyHandler(mdw))
+	router.POST("/account/password", savePasswordHandler(mdw))
 
 	router.GET("/account/email", emailHandler(mdw))
-	router.POST("/account/email", proxyHandler(mdw))
+	router.POST("/account/email", saveEmailHandler(mdw))
 
 	router.GET("/account/ignored", ignoredHandler(mdw))
 	router.GET("/account/hidden", hiddenHandler(mdw))
@@ -301,7 +301,23 @@ func passwordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
 		SetAdm(mdw, ctx, api)
+		api.SetCsrfToken("/account/password")
 		api.WriteTemplate("settings/password")
+	}
+}
+
+func savePasswordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+
+		api.CheckCsrfToken()
+		if api.Error() != nil {
+			api.WriteTemplate("error")
+			return
+		}
+
+		api.Forward()
+		api.WriteResponse()
 	}
 }
 
@@ -310,7 +326,23 @@ func emailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
 		SetAdm(mdw, ctx, api)
+		api.SetCsrfToken("/account/email")
 		api.WriteTemplate("settings/email")
+	}
+}
+
+func saveEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+
+		api.CheckCsrfToken()
+		if api.Error() != nil {
+			api.WriteTemplate("error")
+			return
+		}
+
+		api.Forward()
+		api.WriteResponse()
 	}
 }
 

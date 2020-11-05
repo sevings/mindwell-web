@@ -169,7 +169,7 @@ func (api *APIRequest) CheckCsrfToken() {
 	}
 
 	api.SetData("code", 419)
-	api.SetData("message", "Сессия истекла. Необходимо перезагрузить страницу")
+	api.SetData("message", "Время сессии истекло. Необходимо перезагрузить страницу.")
 	api.err = csrfError
 }
 
