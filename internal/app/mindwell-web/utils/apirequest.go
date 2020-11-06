@@ -146,7 +146,8 @@ func (api *APIRequest) SetScrollHrefsWithData(webPath string, data map[string]in
 }
 
 func (api *APIRequest) SetCsrfToken(action string) {
-	token := api.mdw.CreateCsrfToken(action)
+	client := api.ClientIP()
+	token := api.mdw.CreateCsrfToken(action, client)
 	path := strings.Split(action, "/")
 	name := path[len(path)-1]
 	api.SetData("__csrf_"+name, token)
@@ -162,15 +163,18 @@ func (api *APIRequest) CheckCsrfToken() {
 
 	token := req.PostFormValue("csrf")
 	action := api.ctx.Request.URL.Path
+	client := api.ClientIP()
 
-	if api.mdw.IsCsrfTokenValid(token, action) {
-		req.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+	if err = api.mdw.CheckCsrfToken(token, action, client); err != nil {
+		api.mdw.LogWeb().Error(err.Error())
+
+		api.SetData("code", 419)
+		api.SetData("message", "Время сессии истекло. Необходимо перезагрузить страницу.")
+		api.err = csrfError
 		return
 	}
 
-	api.SetData("code", 419)
-	api.SetData("message", "Время сессии истекло. Необходимо перезагрузить страницу.")
-	api.err = csrfError
+	req.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 }
 
 func (api *APIRequest) setUserKey() {
@@ -590,6 +594,10 @@ func (api *APIRequest) Redirect(path string) {
 	}
 
 	api.ctx.Redirect(http.StatusSeeOther, path)
+}
+
+func (api *APIRequest) ClientIP() string {
+	return api.ctx.GetHeader("X-Forwarded-For")
 }
 
 func (api *APIRequest) IsAjax() bool {

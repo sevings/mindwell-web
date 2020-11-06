@@ -122,7 +122,7 @@ func (m *Mindwell) LogSystem() *zap.Logger {
 	return m.log.With(zap.String("type", "system"))
 }
 
-func (m *Mindwell) CreateCsrfToken(action string) string {
+func (m *Mindwell) CreateCsrfToken(action, client string) string {
 	now := time.Now().Unix()
 	exp := now + 60*60*3
 
@@ -130,18 +130,19 @@ func (m *Mindwell) CreateCsrfToken(action string) string {
 		"iat": now,
 		"exp": exp,
 		"act": action,
+		"ip":  client,
 	})
 
 	secret := m.ConfigBytes("csrf_secret")
 	tokenString, err := token.SignedString(secret)
 	if err != nil {
-		log.Print(err)
+		m.LogSystem().Error(err.Error())
 	}
 
 	return tokenString
 }
 
-func (m *Mindwell) IsCsrfTokenValid(tokenString, action string) bool {
+func (m *Mindwell) CheckCsrfToken(tokenString, action, client string) error {
 	secret := m.ConfigBytes("csrf_secret")
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -152,27 +153,27 @@ func (m *Mindwell) IsCsrfTokenValid(tokenString, action string) bool {
 	})
 
 	if err != nil {
-		log.Println(err)
-		return false
+		return err
 	}
 
 	if !token.Valid {
-		log.Printf("Invalid token: %s\n", tokenString)
-		return false
-
+		return fmt.Errorf("Invalid token: %s\n", tokenString)
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || claims.Valid() != nil {
-		log.Printf("Error get claims: %s\n", tokenString)
-		return false
+		return fmt.Errorf("Error get claims: %s\n", tokenString)
 	}
 
 	act, ok := claims["act"].(string)
 	if !ok || act != action {
-		log.Printf("Action mismatch: expected %s, got %s\n", action, act)
-		return false
+		return fmt.Errorf("Action mismatch: expected %s, got %s\n", action, act)
 	}
 
-	return true
+	cli, ok := claims["ip"].(string)
+	if !ok || cli != client {
+		return fmt.Errorf("Client mismatch: expected %s, got %s\n", client, cli)
+	}
+
+	return nil
 }
