@@ -193,9 +193,7 @@
     </div>
 </div>
 
-{% if __large_screen || __feed %}
-    {% include "entry_popup.html" %}
-    {% include "complain_popup.html" %}
-{% endif %}
+{% include "entry_popup.html" %}
+{% include "complain_popup.html" %}
 
 {% endblock %}
