@@ -1,9 +1,14 @@
 {% extends "base_auth.html" %}
 {% block title %}{{ profile.showName }}{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="/assets/js/fullcalendar/main.min.css"/>
+{% endblock %}
 {% block scripts %}
+    <script src="/assets/js/fullcalendar/main.min.js"></script>
+    <script src='/assets/js/fullcalendar/locales/ru.js'></script>
     <script src="//youtube.com/iframe_api"></script>
     <script src="/assets/feed.js?d=20201022"></script>
-    <script src="/assets/tlog.js?d=20201025"></script>
+    <script src="/assets/tlog.js?d=20201108"></script>
 {% endblock %}
 {% block body %}
 <div id="profile" class="container" data-name="{{ profile.name }}" data-privacy="{{ profile.privacy }}" 

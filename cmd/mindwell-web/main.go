@@ -72,6 +72,7 @@ func main() {
 
 	router.GET("/users", topsHandler(mdw))
 	router.GET("/users/:name", tlogHandler(mdw, false))
+	router.GET("/users/:name/calendar", proxyHandler(mdw))
 	router.GET("/users/:name/entries", tlogHandler(mdw, true))
 	router.GET("/users/:name/favorites", favoritesHandler(mdw))
 	router.GET("/users/:name/relations/:relation", usersHandler(mdw))

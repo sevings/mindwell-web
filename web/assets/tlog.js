@@ -297,3 +297,83 @@ $("#feed-sort").on("change", function(){
 
     loadFeed(url, clear)
 })
+
+function fullCalendar() {
+    let calendarEl = $("#calendar")
+    if(!calendarEl.length)
+        return
+
+    let calendar = new FullCalendar.Calendar(calendarEl[0], {
+        initialView: 'dayGridMonth',
+        titleFormat: function(date) {
+            const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+            let month = months[date.date.marker.getMonth()]
+            let year = date.date.marker.getFullYear()
+            if(new Date().getFullYear() === year)
+                return month
+
+            return month + " " + year + " г.";
+        },
+        headerToolbar: {
+            left: 'prevYear,prev',
+            center: 'title',
+            right: 'next,nextYear'
+        },
+        displayEventTime: false,
+        displayEventEnd: false,
+        dayMaxEventRows: 1,
+        moreLinkContent: (arg) => { return "Ещё " + arg.num },
+        eventDisplay: "block",
+        eventColor: "#ff5e3a",
+        locale: "ru",
+        height: "auto",
+        eventClick: function(info) {
+            info.jsEvent.preventDefault()
+            openPost(info.event.id)
+        },
+    })
+
+    let getEvents = (info, onSuccess, onError) => {
+        let name = $("#profile").data("name")
+        let start = info.start.getTime() / 1000
+        let end = info.end.getTime() / 1000
+        $.ajax({
+            dataType: "json",
+            headers: {
+                "X-Error-Type": "JSON",
+            },
+            url: "/users/" + name + "/calendar?start=" + start + "&end=" + end,
+            success: (resp) => {
+                calendar.setOption("validRange", {
+                    start: resp.start * 1000,
+                    end: resp.end * 1000
+                })
+
+                if(!resp.entries) {
+                    onSuccess([])
+                    return
+                }
+
+                let events = resp.entries.map((entry) => {
+                    return {
+                        id: entry.id,
+                        url: "/entries/" + entry.id,
+                        title: entry.title,
+                        start: entry.createdAt * 1000,
+                    }
+                })
+
+                onSuccess(events)
+            },
+            error: (resp) => {
+                console.log(resp)
+                onError(resp)
+            },
+        })
+    }
+
+    calendar.addEventSource(getEvents)
+    calendar.render()
+}
+
+$(fullCalendar)
