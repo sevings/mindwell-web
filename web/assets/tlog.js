@@ -315,9 +315,15 @@ function fullCalendar() {
             return month + " " + year + " г.";
         },
         headerToolbar: {
-            left: 'prevYear,prev',
+            start: 'prevYear,prev',
             center: 'title',
-            right: 'next,nextYear'
+            end: 'next,nextYear'
+        },
+        buttonText: {
+            prev: "🡠",
+            next: "🡢",
+            prevYear: "🢀",
+            nextYear: "🢂"
         },
         displayEventTime: false,
         displayEventEnd: false,
@@ -328,6 +334,7 @@ function fullCalendar() {
         eventColor: "#ff5e3a",
         locale: "ru",
         height: "auto",
+        themeSystem: "bootstrap",
         eventClick: function(info) {
             info.jsEvent.preventDefault()
             openPost(info.event.id)
