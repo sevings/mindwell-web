@@ -335,52 +335,49 @@ function fullCalendar() {
         locale: "ru",
         height: "auto",
         themeSystem: "bootstrap",
-        eventClick: function(info) {
+        validRange: {
+            start: $("#profile").data("createdAt") * 1000,
+            end: new Date()
+        },
+        eventClick: (info) => {
             info.jsEvent.preventDefault()
             openPost(info.event.id)
         },
+        events: (info, onSuccess, onError) => {
+            let name = $("#profile").data("name")
+            let start = info.start.getTime() / 1000
+            let end = info.end.getTime() / 1000
+            $.ajax({
+                dataType: "json",
+                headers: {
+                    "X-Error-Type": "JSON",
+                },
+                url: "/users/" + name + "/calendar?start=" + start + "&end=" + end,
+                success: (resp) => {
+                    if(!resp.entries) {
+                        onSuccess([])
+                        return
+                    }
+
+                    let events = resp.entries.map((entry) => {
+                        return {
+                            id: entry.id,
+                            url: "/entries/" + entry.id,
+                            title: entry.title,
+                            start: entry.createdAt * 1000,
+                        }
+                    })
+
+                    onSuccess(events)
+                },
+                error: (resp) => {
+                    console.log(resp)
+                    onError(resp)
+                },
+            })
+        }
     })
 
-    let getEvents = (info, onSuccess, onError) => {
-        let name = $("#profile").data("name")
-        let start = info.start.getTime() / 1000
-        let end = info.end.getTime() / 1000
-        $.ajax({
-            dataType: "json",
-            headers: {
-                "X-Error-Type": "JSON",
-            },
-            url: "/users/" + name + "/calendar?start=" + start + "&end=" + end,
-            success: (resp) => {
-                calendar.setOption("validRange", {
-                    start: resp.start * 1000,
-                    end: resp.end * 1000
-                })
-
-                if(!resp.entries) {
-                    onSuccess([])
-                    return
-                }
-
-                let events = resp.entries.map((entry) => {
-                    return {
-                        id: entry.id,
-                        url: "/entries/" + entry.id,
-                        title: entry.title,
-                        start: entry.createdAt * 1000,
-                    }
-                })
-
-                onSuccess(events)
-            },
-            error: (resp) => {
-                console.log(resp)
-                onError(resp)
-            },
-        })
-    }
-
-    calendar.addEventSource(getEvents)
     calendar.render()
 }
 
