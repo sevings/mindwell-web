@@ -463,3 +463,10 @@ div.profile-section {
 .label-avatar.messages-counter.hidden {
     display: none;
 }
+
+.calendar-more-posts {
+    background-color: #ff5e3a;
+    color: #fff !important;
+    border-radius: 3px;
+    padding: 2px 5px;
+}
