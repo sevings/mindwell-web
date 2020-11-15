@@ -306,13 +306,17 @@ function fullCalendar() {
     let calendar = new FullCalendar.Calendar(calendarEl[0], {
         initialView: 'dayGridMonth',
         titleFormat: function(date) {
+            const shortMonths = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"]
             const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
-            let month = months[date.date.marker.getMonth()]
+
+            let month = date.date.marker.getMonth()
             let year = date.date.marker.getFullYear()
+            let width = Math.round($(window).width())
+            month = (width >= 1200 && width <= 1440) ? shortMonths[month] : months[month]
             if(new Date().getFullYear() === year)
                 return month
 
-            return month + " " + year + " г.";
+            return month + " " + year;
         },
         headerToolbar: {
             start: 'prevYear,prev',
@@ -320,10 +324,10 @@ function fullCalendar() {
             end: 'next,nextYear'
         },
         buttonText: {
-            prev: "🡠",
-            next: "🡢",
-            prevYear: "🢀",
-            nextYear: "🢂"
+            prev: "⟵",
+            next: "⟶",
+            prevYear: "⟸",
+            nextYear: "⟹"
         },
         displayEventTime: false,
         displayEventEnd: false,
