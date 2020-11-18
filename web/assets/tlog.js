@@ -325,6 +325,7 @@ function fullCalendar() {
         },
         displayEventTime: false,
         displayEventEnd: false,
+        defaultTimedEventDuration: "00:00:00",
         dayMaxEventRows: 1,
         moreLinkContent: (arg) => { return "+" + arg.num },
         moreLinkClassNames: "calendar-more-posts",
