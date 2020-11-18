@@ -471,6 +471,29 @@ div.profile-section {
     padding: 2px 5px;
 }
 
-.fc-header-toolbar .btn {
-    padding: 0 1em;
+.fc-button {
+    background-color: #9a9fbf !important;
+    border-color: #9a9fbf !important;
+}
+
+.fc-button span {
+    color: #ffffff !important;
+}
+
+.fc-button:disabled span {
+    color: #ffffff;
+}
+
+.fc-button:active {
+    background-color: #ffffff !important;
+    border-color: #e6ecf5 !important;
+}
+
+.fc-button:active:not(:disabled) span {
+    color: #515365 !important;
+}
+
+.fc-button:active:disabled {
+    background-color: #7b81ab !important;
+    border-color: #737aa6 !important;
 }

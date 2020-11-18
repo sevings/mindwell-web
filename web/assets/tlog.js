@@ -323,12 +323,6 @@ function fullCalendar() {
             center: 'title',
             end: 'next,nextYear'
         },
-        buttonText: {
-            prev: "⟵",
-            next: "⟶",
-            prevYear: "⟸",
-            nextYear: "⟹"
-        },
         displayEventTime: false,
         displayEventEnd: false,
         dayMaxEventRows: 1,
@@ -338,7 +332,6 @@ function fullCalendar() {
         eventColor: "#ff5e3a",
         locale: "ru",
         height: "auto",
-        themeSystem: "bootstrap",
         validRange: {
             start: $("#profile").data("createdAt") * 1000,
             end: new Date()
