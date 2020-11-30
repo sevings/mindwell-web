@@ -361,7 +361,7 @@ function fullCalendar() {
                         return {
                             id: entry.id,
                             url: "/entries/" + entry.id,
-                            title: entry.title,
+                            title: unescapeHtml(entry.title),
                             start: entry.createdAt * 1000,
                         }
                     })
