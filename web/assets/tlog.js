@@ -292,10 +292,9 @@ $("#feed-sort").on("change", function(){
         $("#feed-search").resetForm()
         container.find("option[value='search'").remove()
         $(this).selectpicker("refresh")
-        container.children(".entry").remove()
     }
 
-    loadFeed(url, clear)
+    loadFeed(url, clear, true)
 })
 
 function fullCalendar() {

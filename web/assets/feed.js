@@ -688,11 +688,6 @@ $(window).on("hashchange", function () {
         openHashModal()
 })
 
-$("#feed").on("removeComplete", function(){
-    if(!$("#empty-feed").length)
-        $("#feed").append("<h6 id=\"empty-feed\" class=\"title hcenter\">Нет записей</h6>")
-})
-
 $(function(){
     addFeedClickHandlers()
 
@@ -785,7 +780,7 @@ function openPost(id) {
     return false
 }
 
-function loadFeed(url, onSuccess) {
+function loadFeed(url, onSuccess, removeOld) {
     let container = $("#feed")
     if(container.data("loading"))
         return false
@@ -800,15 +795,23 @@ function loadFeed(url, onSuccess) {
                 onSuccess()
 
             let page = $(formatTimeHtml(data))
+            let old = removeOld ? container.children(".entry") : $()
 
             if(container.hasClass("sorting-container")) {
-                container.isotope("insert", page)
+                container
+                    .prepend(page)
+                    .isotope("prepended", page)
+                    .isotope("remove", old)
+                    .isotope("layout")
+
                 page.find(".post-content,.post-thumb").imagesLoaded()
-                    .progress(function() {
+                    .progress(() => {
                         container.isotope('layout')
                     })
-            } else
+            } else {
+                old.remove()
                 container.append(page)
+            }
 
             addFeedClickHandlers(page)
             page.find("iframe.yt-video").each(prepareYtPlayer)
@@ -820,7 +823,7 @@ function loadFeed(url, onSuccess) {
             addYtPlayers()
 
             let empty = $("#empty-feed")
-            if(container.children(".entry").length){
+            if((!removeOld && container.children(".entry").length) || page.filter(".entry").length){
                 empty.remove()
             } else {
                 if(!empty.length)
@@ -983,17 +986,9 @@ $("#feed-search").submit(function(){
                 .append("<option value='search' selected>Результаты поиска</option>")
                 .selectpicker("refresh")
         }
-
-        let old = container.children(".entry")
-        if(container.hasClass("sorting-container")) {
-            container.isotope("remove", old)
-                .isotope('layout')
-        } else {
-            old.remove()
-        }
     }
 
-    return loadFeed(url, clear)
+    return loadFeed(url, clear, true)
 })
 
 function onTagClick(){
