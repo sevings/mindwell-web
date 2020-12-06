@@ -795,21 +795,27 @@ function loadFeed(url, onSuccess, removeOld) {
                 onSuccess()
 
             let page = $(formatTimeHtml(data))
-            let old = removeOld ? container.children(".entry") : $()
+            let old = container.children(".entry")
 
             if(container.hasClass("sorting-container")) {
-                container
-                    .prepend(page)
-                    .isotope("prepended", page)
-                    .isotope("remove", old)
-                    .isotope("layout")
+                if(removeOld){
+                    container
+                        .prepend(page)
+                        .isotope("prepended", page)
+                        .isotope("remove", old)
+                        .isotope("layout")
+                } else {
+                    container.isotope("insert", page)
+                }
 
                 page.find(".post-content,.post-thumb").imagesLoaded()
                     .progress(() => {
                         container.isotope('layout')
                     })
             } else {
-                old.remove()
+                if(removeOld)
+                    old.remove()
+
                 container.append(page)
             }
 
