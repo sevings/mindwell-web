@@ -2,7 +2,7 @@ package utils
 
 import (
 	"errors"
-	"fmt"
+	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils/embedder"
 	"log"
 	"regexp"
 	"strconv"
@@ -78,52 +78,8 @@ func gender(gender *pongo2.Value, _ *pongo2.Value) (*pongo2.Value, *pongo2.Error
 	return pongo2.AsSafeValue(ending), nil
 }
 
-var aRe = regexp.MustCompile(`(?i)<a[^>]+>[^<]*</a>`)
-var hrefRe = regexp.MustCompile(`(?i)<a[^>]+href="([^"]+)"[^>]*>([^<]*)</a>`)
-var ytRe = regexp.MustCompile(`(?i)(?:https?://)?(?:www\.)?(?:m\.)?(?:youtube.com/watch\?.*v=|youtu.be/)([a-z0-9\-_]+).*`)
 var imgSrcRe = regexp.MustCompile(`(?i)<img[^>]+src="([^"]+)"[^>]*>`)
-
-func min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}
-
-func convertMediaTag(tag string, embed bool) string {
-	ht := hrefRe.FindAllStringSubmatch(tag, -1)
-	if len(ht) == 0 {
-		return tag
-	}
-
-	href := ht[0][1]
-	text := ht[0][2]
-
-	compareLen := min(20, min(len(text), len(href)))
-	if compareLen > 0 && href[:compareLen] != text[:compareLen] {
-		return tag
-	}
-
-	yt := ytRe.FindAllStringSubmatch(href, -1)
-	if len(yt) > 0 {
-		id := yt[0][1]
-		if embed {
-			return fmt.Sprintf(`<iframe class="yt-video" data-video="%s" type="text/html" frameborder="0" width="480" height="270" 
-	src="https://www.youtube.com/embed/%s?enablejsapi=1" allowfullscreen></iframe>`, id, id)
-		}
-
-		return fmt.Sprintf(`<div class="post-video">
-		<div class="video-thumb f-none">
-			<img src="https://img.youtube.com/vi/%s/0.jpg" alt="video">
-			<a href="https://youtube.com/watch?v=%s" class="play-video" target="_blank" data-video="%s">
-				<svg class="olymp-play-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-play-icon"></use></svg>
-			</a>
-		</div>
-	</div>`, id, id, id)
-	}
-
-	return tag
-}
+var emb = embedder.NewEmbedder()
 
 // usage: {{ html|media:"embed" }}
 func media(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
@@ -146,9 +102,7 @@ func media(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.E
 		html = imgSrcRe.ReplaceAllString(html, `<a href="$1" target="__blank" class="js-zoom-image">$0</a>`)
 	}
 
-	html = aRe.ReplaceAllStringFunc(html, func(tag string) string {
-		return convertMediaTag(tag, embed)
-	})
+	html = emb.ReplaceAll(html, embed)
 
 	return pongo2.AsSafeValue(html), nil
 }
