@@ -67,9 +67,17 @@ class Embedder {
         this.nextIDs = []
     }
     onPlay(playingID) {
+        let removed = []
+
         this.embeds.forEach((embed, id) => {
-            if(id !== playingID)
+            if(!document.getElementById(id))
+                removed.push(id)
+            else if(id !== playingID)
                 embed.pause()
+        })
+
+        removed.forEach(id => {
+            this.embeds.delete(id)
         })
     }
 }
@@ -120,3 +128,29 @@ class YouTubeProvider extends EmbedProvider {
 function onYouTubeIframeAPIReady() {
     window.embedder.addProvider(new YouTubeProvider())
 }
+
+class SoundCloudEmbed extends Embed {
+    constructor(id, onPlay) {
+        super(id, onPlay)
+
+        this.player = SC.Widget(id)
+        this.player.bind(SC.Widget.Events.PLAY, this.onPlay)
+    }
+    play() {
+        this.player.play()
+    }
+    pause() {
+        this.player.pause()
+    }
+}
+
+class SoundCloudProvider extends EmbedProvider {
+    type() {
+        return "soundcloud"
+    }
+    embed(id, onPlay) {
+        return new SoundCloudEmbed(id, onPlay)
+    }
+}
+
+$(() => { window.embedder.addProvider(new SoundCloudProvider()) })

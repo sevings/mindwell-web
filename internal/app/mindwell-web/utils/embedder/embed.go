@@ -9,6 +9,7 @@ import (
 )
 
 var errorNoMatch = errors.New("could not embed this link")
+var errorNotEmbed = errors.New("this link is not embeddable")
 
 type Embeddable interface {
 	Embed() string
@@ -35,6 +36,7 @@ func NewEmbedder() *Embedder {
 	}
 
 	e.AddProvider(newYouTube())
+	e.AddProvider(newSoundCloud())
 
 	return e
 }
@@ -80,6 +82,10 @@ func (e *Embedder) Convert(tag string, embed bool) string {
 		for _, ep := range e.eps {
 			emb, err = ep.Load(href)
 			if err == nil {
+				break
+			}
+			if err == errorNotEmbed {
+				emb = &NotEmbed{Tag: tag}
 				break
 			}
 			if err != errorNoMatch {
