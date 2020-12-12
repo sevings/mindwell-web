@@ -11,7 +11,7 @@ class Embed {
 }
 
 class EmbedProvider {
-    type() {}
+    name() {}
     embed(id, onPlay) {}
 }
 
@@ -25,9 +25,9 @@ class Embedder {
         this.onPlay = this.onPlay.bind(this)
     }
     addProvider(prov) {
-        this.providers.set(prov.type(), prov)
+        this.providers.set(prov.name(), prov)
 
-        this.addEmbeds(document, prov.type())
+        this.addEmbeds(document, prov.name())
     }
     addEmbeds(element, type) {
         let query = ".embed"
@@ -55,8 +55,8 @@ class Embedder {
             if(this.embeds.has(id))
                 return
 
-            let type = $("#" + id).data("type")
-            let prov = this.providers.get(type)
+            let name = $("#" + id).data("provider")
+            let prov = this.providers.get(name)
             if(!prov)
                 return
 
@@ -117,8 +117,8 @@ class YouTubeEmbed extends Embed {
 }
 
 class YouTubeProvider extends EmbedProvider {
-    type() {
-        return "youtube"
+    name() {
+        return "YouTube"
     }
     embed(id, onPlay) {
         return new YouTubeEmbed(id, onPlay)
@@ -145,8 +145,8 @@ class SoundCloudEmbed extends Embed {
 }
 
 class SoundCloudProvider extends EmbedProvider {
-    type() {
-        return "soundcloud"
+    name() {
+        return "SoundCloud"
     }
     embed(id, onPlay) {
         return new SoundCloudEmbed(id, onPlay)

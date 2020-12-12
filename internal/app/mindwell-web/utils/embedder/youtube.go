@@ -31,7 +31,7 @@ func (ytp *ytProvider) Load(href string) (Embeddable, error) {
 }
 
 func (yte *ytEmbeddable) Embed() string {
-	return fmt.Sprintf(`<iframe class="embed" data-type="youtube" data-embed="%s" type="text/html" frameborder="0" width="480" height="270" 
+	return fmt.Sprintf(`<iframe class="embed" data-provider="YouTube" data-embed="%s" type="text/html" frameborder="0" width="480" height="270" 
 	src="https://www.youtube.com/embed/%s?enablejsapi=1" allowfullscreen></iframe>`, yte.id, yte.id)
 }
 
