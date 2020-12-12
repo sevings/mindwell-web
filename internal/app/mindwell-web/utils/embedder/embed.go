@@ -37,6 +37,7 @@ func NewEmbedder() *Embedder {
 
 	e.AddProvider(newYouTube())
 	e.AddProvider(newSoundCloud())
+	e.AddProvider(newCoub())
 
 	return e
 }

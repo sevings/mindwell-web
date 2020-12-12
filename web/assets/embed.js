@@ -154,3 +154,39 @@ class SoundCloudProvider extends EmbedProvider {
 }
 
 $(() => { window.embedder.addProvider(new SoundCloudProvider()) })
+
+class CoubEmbed extends Embed {
+    constructor(id, onPlay) {
+        super(id, onPlay)
+
+        let coub = document.getElementById(id).contentWindow
+        coub.addEventListener("message", (e) => {
+            if (e.data === 'playStarted')
+                this.onPlay()
+        })
+    }
+    post(cmd) {
+        let coub = document.getElementById(this.id)
+        if(!coub)
+            return
+
+        coub.contentWindow.postMessage(cmd, "*")
+    }
+    play() {
+        this.post("play")
+    }
+    pause() {
+        this.post("stop")
+    }
+}
+
+class CoubProvider extends EmbedProvider {
+    name() {
+        return "Coub"
+    }
+    embed(id, onPlay) {
+        return new CoubEmbed(id, onPlay)
+    }
+}
+
+$(() => { window.embedder.addProvider(new CoubProvider()) })
