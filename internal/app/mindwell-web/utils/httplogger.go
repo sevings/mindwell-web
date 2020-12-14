@@ -20,6 +20,7 @@ func LogHandler(logger *zap.Logger) gin.HandlerFunc {
 		logger.Info("http",
 			zap.String("method", ctx.Request.Method),
 			zap.String("url", ctx.Request.RequestURI),
+			zap.String("referrer", ctx.Request.Referer()),
 			zap.String("user_agent", ctx.Request.UserAgent()),
 			zap.String("api_key", token),
 			zap.String("ip", ctx.GetHeader("X-Forwarded-For")),
