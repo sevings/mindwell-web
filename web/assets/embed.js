@@ -190,3 +190,31 @@ class CoubProvider extends EmbedProvider {
 }
 
 $(() => { window.embedder.addProvider(new CoubProvider()) })
+
+class VimeoEmbed extends Embed {
+    constructor(id, onPlay) {
+        super(id, onPlay)
+
+        let iframe = document.getElementById(id)
+        this.player = new Vimeo.Player(iframe)
+
+        this.player.on("play", this.onPlay)
+    }
+    play() {
+        this.player.play()
+    }
+    pause() {
+        this.player.pause()
+    }
+}
+
+class VimeoProvider extends EmbedProvider {
+    name() {
+        return "Vimeo"
+    }
+    embed(id, onPlay) {
+        return new VimeoEmbed(id, onPlay)
+    }
+}
+
+$(() => { window.embedder.addProvider(new VimeoProvider()) })

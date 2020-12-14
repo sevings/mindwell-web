@@ -63,6 +63,8 @@ function removeDraft() {
 
     store.set("draft", draft)
 
+    document.querySelector("input[name='content']").value = ""
+
     titleElem().val("")
     contentElem().val("")
     imagesElem().val("")
