@@ -110,7 +110,12 @@ function loadImages(){
                 let img = $(data)
                 $("#attached-images").append(img)
             },
-            error: showAjaxError,
+            error: function(req) {
+                if(req.status === 404)
+                    removeImageID(id)
+                else
+                    showAjaxError(req)
+            },
         })
     }
 }
@@ -296,6 +301,9 @@ function updateNextImage(timeout = 1000) {
         timeout = 60000
 
     function getImage() {
+        if(updImageIDs.indexOf(id) < 0)
+            return updateNextImage(timeout * 2)
+
         $.ajax({
             method: "GET",
             url: "/images/" + id,
@@ -310,12 +318,7 @@ function updateNextImage(timeout = 1000) {
     setTimeout(getImage, timeout)
 }
 
-function removeImage(id) {
-    if(!confirm("Удалить изображение?"))
-        return false
-
-    $("#attached-image"+id).remove()
-
+function removeImageID(id) {
     let i = updImageIDs.indexOf(id)
     if(i >= 0)
         updImageIDs.splice(i, 1)
@@ -326,6 +329,15 @@ function removeImage(id) {
     if(i >= 0)
         ids.splice(i, 1)
     inp.val(ids.join(","))
+}
+
+function removeImage(id) {
+    if(!confirm("Удалить изображение?"))
+        return false
+
+    $("#attached-image"+id).remove()
+
+    removeImageID(id)
 
     if(!isCreating())
         return false
