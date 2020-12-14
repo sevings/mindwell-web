@@ -218,3 +218,22 @@ class VimeoProvider extends EmbedProvider {
 }
 
 $(() => { window.embedder.addProvider(new VimeoProvider()) })
+
+class TickCounterEmbed extends Embed {
+    constructor(id, onPlay) {
+        super(id, onPlay)
+    }
+    play() {}
+    pause() {}
+}
+
+class TickCounterProvider extends EmbedProvider {
+    name() {
+        return "TickCounter"
+    }
+    embed(id, onPlay) {
+        return new TickCounterEmbed(id, onPlay)
+    }
+}
+
+$(() => { window.embedder.addProvider(new TickCounterProvider()) })

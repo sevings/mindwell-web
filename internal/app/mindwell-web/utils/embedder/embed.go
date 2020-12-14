@@ -39,6 +39,7 @@ func NewEmbedder() *Embedder {
 	e.AddProvider(newSoundCloud())
 	e.AddProvider(newCoub())
 	e.AddProvider(newVimeo())
+	e.AddProvider(newTickCounter())
 
 	return e
 }

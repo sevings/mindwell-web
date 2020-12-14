@@ -86,7 +86,7 @@ func (oe *OEmbed) Embed() string {
 	return oe.Html
 }
 
-func (oe *OEmbed) Preview() string {
+func (oe *OEmbed) PreviewVideo() string {
 	const template = `							
 <div class="post-video">
 	<div class="video-thumb">
@@ -105,6 +105,28 @@ func (oe *OEmbed) Preview() string {
 `
 
 	return fmt.Sprintf(template, oe.ThumbnailUrl, oe.Url, oe.ID, oe.Url, oe.Title, oe.Description, oe.Url, oe.ProviderName)
+}
+
+func (oe *OEmbed) PreviewRich() string {
+	const template = `							
+<div class="post-video">
+	<div class="video-content">
+		<a href="%s" class="h4 title">%s</a>
+		<p>%s</p>
+		<a href="%s" class="link-site">%s</a>
+	</div>
+</div>
+`
+
+	return fmt.Sprintf(template, oe.Url, oe.Title, oe.Description, oe.Url, oe.ProviderName)
+}
+
+func (oe *OEmbed) Preview() string {
+	if oe.Type == "video" {
+		return oe.PreviewVideo()
+	} else {
+		return oe.PreviewRich()
+	}
 }
 
 func (oe *OEmbed) CacheControl() time.Duration {
