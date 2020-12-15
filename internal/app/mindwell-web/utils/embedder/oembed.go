@@ -44,6 +44,10 @@ func (oep *OEmbedProvider) Load(href string) (Embeddable, error) {
 		return nil, errorNoMatch
 	}
 
+	return oep.LoadChecked(href)
+}
+
+func (oep *OEmbedProvider) LoadChecked(href string) (*OEmbed, error) {
 	resp, err := http.Get(oep.apiUrl + href)
 	if err != nil {
 		return nil, err

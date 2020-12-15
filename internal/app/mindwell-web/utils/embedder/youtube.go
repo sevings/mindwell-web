@@ -3,49 +3,41 @@ package embedder
 import (
 	"fmt"
 	"regexp"
-	"time"
 )
 
-type ytEmbeddable struct {
-	id string
-}
-
 type ytProvider struct {
-	ytRe *regexp.Regexp
+	OEmbedProvider
 }
 
-func newYouTube() *ytProvider {
+func newYouTube() EmbeddableProvider {
+	const hrefRe = `(?i)(?:https?://)?(?:www\.)?(?:m\.)?(?:youtube.com/watch\?.*v=|youtu.be/)([a-z0-9\-_]+).*`
+	const apiUrl = "https://www.youtube.com/oembed?url="
+
 	return &ytProvider{
-		ytRe: regexp.MustCompile(`(?i)(?:https?://)?(?:www\.)?(?:m\.)?(?:youtube.com/watch\?.*v=|youtu.be/)([a-z0-9\-_]+).*`),
+		OEmbedProvider{
+			hrefRe: regexp.MustCompile(hrefRe),
+			apiUrl: apiUrl,
+		},
 	}
 }
 
 func (ytp *ytProvider) Load(href string) (Embeddable, error) {
-	yt := ytp.ytRe.FindAllStringSubmatch(href, -1)
+	yt := ytp.hrefRe.FindAllStringSubmatch(href, -1)
 	if len(yt) == 0 {
 		return nil, errorNoMatch
 	}
 
 	id := yt[0][1]
-	return &ytEmbeddable{id: id}, nil
-}
 
-func (yte *ytEmbeddable) Embed() string {
-	return fmt.Sprintf(`<iframe class="embed" data-provider="YouTube" data-embed="%s" type="text/html" frameborder="0" width="480" height="270" 
-	src="https://www.youtube.com/embed/%s?enablejsapi=1" allowfullscreen></iframe>`, yte.id, yte.id)
-}
+	oe, err := ytp.OEmbedProvider.LoadChecked(href)
+	if err != nil {
+		return nil, err
+	}
 
-func (yte *ytEmbeddable) Preview() string {
-	return fmt.Sprintf(`<div class="post-video">
-		<div class="video-thumb f-none">
-			<img src="https://img.youtube.com/vi/%s/0.jpg" alt="video">
-			<a href="https://youtube.com/watch?v=%s" class="open-embed play-video" target="_blank" data-embed="%s">
-				<svg class="olymp-play-icon"><use xlink:href="/assets/olympus/svg-icons/sprites/icons.svg#olymp-play-icon"></use></svg>
-			</a>
-		</div>
-	</div>`, yte.id, yte.id, yte.id)
-}
+	const template = `<iframe class="embed" data-provider="YouTube" data-embed="%s" type="text/html" frameborder="0" width="480" height="270" 
+	src="https://www.youtube.com/embed/%s?enablejsapi=1" allowfullscreen></iframe>`
+	oe.Html = fmt.Sprintf(template, id, id)
+	oe.ID = id
 
-func (yte *ytEmbeddable) CacheControl() time.Duration {
-	return 1 * time.Hour
+	return oe, nil
 }
