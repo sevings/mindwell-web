@@ -101,35 +101,35 @@ func (oe *OEmbed) PreviewVideo() string {
 	</div>
 
 	<div class="video-content">
-		<a href="%s" class="h4 title">%s</a>
+		<span class="h4 title">%s</span>
 		<p>%s</p>
 		<a href="%s" class="link-site">%s</a>
 	</div>
 </div>
 `
 
-	return fmt.Sprintf(template, oe.ThumbnailUrl, oe.Url, oe.ID, oe.Url, oe.Title, oe.Description, oe.Url, oe.ProviderName)
+	return fmt.Sprintf(template, oe.ThumbnailUrl, oe.Url, oe.ID, oe.Title, oe.Description, oe.Url, oe.ProviderName)
 }
 
 func (oe *OEmbed) PreviewRich() string {
 	const template = `							
 <div class="post-video">
 	<div class="video-content">
-		<a href="%s" class="h4 title">%s</a>
+		<span class="h4 title">%s</span>
 		<p>%s</p>
 		<a href="%s" class="link-site">%s</a>
 	</div>
 </div>
 `
 
-	return fmt.Sprintf(template, oe.Url, oe.Title, oe.Description, oe.Url, oe.ProviderName)
+	return fmt.Sprintf(template, oe.Title, oe.Description, oe.Url, oe.ProviderName)
 }
 
 func (oe *OEmbed) Preview() string {
-	if oe.Type == "video" {
-		return oe.PreviewVideo()
-	} else {
+	if oe.ThumbnailUrl == "" {
 		return oe.PreviewRich()
+	} else {
+		return oe.PreviewVideo()
 	}
 }
 
