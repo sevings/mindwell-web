@@ -11,6 +11,32 @@ class Embed {
 }
 
 class EmbedProvider {
+    setOnLoad(onLoad) {
+        this.onLoad = () => {
+            this.loaded = true
+            onLoad(this.name())
+        }
+    }
+    load() {
+        if(this.loaded === false)
+            return
+
+        this.loaded = false
+        this.loadApi()
+    }
+    loadApi() {
+        if(!this.apiUrl())
+            return setTimeout(this.onLoad, 0)
+
+        $.ajax({
+            method: "GET",
+            cache: true,
+            url: this.apiUrl(),
+            dataType: "script",
+            success: this.onLoad,
+        })
+    }
+    apiUrl() {}
     name() {}
     embed(id, onPlay) {}
 }
@@ -22,9 +48,12 @@ class Embedder {
         this.nextIDs = []
         this.next = 1
 
+        this.createEmbeds = this.createEmbeds.bind(this)
         this.onPlay = this.onPlay.bind(this)
     }
     addProvider(prov) {
+        prov.setOnLoad(this.createEmbeds)
+
         this.providers.set(prov.name(), prov)
 
         this.addEmbeds(document, prov.name())
@@ -50,21 +79,37 @@ class Embedder {
 
         return new Embed("", () => {})
     }
-    createEmbeds() {
+    provider(name) {
+        return this.providers.get(name)
+    }
+    createEmbeds(providerName) {
+        let delayedIDs = this.nextIDs.slice()
+
         this.nextIDs.forEach(id => {
             if(this.embeds.has(id))
                 return
 
             let name = $("#" + id).data("provider")
-            let prov = this.providers.get(name)
+            if(providerName && providerName !== name)
+                return
+
+            let prov = this.provider(name)
             if(!prov)
                 return
 
+            if(!prov.loaded)
+                return prov.load()
+
             let embed = prov.embed(id, this.onPlay)
             this.embeds.set(id, embed)
+
+            const index = delayedIDs.indexOf(id)
+            if(index >= 0) {
+                delayedIDs.splice(index, 1)
+            }
         })
 
-        this.nextIDs = []
+        this.nextIDs = delayedIDs
     }
     onPlay(playingID) {
         let removed = []
@@ -120,13 +165,23 @@ class YouTubeProvider extends EmbedProvider {
     name() {
         return "YouTube"
     }
+    loadApi() {
+        $.ajax({
+            method: "GET",
+            cache: true,
+            url: "https://youtube.com/iframe_api",
+            dataType: "script",
+        })
+    }
     embed(id, onPlay) {
         return new YouTubeEmbed(id, onPlay)
     }
 }
 
+$(() => { window.embedder.addProvider(new YouTubeProvider()) })
+
 function onYouTubeIframeAPIReady() {
-    window.embedder.addProvider(new YouTubeProvider())
+    window.embedder.provider("YouTube").onLoad()
 }
 
 class SoundCloudEmbed extends Embed {
@@ -147,6 +202,9 @@ class SoundCloudEmbed extends Embed {
 class SoundCloudProvider extends EmbedProvider {
     name() {
         return "SoundCloud"
+    }
+    apiUrl() {
+        return "https://w.soundcloud.com/player/api.js"
     }
     embed(id, onPlay) {
         return new SoundCloudEmbed(id, onPlay)
@@ -211,6 +269,9 @@ class VimeoEmbed extends Embed {
 class VimeoProvider extends EmbedProvider {
     name() {
         return "Vimeo"
+    }
+    apiUrl() {
+        return  "https://player.vimeo.com/api/player.js"
     }
     embed(id, onPlay) {
         return new VimeoEmbed(id, onPlay)
