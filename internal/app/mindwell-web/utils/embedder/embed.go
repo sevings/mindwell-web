@@ -43,6 +43,7 @@ func NewEmbedder() *Embedder {
 	e.AddProvider(newCoub(cli))
 	e.AddProvider(newVimeo(cli))
 	e.AddProvider(newTickCounter(cli))
+	e.AddProvider(newHtmlProvider(cli))
 
 	return e
 }
