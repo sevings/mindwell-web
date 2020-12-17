@@ -36,7 +36,7 @@ func NewEmbedder() *Embedder {
 		aRe:    regexp.MustCompile(`(?i)<a[^>]+>[^<]*</a>`),
 	}
 
-	cli := &http.Client{Timeout: 2 * time.Millisecond}
+	cli := &http.Client{Timeout: 2 * time.Second}
 
 	e.AddProvider(newYouTube(cli))
 	e.AddProvider(newSoundCloud(cli))
@@ -89,6 +89,9 @@ func (e *Embedder) Convert(tag string, embed bool) string {
 			emb, err = ep.Load(href)
 			if err == nil {
 				break
+			}
+			if err == errorNoMatch {
+				continue
 			}
 			if err != errorNotEmbed {
 				log.Println(err)
