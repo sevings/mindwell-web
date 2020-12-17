@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/patrickmn/go-cache"
 	"log"
+	"net/http"
 	"regexp"
 	"time"
 )
@@ -35,11 +36,13 @@ func NewEmbedder() *Embedder {
 		aRe:    regexp.MustCompile(`(?i)<a[^>]+>[^<]*</a>`),
 	}
 
-	e.AddProvider(newYouTube())
-	e.AddProvider(newSoundCloud())
-	e.AddProvider(newCoub())
-	e.AddProvider(newVimeo())
-	e.AddProvider(newTickCounter())
+	cli := &http.Client{Timeout: 2 * time.Millisecond}
+
+	e.AddProvider(newYouTube(cli))
+	e.AddProvider(newSoundCloud(cli))
+	e.AddProvider(newCoub(cli))
+	e.AddProvider(newVimeo(cli))
+	e.AddProvider(newTickCounter(cli))
 
 	return e
 }
@@ -87,18 +90,12 @@ func (e *Embedder) Convert(tag string, embed bool) string {
 			if err == nil {
 				break
 			}
-			if err == errorNotEmbed {
-				emb = &NotEmbed{Tag: tag}
-				break
-			}
-			if err != errorNoMatch {
+			if err != errorNotEmbed {
 				log.Println(err)
 			}
+			emb = &NotEmbed{Tag: tag}
+			break
 		}
-	}
-
-	if emb == nil {
-		return tag
 	}
 
 	if !found {

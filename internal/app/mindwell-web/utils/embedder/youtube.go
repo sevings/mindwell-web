@@ -2,6 +2,7 @@ package embedder
 
 import (
 	"fmt"
+	"net/http"
 	"regexp"
 )
 
@@ -9,7 +10,7 @@ type ytProvider struct {
 	OEmbedProvider
 }
 
-func newYouTube() EmbeddableProvider {
+func newYouTube(cli *http.Client) EmbeddableProvider {
 	const hrefRe = `(?i)(?:https?://)?(?:www\.)?(?:m\.)?(?:youtube.com/watch\?.*v=|youtu.be/)([a-z0-9\-_]+).*`
 	const apiUrl = "https://www.youtube.com/oembed?url="
 
@@ -17,6 +18,7 @@ func newYouTube() EmbeddableProvider {
 		OEmbedProvider{
 			hrefRe: regexp.MustCompile(hrefRe),
 			apiUrl: apiUrl,
+			cli:    cli,
 		},
 	}
 }

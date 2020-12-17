@@ -30,12 +30,14 @@ type OEmbed struct {
 type OEmbedProvider struct {
 	hrefRe *regexp.Regexp
 	apiUrl string
+	cli    *http.Client
 }
 
-func NewOEmbedProvider(hrefRe, apiUrl string) *OEmbedProvider {
+func NewOEmbedProvider(hrefRe, apiUrl string, cli *http.Client) *OEmbedProvider {
 	return &OEmbedProvider{
 		hrefRe: regexp.MustCompile(hrefRe),
 		apiUrl: apiUrl,
+		cli:    cli,
 	}
 }
 
@@ -48,7 +50,7 @@ func (oep *OEmbedProvider) Load(href string) (Embeddable, error) {
 }
 
 func (oep *OEmbedProvider) LoadChecked(href string) (*OEmbed, error) {
-	resp, err := http.Get(oep.apiUrl + href)
+	resp, err := oep.cli.Get(oep.apiUrl + href)
 	if err != nil {
 		return nil, err
 	}
