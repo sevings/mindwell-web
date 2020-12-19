@@ -56,7 +56,7 @@ func (oep *OEmbedProvider) LoadChecked(href string) (*OEmbed, error) {
 	}
 
 	if resp.StatusCode != 200 {
-		return nil, errorNotEmbed
+		return nil, errorNoMatch
 	}
 
 	var jsonData []byte

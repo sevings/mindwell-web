@@ -103,7 +103,11 @@ func media(m *Mindwell) func(content *pongo2.Value, param *pongo2.Value) (*pongo
 			html = imgSrcRe.ReplaceAllString(html, `<a href="$1" target="__blank" class="js-zoom-image">$0</a>`)
 		}
 
-		html = emb.ReplaceAll(html, embed)
+		if embed {
+			html = emb.EmbedAll(html)
+		} else {
+			html = emb.PreviewAll(html)
+		}
 
 		return pongo2.AsSafeValue(html), nil
 	}

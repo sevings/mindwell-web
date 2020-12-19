@@ -52,12 +52,12 @@ func (hp *htmlProvider) Load(href string) (Embeddable, error) {
 	}
 
 	if resp.StatusCode != 200 {
-		return nil, errorNotEmbed
+		return nil, errorNoMatch
 	}
 
 	contentType := resp.Header.Get("content-type")
 	if !strings.Contains(contentType, "html") {
-		return nil, errorNotEmbed
+		return nil, errorNoMatch
 	}
 
 	defer resp.Body.Close()
@@ -68,7 +68,7 @@ func (hp *htmlProvider) Load(href string) (Embeddable, error) {
 
 	match := hp.titleRe.FindSubmatch(html)
 	if len(match) == 0 {
-		return nil, errorNotEmbed
+		return nil, errorNoMatch
 	}
 
 	title := string(match[1])

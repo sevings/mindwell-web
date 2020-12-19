@@ -10,7 +10,6 @@ import (
 )
 
 var errorNoMatch = errors.New("could not embed this link")
-var errorNotEmbed = errors.New("this link is not embeddable")
 
 type Embeddable interface {
 	Embed() string
@@ -54,9 +53,15 @@ func (e *Embedder) AddProvider(ep EmbeddableProvider) {
 	e.eps = append(e.eps, ep)
 }
 
-func (e *Embedder) ReplaceAll(html string, embed bool) string {
+func (e *Embedder) EmbedAll(html string) string {
 	return e.aRe.ReplaceAllStringFunc(html, func(tag string) string {
-		return e.Convert(tag, embed)
+		return e.Convert(tag).Embed()
+	})
+}
+
+func (e *Embedder) PreviewAll(html string) string {
+	return e.aRe.ReplaceAllStringFunc(html, func(tag string) string {
+		return e.Convert(tag).Preview()
 	})
 }
 
@@ -67,10 +72,10 @@ func min(x, y int) int {
 	return y
 }
 
-func (e *Embedder) Convert(tag string, embed bool) string {
+func (e *Embedder) Convert(tag string) Embeddable {
 	ht := e.hrefRe.FindAllStringSubmatch(tag, -1)
 	if len(ht) == 0 {
-		return tag
+		return &NotEmbed{Tag: tag}
 	}
 
 	href := ht[0][1]
@@ -78,7 +83,7 @@ func (e *Embedder) Convert(tag string, embed bool) string {
 
 	compareLen := min(20, min(len(text), len(href)))
 	if compareLen == 0 || href[:compareLen] != text[:compareLen] {
-		return tag
+		return &NotEmbed{Tag: tag}
 	}
 
 	var emb Embeddable
@@ -97,14 +102,12 @@ func (e *Embedder) Convert(tag string, embed bool) string {
 			if err == nil {
 				break
 			}
-			if err == errorNoMatch {
-				continue
-			}
-			if err != errorNotEmbed {
+			if err != errorNoMatch {
 				e.log.Warn("embed", zap.Error(err))
 			}
+		}
+		if err != nil {
 			emb = &NotEmbed{Tag: tag}
-			break
 		}
 	}
 
@@ -112,9 +115,5 @@ func (e *Embedder) Convert(tag string, embed bool) string {
 		e.cache.Set(href, emb, emb.CacheControl())
 	}
 
-	if embed {
-		return emb.Embed()
-	}
-
-	return emb.Preview()
+	return emb
 }
