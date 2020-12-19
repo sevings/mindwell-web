@@ -17,5 +17,5 @@ func (ne NotEmbed) Preview() string {
 }
 
 func (ne NotEmbed) CacheControl() time.Duration {
-	return 720 * time.Hour
+	return 24 * time.Hour
 }

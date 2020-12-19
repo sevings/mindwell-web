@@ -141,5 +141,5 @@ func (oe *OEmbed) CacheControl() time.Duration {
 		return time.Duration(oe.CacheAge) * time.Second
 	}
 
-	return 720 * time.Hour
+	return 24 * time.Hour
 }

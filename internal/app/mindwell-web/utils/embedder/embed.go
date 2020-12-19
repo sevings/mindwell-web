@@ -21,6 +21,26 @@ type EmbeddableProvider interface {
 	Load(href string) (Embeddable, error)
 }
 
+type embedData struct {
+	emb    Embeddable
+	access time.Time
+	load   time.Time
+}
+
+func newEmbedData(tag string) *embedData {
+	return &embedData{
+		emb: &NotEmbed{Tag: tag},
+	}
+}
+
+func (data *embedData) isUsed() bool {
+	return data.access.Add(180 * 24 * time.Hour).After(time.Now())
+}
+
+func (data *embedData) isExpired() bool {
+	return data.load.Add(data.emb.CacheControl()).Before(time.Now())
+}
+
 type Embedder struct {
 	eps    []EmbeddableProvider
 	cache  *cache.Cache
@@ -31,11 +51,24 @@ type Embedder struct {
 
 func NewEmbedder(log *zap.Logger, domain string) *Embedder {
 	e := &Embedder{
-		cache:  cache.New(24*time.Hour, 24*time.Hour),
+		cache:  cache.New(180*24*time.Hour, 24*time.Hour),
 		hrefRe: regexp.MustCompile(`(?i)<a[^>]+href="([^"]+)"[^>]*>([^<]*)</a>`),
 		aRe:    regexp.MustCompile(`(?i)<a[^>]+>[^<]*</a>`),
 		log:    log,
 	}
+
+	e.cache.OnEvicted(func(href string, cached interface{}) {
+		data := cached.(*embedData)
+
+		if data.access.After(data.load) {
+			e.reload(href, data)
+			return
+		}
+
+		if data.isUsed() {
+			e.cache.SetDefault(href, data)
+		}
+	})
 
 	cli := &http.Client{Timeout: 2 * time.Second}
 
@@ -87,34 +120,47 @@ func (e *Embedder) Convert(tag string) Embeddable {
 		return &NotEmbed{Tag: tag}
 	}
 
-	var emb Embeddable
+	var data *embedData
 
 	cached, found := e.cache.Get(href)
 	if found {
-		emb = cached.(Embeddable)
+		data = cached.(*embedData)
+		if data.isExpired() {
+			go e.reload(href, data)
+		}
 	} else {
-		e.log.Info("embed",
-			zap.String("act", "load"),
-			zap.String("url", href))
+		data = newEmbedData(tag)
+		e.reload(href, data)
+	}
 
-		var err error
-		for _, ep := range e.eps {
-			emb, err = ep.Load(href)
-			if err == nil {
-				break
-			}
-			if err != errorNoMatch {
-				e.log.Warn("embed", zap.Error(err))
-			}
+	data.access = time.Now()
+
+	return data.emb
+}
+
+func (e *Embedder) reload(href string, data *embedData) {
+	e.log.Info("embed",
+		zap.String("act", "load"),
+		zap.String("url", href))
+
+	var emb Embeddable
+	var err error
+
+	for _, ep := range e.eps {
+		emb, err = ep.Load(href)
+		if err == nil {
+			break
 		}
-		if err != nil {
-			emb = &NotEmbed{Tag: tag}
+		if err != errorNoMatch {
+			e.log.Warn("embed", zap.Error(err))
 		}
 	}
 
-	if !found {
-		e.cache.Set(href, emb, emb.CacheControl())
+	if err == nil {
+		data.emb = emb
 	}
 
-	return emb
+	data.load = time.Now()
+
+	e.cache.Set(href, data, data.emb.CacheControl())
 }

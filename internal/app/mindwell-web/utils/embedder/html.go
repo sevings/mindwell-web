@@ -23,7 +23,7 @@ func (h htmlEmbed) Preview() string {
 }
 
 func (h htmlEmbed) CacheControl() time.Duration {
-	return 720 * time.Hour
+	return 24 * time.Hour
 }
 
 type htmlProvider struct {
@@ -45,6 +45,7 @@ func (hp *htmlProvider) Load(href string) (Embeddable, error) {
 	}
 
 	req.Header.Set("Accept", "text/html, application/xhtml+xml")
+	req.Header.Set("User-Agent", "mindwell-web")
 
 	resp, err := hp.cli.Do(req)
 	if err != nil {
