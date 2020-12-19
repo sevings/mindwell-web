@@ -8,6 +8,7 @@ import (
 	"github.com/sevings/mindwell-server/utils"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 	"time"
@@ -50,7 +51,7 @@ func (oep *OEmbedProvider) Load(href string) (Embeddable, error) {
 }
 
 func (oep *OEmbedProvider) LoadChecked(href string) (*OEmbed, error) {
-	resp, err := oep.cli.Get(oep.apiUrl + href)
+	resp, err := oep.cli.Get(oep.apiUrl + url.QueryEscape(href))
 	if err != nil {
 		return nil, err
 	}
