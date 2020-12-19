@@ -29,7 +29,7 @@ type Embedder struct {
 	log    *zap.Logger
 }
 
-func NewEmbedder(log *zap.Logger) *Embedder {
+func NewEmbedder(log *zap.Logger, domain string) *Embedder {
 	e := &Embedder{
 		cache:  cache.New(24*time.Hour, 24*time.Hour),
 		hrefRe: regexp.MustCompile(`(?i)<a[^>]+href="([^"]+)"[^>]*>([^<]*)</a>`),
@@ -44,6 +44,7 @@ func NewEmbedder(log *zap.Logger) *Embedder {
 	e.AddProvider(newCoub(cli))
 	e.AddProvider(newVimeo(cli))
 	e.AddProvider(newTickCounter(cli))
+	e.AddProvider(newMindwell(domain))
 	e.AddProvider(newHtmlProvider(cli))
 
 	return e

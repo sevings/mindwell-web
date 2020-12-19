@@ -24,12 +24,12 @@ func newYouTube(cli *http.Client) EmbeddableProvider {
 }
 
 func (ytp *ytProvider) Load(href string) (Embeddable, error) {
-	yt := ytp.hrefRe.FindAllStringSubmatch(href, -1)
+	yt := ytp.hrefRe.FindStringSubmatch(href)
 	if len(yt) == 0 {
 		return nil, errorNoMatch
 	}
 
-	id := yt[0][1]
+	id := yt[1]
 
 	oe, err := ytp.OEmbedProvider.LoadChecked(href)
 	if err != nil {
