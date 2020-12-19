@@ -12,10 +12,10 @@ import (
 	"github.com/sevings/mindwell-server/utils"
 )
 
-func init() {
+func InitPongo2(m *Mindwell) {
 	registerFilter("quantity", quantity)
 	registerFilter("gender", gender)
-	registerFilter("media", media)
+	registerFilter("media", media(m))
 	registerFilter("cut_html", cutHtml)
 	registerFilter("cut_text", cutText)
 }
@@ -78,33 +78,35 @@ func gender(gender *pongo2.Value, _ *pongo2.Value) (*pongo2.Value, *pongo2.Error
 	return pongo2.AsSafeValue(ending), nil
 }
 
-var imgSrcRe = regexp.MustCompile(`(?i)<img[^>]+src="([^"]+)"[^>]*>`)
-var emb = embedder.NewEmbedder()
-
 // usage: {{ html|media:"embed" }}
-func media(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
-	if content.IsNil() {
-		return content, nil
-	}
+func media(m *Mindwell) func(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
+	var imgSrcRe = regexp.MustCompile(`(?i)<img[^>]+src="([^"]+)"[^>]*>`)
+	var emb = embedder.NewEmbedder(m.LogSystem())
 
-	if !content.IsString() {
-		return nil, &pongo2.Error{
-			Sender:    "filter:media",
-			OrigError: errors.New("input value is not a string"),
+	return func(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
+		if content.IsNil() {
+			return content, nil
 		}
+
+		if !content.IsString() {
+			return nil, &pongo2.Error{
+				Sender:    "filter:media",
+				OrigError: errors.New("input value is not a string"),
+			}
+		}
+
+		embed := param.String() == "embed"
+
+		html := content.String()
+
+		if embed {
+			html = imgSrcRe.ReplaceAllString(html, `<a href="$1" target="__blank" class="js-zoom-image">$0</a>`)
+		}
+
+		html = emb.ReplaceAll(html, embed)
+
+		return pongo2.AsSafeValue(html), nil
 	}
-
-	embed := param.String() == "embed"
-
-	html := content.String()
-
-	if embed {
-		html = imgSrcRe.ReplaceAllString(html, `<a href="$1" target="__blank" class="js-zoom-image">$0</a>`)
-	}
-
-	html = emb.ReplaceAll(html, embed)
-
-	return pongo2.AsSafeValue(html), nil
 }
 
 func cutHtml(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {

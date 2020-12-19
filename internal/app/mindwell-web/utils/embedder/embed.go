@@ -3,7 +3,7 @@ package embedder
 import (
 	"errors"
 	"github.com/patrickmn/go-cache"
-	"log"
+	"go.uber.org/zap"
 	"net/http"
 	"regexp"
 	"time"
@@ -27,13 +27,15 @@ type Embedder struct {
 	cache  *cache.Cache
 	hrefRe *regexp.Regexp
 	aRe    *regexp.Regexp
+	log    *zap.Logger
 }
 
-func NewEmbedder() *Embedder {
+func NewEmbedder(log *zap.Logger) *Embedder {
 	e := &Embedder{
 		cache:  cache.New(24*time.Hour, 24*time.Hour),
 		hrefRe: regexp.MustCompile(`(?i)<a[^>]+href="([^"]+)"[^>]*>([^<]*)</a>`),
 		aRe:    regexp.MustCompile(`(?i)<a[^>]+>[^<]*</a>`),
+		log:    log,
 	}
 
 	cli := &http.Client{Timeout: 2 * time.Second}
@@ -48,13 +50,6 @@ func NewEmbedder() *Embedder {
 	return e
 }
 
-func min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}
-
 func (e *Embedder) AddProvider(ep EmbeddableProvider) {
 	e.eps = append(e.eps, ep)
 }
@@ -63,6 +58,13 @@ func (e *Embedder) ReplaceAll(html string, embed bool) string {
 	return e.aRe.ReplaceAllStringFunc(html, func(tag string) string {
 		return e.Convert(tag, embed)
 	})
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
 }
 
 func (e *Embedder) Convert(tag string, embed bool) string {
@@ -85,6 +87,10 @@ func (e *Embedder) Convert(tag string, embed bool) string {
 	if found {
 		emb = cached.(Embeddable)
 	} else {
+		e.log.Info("embed",
+			zap.String("act", "load"),
+			zap.String("url", href))
+
 		var err error
 		for _, ep := range e.eps {
 			emb, err = ep.Load(href)
@@ -95,7 +101,7 @@ func (e *Embedder) Convert(tag string, embed bool) string {
 				continue
 			}
 			if err != errorNotEmbed {
-				log.Println(err)
+				e.log.Warn("embed", zap.Error(err))
 			}
 			emb = &NotEmbed{Tag: tag}
 			break

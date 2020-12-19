@@ -16,6 +16,7 @@ import (
 
 func main() {
 	mdw := utils.NewMindwell()
+	utils.InitPongo2(mdw)
 
 	gin.SetMode(gin.ReleaseMode)
 
