@@ -20,7 +20,7 @@ function addFeedClickHandlers(feed) {
     $(".post-comment", feed).click(onPostCommentClick)
     $(".cancel-comment", feed).click(onCancelCommentClick)
     
-    $(".play-video", feed).click(onPlayVideoClick)
+    $(".open-embed", feed).click(onOpenEmbedClick)
 
     $(".comment-button", feed).click(onCommentButtonClick)
     $(".more-comments", feed).click(loadComments)
@@ -108,7 +108,7 @@ function onCutContentClick(){
 
 function onCutContentLinkClick(){
     var a = $(this)
-    if(a.hasClass("play-video"))
+    if(a.hasClass("open-embed"))
         return true
 
     if(a.children("img").length)
@@ -298,11 +298,10 @@ function loadComments() {
             var ul = a.parent()
 
             var comments = $(formatTimeHtml(data))
-            comments.find("iframe.yt-video").each(prepareYtPlayer)
+            window.embedder.addEmbeds(comments)
             comments.each(function(){ CRUMINA.mediaPopups(this) })
             ul.prepend(comments)
             fixSvgUse(comments)
-            addYtPlayers()
             a.remove()
 
             var upd = ul.find(".update-comments")
@@ -338,11 +337,10 @@ function updateComments(entry) {
             var hasMore = ul.find(".more-comments").length > 0
 
             var comments = $(formatTimeHtml(data))
-            comments.find("iframe.yt-video").each(prepareYtPlayer)
+            window.embedder.addEmbeds(comments)
             comments.each(function(){ CRUMINA.mediaPopups(this) })
             ul.append(comments)
             fixSvgUse(comments)
-            addYtPlayers()
 
             let upd = ul.find(".update-comments")
             if(upd.length > 1)
@@ -400,7 +398,7 @@ function postComment(entry) {
         },
         success: function(data) {
             var cmt = $(formatTimeHtml(data))
-            cmt.find("iframe.yt-video").each(prepareYtPlayer)
+            window.embedder.addEmbeds(cmt)
             CRUMINA.mediaPopups(cmt)
 
             let id = cmt.data("id")
@@ -414,7 +412,6 @@ function postComment(entry) {
             }
 
             fixSvgUse(cmt)
-            addYtPlayers()
         },
         error: showAjaxError,
         complete: function() {
@@ -510,12 +507,11 @@ function saveComment(entry) {
         },
         success: function(data) {
             var cmt = $(formatTimeHtml(data))
-            cmt.find("iframe.yt-video").each(prepareYtPlayer)
+            window.embedder.addEmbeds(cmt)
             CRUMINA.mediaPopups(cmt)
             var id = form.data("id")
             $("#comment"+id).replaceWith(cmt)
             fixSvgUse(cmt)
-            addYtPlayers()
         },
         error: showAjaxError,
         complete: function() {
@@ -625,21 +621,13 @@ function scrollPost() {
 
     if(scroll)
     {
-        modal.data("video", "")
-        let iframe = modal.find("iframe[data-video='" + scroll + "']")
+        modal.data("embed", "")
+        let iframe = modal.find(".embed[data-embed='" + scroll + "']")
         modal.animate({ scrollTop: iframe.position().top }, 500);
-        for(let i = 0; i < ytPlayers.length; i++)
-        {
-            var player = ytPlayers[i]
-            if(player.getPlayerState() === YT.PlayerState.PLAYING)
-                break
 
-            if(player.getIframe().id !== iframe.attr("id"))
-                continue
+        let embed = window.embedder.embed(iframe.attr("id"))
+        setTimeout(() => { embed.play() }, 500)
 
-            player.playVideo()
-            break
-        }
         return
     }
 
@@ -656,8 +644,8 @@ $("#post-popup").on("shown.bs.modal", function(event) {
 $("#post-popup").on("hide.bs.modal", function() {
     var modal = $(this)
 
-    modal.find("iframe.yt-video").each(function(i) {
-        this.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    modal.find(".embed").each(function() {
+        window.embedder.embed(this.id).pause()
     });
 
     modal.find(".gif-play-image").gifplayer("stop")
@@ -759,11 +747,10 @@ function openPost(id) {
 
             addFeedClickHandlers(modal)
             formatTimeElements(modal)
-            modal.find("iframe.yt-video").each(prepareYtPlayer)
+            window.embedder.addEmbeds(modal)
             modal.find(".gif-play-image").gifplayer()
             modal.each(function(){ CRUMINA.mediaPopups(this) })
             fixSvgUse(modal)
-            addYtPlayers()
 
             if(modal.hasClass("show"))
                 scrollPost()
@@ -820,13 +807,12 @@ function loadFeed(url, onSuccess, removeOld) {
             }
 
             addFeedClickHandlers(page)
-            page.find("iframe.yt-video").each(prepareYtPlayer)
+            window.embedder.addEmbeds(page)
             page.find(".gif-play-image").gifplayer()
             page.each(function() {
                 CRUMINA.mediaPopups(this)
             })
             fixSvgUse(page)
-            addYtPlayers()
 
             let empty = $("#empty-feed")
             if((!removeOld && container.children(".entry").length) || page.filter(".entry").length){
@@ -1008,11 +994,11 @@ function onTagClick(){
     return false
 }
 
-function onPlayVideoClick(){
+function onOpenEmbedClick(){
     let a = $(this)
-    let video = a.data("video")
+    let embed = a.data("embed")
     let id = a.parents(".entry").data("id")
-    $("#post-popup").data("scroll", video)
+    $("#post-popup").data("scroll", embed)
     openPost(id)
 
     return false

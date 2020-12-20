@@ -30,9 +30,8 @@ class Messages extends Feed {
                 let id = form.data("id")
                 $("#message"+id).replaceWith(msg)
 
-                msg.find("iframe.yt-video").each(prepareYtPlayer)
+                window.embedder.addEmbeds(msg)
                 CRUMINA.mediaPopups(msg)
-                addYtPlayers()
 
                 if(wasAtBottom) {
                     this.scrollToBottom()
@@ -72,9 +71,8 @@ class Messages extends Feed {
                 else
                     ul.append(msg)
 
-                msg.find("iframe.yt-video").each(prepareYtPlayer)
+                window.embedder.addEmbeds(msg)
                 CRUMINA.mediaPopups(msg)
-                addYtPlayers()
 
                 $("#messages-placeholder").remove()
                 this.scrollToBottom()
@@ -184,9 +182,8 @@ class Messages extends Feed {
                 let list = $("ul.comments-list")
                 list.append(ul).children(".data-helper").remove()
 
-                ul.find("iframe.yt-video").each(prepareYtPlayer)
+                window.embedder.addEmbeds(ul)
                 ul.each(function(){ CRUMINA.mediaPopups(this) })
-                addYtPlayers()
 
                 // remove duplicates
                 let items = {}
@@ -237,9 +234,8 @@ class Messages extends Feed {
                 let list = $("ul.comments-list")
                 list.prepend(ul).children(".data-helper").remove()
 
-                ul.find("iframe.yt-video").each(prepareYtPlayer)
+                window.embedder.addEmbeds(ul)
                 ul.each(function(){ CRUMINA.mediaPopups(this) })
-                addYtPlayers()
 
                 if(list.children().length > 0)
                     $("#messages-placeholder").remove()
@@ -294,9 +290,8 @@ class Messages extends Feed {
         fixSvgUse(ul)
         ul.filter(".data-helper").remove()
 
-        ul.find("iframe.yt-video").each(prepareYtPlayer)
+        window.embedder.addEmbeds(ul)
         ul.each(function(){ CRUMINA.mediaPopups(this) })
-        addYtPlayers()
 
         this.scrollToBottom()
 

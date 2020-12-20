@@ -17,6 +17,10 @@
     width: auto;
 }
 
+.post-video .video-content {
+    min-width: 200px;
+}
+
 img.mfp-img {
     max-height: calc(100vh - 40px);
 }
@@ -191,12 +195,12 @@ div.post-add-icon:hover {
     text-decoration-line: underline;
 }
 
-.post-content p {
+.post-content>p {
     text-indent: 1em;
     margin: 1em 0;
 }
 
-.yt-video {
+.post-content iframe {
     max-width: 100%;
     display: block;
     margin: auto;
