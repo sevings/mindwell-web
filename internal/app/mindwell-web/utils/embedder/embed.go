@@ -162,5 +162,10 @@ func (e *Embedder) reload(href string, data *embedData) {
 
 	data.load = time.Now()
 
-	e.cache.Set(href, data, data.emb.CacheControl())
+	exp := data.emb.CacheControl()
+	if exp < 24*time.Hour {
+		exp = 24 * time.Hour
+	}
+
+	e.cache.Set(href, data, exp)
 }
