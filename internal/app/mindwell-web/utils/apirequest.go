@@ -549,9 +549,9 @@ func (api *APIRequest) WriteTemplate(name string) {
 	templ.ExecuteWriter(api.Data(), api.ctx.Writer)
 }
 
-func (api *APIRequest) WriteTemplateWithExtension(name, extension string) {
+func (api *APIRequest) WriteTemplateWithExtension(name string) {
 	var templ *pongo2.Template
-	templ, api.err = api.mdw.TemplateWithExtension(name, extension)
+	templ, api.err = api.mdw.TemplateWithExtension(name)
 	if api.err != nil {
 		return
 	}

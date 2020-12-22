@@ -98,17 +98,17 @@ func (m *Mindwell) ConfigBool(key string) bool {
 }
 
 func (m *Mindwell) Template(name string) (*pongo2.Template, error) {
-	return m.TemplateWithExtension(name, ".html")
+	return m.TemplateWithExtension(name + ".html")
 }
 
-func (m *Mindwell) TemplateWithExtension(name, extension string) (*pongo2.Template, error) {
+func (m *Mindwell) TemplateWithExtension(name string) (*pongo2.Template, error) {
 	if !m.DevMode {
 		if t := m.templates[name]; t != nil {
 			return t, nil
 		}
 	}
 
-	t, err := pongo2.FromFile("web/templates/" + name + extension)
+	t, err := pongo2.FromFile("web/templates/" + name)
 	if err != nil {
 		m.LogSystem().Error(err.Error())
 		return t, err

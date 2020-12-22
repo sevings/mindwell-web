@@ -203,7 +203,7 @@ func robotsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		ctx.Header("Content-Type", "text/plain")
-		api.WriteTemplateWithExtension("seo/robots", ".txt")
+		api.WriteTemplateWithExtension("seo/robots.txt")
 	}
 }
 
@@ -218,7 +218,7 @@ func sitemapHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("__domain", domain)
 
 		ctx.Header("Content-Type", "application/xml")
-		api.WriteTemplateWithExtension("seo/sitemap", ".xml")
+		api.WriteTemplateWithExtension("seo/sitemap.xml")
 	}
 }
 
