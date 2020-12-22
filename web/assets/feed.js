@@ -679,6 +679,8 @@ $(window).on("hashchange", function () {
 $(function(){
     addFeedClickHandlers()
 
+    window.embedder.addEmbeds(document)
+
     let hash = window.location.hash
     if(hash.startsWith("#post-popup"))
         openPost(hash.substring(11))
