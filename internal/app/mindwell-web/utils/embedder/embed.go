@@ -74,7 +74,6 @@ func NewEmbedder(log *zap.Logger, domain string) *Embedder {
 
 	e.AddProvider(newYouTube(cli))
 	e.AddProvider(newSoundCloud(cli))
-	e.AddProvider(newCoub(cli))
 	e.AddProvider(newVimeo(cli))
 	e.AddProvider(newTickCounter(cli))
 	e.AddProvider(newMindwell(domain))
