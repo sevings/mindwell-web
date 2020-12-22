@@ -223,6 +223,8 @@ func sitemapHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	verification := mdw.ConfigString("verification")
+
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		_, err := ctx.Request.Cookie("api_token")
@@ -236,6 +238,7 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		} else {
 			api.SetCsrfToken("/account/login")
 			api.SetCsrfToken("/account/register")
+			api.SetData("__verification", verification)
 			api.WriteTemplate("index")
 		}
 	}
