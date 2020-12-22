@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset>
+  <url>
+    <loc>{{ __proto }}://{{ __domain }}/index.html</loc>
+    <lastmod>2020-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>{{ __proto }}://{{ __domain }}/help/about</loc>
+    <lastmod>2020-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>{{ __proto }}://{{ __domain }}/help/rules</loc>
+    <lastmod>2020-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>{{ __proto }}://{{ __domain }}/help/faq</loc>
+    <lastmod>2020-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>{{ __proto }}://{{ __domain }}/help/faq/invites</loc>
+    <lastmod>2020-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>{{ __proto }}://{{ __domain }}/help/faq/md</loc>
+    <lastmod>2020-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>{{ __proto }}://{{ __domain }}/help/faq/votes</loc>
+    <lastmod>2020-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>

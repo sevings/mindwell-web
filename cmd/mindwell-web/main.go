@@ -27,6 +27,8 @@ func main() {
 	router.Static("/assets/", "./web/assets/")
 
 	router.GET("/", rootHandler)
+	router.GET("/robots.txt", robotsHandler(mdw))
+	router.GET("/sitemap.xml", sitemapHandler(mdw))
 	router.GET("/index.html", indexHandler(mdw))
 
 	router.GET("/account/logout", logoutHandler(mdw))
@@ -194,6 +196,29 @@ func rootHandler(ctx *gin.Context) {
 		ctx.Redirect(http.StatusSeeOther, "/live")
 	} else {
 		ctx.Redirect(http.StatusSeeOther, "/index.html")
+	}
+}
+
+func robotsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		ctx.Header("Content-Type", "text/plain")
+		api.WriteTemplateWithExtension("seo/robots", ".txt")
+	}
+}
+
+func sitemapHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	proto := mdw.ConfigString("proto")
+	domain := mdw.ConfigString("domain")
+
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+
+		api.SetData("__proto", proto)
+		api.SetData("__domain", domain)
+
+		ctx.Header("Content-Type", "application/xml")
+		api.WriteTemplateWithExtension("seo/sitemap", ".xml")
 	}
 }
 

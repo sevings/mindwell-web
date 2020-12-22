@@ -549,6 +549,20 @@ func (api *APIRequest) WriteTemplate(name string) {
 	templ.ExecuteWriter(api.Data(), api.ctx.Writer)
 }
 
+func (api *APIRequest) WriteTemplateWithExtension(name, extension string) {
+	var templ *pongo2.Template
+	templ, api.err = api.mdw.TemplateWithExtension(name, extension)
+	if api.err != nil {
+		return
+	}
+
+	if api.resp != nil {
+		api.ctx.Status(api.resp.StatusCode)
+	}
+
+	templ.ExecuteWriter(api.Data(), api.ctx.Writer)
+}
+
 func (api *APIRequest) WriteResponse() {
 	jsonData := api.readResponse()
 	if api.resp == nil {
