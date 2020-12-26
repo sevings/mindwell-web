@@ -200,7 +200,7 @@ div.post-add-icon:hover {
     margin: 1em 0;
 }
 
-.post-content iframe {
+.post-content iframe, .comment-content iframe {
     max-width: 100%;
     display: block;
     margin: auto;
