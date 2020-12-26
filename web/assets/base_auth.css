@@ -30,7 +30,7 @@ img.mfp-img {
 }
 
 .header-responsive {
-    padding: 0px;
+    padding: 0;
 }
 
 .main-header {
@@ -81,7 +81,7 @@ img.mfp-img {
 }
 
 .control-icon .more-dropdown {
-    padding: 0px;
+    padding: 0;
     width: 400px;
 }
 
@@ -90,7 +90,7 @@ img.mfp-img {
 }
 
 .control-icon .ps > .ps__scrollbar-y-rail, .control-icon .ps:hover > .ps__scrollbar-y-rail {
-    top: 0px !important;
+    top: 0 !important;
 }
 
 .notifications-placeholder,.chats-placeholder {
@@ -99,7 +99,7 @@ img.mfp-img {
 }
 
 .notification-list a {
-    padding: 0px;
+    padding: 0;
 }
 
 .notification-event a {
@@ -152,7 +152,7 @@ div.post-add-icon:hover {
 
 .post .post__date svg {
     color: #888da8;
-    margin: 0px 7px;
+    margin: 0 7px;
 }
 
 .post .post__date, .post .post__date a {
@@ -229,8 +229,8 @@ div.post-add-icon:hover {
 
 .blog-post-popup .post-title {
     position: relative;
-    top: 0%;
-    left: 0%;
+    top: 0;
+    left: 0;
     color: #515365;
     -webkit-transform: none;
     transform: none;
