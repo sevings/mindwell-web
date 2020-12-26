@@ -97,6 +97,15 @@ func (m *Mindwell) ConfigBool(key string) bool {
 	return value
 }
 
+func (m *Mindwell) ConfigInt(key string) int {
+	value, err := m.config.Int(key)
+	if err != nil {
+		m.LogSystem().Warn(err.Error())
+	}
+
+	return value
+}
+
 func (m *Mindwell) Template(name string) (*pongo2.Template, error) {
 	return m.TemplateWithExtension(name + ".html")
 }

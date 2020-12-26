@@ -224,6 +224,7 @@ func sitemapHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	verification := mdw.ConfigString("verification")
+	vkGroup := mdw.ConfigInt("vk.group")
 
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
@@ -239,6 +240,7 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetCsrfToken("/account/login")
 			api.SetCsrfToken("/account/register")
 			api.SetData("__verification", verification)
+			api.SetData("__vk_group", vkGroup)
 			api.WriteTemplate("index")
 		}
 	}

@@ -1,4 +1,12 @@
 {% extends "base_no_auth.html" %}
+{% block base_scripts %}
+	<script src="https://vk.com/js/api/openapi.js?168" type="text/javascript"></script>
+	<script type="text/javascript">
+		let width = Math.round($(window).width())
+		let height = width < 700 ? width : 700
+		VK.Widgets.Group("vk-group", {mode: 4, height: height, width: "auto", color2: "252632", color3: "FF5E3A"}, {{ __vk_group }});
+	</script>
+{% endblock %}
 {% block description %}Майндвелл — это онлайн-сервис личных дневников (блогов). Свободно делись событиями из жизни, выкладывай фотографии, находи друзей!{% endblock %}
 {% block pagetitle %}Mindwell — дом мыслей{% endblock %}
 {% block title %}Место для твоих мыслей{% endblock %}
@@ -172,10 +180,13 @@
 	<div class="bg-image"></div>
 </section>
 
-<section id="login-section" class="medium-padding80 bg-body">
+<section id="login-section" class="bg-body">
 	<div class="container">
 		<div class="row">
-			<div class="col col-xl-6 col-lg-8 col-md-8 col-sm-10 col-12 m-auto">
+			<div class="col col-xl-6 col-lg-8 col-md-8 col-sm-10 col-12 mx-auto my-5">
+				<div id="vk-group"></div>
+			</div>
+			<div class="col col-xl-6 col-lg-8 col-md-8 col-sm-10 col-12 mx-auto my-5">
 				<div class="registration-login-form">
 					<ul class="nav nav-tabs" role="tablist">
 						<li class="nav-item">
@@ -275,7 +286,7 @@
 	</div>
 </section>
 
-<section class="medium-padding120">
+<section class="medium-padding80">
 	<div class="container">
 		{% include "contacts.html" %}
 	</div>
