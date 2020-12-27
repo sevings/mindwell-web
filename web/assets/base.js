@@ -229,7 +229,13 @@ $(".register").click(function() {
     if(btn.hasClass("disabled"))
         return false;
 
-    var form = btn.parents("form")
+    let form = btn.parents("form")
+    if(!$("input[name='accept']", form).prop("checked"))
+    {
+        alert("Для регистрации необходимо соглвсие с правилами")
+        return false
+    }
+
     if(!form[0].reportValidity())
         return false
 
