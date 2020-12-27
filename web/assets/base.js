@@ -230,7 +230,8 @@ $(".register").click(function() {
         return false;
 
     let form = btn.parents("form")
-    if(!$("input[name='accept']", form).prop("checked"))
+    let accept = $("input[name='accept']", form)
+    if(accept.length > 0 && !accept.prop("checked"))
     {
         alert("Для регистрации необходимо соглвсие с правилами")
         return false
