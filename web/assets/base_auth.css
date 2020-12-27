@@ -367,6 +367,7 @@ div.top-header-thumb::after {
 
 div.profile-section {
     padding: 30px 0;
+    min-height: 80px;
 }
 
 #open-dialog {
