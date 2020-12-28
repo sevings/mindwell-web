@@ -23,7 +23,11 @@
         </form>
     {% else %}
         <div class="alert alert-secondary" role="alert">
-            Тебе нельзя комментировать эту запись.
+            {% if me.invitedBy.id %}
+                Тебе нельзя комментировать эту запись.
+            {% else %}
+                Комментировать чужие записи могут только пользователи, <a href="/help/faq/invites">получившие приглашение</a>.
+            {% endif %}
         </div>
     {% endif %}
 {% endblock comments %}
