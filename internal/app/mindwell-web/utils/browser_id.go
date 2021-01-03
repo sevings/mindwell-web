@@ -16,9 +16,9 @@ func NewDefaultBrowserIDBuilder() BrowserIDBuilder {
 	var b BrowserIDBuilder
 
 	b.AddField(HeaderFieldFunc("User-Agent"))
-	b.AddField(HeaderOrderedFieldFunc("Accept"))
-	b.AddField(HeaderOrderedFieldFunc("Accept-Encoding"))
-	b.AddField(HeaderOrderedFieldFunc("Accept-Language"))
+	b.AddField(HeaderFieldFunc("Accept"))
+	b.AddField(HeaderFieldFunc("Accept-Encoding"))
+	b.AddField(HeaderFieldFunc("Accept-Language"))
 
 	return b
 }
@@ -85,10 +85,8 @@ func (id BrowserID) Compare(other BrowserID) uint {
 		f1 := id[i]
 		f2 := other[i]
 
-		if f1 > f2 {
-			diff += uint(f1 - f2)
-		} else if f2 > f1 {
-			diff += uint(f2 - f1)
+		if f1 != f2 {
+			diff++
 		}
 	}
 
@@ -96,19 +94,6 @@ func (id BrowserID) Compare(other BrowserID) uint {
 }
 
 func HeaderFieldFunc(key string) FieldFunc {
-	return func(req *http.Request) uint16 {
-		val := []byte(req.Header.Get(key))
-
-		var sum uint16
-		for _, b := range val {
-			sum += uint16(b)
-		}
-
-		return sum
-	}
-}
-
-func HeaderOrderedFieldFunc(key string) FieldFunc {
 	return func(req *http.Request) uint16 {
 		val := []byte(req.Header.Get(key))
 
@@ -121,21 +106,40 @@ func HeaderOrderedFieldFunc(key string) FieldFunc {
 	}
 }
 
-func IPFieldFunc(key string) FieldFunc {
+func CookieFieldFunc(key string) FieldFunc {
 	return func(req *http.Request) uint16 {
-		value := req.Header.Get(key)
-		octets := strings.SplitN(value, ".", 5)
-		if len(octets) < 4 {
+		c, err := req.Cookie(key)
+		if err != nil {
 			return 0
 		}
 
-		ip := make([]uint16, 4)
-		for i := 0; i < 4; i++ {
-			octet, _ := strconv.Atoi(octets[i])
-			ip[i] = uint16(octet)
+		val := c.Value
+
+		var sum uint16
+		for i, b := range val {
+			sum += uint16(i+1) * uint16(b)
 		}
 
-		sum := (ip[0]^ip[1])<<8 + (ip[2] ^ ip[3])
 		return sum
+	}
+}
+
+func CookieNumberFieldFunc(key string) FieldFunc {
+	return func(req *http.Request) uint16 {
+		c, err := req.Cookie(key)
+		if err != nil {
+			return 0
+		}
+
+		val, err := strconv.ParseInt(c.Value, 10, 16)
+		if err != nil {
+			return 0
+		}
+
+		if val < 0 {
+			val = (1 << 16) + val
+		}
+
+		return uint16(val)
 	}
 }

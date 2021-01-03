@@ -127,11 +127,27 @@ function unescapeHtml(text) {
         .replace(/&#39;/g,  "'")
 }
 
-$(function() {
-    let width = Math.round($(window).width())
+function setCookie(key, value, days) {
     let date = new Date()
-    date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000)
-    document.cookie = "vpw=" + width + ";expires=" + date.toUTCString() + ";path=/;sameSite=Lax"
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
+    document.cookie = key + "=" + value + ";expires=" + date.toUTCString() + ";path=/;sameSite=Lax"
+}
+
+$(function() {
+    let w = window
+    let s = w.screen
+    let n = w.navigator
+
+    let vpw = Math.round($(w).width())
+    setCookie("vpw", vpw, 365)
+
+    let dev = (n.platform || "no") + ";" + (n.hardwareConcurrency || 0) + ";" + (n.deviceMemory || 0) +
+        ";" + s.width + ";" + s.height + ";" + s.colorDepth
+    dev = btoa(dev)
+    setCookie("dev", dev, 365)
+
+    let tzo = new Date().getTimezoneOffset()
+    setCookie("tzo", tzo, 365)
 })
 
 $("#login-scroll").click(function() {

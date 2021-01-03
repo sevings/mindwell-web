@@ -8,6 +8,8 @@ import (
 
 func LogHandler(logger *zap.Logger) gin.HandlerFunc {
 	idBuilder := NewDefaultBrowserIDBuilder()
+	idBuilder.AddField(CookieFieldFunc("dev"))
+	idBuilder.AddField(CookieNumberFieldFunc("tzo"))
 
 	return func(ctx *gin.Context) {
 		start := time.Now()
