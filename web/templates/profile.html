@@ -7,7 +7,7 @@
     <script src="/assets/js/fullcalendar/main.min.js"></script>
     <script src='/assets/js/fullcalendar/locales/ru.js'></script>
     <script src="/assets/feed.js?d=20201222"></script>
-    <script src="/assets/tlog.js?d=20201206"></script>
+    <script src="/assets/tlog.js?d=20210106"></script>
 {% endblock %}
 {% block body %}
 <div id="profile" class="container" data-name="{{ profile.name }}" data-privacy="{{ profile.privacy }}" 
@@ -212,10 +212,12 @@
                         <label class="control-label">Приватность тлога</label>
                         <select class="selectpicker form-control" name="privacy">
                             <option value="all" {% if me.privacy == "all" %}selected{% endif %}>открыт для всех</option>
-                            <option value="registered" {% if me.privacy == "registered" %}selected{% endif %}>открыт зарегистрированным</option>
-                            <option value="invited" {% if me.privacy == "invited" %}selected{% endif %}>открыт только приглашенным</option>
-                            <option value="followers" {% if me.privacy == "followers" %}selected{% endif %}>открыт только подписчикам</option>
+                            <option value="registered" {% if me.privacy == "registered" %}selected{% endif %}>открыт для зарегистрированных</option>
+                            <option value="invited" {% if me.privacy == "invited" %}selected{% endif %}>открыт для приглашенных</option>
+                            <option value="followers" {% if me.privacy == "followers" %}selected{% endif %}>открыт для подписчиков</option>
                         </select>
+
+                        <div id="privacy-info" class="alert alert-secondary" role="alert"></div>
 
                         <label class="control-label">Страна</label>
                         <input class="form-control" maxlength="50" type="text" name="country" value="{{ me.country }}">
