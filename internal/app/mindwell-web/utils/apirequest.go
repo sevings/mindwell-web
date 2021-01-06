@@ -419,6 +419,8 @@ func (api *APIRequest) SetFieldAllowNoKey(key, path string, allowNoKey bool) {
 		api.data = api.parseResponse()
 	}
 
+	api.MethodForwardToNamed("GET", path, key, allowNoKey)
+
 	if api.err != nil {
 		return
 	}
@@ -427,7 +429,6 @@ func (api *APIRequest) SetFieldAllowNoKey(key, path string, allowNoKey bool) {
 		api.data = map[string]interface{}{}
 	}
 
-	api.MethodForwardToNamed("GET", path, key, allowNoKey)
 	api.data[key] = api.parseResponse()
 }
 
@@ -470,13 +471,11 @@ func (api *APIRequest) parseResponse() map[string]interface{} {
 	decoder.UseNumber()
 	var data map[string]interface{}
 	api.err = decoder.Decode(&data)
-	if api.err == nil {
-		return data
+	if api.err != nil {
+		api.mdw.LogWeb().Error(api.err.Error(),
+			zap.ByteString("json", jsonData),
+		)
 	}
-
-	api.mdw.LogWeb().Error(api.err.Error(),
-		zap.ByteString("json", jsonData),
-	)
 
 	return data
 }
