@@ -1,0 +1,94 @@
+<div class="registration-login-form">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#login" role="tab">
+                <svg class="olymp-login-icon"><use xlink:href="#olymp-login-icon"></use></svg>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#register" role="tab">
+                <svg class="olymp-register-icon"><use xlink:href="#olymp-register-icon"></use></svg>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane" id="login" role="tabpanel" data-mh="log-tab">
+            <div class="title h6">Войти в аккаунт</div>
+            <form class="content" action="/account/login" method="post">
+                <div class="row">
+                    <div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Логин или почта</label>
+                            <input class="form-control" maxlength="500" type="text" name="name" required>
+                        </div>
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Пароль</label>
+                            <input class="form-control" type="password" name="password" pattern=".{6,}" required>
+                        </div>
+                        <div class="remember">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" class="show-password">Показать пароль
+                                </label>
+                            </div>
+                            <a href="#" class="forgot" data-toggle="modal" data-target="#recover">Не получается войти</a>
+                        </div>
+                        <input type="hidden" name="csrf" value="{{ __csrf_login }}">
+                        <input class="btn btn-lg btn-primary full-width register" type="submit" value="Войти" />
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="tab-pane active" id="register" role="tabpanel" data-mh="log-tab">
+            <div class="title h6">Зарегистрироваться</div>
+            <form class="content" name="register" action="/account/register" method="post">
+                <div class="row">
+                    <div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Логин</label>
+                            <input class="form-control" maxlength="20" pattern="^[a-zA-Z][a-zA-Z0-9\-_]*$"
+                                   title="Разрешены латинские буквы, цифры, дефис и нижнее подчеркивание"
+                                   data-toggle="tooltip" data-placement="top" name="name" type="text" required />
+                        </div>
+                        <div class="form-group label-floating is-empty">
+                            <select class="selectpicker form-control" name="gender">
+                                <option value="not set" selected>Пол не указан</option>
+                                <option value="female">Я девушка</option>
+                                <option value="male">Я парень</option>
+                            </select>
+                        </div>
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Адрес почты</label>
+                            <input class="form-control" name="email" type="email" required />
+                        </div>
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Пароль</label>
+                            <input class="form-control" title="Не менее 6 символов"
+                                   data-toggle="tooltip" data-placement="top"
+                                   name="password" type="password" pattern=".{6,}" required />
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" class="show-password">Показать пароль
+                            </label>
+                        </div>
+
+                        <div class="remember">
+                            <div class="checkbox">
+                                <label>
+                                    <input name="accept" type="checkbox" required>
+                                    Я подтверждаю свое согласие с <a href="/help/rules" target="__blank">правилами сайта</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="csrf" value="{{ __csrf_register }}">
+                        <input type ="submit" value ="Зарегистрироваться" class="btn btn-purple btn-lg full-width register" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

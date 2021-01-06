@@ -177,24 +177,34 @@ func (api *APIRequest) CheckCsrfToken() {
 	req.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 }
 
-func (api *APIRequest) setUserKey() {
-	if api.err != nil {
-		return
+func (api *APIRequest) HasUserKey() bool {
+	return api.uKey != ""
+}
+
+func (api *APIRequest) userKey() string {
+	if api.HasUserKey() {
+		return api.uKey
 	}
 
-	if len(api.uKey) > 0 {
-		return
+	return "no auth"
+}
+
+func (api *APIRequest) setUserKey(allowNoKey bool) bool {
+	if api.err != nil {
+		return false
 	}
 
-	var token *http.Cookie
-	token, api.err = api.ctx.Request.Cookie("api_token")
-	if api.err != nil {
-		to := url.QueryEscape(api.ctx.Request.URL.String())
-		api.ctx.Redirect(http.StatusSeeOther, "/index.html?to="+to)
-		return
+	if api.HasUserKey() {
+		return true
+	}
+
+	token, err := api.ctx.Request.Cookie("api_token")
+	if err != nil {
+		return allowNoKey
 	}
 
 	api.uKey = token.Value
+	return true
 }
 
 func (api *APIRequest) doNamed(req *http.Request, name string) {
@@ -340,14 +350,15 @@ func (api *APIRequest) copyRequest(path string) *http.Request {
 	return api.copyRequestToHost(path, api.mdw.host)
 }
 
-func (api *APIRequest) MethodForwardToHost(method, path, host string) {
-	api.setUserKey()
-	if api.err != nil {
+func (api *APIRequest) MethodForwardToHost(method, path, host string, allowNoKey bool) {
+	if !api.setUserKey(allowNoKey) {
+		to := url.QueryEscape(api.ctx.Request.URL.String())
+		api.Redirect("/index.html?to=" + to)
 		return
 	}
 
 	req := api.copyRequestToHost(path, host)
-	req.Header.Set("X-User-Key", api.uKey)
+	req.Header.Set("X-User-Key", api.userKey())
 	req.Method = method
 
 	api.do(req)
@@ -355,33 +366,36 @@ func (api *APIRequest) MethodForwardToHost(method, path, host string) {
 }
 
 func (api *APIRequest) MethodForwardToImages(method, path string) {
-	api.MethodForwardToHost(method, path, api.mdw.imgHost)
+	api.MethodForwardToHost(method, path, api.mdw.imgHost, false)
 }
 
-func (api *APIRequest) MethodForwardToNamed(method, path, name string) {
-	api.setUserKey()
-	if api.err != nil {
+func (api *APIRequest) MethodForwardToNamed(method, path, name string, allowNoKey bool) {
+	if !api.setUserKey(allowNoKey) {
 		return
 	}
 
 	req := api.copyRequest(path)
-	req.Header.Set("X-User-Key", api.uKey)
+	req.Header.Set("X-User-Key", api.userKey())
 	req.Method = method
 
 	api.doNamed(req, name)
 	api.checkError()
 }
 
-func (api *APIRequest) MethodForwardTo(method, path string) {
-	api.MethodForwardToHost(method, path, api.mdw.host)
+func (api *APIRequest) MethodForwardTo(method, path string, allowNoKey bool) {
+	api.MethodForwardToHost(method, path, api.mdw.host, allowNoKey)
 }
 
 func (api *APIRequest) MethodForward(method string) {
-	api.MethodForwardTo(method, api.ctx.Request.URL.Path)
+	api.MethodForwardTo(method, api.ctx.Request.URL.Path, false)
+}
+
+func (api *APIRequest) ForwardToAllowNoKey(path string, allowNoKey bool) {
+	api.MethodForwardTo(api.ctx.Request.Method, path, allowNoKey)
 }
 
 func (api *APIRequest) ForwardTo(path string) {
-	api.MethodForwardTo(api.ctx.Request.Method, path)
+	api.MethodForwardTo(api.ctx.Request.Method, path, false)
 }
 
 func (api *APIRequest) ForwardImages() {
@@ -392,30 +406,11 @@ func (api *APIRequest) Forward() {
 	api.ForwardTo(api.ctx.Request.URL.Path)
 }
 
-func (api *APIRequest) ForwardToNotAuthorized(path string) {
-	req := api.copyRequest(path)
-	api.do(req)
-	if api.err != nil {
-		return
-	}
-
-	if api.resp.StatusCode >= 400 {
-		api.err = clientError
-		api.WriteTemplate("error")
-		api.err = http.ErrNoCookie
-	}
+func (api *APIRequest) ForwardNoKey() {
+	api.ForwardToAllowNoKey(api.ctx.Request.URL.Path, true)
 }
 
-func (api *APIRequest) ForwardNotAuthorized() {
-	api.ForwardToNotAuthorized(api.ctx.Request.URL.Path)
-}
-
-func (api *APIRequest) ForwardToNoCookie(path string) {
-	req := api.copyRequest(path)
-	api.do(req)
-}
-
-func (api *APIRequest) SetField(key, path string) {
+func (api *APIRequest) SetFieldAllowNoKey(key, path string, allowNoKey bool) {
 	if api.err != nil {
 		return
 	}
@@ -432,8 +427,16 @@ func (api *APIRequest) SetField(key, path string) {
 		api.data = map[string]interface{}{}
 	}
 
-	api.MethodForwardToNamed("GET", path, key)
+	api.MethodForwardToNamed("GET", path, key, allowNoKey)
 	api.data[key] = api.parseResponse()
+}
+
+func (api *APIRequest) SetFieldNoKey(key, path string) {
+	api.SetFieldAllowNoKey(key, path, true)
+}
+
+func (api *APIRequest) SetField(key, path string) {
+	api.SetFieldAllowNoKey(key, path, false)
 }
 
 func (api *APIRequest) SetMe() {

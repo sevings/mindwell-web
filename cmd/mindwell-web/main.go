@@ -65,7 +65,7 @@ func main() {
 	router.POST("/adm/grandfather/status", proxyHandler(mdw))
 
 	router.GET("/account/recover", resetPasswordHandler(mdw))
-	router.POST("/account/recover", proxyNotAuthorizedHandler(mdw))
+	router.POST("/account/recover", proxyNoKeyHandler(mdw))
 	router.POST("/account/recover/password", recoverHandler(mdw))
 
 	router.GET("/live", liveHandler(mdw))
@@ -75,7 +75,7 @@ func main() {
 
 	router.GET("/users", topsHandler(mdw))
 	router.GET("/users/:name", tlogHandler(mdw, false))
-	router.GET("/users/:name/calendar", proxyHandler(mdw))
+	router.GET("/users/:name/calendar", proxyNoKeyHandler(mdw))
 	router.GET("/users/:name/entries", tlogHandler(mdw, true))
 	router.GET("/users/:name/favorites", favoritesHandler(mdw))
 	router.GET("/users/:name/relations/:relation", usersHandler(mdw))
@@ -271,7 +271,7 @@ func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Cont
 			return
 		}
 
-		api.ForwardNotAuthorized()
+		api.ForwardNoKey()
 		if api.Error() != nil {
 			return
 		}
@@ -299,7 +299,7 @@ func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Cont
 func verifyEmailHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardNotAuthorized()
+		api.ForwardNoKey()
 		api.WriteTemplate("verified")
 	}
 }
@@ -473,12 +473,12 @@ func resetPasswordHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func recoverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardNotAuthorized()
+		api.ForwardNoKey()
 		api.WriteResponse()
 	}
 }
 
-func feedHandler(mdw *utils.Mindwell, templateName, queryName string) func(ctx *gin.Context, apiPath string, clbk func(*utils.APIRequest)) {
+func feedHandler(mdw *utils.Mindwell, templateName, queryName string, allowNoKey bool) func(ctx *gin.Context, apiPath string, clbk func(*utils.APIRequest)) {
 	return func(ctx *gin.Context, apiPath string, clbk func(*utils.APIRequest)) {
 		api := utils.NewRequest(mdw, ctx)
 
@@ -486,7 +486,7 @@ func feedHandler(mdw *utils.Mindwell, templateName, queryName string) func(ctx *
 			api.QueryCookieName(queryName)
 		}
 
-		api.ForwardTo(apiPath)
+		api.ForwardToAllowNoKey(apiPath, allowNoKey)
 		api.SetScrollHrefs()
 
 		tag := ctx.Query("tag")
@@ -527,7 +527,7 @@ func feedHandler(mdw *utils.Mindwell, templateName, queryName string) func(ctx *
 }
 
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/live", "live_feed")
+	handle := feedHandler(mdw, "entries/live", "live_feed", false)
 
 	return func(ctx *gin.Context) {
 		clbk := func(api *utils.APIRequest) {
@@ -545,7 +545,7 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/best", "best_feed")
+	handle := feedHandler(mdw, "entries/best", "best_feed", false)
 
 	return func(ctx *gin.Context) {
 		clbk := func(api *utils.APIRequest) {
@@ -560,7 +560,7 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/friends", "friends_feed")
+	handle := feedHandler(mdw, "entries/friends", "friends_feed", false)
 
 	clbk := func(api *utils.APIRequest) {
 		api.SetData("__section", "friends")
@@ -575,7 +575,7 @@ func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func watchingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/friends", "friends_feed")
+	handle := feedHandler(mdw, "entries/friends", "friends_feed", false)
 
 	clbk := func(api *utils.APIRequest) {
 		api.SetData("__section", "watching")
@@ -600,7 +600,7 @@ func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/tlog", "tlog_feed")
+	handle := feedHandler(mdw, "entries/tlog", "tlog_feed", true)
 
 	return func(ctx *gin.Context) {
 		if _, err := ctx.Request.Cookie("tlog_feed"); err == nil {
@@ -619,9 +619,15 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 		if !isTlog {
 			api := utils.NewRequest(mdw, ctx)
 			if !api.IsLargeScreen() {
+				api.SetFieldNoKey("profile", "/users/"+name)
+				api.SetFieldNoKey("tags", "/users/"+name+"/tags")
 				api.SetMe()
-				api.SetField("profile", "/users/"+name)
-				api.SetField("tags", "/users/"+name+"/tags")
+
+				if !api.HasUserKey() {
+					api.SetCsrfToken("/account/login")
+					api.SetCsrfToken("/account/register")
+				}
+
 				api.WriteTemplate("entries/tlog")
 				return
 			}
@@ -629,15 +635,20 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 
 		clbk := func(api *utils.APIRequest) {
 			if !api.IsAjax() {
-				api.SetField("profile", "/users/"+name)
+				api.SetFieldNoKey("profile", "/users/"+name)
 			}
 
 			if api.IsLargeScreen() {
-				api.SetField("tags", "/users/"+name+"/tags")
+				api.SetFieldNoKey("tags", "/users/"+name+"/tags")
 			}
 
 			api.SetData("__feed", isTlog)
 			api.SetData("__search", true)
+
+			if !api.HasUserKey() {
+				api.SetCsrfToken("/account/login")
+				api.SetCsrfToken("/account/register")
+			}
 		}
 
 		handle(ctx, "/users/"+name+"/tlog", clbk)
@@ -645,7 +656,7 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 }
 
 func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/favorites", "tlog_feed")
+	handle := feedHandler(mdw, "entries/favorites", "tlog_feed", false)
 
 	return func(ctx *gin.Context) {
 		if _, err := ctx.Request.Cookie("tlog_feed"); err == nil {
@@ -725,7 +736,7 @@ func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func meSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.MethodForwardTo("PUT", "/me")
+		api.MethodForwardTo("PUT", "/me", false)
 		api.Redirect("/me")
 	}
 }
@@ -757,7 +768,7 @@ func designEditorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func designSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.MethodForwardTo("PUT", "/design")
+		api.MethodForwardTo("PUT", "/design", false)
 		api.Redirect("/me")
 	}
 }
@@ -827,7 +838,7 @@ func editPostHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.Forward()
+		api.ForwardNoKey()
 
 		entry := api.Data()
 		api.ClearData()
@@ -1012,10 +1023,10 @@ func proxyHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func proxyNotAuthorizedHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func proxyNoKeyHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardNotAuthorized()
+		api.ForwardNoKey()
 		api.WriteResponse()
 	}
 }

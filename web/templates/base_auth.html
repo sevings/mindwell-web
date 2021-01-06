@@ -9,409 +9,455 @@
 	{% block scripts %}{% endblock %}
 {% endblock %}
 {% block body_data %}
-	data-me-id="{{ me.id }}" 
-	data-me-name="{{ me.name }}" 
-	data-me-show-name="{{ me.showName }}" 
-	data-me-privacy="{{ me.privacy }}"
+    {% if me.id %}
+        data-me-id="{{ me.id }}"
+        data-me-name="{{ me.name }}"
+        data-me-show-name="{{ me.showName }}"
+        data-me-privacy="{{ me.privacy }}"
+    {% endif %}
 {% endblock %}
+
 {% block header %}
+{% if me.id %}
+	<div class="fixed-sidebar">
+		<div class="fixed-sidebar-left sidebar--small" id="sidebar-left">
 
-<div class="fixed-sidebar">
-	<div class="fixed-sidebar-left sidebar--small" id="sidebar-left">
+			<a href="#" class="logo js-sidebar-open">
+				<div class="img-wrap">
+					<img src="/assets/icons/header.png" alt="Mindwell" class="color-logo">
+				</div>
+			</a>
 
-		<a href="#" class="logo js-sidebar-open">
-			<div class="img-wrap">
-				<img src="/assets/icons/header.png" alt="Mindwell" class="color-logo">
-			</div>
-		</a>
-
-		<div class="mCustomScrollbar" data-mcs-theme="dark">
-			<ul class="left-menu">
-				<li>
-					<a href="/users/{{ me.name }}">
-						<svg class="olymp-home-icon left-menu-icon" data-toggle="tooltip" data-placement="right" data-original-title="Мой профиль"><use xlink:href="#olymp-home-icon"></use></svg>
-					</a>
-				</li>
-				{% if !__large_screen %}
+			<div class="mCustomScrollbar" data-mcs-theme="dark">
+				<ul class="left-menu">
 					<li>
-						<a href="/users/{{ me.name }}/entries">
-							<svg class="olymp-blog-icon left-menu-icon" data-toggle="tooltip" data-placement="right" data-original-title="Мои записи"><use xlink:href="#olymp-blog-icon"></use></svg>
+						<a href="/users/{{ me.name }}">
+							<svg class="olymp-home-icon left-menu-icon" data-toggle="tooltip" data-placement="right" data-original-title="Мой профиль"><use xlink:href="#olymp-home-icon"></use></svg>
 						</a>
 					</li>
-				{% endif %}
-				<li>
-					<a href="/friends">
-						<svg class="olymp-newsfeed-icon left-menu-icon" data-toggle="tooltip" data-placement="right"   data-original-title="Подписки"><use xlink:href="#olymp-newsfeed-icon"></use></svg>
-					</a>
-				</li>
-				<li>
-					<a href="/live">
-						<svg class="olymp-stats-icon left-menu-icon" data-toggle="tooltip" data-placement="right"   data-original-title="Прямой эфир"><use xlink:href="#olymp-stats-icon"></use></svg>
-					</a>
-				</li>
-				<li>
-					<a href="/best">
-						<svg class="olymp-heart-icon left-menu-icon"  data-toggle="tooltip" data-placement="right"   data-original-title="Лучшее"><use xlink:href="#olymp-heart-icon"></use></svg>
-					</a>
-				</li>
-				<li>
-					<a href="/users">
-						<svg class="olymp-happy-faces-icon left-menu-icon"  data-toggle="tooltip" data-placement="right"   data-original-title="Тлоги"><use xlink:href="#olymp-happy-faces-icon"></use></svg>
-					</a>
-				</li>
-			</ul>
+					{% if !__large_screen %}
+						<li>
+							<a href="/users/{{ me.name }}/entries">
+								<svg class="olymp-blog-icon left-menu-icon" data-toggle="tooltip" data-placement="right" data-original-title="Мои записи"><use xlink:href="#olymp-blog-icon"></use></svg>
+							</a>
+						</li>
+					{% endif %}
+					<li>
+						<a href="/friends">
+							<svg class="olymp-newsfeed-icon left-menu-icon" data-toggle="tooltip" data-placement="right"   data-original-title="Подписки"><use xlink:href="#olymp-newsfeed-icon"></use></svg>
+						</a>
+					</li>
+					<li>
+						<a href="/live">
+							<svg class="olymp-stats-icon left-menu-icon" data-toggle="tooltip" data-placement="right"   data-original-title="Прямой эфир"><use xlink:href="#olymp-stats-icon"></use></svg>
+						</a>
+					</li>
+					<li>
+						<a href="/best">
+							<svg class="olymp-heart-icon left-menu-icon"  data-toggle="tooltip" data-placement="right"   data-original-title="Лучшее"><use xlink:href="#olymp-heart-icon"></use></svg>
+						</a>
+					</li>
+					<li>
+						<a href="/users">
+							<svg class="olymp-happy-faces-icon left-menu-icon"  data-toggle="tooltip" data-placement="right"   data-original-title="Тлоги"><use xlink:href="#olymp-happy-faces-icon"></use></svg>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="fixed-sidebar-left sidebar--large" id="sidebar-left-1">
+			<a href="#" class="logo js-sidebar-open">
+				<div class="img-wrap">
+					<img src="/assets/icons/header.png" alt="Mindwell" class="color-logo">
+				</div>
+				<div class="title-block">
+					<h6 class="logo-title">Mindwell</h6>
+				</div>
+			</a>
+
+			<div class="mCustomScrollbar" data-mcs-theme="dark">
+				<ul class="left-menu">
+					<li>
+						<a href="/users/{{ me.name }}">
+							<svg class="olymp-home-icon left-menu-icon"><use xlink:href="#olymp-home-icon"></use></svg>
+							<span class="left-menu-title">Мой профиль</span>
+						</a>
+					</li>
+					{% if !__large_screen %}
+						<li>
+							<a href="/users/{{ me.name }}/entries">
+								<svg class="olymp-blog-icon left-menu-icon"><use xlink:href="#olymp-blog-icon"></use></svg>
+								<span class="left-menu-title">Мои записи</span>
+							</a>
+						</li>
+					{% endif %}
+					<li>
+						<a href="/friends">
+							<svg class="olymp-newsfeed-icon left-menu-icon"><use xlink:href="#olymp-newsfeed-icon"></use></svg>
+							<span class="left-menu-title">Подписки</span>
+						</a>
+					</li>
+					<li>
+						<a href="/live">
+							<svg class="olymp-stats-icon left-menu-icon"><use xlink:href="#olymp-stats-icon"></use></svg>
+							<span class="left-menu-title">Прямой эфир</span>
+						</a>
+					</li>
+					<li>
+						<a href="/best">
+							<svg class="olymp-heart-icon left-menu-icon"><use xlink:href="#olymp-heart-icon"></use></svg>
+							<span class="left-menu-title">Лучшее</span>
+						</a>
+					</li>
+					<li>
+						<a href="/users">
+							<svg class="olymp-happy-faces-icon left-menu-icon"><use xlink:href="#olymp-happy-faces-icon"></use></svg>
+							<span class="left-menu-title">Тлоги</span>
+						</a>
+					</li>
+				</ul>
+
+			</div>
 		</div>
 	</div>
 
-	<div class="fixed-sidebar-left sidebar--large" id="sidebar-left-1">
-		<a href="#" class="logo js-sidebar-open">
-			<div class="img-wrap">
-				<img src="/assets/icons/header.png" alt="Mindwell" class="color-logo">
-			</div>
-			<div class="title-block">
-				<h6 class="logo-title">Mindwell</h6>
-			</div>
-		</a>
+	<div class="fixed-sidebar fixed-sidebar-responsive">
 
-		<div class="mCustomScrollbar" data-mcs-theme="dark">
-			<ul class="left-menu">
-				<li>
-					<a href="/users/{{ me.name }}">
-						<svg class="olymp-home-icon left-menu-icon"><use xlink:href="#olymp-home-icon"></use></svg>
-						<span class="left-menu-title">Мой профиль</span>
+		<div class="fixed-sidebar-left sidebar--small" id="sidebar-left-responsive">
+			<a href="#" class="logo js-sidebar-open">
+				<img src="/assets/icons/header.png" alt="Mindwell" class="color-logo">
+			</a>
+		</div>
+
+		<div class="fixed-sidebar-left sidebar--large" id="sidebar-left-1-responsive">
+			<a href="#" class="logo js-sidebar-open">
+				<div class="img-wrap">
+					<img src="/assets/icons/header.png" alt="Mindwell" class="color-logo">
+				</div>
+				<div class="title-block">
+					<h6 class="logo-title">Mindwell</h6>
+				</div>
+			</a>
+
+			<div class="mCustomScrollbar" data-mcs-theme="dark">
+
+				<div class="control-block">
+					<a href="/users/{{ me.name }}" class="author-name fn">
+						<div class="author-page author vcard inline-items">
+							<div class="author-thumb">
+								<img alt="author" src="{{ me.avatar.x42 }}" class="avatar">
+							</div>
+							<div class="author-title">
+								{{ me.showName }} <svg class="olymp-dropdown-arrow-icon"><use xlink:href="#olymp-dropdown-arrow-icon"></use></svg>
+							</div>
+						</div>
 					</a>
-				</li>
-				{% if !__large_screen %}
+				</div>
+
+				<hr>
+
+				<ul class="account-settings">
+					<li>
+						<a href="/editor">
+							<svg class="olymp-add-to-conversation-icon left-menu-icon"><use xlink:href="#olymp-add-to-conversation-icon"></use></svg>
+							<span>Новая запись</span>
+						</a>
+					</li>
 					<li>
 						<a href="/users/{{ me.name }}/entries">
 							<svg class="olymp-blog-icon left-menu-icon"><use xlink:href="#olymp-blog-icon"></use></svg>
-							<span class="left-menu-title">Мои записи</span>
+							<span>Мои записи</span>
 						</a>
 					</li>
-				{% endif %}
-				<li>
-					<a href="/friends">
-						<svg class="olymp-newsfeed-icon left-menu-icon"><use xlink:href="#olymp-newsfeed-icon"></use></svg>
-						<span class="left-menu-title">Подписки</span>
+					<li>
+						<a href="/friends">
+							<svg class="olymp-newsfeed-icon left-menu-icon"><use xlink:href="#olymp-newsfeed-icon"></use></svg>
+							<span>Подписки</span>
+						</a>
+					</li>
+					<li>
+						<a href="/live">
+							<svg class="olymp-stats-icon left-menu-icon"><use xlink:href="#olymp-stats-icon"></use></svg>
+							<span>Прямой эфир</span>
+						</a>
+					</li>
+					<li>
+						<a href="/best">
+							<svg class="olymp-heart-icon left-menu-icon"><use xlink:href="#olymp-heart-icon"></use></svg>
+							<span>Лучшее</span>
+						</a>
+					</li>
+					<li>
+						<a href="/users">
+							<svg class="olymp-happy-faces-icon left-menu-icon"><use xlink:href="#olymp-happy-faces-icon"></use></svg>
+							<span>Тлоги</span>
+						</a>
+					</li>
+				</ul>
+
+				<hr>
+
+				<ul class="left-menu">
+					<li>
+						<a href="/account/notifications">
+							<span class="left-menu-title">Настройки</span>
+						</a>
+					</li>
+					<li>
+						<a href="/help/faq/">
+							<span class="left-menu-title">Помощь</span>
+						</a>
+					</li>
+					<li>
+						<a href="/help/rules">
+							<span class="left-menu-title">Правила</span>
+						</a>
+					</li>
+					<li>
+						<a href="/users/Mindwell">
+							<span class="left-menu-title">Новости</span>
+						</a>
+					</li>
+					<li>
+						<a href="/help/about">
+							<span class="left-menu-title">О нас</span>
+						</a>
+					</li>
+					<li>
+						<a href="/help/api/">
+							<span class="left-menu-title">Разработчикам</span>
+						</a>
+					</li>
+					<li>
+						<a href="/account/logout">
+							<span class="left-menu-title">Выйти</span>
+						</a>
+					</li>
+				</ul>
+
+			</div>
+		</div>
+	</div>
+
+	<header class="header header-responsive" id="site-header-responsive">
+
+		<div class="header-content-wrapper">
+			<ul class="nav nav-tabs mobile-app-tabs" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" href="#chats" role="tab">
+						<div class="control-icon has-items">
+							<svg class="olymp-chat---messages-icon"><use xlink:href="#olymp-chat---messages-icon"></use></svg>
+							<div class="label-avatar bg-purple hidden chats-counter"></div>
+						</div>
 					</a>
 				</li>
-				<li>
-					<a href="/live">
-						<svg class="olymp-stats-icon left-menu-icon"><use xlink:href="#olymp-stats-icon"></use></svg>
-						<span class="left-menu-title">Прямой эфир</span>
+
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" href="#notifications" role="tab">
+						<div class="control-icon has-items">
+							<svg class="olymp-thunder-icon"><use xlink:href="#olymp-thunder-icon"></use></svg>
+							<div class="label-avatar bg-primary hidden notifications-counter"></div>
+						</div>
 					</a>
 				</li>
-				<li>
-					<a href="/best">
-						<svg class="olymp-heart-icon left-menu-icon"><use xlink:href="#olymp-heart-icon"></use></svg>
-						<span class="left-menu-title">Лучшее</span>
-					</a>
-				</li>
-				<li>
-					<a href="/users">
-						<svg class="olymp-happy-faces-icon left-menu-icon"><use xlink:href="#olymp-happy-faces-icon"></use></svg>
-						<span class="left-menu-title">Тлоги</span>
+
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" href="#search" role="tab">
+						<svg class="olymp-magnifying-glass-icon"><use xlink:href="#olymp-magnifying-glass-icon"></use></svg>
+						<svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
 					</a>
 				</li>
 			</ul>
+		</div>
+
+		<div class="tab-content tab-content-responsive">
+
+			<div class="tab-pane " id="chats" role="tabpanel">
+				<div class="mCustomScrollbar chats" data-mcs-theme="dark">
+					<ul class="notification-list chat-message"></ul>
+					<div class="chats-placeholder">
+						Здесь будут показаны твои переписки.
+					</div>
+				</div>
+			</div>
+
+			<div class="tab-pane " id="notifications" role="tabpanel">
+				<div class="mCustomScrollbar notifications" data-mcs-theme="dark">
+					<ul class="notification-list"></ul>
+					<div class="notifications-placeholder">
+						Здесь будут показаны твои уведомления.
+					</div>
+				</div>
+			</div>
+
+			<div class="tab-pane" id="search" role="tabpanel">
+				<form class="search-bar w-search notification-list friend-requests" action="/users">
+					<div class="form-group with-button">
+						<input class="form-control" placeholder="Поиск тлогов" type="text" name="query" value="{{ query }}">
+					</div>
+				</form>
+			</div>
 
 		</div>
-	</div>
-</div>
 
-<div class="fixed-sidebar fixed-sidebar-responsive">
+	</header>
+{% endif %}
 
-	<div class="fixed-sidebar-left sidebar--small" id="sidebar-left-responsive">
-		<a href="#" class="logo js-sidebar-open">
-			<img src="/assets/icons/header.png" alt="Mindwell" class="color-logo">
-		</a>
-	</div>
-
-	<div class="fixed-sidebar-left sidebar--large" id="sidebar-left-1-responsive">
-		<a href="#" class="logo js-sidebar-open">
+{% if me.id %}
+	<header class="header" id="header--standard">
+{% else %}
+	<header class="header header--logout" id="site-header">
+		<a href="/index.html" class="logo">
 			<div class="img-wrap">
 				<img src="/assets/icons/header.png" alt="Mindwell" class="color-logo">
 			</div>
-			<div class="title-block">
-				<h6 class="logo-title">Mindwell</h6>
-			</div>
 		</a>
-
-		<div class="mCustomScrollbar" data-mcs-theme="dark">
-
-			<div class="control-block">
-                <a href="/users/{{ me.name }}" class="author-name fn">
-				    <div class="author-page author vcard inline-items">
-                        <div class="author-thumb">
-                            <img alt="author" src="{{ me.avatar.x42 }}" class="avatar">
-                        </div>
-						<div class="author-title">
-							{{ me.showName }} <svg class="olymp-dropdown-arrow-icon"><use xlink:href="#olymp-dropdown-arrow-icon"></use></svg>
-						</div>
-				    </div>
-				</a>
-			</div>
-
-			<hr>
-
-			<ul class="account-settings">
-				<li>
-					<a href="/editor">
-						<svg class="olymp-add-to-conversation-icon left-menu-icon"><use xlink:href="#olymp-add-to-conversation-icon"></use></svg>
-						<span>Новая запись</span>
-					</a>
-				</li>
-				<li>
-					<a href="/users/{{ me.name }}/entries">
-						<svg class="olymp-blog-icon left-menu-icon"><use xlink:href="#olymp-blog-icon"></use></svg>
-						<span>Мои записи</span>
-					</a>
-				</li>
-				<li>
-					<a href="/friends">
-						<svg class="olymp-newsfeed-icon left-menu-icon"><use xlink:href="#olymp-newsfeed-icon"></use></svg>
-						<span>Подписки</span>
-					</a>
-				</li>
-				<li>
-					<a href="/live">
-						<svg class="olymp-stats-icon left-menu-icon"><use xlink:href="#olymp-stats-icon"></use></svg>
-						<span>Прямой эфир</span>
-					</a>
-				</li>
-				<li>
-					<a href="/best">
-						<svg class="olymp-heart-icon left-menu-icon"><use xlink:href="#olymp-heart-icon"></use></svg>
-						<span>Лучшее</span>
-					</a>
-				</li>
-				<li>
-					<a href="/users">
-						<svg class="olymp-happy-faces-icon left-menu-icon"><use xlink:href="#olymp-happy-faces-icon"></use></svg>
-						<span>Тлоги</span>
-					</a>
-				</li>
-			</ul>
-
-			<hr>
-
-			<ul class="left-menu">
-				<li>
-					<a href="/account/notifications">
-						<span class="left-menu-title">Настройки</span>
-					</a>
-				</li>
-				<li>
-					<a href="/help/faq/">
-						<span class="left-menu-title">Помощь</span>
-					</a>
-				</li>
-				<li>
-					<a href="/help/rules">
-						<span class="left-menu-title">Правила</span>
-					</a>
-				</li>
-				<li>
-					<a href="/users/Mindwell">
-						<span class="left-menu-title">Новости</span>
-					</a>
-				</li>
-				<li>
-					<a href="/help/about">
-						<span class="left-menu-title">О нас</span>
-					</a>
-				</li>
-				<li>
-					<a href="/help/api/">
-						<span class="left-menu-title">Разработчикам</span>
-					</a>
-				</li>
-				<li>
-					<a href="/account/logout">
-						<span class="left-menu-title">Выйти</span>
-					</a>
-				</li>
-			</ul>
-
-		</div>
-	</div>
-</div>
-
-<header class="header" id="header--standard">
+{% endif %}
 
 	<div class="page-title">
 		<h6>{% block title %}{% endblock %}</h6>
 	</div>
 
-	<div class="header-content-wrapper">
-		<form class="search-bar w-search notification-list friend-requests" action="/users">
-			<div class="form-group with-button">
-				<input class="form-control" placeholder="Поиск тлогов" type="text" name="query" value="{{ query }}">
-				<button>
-					<svg class="olymp-magnifying-glass-icon"><use xlink:href="#olymp-magnifying-glass-icon"></use></svg>
-				</button>
-			</div>
-		</form>
-
-		<div class="control-block">
-
-			<div class="control-icon has-items js-notification-open chats-control">
-				<svg class="olymp-chat---messages-icon"><use xlink:href="#olymp-chat---messages-icon"></use></svg>
-				<div class="label-avatar bg-purple hidden chats-counter"></div>
-				<div class="more-dropdown more-with-triangle triangle-top-center">
-					<div class="mCustomScrollbar chats" data-mcs-theme="dark">
-						<ul class="notification-list chat-message"></ul>
-						<div class="chats-placeholder">
-							Здесь будут показаны твои переписки.
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="control-icon has-items js-notification-open notifications-control">
-				<svg class="olymp-thunder-icon"><use xlink:href="#olymp-thunder-icon"></use></svg>
-				<div class="label-avatar bg-primary hidden notifications-counter"></div>
-				<div class="more-dropdown more-with-triangle triangle-top-center">
-					<div class="mCustomScrollbar notifications" data-mcs-theme="dark">
-						<ul class="notification-list"></ul>
-						<div class="notifications-placeholder">
-							Здесь будут показаны твои уведомления.
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="author-page author vcard inline-items js-notification-open">
-				<div class="author-thumb">
-					<img alt="author" src="{{ me.avatar.x42 }}" class="avatar">
-					<div class="more-dropdown more-with-triangle">
-						<div class="mCustomScrollbar" data-mcs-theme="dark">
-
-							<ul class="account-settings">
-								<li>
-									<a href="/editor">
-										<span>Новая запись</span>
-									</a>
-								</li>
-								<hr>
-								<li>
-									<a href="/account/notifications">
-										<span>Настройки</span>
-									</a>
-								</li>
-								<li>
-									<a href="/help/faq/">
-										<span>Помощь</span>
-									</a>
-								</li>
-								<li>
-									<a href="/help/rules">
-										<span>Правила</span>
-									</a>
-								</li>
-								<li>
-									<a href="/users/Mindwell">
-										<span>Новости</span>
-									</a>
-								</li>
-								<li>
-									<a href="/help/about">
-										<span>О нас</span>
-									</a>
-								</li>
-								<li>
-									<a href="/help/api/">
-										<span>Разработчикам</span>
-									</a>
-								</li>
-								<hr>
-								<li>
-									<a href="/account/logout">
-										<span>Выйти</span>
-									</a>
-								</li>
-							</ul>
-						</div>
-
-					</div>
-				</div>
-				<div class="author-title">
-					{{ me.showName }} <svg class="olymp-dropdown-arrow-icon"><use xlink:href="#olymp-dropdown-arrow-icon"></use></svg>
-				</div>
-			</div>
-
-		</div>
-	</div>
-
-</header>
-
-<header class="header header-responsive" id="site-header-responsive">
-
-	<div class="header-content-wrapper">
-		<ul class="nav nav-tabs mobile-app-tabs" role="tablist">
-			<li class="nav-item">
-				<a class="nav-link" data-toggle="tab" href="#chats" role="tab">
-					<div class="control-icon has-items">
-						<svg class="olymp-chat---messages-icon"><use xlink:href="#olymp-chat---messages-icon"></use></svg>
-						<div class="label-avatar bg-purple hidden chats-counter"></div>
-					</div>
-				</a>
-			</li>
-
-			<li class="nav-item">
-				<a class="nav-link" data-toggle="tab" href="#notifications" role="tab">
-					<div class="control-icon has-items">
-						<svg class="olymp-thunder-icon"><use xlink:href="#olymp-thunder-icon"></use></svg>
-						<div class="label-avatar bg-primary hidden notifications-counter"></div>
-					</div>
-				</a>
-			</li>
-
-			<li class="nav-item">
-				<a class="nav-link" data-toggle="tab" href="#search" role="tab">
-					<svg class="olymp-magnifying-glass-icon"><use xlink:href="#olymp-magnifying-glass-icon"></use></svg>
-					<svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
-				</a>
-			</li>
-		</ul>
-	</div>
-
-	<div class="tab-content tab-content-responsive">
-
-		<div class="tab-pane " id="chats" role="tabpanel">
-			<div class="mCustomScrollbar chats" data-mcs-theme="dark">
-				<ul class="notification-list chat-message"></ul>
-				<div class="chats-placeholder">
-					Здесь будут показаны твои переписки.
-				</div>
-			</div>
-		</div>
-
-		<div class="tab-pane " id="notifications" role="tabpanel">
-			<div class="mCustomScrollbar notifications" data-mcs-theme="dark">
-				<ul class="notification-list"></ul>
-				<div class="notifications-placeholder">
-					Здесь будут показаны твои уведомления.
-				</div>
-			</div>
-		</div>
-
-		<div class="tab-pane" id="search" role="tabpanel">
+	{% if me.id %}
+		<div class="header-content-wrapper">
 			<form class="search-bar w-search notification-list friend-requests" action="/users">
 				<div class="form-group with-button">
 					<input class="form-control" placeholder="Поиск тлогов" type="text" name="query" value="{{ query }}">
+					<button>
+						<svg class="olymp-magnifying-glass-icon"><use xlink:href="#olymp-magnifying-glass-icon"></use></svg>
+					</button>
 				</div>
 			</form>
+
+			<div class="control-block">
+
+				<div class="control-icon has-items js-notification-open chats-control">
+					<svg class="olymp-chat---messages-icon"><use xlink:href="#olymp-chat---messages-icon"></use></svg>
+					<div class="label-avatar bg-purple hidden chats-counter"></div>
+					<div class="more-dropdown more-with-triangle triangle-top-center">
+						<div class="mCustomScrollbar chats" data-mcs-theme="dark">
+							<ul class="notification-list chat-message"></ul>
+							<div class="chats-placeholder">
+								Здесь будут показаны твои переписки.
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="control-icon has-items js-notification-open notifications-control">
+					<svg class="olymp-thunder-icon"><use xlink:href="#olymp-thunder-icon"></use></svg>
+					<div class="label-avatar bg-primary hidden notifications-counter"></div>
+					<div class="more-dropdown more-with-triangle triangle-top-center">
+						<div class="mCustomScrollbar notifications" data-mcs-theme="dark">
+							<ul class="notification-list"></ul>
+							<div class="notifications-placeholder">
+								Здесь будут показаны твои уведомления.
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="author-page author vcard inline-items js-notification-open">
+					<div class="author-thumb">
+						<img alt="author" src="{{ me.avatar.x42 }}" class="avatar">
+						<div class="more-dropdown more-with-triangle">
+							<div class="mCustomScrollbar" data-mcs-theme="dark">
+
+								<ul class="account-settings">
+									<li>
+										<a href="/editor">
+											<span>Новая запись</span>
+										</a>
+									</li>
+									<hr>
+									<li>
+										<a href="/account/notifications">
+											<span>Настройки</span>
+										</a>
+									</li>
+									<li>
+										<a href="/help/faq/">
+											<span>Помощь</span>
+										</a>
+									</li>
+									<li>
+										<a href="/help/rules">
+											<span>Правила</span>
+										</a>
+									</li>
+									<li>
+										<a href="/users/Mindwell">
+											<span>Новости</span>
+										</a>
+									</li>
+									<li>
+										<a href="/help/about">
+											<span>О нас</span>
+										</a>
+									</li>
+									<li>
+										<a href="/help/api/">
+											<span>Разработчикам</span>
+										</a>
+									</li>
+									<hr>
+									<li>
+										<a href="/account/logout">
+											<span>Выйти</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+
+						</div>
+					</div>
+					<div class="author-title">
+						{{ me.showName }} <svg class="olymp-dropdown-arrow-icon"><use xlink:href="#olymp-dropdown-arrow-icon"></use></svg>
+					</div>
+				</div>
+
+			</div>
 		</div>
-
-	</div>
-
+	{% else %}
+		<div class="header-content-wrapper">
+			<div class="form--login-logout">
+				<form class="form-inline" action="/account/login" method="post">
+					<div class="form-group">
+						<input class="form-control form-control-sm" maxlength="500" type="text" name="name" placeholder="Логин или почта" required>
+					</div>
+					<div class="form-group">
+						<input class="form-control form-control-sm" type="password" name="password" pattern=".{6,}" placeholder="Пароль" required>
+					</div>
+					<input type="hidden" name="csrf" value="{{ __csrf_login }}">
+					<button class="btn btn-primary btn-md-2 register" type="submit">Войти</button>
+					<button class="btn btn-purple btn-md-2 ml-5" type="button" data-toggle="modal" data-target="#registration-login-form-popup">Зарегистрироваться</button>
+				</form>
+				<a href="#" class="btn btn-primary btn-md-2 login-btn-responsive" data-toggle="modal" data-target="#registration-login-form-popup">Войти или зарегистрироваться</a>
+			</div>
+		</div>
+	{% endif %}
 </header>
 
 <div class="header-spacer header-spacer-small"></div>
 
 {% endblock %}
 {% block footer %}
+	{% if !me.id %}
+		<div class="modal fade" id="registration-login-form-popup" tabindex="-1" role="dialog" aria-labelledby="registration-login-form-popup" aria-hidden="true">
+			<div class="modal-dialog window-popup registration-login-form-popup" role="document">
+				<div class="modal-content">
+					<a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+						<svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
+					</a>
+					<div class="modal-body">
+						{% include "registration_login.html" %}
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
     <a class="back-to-top" href="#">
         <img src="/assets/olympus/svg-icons/back-to-top.svg" alt="arrow" class="back-icon">
     </a>

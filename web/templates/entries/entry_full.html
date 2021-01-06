@@ -3,12 +3,14 @@
 {% block comments %}
     <a name="comments"></a>
     <ul class="comments-list">
-        {% with data = entry.comments.data commentCount = entry.commentCount %}
-            {% include "comments_page.html" %}
-            {% if !data || !afterHref %}
-                <a href="/entries/{{ entry.id }}/comments?limit=5" class="update-comments"></a>
-            {% endif %}
-        {% endwith %}
+        {% if me.id %}
+            {% with data = entry.comments.data commentCount = entry.commentCount %}
+                {% include "comments_page.html" %}
+                {% if !data || !afterHref %}
+                    <a href="/entries/{{ entry.id }}/comments?limit=5" class="update-comments"></a>
+                {% endif %}
+            {% endwith %}
+        {% endif %}
     </ul>
     {% if entry.rights.comment %}
         <form class="comment-form inline-items" action="/entries/{{ entry.id }}/comments" method="post" enctype="application/x-www-form-urlencoded">
@@ -25,8 +27,10 @@
         <div class="alert alert-secondary" role="alert">
             {% if me.invitedBy.id %}
                 Тебе нельзя комментировать эту запись.
-            {% else %}
+            {% elif me.id %}
                 Комментировать чужие записи могут только пользователи, <a href="/help/faq/invites">получившие приглашение</a>.
+            {% else %}
+                Чтобы иметь возможность читать комментарии, необходимо авторизоваться.
             {% endif %}
         </div>
     {% endif %}

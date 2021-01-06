@@ -93,7 +93,7 @@
                                             {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
                                         </li>
                                     {% endif %}
-                                    {% if me.id != profile.id %}
+                                    {% if me.id && me.id != profile.id %}
                                         <div class="more">
 											<svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
 											<ul class="more-dropdown more-with-triangle">
@@ -129,7 +129,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                            {% else %}
+                            {% elif me.id %}
                                 <a id="permit-rel" href="#" class="btn btn-control bg-green" title="Принять заявку" hidden>
                                     <svg class="olymp-check-icon"><use xlink:href="#olymp-check-icon"></use></svg>
                                 </a>
@@ -212,6 +212,7 @@
                         <label class="control-label">Приватность тлога</label>
                         <select class="selectpicker form-control" name="privacy">
                             <option value="all" {% if me.privacy == "all" %}selected{% endif %}>открыт для всех</option>
+                            <option value="registered" {% if me.privacy == "registered" %}selected{% endif %}>открыт зарегистрированным</option>
                             <option value="invited" {% if me.privacy == "invited" %}selected{% endif %}>открыт только приглашенным</option>
                             <option value="followers" {% if me.privacy == "followers" %}selected{% endif %}>открыт только подписчикам</option>
                         </select>
