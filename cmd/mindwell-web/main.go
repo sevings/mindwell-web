@@ -33,7 +33,7 @@ func main() {
 
 	router.GET("/account/logout", logoutHandler(mdw))
 	router.POST("/account/login", accountHandler(mdw, "/live"))
-	router.POST("/account/register", accountHandler(mdw, "/me"))
+	router.POST("/account/register", accountHandler(mdw, "/me/entries"))
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
@@ -80,8 +80,8 @@ func main() {
 	router.GET("/users/:name/favorites", favoritesHandler(mdw))
 	router.GET("/users/:name/relations/:relation", usersHandler(mdw))
 
-	router.GET("/me", meHandler(mdw))
-	router.GET("/me/:relation", meUsersHandler(mdw))
+	router.GET("/me", meHandler(mdw, ""))
+	router.GET("/me/entries", meHandler(mdw, "/entries"))
 
 	router.POST("/profile/save", meSaverHandler(mdw))
 	router.POST("/profile/avatar", avatarSaverHandler(mdw))
@@ -704,32 +704,17 @@ func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func meUsersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func meHandler(mdw *utils.Mindwell, subpath string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		relation := ctx.Param("relation")
-
 		api.ForwardTo("/me")
-		if api.Error() != nil {
-			return
-		}
-
-		name := api.Data()["name"].(string)
-		api.Redirect("/users/" + name + "/relations/" + relation)
-	}
-}
-
-func meHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.Forward()
 
 		if api.Error() != nil {
 			return
 		}
 
 		name := api.Data()["name"].(string)
-		api.Redirect("/users/" + name)
+		api.Redirect("/users/" + name + subpath)
 	}
 }
 
