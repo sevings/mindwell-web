@@ -1,4 +1,15 @@
 {% extends "../base_auth.html" %}
+{% block description %}{{ entry.content|cut_text:200 }}{% endblock %}
+{% block pagetitle %}
+    {% if entry.cutTitle %}
+        {{ entry.cutTitle|safe }}
+    {% elif entry.title %}
+        {{ entry.title|safe }}
+    {% else %}
+        Запись
+    {% endif %}
+    — Mindwell
+{% endblock %}
 {% block title %}Запись{% endblock %}
 {% block scripts %}
     <script src="/assets/feed.js?d=20201222"></script>
