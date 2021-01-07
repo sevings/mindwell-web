@@ -4792,7 +4792,7 @@ fieldset[disabled] .checkbox, fieldset[disabled] .checkbox input[type=checkbox],
   .registration-login-form .nav-item:last-child .nav-link {
     border-bottom: 1px solid #e6ecf5; } }
 
-@media (max-width: 580px) {
+@media (max-width: 850px) {
   .form--login-logout {
     text-align: right; }
     .form--login-logout form {
