@@ -273,6 +273,7 @@ func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Cont
 
 		api.ForwardNoKey()
 		if api.Error() != nil {
+			api.WriteResponse()
 			return
 		}
 
@@ -710,6 +711,7 @@ func meHandler(mdw *utils.Mindwell, subpath string) func(ctx *gin.Context) {
 		api.ForwardTo("/me")
 
 		if api.Error() != nil {
+			api.WriteTemplate("error")
 			return
 		}
 
@@ -838,6 +840,11 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		}
 
 		api.SetMe()
+
+		if !api.HasUserKey() {
+			api.SetCsrfToken("/account/login")
+			api.SetCsrfToken("/account/register")
+		}
 
 		if api.IsAjax() {
 			api.WriteTemplate("entries/entry_modal")
