@@ -23,43 +23,45 @@
             </div>
         </div>
 
-        <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
-            <ul class="more-dropdown">
-                <li>
-                    <a href="#" class="favorite-post">
-                        {% if entry.isFavorited %}
-                            Удалить из&nbsp;избранного
-                        {% else %}
-                            Добавить в&nbsp;избранное
-                        {% endif%}
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="watch-post">
-                        {% if entry.isWatching %}
-                            Отписаться от&nbsp;комментариев
-                        {% else %}
-                            Подписаться на&nbsp;комментарии
-                        {% endif%}
-                    </a>
-                </li>
-                {% if entry.rights.edit %}
+        {% if entry.rights.edit || entry.rights.delete || entry.rights.complain %}
+            <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
+                <ul class="more-dropdown">
                     <li>
-                        <a href="/entries/{{ entry.id }}/edit">Редактировать</a>
+                        <a href="#" class="favorite-post">
+                            {% if entry.isFavorited %}
+                                Удалить из&nbsp;избранного
+                            {% else %}
+                                Добавить в&nbsp;избранное
+                            {% endif%}
+                        </a>
                     </li>
-                {% endif %}
-                {% if entry.rights.delete %}
                     <li>
-                        <a href="#" class="delete-post">Удалить</a>
+                        <a href="#" class="watch-post">
+                            {% if entry.isWatching %}
+                                Отписаться от&nbsp;комментариев
+                            {% else %}
+                                Подписаться на&nbsp;комментарии
+                            {% endif%}
+                        </a>
                     </li>
-                {% endif %}
-                {% if entry.rights.complain %}
-                    <li>
-                        <a href="#" class="complain-post">Пожаловаться</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
+                    {% if entry.rights.edit %}
+                        <li>
+                            <a href="/entries/{{ entry.id }}/edit">Редактировать</a>
+                        </li>
+                    {% endif %}
+                    {% if entry.rights.delete %}
+                        <li>
+                            <a href="#" class="delete-post">Удалить</a>
+                        </li>
+                    {% endif %}
+                    {% if entry.rights.complain %}
+                        <li>
+                            <a href="#" class="complain-post">Пожаловаться</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
 
     </div>
 
