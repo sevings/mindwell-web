@@ -200,14 +200,8 @@ func rootHandler(ctx *gin.Context) {
 }
 
 func robotsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	proto := mdw.ConfigString("proto")
-	domain := mdw.ConfigString("domain")
-
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-
-		api.SetData("__proto", proto)
-		api.SetData("__domain", domain)
 
 		ctx.Header("Content-Type", "text/plain")
 		api.WriteTemplateWithExtension("seo/robots.txt")
@@ -215,14 +209,8 @@ func robotsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func sitemapHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	proto := mdw.ConfigString("proto")
-	domain := mdw.ConfigString("domain")
-
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-
-		api.SetData("__proto", proto)
-		api.SetData("__domain", domain)
 
 		ctx.Header("Content-Type", "application/xml")
 		api.WriteTemplateWithExtension("seo/sitemap.xml")

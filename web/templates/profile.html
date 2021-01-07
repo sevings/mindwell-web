@@ -1,6 +1,15 @@
 {% extends "base_auth.html" %}
 {% block description %}{% if profile.title %}{{ profile.title }}{% else %}Личный дневник {{ profile.showName }}.{% endif %}{% endblock %}
 {% block title %}{{ profile.showName }}{% endblock %}
+{% block meta %}
+    <link rel="canonical" href="{{ __proto }}://{{ __domain }}/users/{{ profile.name }}">
+    <meta property="og:url" content="{{ __proto }}://{{ __domain }}/users/{{ profile.name }}">
+    <meta property="og:type" content="profile">
+    <meta property="og:profile:username" content="{{ profile.name }}">
+    {% if profile.gender != "not set" %}
+        <meta property="og:profile:gender" content="{{ profile.gender }}">
+    {% endif %}
+{% endblock %}
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="/assets/js/fullcalendar/main.min.css"/>
 {% endblock %}

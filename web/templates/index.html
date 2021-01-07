@@ -7,6 +7,11 @@
 		VK.Widgets.Group("vk-group", {mode: 4, height: height, width: "auto", color2: "252632", color3: "FF5E3A"}, {{ __vk_group }})
 	</script>
 {% endblock %}
+{% block meta %}
+	<link rel="canonical" href="{{ __proto }}://{{ __domain }}/index.html">
+	<meta property="og:url" content="{{ __proto }}://{{ __domain }}/index.html">
+	<meta property="og:type" content="website">
+{% endblock %}
 {% block description %}Майндвелл — это онлайн-сервис личных дневников (блогов). Свободно делись событиями из жизни, выкладывай фотографии, находи друзей!{% endblock %}
 {% block pagetitle %}Mindwell — дом мыслей{% endblock %}
 {% block title %}Место для твоих мыслей{% endblock %}
