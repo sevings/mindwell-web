@@ -1,9 +1,10 @@
 {% extends "../base_auth.html" %}
-{% block description %}{{ entry.content|cut_text:200 }}{% endblock %}
 {% block meta %}
-    <link rel="index" href="{{ __proto }}://{{ __domain }}/users/{{ entry.author.name }}">
+    <link rel="index" href="{{ __proto }}://{{ __domain }}/users/{{ entry.author.name }}/entries">
     <link rel="canonical" href="{{ __proto }}://{{ __domain }}/entries/{{ entry.id }}">
     <meta property="og:url" content="{{ __proto }}://{{ __domain }}/entries/{{ entry.id }}">
+    <meta property="og:description" content="{% block description %}{{ entry.content|cut_text:200 }}{% endblock %}">
+    <meta property="og:title" content="{% if entry.cutTitle %}{{ entry.cutTitle|safe }}{% elif entry.title %}{{ entry.title|safe }}{% else %}Запись{% endif %}">
     <meta property="og:type" content="article">
 
     {% for image in entry.images %}
