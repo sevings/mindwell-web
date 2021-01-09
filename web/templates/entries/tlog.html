@@ -188,6 +188,16 @@
                     {% endif %}
                 </div>
             </div>
+        {% elif me.id && !profile.relations.isOpenForMe %}
+            <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 order-last">
+                <div id="empty-feed" class="ui-block">
+                    <div class="ui-block-title">
+                        <h6 class="title">
+                            {{ profile.showName }} скрыл{{ profile.gender|gender }} свои записи.
+                        </h6>
+                    </div>
+                </div>
+            </div>
         {% endif %}
     </div>
 </div>
