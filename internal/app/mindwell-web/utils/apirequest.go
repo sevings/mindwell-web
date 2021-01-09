@@ -56,6 +56,10 @@ func (api *APIRequest) Error() error {
 	return api.err
 }
 
+func (api *APIRequest) SkipError() {
+	api.err = nil
+}
+
 func (api *APIRequest) StatusCode() int {
 	if api.resp == nil {
 		return 200
@@ -392,6 +396,10 @@ func (api *APIRequest) MethodForward(method string) {
 
 func (api *APIRequest) ForwardToAllowNoKey(path string, allowNoKey bool) {
 	api.MethodForwardTo(api.ctx.Request.Method, path, allowNoKey)
+}
+
+func (api *APIRequest) ForwardToNoKey(path string) {
+	api.MethodForwardTo(api.ctx.Request.Method, path, true)
 }
 
 func (api *APIRequest) ForwardTo(path string) {

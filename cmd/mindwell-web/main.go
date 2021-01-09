@@ -467,113 +467,87 @@ func recoverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func feedHandler(mdw *utils.Mindwell, templateName, queryName string, allowNoKey bool) func(ctx *gin.Context, apiPath string, clbk func(*utils.APIRequest)) {
-	return func(ctx *gin.Context, apiPath string, clbk func(*utils.APIRequest)) {
-		api := utils.NewRequest(mdw, ctx)
+func feedHandler(api *utils.APIRequest, templateName string) {
+	api.SetDataFromQuery("tag", "")
+	api.SetDataFromQuery("sort", "")
+	api.SetDataFromQuery("query", "")
 
-		if len(queryName) > 0 {
-			api.QueryCookieName(queryName)
-		}
-
-		api.ForwardToAllowNoKey(apiPath, allowNoKey)
-		api.SetScrollHrefs()
-
-		tag := ctx.Query("tag")
-		api.SetData("__tag", tag)
-
-		sort := ctx.Query("sort")
-		api.SetData("__sort", sort)
-
-		query := ctx.Query("query")
-		api.SetData("__query", query)
-
-		if api.StatusCode() == 404 {
-			// private tlog, skip error
-			api = utils.NewRequest(mdw, ctx)
-		}
-
-		isAjax := api.IsAjax()
-
-		if !isAjax {
-			api.SetMe()
-		}
-
-		if clbk != nil {
-			clbk(api)
-		}
-
-		if isAjax {
-			view, ok := api.Data()["__view"].(string)
-			if ok && view == "masonry" {
-				api.WriteTemplate("entries/feed_page")
-			} else {
-				api.WriteTemplate("entries/tlog_page")
-			}
+	if api.IsAjax() {
+		view, ok := api.Data()["__view"].(string)
+		if ok && view == "masonry" {
+			api.WriteTemplate("entries/feed_page")
 		} else {
-			api.WriteTemplate(templateName)
+			api.WriteTemplate("entries/tlog_page")
 		}
+	} else {
+		api.SetMe()
+		api.WriteTemplate(templateName)
 	}
 }
 
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/live", "live_feed", false)
-
 	return func(ctx *gin.Context) {
-		clbk := func(api *utils.APIRequest) {
-			api.SetDataFromQuery("section", "entries")
-			api.SetDataFromQuery("limit", "30")
-			api.SetDataFromQuery("view", "masonry")
+		api := utils.NewRequest(mdw, ctx)
+		api.QueryCookieName("live_feed")
+		api.ForwardTo("/entries/live")
+		api.SetScrollHrefs()
 
-			if ctx.Query("section") != "comments" {
-				api.SetData("__search", true)
-			}
+		api.SetDataFromQuery("section", "entries")
+		api.SetDataFromQuery("limit", "30")
+		api.SetDataFromQuery("view", "masonry")
+
+		if ctx.Query("section") != "comments" {
+			api.SetData("__search", true)
 		}
 
-		handle(ctx, "/entries/live", clbk)
+		feedHandler(api, "entries/live")
 	}
 }
 
 func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/best", "best_feed", false)
-
 	return func(ctx *gin.Context) {
-		clbk := func(api *utils.APIRequest) {
-			api.SetDataFromQuery("category", "month")
-			api.SetDataFromQuery("limit", "30")
-			api.SetDataFromQuery("view", "masonry")
-			api.SetData("__search", true)
-		}
+		api := utils.NewRequest(mdw, ctx)
+		api.QueryCookieName("best_feed")
+		api.ForwardTo("/entries/best")
+		api.SetScrollHrefs()
 
-		handle(ctx, "/entries/best", clbk)
+		api.SetDataFromQuery("category", "month")
+		api.SetDataFromQuery("limit", "30")
+		api.SetDataFromQuery("view", "masonry")
+		api.SetData("__search", true)
+
+		feedHandler(api, "entries/best")
 	}
 }
 
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/friends", "friends_feed", false)
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.QueryCookieName("friends_feed")
+		api.ForwardTo("/entries/friends")
+		api.SetScrollHrefs()
 
-	clbk := func(api *utils.APIRequest) {
 		api.SetData("__section", "friends")
 		api.SetData("__search", true)
 		api.SetDataFromQuery("limit", "30")
 		api.SetDataFromQuery("view", "masonry")
-	}
 
-	return func(ctx *gin.Context) {
-		handle(ctx, "/entries/friends", clbk)
+		feedHandler(api, "entries/friends")
 	}
 }
 
 func watchingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/friends", "friends_feed", false)
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.QueryCookieName("friends_feed")
+		api.ForwardTo("/entries/watching")
+		api.SetScrollHrefs()
 
-	clbk := func(api *utils.APIRequest) {
 		api.SetData("__section", "watching")
 		api.SetDataFromQuery("limit", "30")
 		api.SetDataFromQuery("view", "masonry")
-	}
 
-	return func(ctx *gin.Context) {
-		handle(ctx, "/entries/watching", clbk)
+		feedHandler(api, "entries/friends")
 	}
 }
 
@@ -589,8 +563,6 @@ func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/tlog", "tlog_feed", true)
-
 	return func(ctx *gin.Context) {
 		if _, err := ctx.Request.Cookie("tlog_feed"); err == nil {
 			cookie := &http.Cookie{
@@ -604,49 +576,45 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 		}
 
 		name := ctx.Param("name")
+		api := utils.NewRequest(mdw, ctx)
+		var profile interface{}
 
-		if !isTlog {
-			api := utils.NewRequest(mdw, ctx)
-			if !api.IsLargeScreen() {
-				api.SetFieldNoKey("profile", "/users/"+name)
-				api.SetFieldNoKey("tags", "/users/"+name+"/tags")
-				api.SetMe()
-
-				if !api.HasUserKey() {
-					api.SetCsrfToken("/account/login")
-					api.SetCsrfToken("/account/register")
-				}
-
-				api.WriteTemplate("entries/tlog")
+		if !api.IsAjax() {
+			api.SetFieldNoKey("profile", "/users/"+name)
+			if api.Error() != nil {
+				api.WriteTemplate("error")
 				return
 			}
+
+			profile = api.Data()["profile"]
+			api.ClearData()
 		}
 
-		clbk := func(api *utils.APIRequest) {
-			if !api.IsAjax() {
-				api.SetFieldNoKey("profile", "/users/"+name)
-			}
-
-			if api.IsLargeScreen() {
-				api.SetFieldNoKey("tags", "/users/"+name+"/tags")
-			}
-
-			api.SetData("__feed", isTlog)
-			api.SetData("__search", true)
-
-			if !api.HasUserKey() {
-				api.SetCsrfToken("/account/login")
-				api.SetCsrfToken("/account/register")
-			}
+		if isTlog || api.IsLargeScreen() {
+			api.QueryCookieName("tlog_feed")
+			api.ForwardToNoKey("/users/" + name + "/tlog")
+			api.SetScrollHrefs()
 		}
 
-		handle(ctx, "/users/"+name+"/tlog", clbk)
+		if !isTlog || api.IsLargeScreen() {
+			api.SetFieldNoKey("tags", "/users/"+name+"/tags")
+		}
+
+		api.SkipError()
+
+		api.SetData("profile", profile)
+		api.SetData("__feed", isTlog)
+
+		if !api.HasUserKey() {
+			api.SetCsrfToken("/account/login")
+			api.SetCsrfToken("/account/register")
+		}
+
+		feedHandler(api, "entries/tlog")
 	}
 }
 
 func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	handle := feedHandler(mdw, "entries/favorites", "tlog_feed", false)
-
 	return func(ctx *gin.Context) {
 		if _, err := ctx.Request.Cookie("tlog_feed"); err == nil {
 			cookie := &http.Cookie{
@@ -660,17 +628,30 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		}
 
 		name := ctx.Param("name")
+		api := utils.NewRequest(mdw, ctx)
+		var profile interface{}
 
-		clbk := func(api *utils.APIRequest) {
-			if !api.IsAjax() {
-				api.SetField("profile", "/users/"+name)
+		if !api.IsAjax() {
+			api.SetFieldNoKey("profile", "/users/"+name)
+			if api.Error() != nil {
+				api.WriteTemplate("error")
+				return
 			}
 
-			api.SetData("__feed", true)
-			api.SetData("__search", true)
+			profile = api.Data()["profile"]
+			api.ClearData()
 		}
 
-		handle(ctx, "/users/"+name+"/favorites", clbk)
+		api.QueryCookieName("tlog_feed")
+		api.ForwardTo("/users/" + name + "/favorites")
+		api.SetScrollHrefs()
+		api.SkipError()
+
+		api.SetData("profile", profile)
+		api.SetData("__feed", true)
+		api.SetData("__search", true)
+
+		feedHandler(api, "entries/favorites")
 	}
 }
 
