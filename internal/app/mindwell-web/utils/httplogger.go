@@ -21,12 +21,15 @@ func LogHandler(logger *zap.Logger) gin.HandlerFunc {
 			token, _ = ctx.Cookie("api_token")
 		}
 
+		dev, _ := ctx.Request.Cookie("dev")
+
 		logger.Info("http",
 			zap.String("method", ctx.Request.Method),
 			zap.String("url", ctx.Request.RequestURI),
 			zap.String("referrer", ctx.Request.Referer()),
 			zap.String("browser", idBuilder.Build(ctx.Request).String()),
 			zap.String("user_agent", ctx.Request.UserAgent()),
+			zap.String("dev", dev.Value),
 			zap.String("api_key", token),
 			zap.String("ip", ctx.GetHeader("X-Forwarded-For")),
 			zap.Int64("request_size", ctx.Request.ContentLength),
