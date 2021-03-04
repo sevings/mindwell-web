@@ -29,6 +29,7 @@ func main() {
 	router.GET("/", rootHandler)
 	router.GET("/robots.txt", robotsHandler(mdw))
 	router.GET("/sitemap.xml", sitemapHandler(mdw))
+	router.GET("/blank.html", blankHandler(mdw))
 	router.GET("/index.html", indexHandler(mdw))
 
 	router.GET("/account/logout", logoutHandler(mdw))
@@ -214,6 +215,13 @@ func sitemapHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 		ctx.Header("Content-Type", "application/xml")
 		api.WriteTemplateWithExtension("seo/sitemap.xml")
+	}
+}
+
+func blankHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.WriteTemplate("oauth/blank")
 	}
 }
 
