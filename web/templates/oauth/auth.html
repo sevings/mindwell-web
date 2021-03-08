@@ -1,0 +1,98 @@
+{% extends "../base_auth.html" %}
+{% block title %}Авторизация{% endblock %}
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col col-xl-6 col-lg-6 col-md-9 col-sm-12 col-12 mx-auto">
+            <div class="ui-block">
+                <div class="ui-block-title">
+                    <h6 class="title">Приложение запрашивает доступ от твоего имени</h6>
+                </div>
+
+                <div class="ui-block-content">
+                    <div class="row">
+                        <div class="col col-12">
+                            <p><b>{{ app.showName }}</b></p>
+                            <p>{{ app.info }}</p>
+
+                            <form class="content" action="/oauth?app={{ __client_id }}" method="post">
+
+                                {% for scope in __scope %}
+                                    <div class="switcher-block">
+                                        <div class="h6 title">
+                                            {% if scope == "account:read" %}
+                                                Просматривать доступные инвайты
+                                            {% elif scope == "account:write" %}
+                                                Менять адрес почты, пароль
+                                            {% elif scope == "adm:read" %}
+                                                Просматривать информацию АДМ
+                                            {% elif scope == "adm:write" %}
+                                                Менять информацию АДМ
+                                            {% elif scope == "comments:read" %}
+                                                Просматривать комментарии и голоса к ним
+                                            {% elif scope == "comments:write" %}
+                                                Создавать, редактировать и удалять комментарии
+                                            {% elif scope == "entries:read" %}
+                                                Просматривать записи, теги, голоса к ним
+                                            {% elif scope == "entries:write" %}
+                                                Создавать, редактировать и удвлять записи
+                                            {% elif scope == "favorites:write" %}
+                                                Добавлять записи в избранное и удалять
+                                            {% elif scope == "images:read" %}
+                                                Просматривать загруженные изображения
+                                            {% elif scope == "images:write" %}
+                                                Загружать новые изображения
+                                            {% elif scope == "messages:read" %}
+                                                Просматривать чаты и сообщения
+                                            {% elif scope == "messages:write" %}
+                                                Создавать, редактировать и удалять сообщения
+                                            {% elif scope == "notifications:read" %}
+                                                Просматривать уведомления
+                                            {% elif scope == "relations:write" %}
+                                                Подписываться, блокировать, приглашать пользователей
+                                            {% elif scope == "settings:read" %}
+                                                Просматривать настройки профиля
+                                            {% elif scope == "settings:write" %}
+                                                Изменять настройки профиля
+                                            {% elif scope == "users:read" %}
+                                                Просматривать профили пользователей
+                                            {% elif scope == "users:write" %}
+                                                Изменять информацию профиля
+                                            {% elif scope == "votes:write" %}
+                                                Голосовать за записи и комментарии
+                                            {% elif scope == "watchings:write" %}
+                                                Подписываться на комментарии к записям и отписываться
+                                            {% else %}
+                                                (неизвестный запрос)
+                                            {% endif %}
+                                        </div>
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" checked="" name="scope" value="{{ scope }}">
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                                <input type="hidden" name="csrf" value="{{ __csrf_oauth }}">
+                                <input type="hidden" name="client_id" value="{{ __client_id }}">
+                                <input type="hidden" name="response_type" value="{{ __response_type }}">
+                                <input type="hidden" name="redirect_uri" value="{{ __redirect_uri }}">
+                                <input type="hidden" name="state" value="{{ __state }}">
+                                <input type="hidden" name="code_challenge" value="{{ __code_challenge }}">
+                                <input type="hidden" name="code_challenge_method" value="{{ __code_challenge_method }}">
+                                <input type="hidden" name="allowed">
+
+                                <button class="btn btn-md-2 btn-primary float-right ml-3 allow-app">Разрешить</button>
+                                <button class="btn btn-md-2 btn-secondary float-right deny-app">Отмена</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

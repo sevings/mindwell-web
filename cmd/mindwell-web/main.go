@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/patrickmn/go-cache"
 
 	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils"
 )
@@ -29,8 +30,11 @@ func main() {
 	router.GET("/", rootHandler)
 	router.GET("/robots.txt", robotsHandler(mdw))
 	router.GET("/sitemap.xml", sitemapHandler(mdw))
-	router.GET("/blank.html", blankHandler(mdw))
 	router.GET("/index.html", indexHandler(mdw))
+
+	router.GET("/blank", blankHandler(mdw))
+	router.GET("/oauth", oauthFormHandler(mdw))
+	router.POST("/oauth", oauthSubmitHandler(mdw))
 
 	router.GET("/account/logout", logoutHandler(mdw))
 	router.POST("/account/login", accountHandler(mdw, "/live"))
@@ -218,13 +222,6 @@ func sitemapHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func blankHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.WriteTemplate("oauth/blank")
-	}
-}
-
 func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	verification := mdw.ConfigString("verification")
 	vkGroup := mdw.ConfigInt("vk.group")
@@ -245,6 +242,84 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetData("__verification", verification)
 			api.SetData("__vk_group", vkGroup)
 			api.WriteTemplate("index")
+		}
+	}
+}
+
+func blankHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.WriteTemplate("oauth/blank")
+	}
+}
+
+var authCache = cache.New(15*time.Minute, time.Hour)
+
+func oauthFormHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.SetMe()
+
+		appID := ctx.Query("client_id")
+		api.SetField("app", "/oauth2/apps/"+appID)
+
+		if api.Error() != nil {
+			api.WriteTemplate("error")
+			return
+		}
+
+		uri := ctx.Query("redirect_uri")
+		authCache.SetDefault(appID, uri)
+
+		api.SetDataFromQuery("client_id", "")
+		api.SetDataFromQuery("response_type", "")
+		api.SetDataFromQuery("redirect_uri", "")
+		api.SetDataFromQuery("state", "")
+		api.SetDataFromQuery("code_challenge", "")
+		api.SetDataFromQuery("code_challenge_method", "")
+
+		scope := ctx.QueryArray("scope")
+		api.SetData("__scope", scope)
+
+		api.SetCsrfToken("/oauth")
+		api.WriteTemplate("oauth/auth")
+	}
+}
+
+func oauthSubmitHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+
+		api.CheckCsrfToken()
+		if api.Error() != nil {
+			api.WriteTemplate("error")
+			return
+		}
+
+		api.ForwardTo("/oauth2/auth")
+
+		appID := ctx.Query("app")
+		redirect, ok := authCache.Get(appID)
+		if !ok {
+			api.WriteTemplate("error")
+			return
+		}
+		uri := redirect.(string)
+
+		if api.StatusCode() == 200 {
+			code := api.Data()["code"].(string)
+			state := api.Data()["state"].(string)
+			api.Redirect(uri + "?code=" + code + "&state=" + state)
+		} else if api.StatusCode() == 400 {
+			api.SkipError()
+			errType := api.Data()["error"].(string)
+			if errType == "invalid_redirect" || errType == "unrecognized_client" {
+				api.WriteTemplate("error")
+			} else {
+				ctx.Redirect(http.StatusSeeOther, uri+"?error="+errType)
+			}
+		} else {
+			api.WriteTemplate("error")
 		}
 	}
 }
