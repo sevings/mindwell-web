@@ -34,7 +34,8 @@ func main() {
 
 	router.GET("/blank", blankHandler(mdw))
 	router.GET("/oauth", oauthFormHandler(mdw))
-	router.POST("/oauth", oauthSubmitHandler(mdw))
+	router.POST("/oauth/allow", oauthAllowHandler(mdw))
+	router.GET("/oauth/deny", oauthDenyHandler(mdw))
 
 	router.GET("/account/logout", logoutHandler(mdw))
 	router.POST("/account/login", accountHandler(mdw, "/live"))
@@ -281,12 +282,38 @@ func oauthFormHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		scope := ctx.QueryArray("scope")
 		api.SetData("__scope", scope)
 
-		api.SetCsrfToken("/oauth")
+		api.SetCsrfToken("/oauth/allow")
 		api.WriteTemplate("oauth/auth")
 	}
 }
 
-func oauthSubmitHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func handleOAuth(ctx *gin.Context, api *utils.APIRequest) {
+	appID := ctx.Query("client_id")
+	redirect, ok := authCache.Get(appID)
+	if !ok {
+		api.WriteTemplate("error")
+		return
+	}
+	uri := redirect.(string)
+
+	if api.StatusCode() == 200 {
+		code := api.Data()["code"].(string)
+		state := api.Data()["state"].(string)
+		api.Redirect(uri + "?code=" + code + "&state=" + state)
+	} else if api.StatusCode() == 400 {
+		api.SkipError()
+		errType := api.Data()["error"].(string)
+		if errType == "invalid_redirect" || errType == "unrecognized_client" {
+			api.WriteTemplate("error")
+		} else {
+			ctx.Redirect(http.StatusSeeOther, uri+"?error="+errType)
+		}
+	} else {
+		api.WriteTemplate("error")
+	}
+}
+
+func oauthAllowHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 
@@ -296,31 +323,18 @@ func oauthSubmitHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			return
 		}
 
-		api.ForwardTo("/oauth2/auth")
+		api.ForwardTo("/oauth2/allow")
 
-		appID := ctx.Query("app")
-		redirect, ok := authCache.Get(appID)
-		if !ok {
-			api.WriteTemplate("error")
-			return
-		}
-		uri := redirect.(string)
+		handleOAuth(ctx, api)
+	}
+}
 
-		if api.StatusCode() == 200 {
-			code := api.Data()["code"].(string)
-			state := api.Data()["state"].(string)
-			api.Redirect(uri + "?code=" + code + "&state=" + state)
-		} else if api.StatusCode() == 400 {
-			api.SkipError()
-			errType := api.Data()["error"].(string)
-			if errType == "invalid_redirect" || errType == "unrecognized_client" {
-				api.WriteTemplate("error")
-			} else {
-				ctx.Redirect(http.StatusSeeOther, uri+"?error="+errType)
-			}
-		} else {
-			api.WriteTemplate("error")
-		}
+func oauthDenyHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardTo("/oauth2/deny")
+
+		handleOAuth(ctx, api)
 	}
 }
 

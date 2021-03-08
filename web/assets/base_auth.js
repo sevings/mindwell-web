@@ -542,9 +542,3 @@ $(".file-upload__input").change(function(){
     let fileName = input.val().split('/').pop().split('\\').pop();
     input.prev().text(fileName)
 })
-
-$(".allow-app").click(function(){
-    let form = $(this).parents("form")
-    let input = form.children("input[name=allowed]")
-    input.val("on")
-})

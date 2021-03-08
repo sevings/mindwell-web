@@ -16,7 +16,7 @@
                             <p><b>{{ app.showName }}</b></p>
                             <p>{{ app.info }}</p>
 
-                            <form class="content" action="/oauth?app={{ __client_id }}" method="post">
+                            <form class="content" action="/oauth/allow?client_id={{ __client_id }}" method="post">
 
                                 {% for scope in __scope %}
                                     <div class="switcher-block">
@@ -75,7 +75,7 @@
                                     </div>
                                 {% endfor %}
 
-                                <input type="hidden" name="csrf" value="{{ __csrf_oauth }}">
+                                <input type="hidden" name="csrf" value="{{ __csrf_allow }}">
                                 <input type="hidden" name="client_id" value="{{ __client_id }}">
                                 <input type="hidden" name="response_type" value="{{ __response_type }}">
                                 <input type="hidden" name="redirect_uri" value="{{ __redirect_uri }}">
@@ -84,8 +84,9 @@
                                 <input type="hidden" name="code_challenge_method" value="{{ __code_challenge_method }}">
                                 <input type="hidden" name="allowed">
 
-                                <button class="btn btn-md-2 btn-primary float-right ml-3 allow-app">Разрешить</button>
-                                <button class="btn btn-md-2 btn-secondary float-right deny-app">Отмена</button>
+                                <input type="submit" class="btn btn-md-2 btn-primary float-right ml-3" value="Разрешить">
+                                <a class="btn btn-md-2 btn-secondary float-right" rel="nofollow"
+                                   href="/oauth/deny?client_id={{ __client_id }}&redirect_uri={{ __redirect_uri }}">Отмена</a>
                             </form>
                         </div>
                     </div>
