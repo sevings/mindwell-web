@@ -81,7 +81,7 @@ func gender(gender *pongo2.Value, _ *pongo2.Value) (*pongo2.Value, *pongo2.Error
 // usage: {{ html|media:"embed" }}
 func media(m *Mindwell) func(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
 	var imgSrcRe = regexp.MustCompile(`(?i)<img[^>]+src="([^"]+)"[^>]*>`)
-	var emb = embedder.NewEmbedder(m.LogSystem(), m.ConfigString("domain"))
+	var emb = embedder.NewEmbedder(m.LogSystem(), m.ConfigString("web.domain"))
 
 	return func(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
 		if content.IsNil() {

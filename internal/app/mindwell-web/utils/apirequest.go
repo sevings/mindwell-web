@@ -546,8 +546,8 @@ func (api *APIRequest) WriteTemplate(name string) {
 	}
 
 	api.SetData("__large_screen", api.IsLargeScreen())
-	api.SetData("__proto", api.mdw.ConfigString("proto"))
-	api.SetData("__domain", api.mdw.ConfigString("domain"))
+	api.SetData("__proto", api.mdw.ConfigString("web.proto"))
+	api.SetData("__domain", api.mdw.ConfigString("web.domain"))
 
 	if api.mdw.DevMode {
 		api.SetData("__test", true)
@@ -572,8 +572,8 @@ func (api *APIRequest) WriteTemplateWithExtension(name string) {
 		api.ctx.Status(api.resp.StatusCode)
 	}
 
-	api.SetData("__proto", api.mdw.ConfigString("proto"))
-	api.SetData("__domain", api.mdw.ConfigString("domain"))
+	api.SetData("__proto", api.mdw.ConfigString("web.proto"))
+	api.SetData("__domain", api.mdw.ConfigString("web.domain"))
 
 	templ.ExecuteWriter(api.Data(), api.ctx.Writer)
 }

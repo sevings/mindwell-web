@@ -166,7 +166,7 @@ func main() {
 
 	router.NoRoute(error404Handler(mdw))
 
-	addr := mdw.ConfigString("listen_address")
+	addr := mdw.ConfigString("web.listen_address")
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: router,
@@ -224,7 +224,7 @@ func sitemapHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	verification := mdw.ConfigString("verification")
+	verification := mdw.ConfigString("web.verification")
 	vkGroup := mdw.ConfigInt("vk.group")
 
 	return func(ctx *gin.Context) {

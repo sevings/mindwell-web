@@ -146,7 +146,7 @@ func (m *Mindwell) CreateCsrfToken(action, client string) string {
 		"ip":  client,
 	})
 
-	secret := m.ConfigBytes("csrf_secret")
+	secret := m.ConfigBytes("web.csrf_secret")
 	tokenString, err := token.SignedString(secret)
 	if err != nil {
 		m.LogSystem().Error(err.Error())
@@ -156,7 +156,7 @@ func (m *Mindwell) CreateCsrfToken(action, client string) string {
 }
 
 func (m *Mindwell) CheckCsrfToken(tokenString, action, client string) error {
-	secret := m.ConfigBytes("csrf_secret")
+	secret := m.ConfigBytes("web.csrf_secret")
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
