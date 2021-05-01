@@ -44,8 +44,8 @@ func main() {
 	noJs.POST("/login", accountHandler(mdw, false))
 	noJs.OPTIONS("/register")
 	noJs.POST("/register", accountHandler(mdw, true))
-
-	router.GET("/account/logout", logoutHandler(mdw))
+	noJs.OPTIONS("/logout")
+	noJs.POST("/logout", logoutHandler(mdw))
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
@@ -232,7 +232,6 @@ func sitemapHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	verification := mdw.ConfigString("web.verification")
 	vkGroup := mdw.ConfigInt("vk.group")
-	nojsUrl := mdw.ConfigString("nojs.proto") + "://" + mdw.ConfigString("nojs.domain")
 
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
@@ -249,7 +248,6 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetCsrfToken("/nojs/register")
 			api.SetData("__verification", verification)
 			api.SetData("__vk_group", vkGroup)
-			api.SetData("__nojs_url", nojsUrl)
 			api.WriteTemplate("index")
 		}
 	}
@@ -346,13 +344,6 @@ func oauthDenyHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.ClearCookieToken()
-		ctx.Redirect(http.StatusSeeOther, "/index.html")
-	}
-}
 func corsHandler(mdw *utils.Mindwell) gin.HandlerFunc {
 	webUrl := mdw.ConfigString("web.proto") + "://" + mdw.ConfigString("web.domain")
 
@@ -443,6 +434,15 @@ func accountHandler(mdw *utils.Mindwell, create bool) func(ctx *gin.Context) {
 			api.SetData("path", "/live")
 		}
 
+		api.WriteJson()
+	}
+}
+
+func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.ClearCookieToken()
+		api.SetData("path", "/index.html")
 		api.WriteJson()
 	}
 }

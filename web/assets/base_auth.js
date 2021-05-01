@@ -542,3 +542,22 @@ $(".file-upload__input").change(function(){
     let fileName = input.val().split('/').pop().split('\\').pop();
     input.prev().text(fileName)
 })
+
+$(".logout-link").click(function(){
+    let href = $(this).attr("href")
+
+    $.ajax({
+        method: "POST",
+        url: href,
+        dataType: "json",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: (data) => {
+            window.location.pathname = data.path
+        },
+        error: showAjaxError,
+    })
+
+    return false
+})

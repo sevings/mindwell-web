@@ -308,16 +308,24 @@ func (api *APIRequest) Cookie(name string) (*http.Cookie, error) {
 }
 
 func (api *APIRequest) ClearCookieToken() {
-	token := &http.Cookie{
-		Name:     "api_token",
+	cookie := &http.Cookie{
 		Value:    "",
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
 	}
-	http.SetCookie(api.ctx.Writer, token)
 
-	api.err = http.ErrNoCookie
+	cookie.Name = "api_token"
+	cookie.Domain = ""
+	api.SetCookie(cookie)
+
+	cookie.Name = "at"
+	cookie.Domain = api.mdw.ConfigString("web.domain")
+	api.SetCookie(cookie)
+
+	cookie.Name = "rt"
+	cookie.Domain = api.mdw.ConfigString("nojs.domain")
+	api.SetCookie(cookie)
 }
 
 func (api *APIRequest) checkError() {
@@ -330,6 +338,7 @@ func (api *APIRequest) checkError() {
 	case code == 401:
 		api.ClearCookieToken()
 		api.Redirect("/index.html")
+		api.err = http.ErrNoCookie
 	case code >= 400 && code < 500:
 		if api.err != nil {
 			api.mdw.LogWeb().Warn(api.err.Error())
@@ -567,6 +576,9 @@ func (api *APIRequest) WriteTemplate(name string) {
 	api.SetData("__large_screen", api.IsLargeScreen())
 	api.SetData("__proto", api.mdw.ConfigString("web.proto"))
 	api.SetData("__domain", api.mdw.ConfigString("web.domain"))
+
+	nojsUrl := api.mdw.ConfigString("nojs.proto") + "://" + api.mdw.ConfigString("nojs.domain")
+	api.SetData("__nojs_url", nojsUrl)
 
 	if api.mdw.DevMode {
 		api.SetData("__test", true)

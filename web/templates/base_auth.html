@@ -4,7 +4,7 @@
     {% block styles %}{% endblock %}
 {% endblock %}
 {% block base_scripts %}
-	<script src="/assets/base_auth.js?d=20201209"></script>
+	<script src="/assets/base_auth.js?d=20210501"></script>
 	<script src="/assets/embed.js?d=20201216"></script>
 	{% block scripts %}{% endblock %}
 {% endblock %}
@@ -230,7 +230,7 @@
 						</a>
 					</li>
 					<li>
-						<a href="/account/logout">
+						<a class="logout-link" href="{{ __nojs_url }}/logout">
 							<span class="left-menu-title">Выйти</span>
 						</a>
 					</li>
@@ -403,7 +403,7 @@
 									</li>
 									<hr>
 									<li>
-										<a href="/account/logout">
+										<a class="logout-link" href="{{ __nojs_url }}/logout">
 											<span>Выйти</span>
 										</a>
 									</li>
