@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"github.com/gin-contrib/cors"
 	"net/http"
 	"net/url"
 	"os"
 	"os/signal"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -37,9 +39,12 @@ func main() {
 	router.POST("/oauth/allow", oauthAllowHandler(mdw))
 	router.GET("/oauth/deny", oauthDenyHandler(mdw))
 
+	noJs := router.Group("/nojs", corsHandler(mdw))
+	noJs.OPTIONS("/login")
+	noJs.POST("/login", loginHandler(mdw))
+
 	router.GET("/account/logout", logoutHandler(mdw))
-	router.POST("/account/login", accountHandler(mdw, "/live"))
-	router.POST("/account/register", accountHandler(mdw, "/me/entries"))
+	//router.POST("/account/register", accountHandler(mdw, "/me/entries"))
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
@@ -226,6 +231,7 @@ func sitemapHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	verification := mdw.ConfigString("web.verification")
 	vkGroup := mdw.ConfigInt("vk.group")
+	nojsUrl := mdw.ConfigString("nojs.proto") + "://" + mdw.ConfigString("nojs.domain")
 
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
@@ -238,10 +244,11 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 			ctx.Redirect(http.StatusSeeOther, to)
 		} else {
-			api.SetCsrfToken("/account/login")
-			api.SetCsrfToken("/account/register")
+			api.SetCsrfToken("/nojs/login")
+			api.SetCsrfToken("/nojs/register")
 			api.SetData("__verification", verification)
 			api.SetData("__vk_group", vkGroup)
+			api.SetData("__nojs_url", nojsUrl)
 			api.WriteTemplate("index")
 		}
 	}
@@ -345,8 +352,25 @@ func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		ctx.Redirect(http.StatusSeeOther, "/index.html")
 	}
 }
+func corsHandler(mdw *utils.Mindwell) gin.HandlerFunc {
+	webUrl := mdw.ConfigString("web.proto") + "://" + mdw.ConfigString("web.domain")
 
-func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Context) {
+	config := cors.DefaultConfig()
+	config.AllowCredentials = true
+	config.AllowOrigins = []string{webUrl}
+	config.AllowMethods = []string{"POST"}
+	config.AllowHeaders = []string{"X-Error-Type"}
+
+	return cors.New(config)
+}
+
+func loginHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	clientID := mdw.ConfigInt("api.client_id")
+	clientSecret := mdw.ConfigString("api.client_secret")
+	webDomain := mdw.ConfigString("web.domain")
+	nojsDomain := mdw.ConfigString("nojs.domain")
+	secure := mdw.ConfigString("web.proto") == "https"
+
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 
@@ -356,28 +380,54 @@ func accountHandler(mdw *utils.Mindwell, redirectPath string) func(ctx *gin.Cont
 			return
 		}
 
-		api.ForwardNoKey()
+		args := url.Values{
+			"grant_type":    {"password"},
+			"client_id":     {strconv.Itoa(clientID)},
+			"client_secret": {clientSecret},
+			"username":      {api.FormString("name")},
+			"password":      {api.FormString("password")},
+		}
+		api.SetRequestData(args)
+
+		api.ForwardToNoKey("/oauth2/token")
 		if api.Error() != nil {
 			api.WriteResponse()
 			return
 		}
 
-		account := api.Data()["account"].(map[string]interface{})
-		token := account["apiKey"].(string)
-		validThru, _ := account["validThru"].(json.Number).Float64()
-		exp := time.Unix(int64(validThru), 0)
-		cookie := http.Cookie{
-			Name:     "api_token",
-			Value:    token,
-			Expires:  exp,
+		accessToken := api.Data()["access_token"].(string)
+		expiresIn := api.Data()["expires_in"].(json.Number)
+		maxAge, err := expiresIn.Int64()
+		if err != nil {
+			mdw.LogWeb().Error(err.Error())
+		}
+		accessCookie := http.Cookie{
+			Name:     "at",
+			Value:    accessToken,
+			MaxAge:   int(maxAge),
 			HttpOnly: true,
 			Path:     "/",
 			SameSite: http.SameSiteLaxMode,
+			Domain:   webDomain,
+			Secure:   secure,
 		}
-		api.SetCookie(&cookie)
+		api.SetCookie(&accessCookie)
+
+		refreshToken := api.Data()["refresh_token"].(string)
+		refreshCookie := http.Cookie{
+			Name:     "rt",
+			Value:    refreshToken,
+			MaxAge:   60 * 60 * 24 * 30,
+			HttpOnly: true,
+			Path:     "/",
+			SameSite: http.SameSiteLaxMode,
+			Domain:   nojsDomain,
+			Secure:   secure,
+		}
+		api.SetCookie(&refreshCookie)
 
 		api.ClearData()
-		api.SetData("path", redirectPath)
+		api.SetData("path", "/live")
 		api.WriteJson()
 	}
 }

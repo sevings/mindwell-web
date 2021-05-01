@@ -115,6 +115,20 @@ func (api *APIRequest) SetDataFromQuery(key, defaultValue string) {
 	api.SetData("__"+key, value)
 }
 
+func (api *APIRequest) FormString(key string) string {
+	if api.err != nil {
+		return ""
+	}
+
+	return api.ctx.PostForm(key)
+}
+
+func (api *APIRequest) SetRequestData(args url.Values) {
+	data := args.Encode()
+	api.ctx.Request.Body = ioutil.NopCloser(strings.NewReader(data))
+	api.ctx.Request.ContentLength = int64(len(data))
+}
+
 func (api *APIRequest) SetScrollHrefs() {
 	api.SetScrollHrefsWithData(api.ctx.Request.URL.Path, api.Data())
 }

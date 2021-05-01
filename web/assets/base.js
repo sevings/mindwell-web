@@ -263,6 +263,9 @@ $(".register").click(function() {
         headers: {
             "X-Error-Type": "JSON",
         },
+        xhrFields: {
+            withCredentials: true
+        },
         success: function(data) {
             window.location.pathname = data.path
         },
