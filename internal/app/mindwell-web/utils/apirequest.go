@@ -37,6 +37,7 @@ type APIRequest struct {
 	read bool // whether resp is read
 	data map[string]interface{}
 	uKey string
+	aTok string
 	st   *ServerTiming
 }
 
@@ -196,15 +197,7 @@ func (api *APIRequest) CheckCsrfToken() {
 }
 
 func (api *APIRequest) HasUserKey() bool {
-	return api.uKey != ""
-}
-
-func (api *APIRequest) userKey() string {
-	if api.HasUserKey() {
-		return api.uKey
-	}
-
-	return "no auth"
+	return api.aTok != "" || api.uKey != ""
 }
 
 func (api *APIRequest) setUserKey(allowNoKey bool) bool {
@@ -216,13 +209,19 @@ func (api *APIRequest) setUserKey(allowNoKey bool) bool {
 		return true
 	}
 
-	token, err := api.ctx.Request.Cookie("api_token")
-	if err != nil {
-		return allowNoKey
+	token, err := api.Cookie("at")
+	if err == nil {
+		api.aTok = token.Value
+		return true
 	}
 
-	api.uKey = token.Value
-	return true
+	token, err = api.Cookie("api_token")
+	if err == nil {
+		api.uKey = token.Value
+		return true
+	}
+
+	return allowNoKey
 }
 
 func (api *APIRequest) doNamed(req *http.Request, name string) {
@@ -361,6 +360,14 @@ func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 		req.Header[k] = vv2
 	}
 
+	if api.aTok != "" {
+		req.Header.Set("Authorization", "Bearer "+api.aTok)
+	} else if api.uKey != "" {
+		req.Header.Set("X-User-Key", api.uKey)
+	} else {
+		req.Header.Set("X-User-Key", "no auth")
+	}
+
 	return req
 }
 
@@ -376,7 +383,6 @@ func (api *APIRequest) MethodForwardToHost(method, path, host string, allowNoKey
 	}
 
 	req := api.copyRequestToHost(path, host)
-	req.Header.Set("X-User-Key", api.userKey())
 	req.Method = method
 
 	api.do(req)
@@ -393,7 +399,6 @@ func (api *APIRequest) MethodForwardToNamed(method, path, name string, allowNoKe
 	}
 
 	req := api.copyRequest(path)
-	req.Header.Set("X-User-Key", api.userKey())
 	req.Method = method
 
 	api.doNamed(req, name)
