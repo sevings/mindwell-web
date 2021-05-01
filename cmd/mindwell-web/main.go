@@ -41,10 +41,11 @@ func main() {
 
 	noJs := router.Group("/nojs", corsHandler(mdw))
 	noJs.OPTIONS("/login")
-	noJs.POST("/login", loginHandler(mdw))
+	noJs.POST("/login", accountHandler(mdw, false))
+	noJs.OPTIONS("/register")
+	noJs.POST("/register", accountHandler(mdw, true))
 
 	router.GET("/account/logout", logoutHandler(mdw))
-	//router.POST("/account/register", accountHandler(mdw, "/me/entries"))
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
@@ -364,7 +365,7 @@ func corsHandler(mdw *utils.Mindwell) gin.HandlerFunc {
 	return cors.New(config)
 }
 
-func loginHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func accountHandler(mdw *utils.Mindwell, create bool) func(ctx *gin.Context) {
 	clientID := mdw.ConfigInt("api.client_id")
 	clientSecret := mdw.ConfigString("api.client_secret")
 	webDomain := mdw.ConfigString("web.domain")
@@ -378,6 +379,14 @@ func loginHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		if api.Error() != nil {
 			api.WriteTemplate("error")
 			return
+		}
+
+		if create {
+			api.ForwardToNoKey("/account/register")
+			if api.Error() != nil {
+				api.WriteTemplate("error")
+				return
+			}
 		}
 
 		args := url.Values{
@@ -427,7 +436,13 @@ func loginHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetCookie(&refreshCookie)
 
 		api.ClearData()
-		api.SetData("path", "/live")
+
+		if create {
+			api.SetData("path", "/me")
+		} else {
+			api.SetData("path", "/live")
+		}
+
 		api.WriteJson()
 	}
 }
