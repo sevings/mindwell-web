@@ -128,6 +128,7 @@ func (api *APIRequest) SetRequestData(args url.Values) {
 	data := args.Encode()
 	api.ctx.Request.Body = ioutil.NopCloser(strings.NewReader(data))
 	api.ctx.Request.ContentLength = int64(len(data))
+	api.ctx.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 }
 
 func (api *APIRequest) SetScrollHrefs() {
