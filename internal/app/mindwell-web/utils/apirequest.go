@@ -648,13 +648,23 @@ func (api *APIRequest) WriteJson() {
 	}
 }
 
-func (api *APIRequest) Redirect(path string) {
+func (api *APIRequest) RedirectToHost(url string) {
 	if api.err != nil {
 		api.WriteTemplate("error")
 		return
 	}
 
-	api.ctx.Redirect(http.StatusSeeOther, path)
+	api.ctx.Redirect(http.StatusSeeOther, url)
+}
+
+func (api *APIRequest) Redirect(path string) {
+	base := api.mdw.ConfigString("web.proto") + "://" + api.mdw.ConfigString("web.domain")
+	api.RedirectToHost(base + path)
+}
+
+func (api *APIRequest) RedirectToNoJs(path string) {
+	base := api.mdw.ConfigString("nojs.proto") + "://" + api.mdw.ConfigString("nojs.domain")
+	api.RedirectToHost(base + path)
 }
 
 func (api *APIRequest) ClientIP() string {

@@ -305,7 +305,7 @@ func handleOAuth(ctx *gin.Context, api *utils.APIRequest) {
 	if api.StatusCode() == 200 {
 		code := api.Data()["code"].(string)
 		state := api.Data()["state"].(string)
-		api.Redirect(uri + "?code=" + code + "&state=" + state)
+		api.RedirectToHost(uri + "?code=" + code + "&state=" + state)
 	} else if api.StatusCode() == 400 {
 		api.SkipError()
 		errType := api.Data()["error"].(string)
