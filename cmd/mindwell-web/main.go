@@ -768,8 +768,8 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 		api.SetData("__feed", isTlog)
 
 		if !api.HasUserKey() {
-			api.SetCsrfToken("/account/login")
-			api.SetCsrfToken("/account/register")
+			api.SetCsrfToken("/nojs/login")
+			api.SetCsrfToken("/nojs/register")
 		}
 
 		feedHandler(api, "entries/tlog")
@@ -973,8 +973,8 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetMe()
 
 		if !api.HasUserKey() {
-			api.SetCsrfToken("/account/login")
-			api.SetCsrfToken("/account/register")
+			api.SetCsrfToken("/nojs/login")
+			api.SetCsrfToken("/nojs/register")
 		}
 
 		if api.IsAjax() {

@@ -422,7 +422,7 @@
 	{% else %}
 		<div class="header-content-wrapper">
 			<div class="form--login-logout">
-				<form class="form-inline" action="/account/login" method="post">
+				<form class="form-inline" action="{{ __nojs_url }}/login" method="post">
 					<div class="form-group">
 						<input class="form-control form-control-sm" maxlength="500" type="text" name="name" placeholder="Логин или почта" required>
 					</div>
