@@ -53,6 +53,10 @@ func NewRequest(mdw *Mindwell, ctx *gin.Context) *APIRequest {
 	}
 }
 
+func (api *APIRequest) Server() *Mindwell {
+	return api.mdw
+}
+
 func (api *APIRequest) Error() error {
 	return api.err
 }
@@ -223,6 +227,53 @@ func (api *APIRequest) setUserKey(allowNoKey bool) bool {
 	}
 
 	return allowNoKey
+}
+
+func (api *APIRequest) UpgradeAuth() bool {
+	if api.err != nil {
+		return false
+	}
+
+	if api.IsAjax() || api.ctx.Request.Method != "GET" {
+		return false
+	}
+
+	oldToken, err := api.Cookie("api_token")
+	if err != nil {
+		return false
+	}
+
+	_, err = api.Cookie("at")
+	if err == nil {
+		cookie := &http.Cookie{
+			Name:     "api_token",
+			Path:     "/",
+			MaxAge:   -1,
+			HttpOnly: true,
+		}
+		api.SetCookie(cookie)
+
+		return false
+	}
+
+	webDomain := api.Server().ConfigString("web.domain")
+	secure := api.Server().ConfigString("web.proto") == "https"
+	tokenCookie := http.Cookie{
+		Name:     "api_token",
+		Value:    oldToken.Value,
+		MaxAge:   60 * 5,
+		HttpOnly: true,
+		Path:     "/",
+		SameSite: http.SameSiteLaxMode,
+		Domain:   webDomain,
+		Secure:   secure,
+	}
+	api.SetCookie(&tokenCookie)
+
+	to := url.QueryEscape(api.ctx.Request.URL.String())
+	api.RedirectToNoJs("/upgrade?to=" + to)
+
+	return true
 }
 
 func (api *APIRequest) doNamed(req *http.Request, name string) {

@@ -39,13 +39,15 @@ func main() {
 	router.POST("/oauth/allow", oauthAllowHandler(mdw))
 	router.GET("/oauth/deny", oauthDenyHandler(mdw))
 
-	noJs := router.Group("/nojs", corsHandler(mdw))
-	noJs.OPTIONS("/login")
-	noJs.POST("/login", accountHandler(mdw, false))
-	noJs.OPTIONS("/register")
-	noJs.POST("/register", accountHandler(mdw, true))
-	noJs.OPTIONS("/logout")
-	noJs.POST("/logout", logoutHandler(mdw))
+	withCors := router.Group("/nojs", corsHandler(mdw))
+	withCors.OPTIONS("/login")
+	withCors.POST("/login", accountHandler(mdw, false))
+	withCors.OPTIONS("/register")
+	withCors.POST("/register", accountHandler(mdw, true))
+	withCors.OPTIONS("/logout")
+	withCors.POST("/logout", logoutHandler(mdw))
+
+	router.GET("/nojs/upgrade", upgradeHandler(mdw))
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
@@ -356,12 +358,46 @@ func corsHandler(mdw *utils.Mindwell) gin.HandlerFunc {
 	return cors.New(config)
 }
 
+func setOAuthCookie(api *utils.APIRequest) {
+	webDomain := api.Server().ConfigString("web.domain")
+	nojsDomain := api.Server().ConfigString("nojs.domain")
+	secure := api.Server().ConfigString("web.proto") == "https"
+
+	accessToken := api.Data()["access_token"].(string)
+	expiresIn := api.Data()["expires_in"].(json.Number)
+	maxAge, err := expiresIn.Int64()
+	if err != nil {
+		api.Server().LogWeb().Error(err.Error())
+	}
+	accessCookie := http.Cookie{
+		Name:     "at",
+		Value:    accessToken,
+		MaxAge:   int(maxAge),
+		HttpOnly: true,
+		Path:     "/",
+		SameSite: http.SameSiteLaxMode,
+		Domain:   webDomain,
+		Secure:   secure,
+	}
+	api.SetCookie(&accessCookie)
+
+	refreshToken := api.Data()["refresh_token"].(string)
+	refreshCookie := http.Cookie{
+		Name:     "rt",
+		Value:    refreshToken,
+		MaxAge:   60 * 60 * 24 * 30,
+		HttpOnly: true,
+		Path:     "/",
+		SameSite: http.SameSiteLaxMode,
+		Domain:   nojsDomain,
+		Secure:   secure,
+	}
+	api.SetCookie(&refreshCookie)
+}
+
 func accountHandler(mdw *utils.Mindwell, create bool) func(ctx *gin.Context) {
 	clientID := mdw.ConfigInt("api.client_id")
 	clientSecret := mdw.ConfigString("api.client_secret")
-	webDomain := mdw.ConfigString("web.domain")
-	nojsDomain := mdw.ConfigString("nojs.domain")
-	secure := mdw.ConfigString("web.proto") == "https"
 
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
@@ -395,36 +431,7 @@ func accountHandler(mdw *utils.Mindwell, create bool) func(ctx *gin.Context) {
 			return
 		}
 
-		accessToken := api.Data()["access_token"].(string)
-		expiresIn := api.Data()["expires_in"].(json.Number)
-		maxAge, err := expiresIn.Int64()
-		if err != nil {
-			mdw.LogWeb().Error(err.Error())
-		}
-		accessCookie := http.Cookie{
-			Name:     "at",
-			Value:    accessToken,
-			MaxAge:   int(maxAge),
-			HttpOnly: true,
-			Path:     "/",
-			SameSite: http.SameSiteLaxMode,
-			Domain:   webDomain,
-			Secure:   secure,
-		}
-		api.SetCookie(&accessCookie)
-
-		refreshToken := api.Data()["refresh_token"].(string)
-		refreshCookie := http.Cookie{
-			Name:     "rt",
-			Value:    refreshToken,
-			MaxAge:   60 * 60 * 24 * 30,
-			HttpOnly: true,
-			Path:     "/",
-			SameSite: http.SameSiteLaxMode,
-			Domain:   nojsDomain,
-			Secure:   secure,
-		}
-		api.SetCookie(&refreshCookie)
+		setOAuthCookie(api)
 
 		api.ClearData()
 
@@ -444,6 +451,49 @@ func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.ClearCookieToken()
 		api.SetData("path", "/index.html")
 		api.WriteJson()
+	}
+}
+
+func upgradeHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	clientID := mdw.ConfigInt("api.client_id")
+	clientSecret := mdw.ConfigString("api.client_secret")
+
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+
+		args := url.Values{
+			"client_id":     {strconv.Itoa(clientID)},
+			"client_secret": {clientSecret},
+		}
+		api.SetRequestData(args)
+
+		api.MethodForwardTo("POST", "/oauth2/upgrade", false)
+		if api.Error() != nil {
+			if err, ok := api.Data()["error"].(string); ok {
+				mdw.LogWeb().Warn(err)
+			}
+
+			api.ClearCookieToken()
+			api.WriteTemplate("error")
+			return
+		}
+
+		setOAuthCookie(api)
+
+		oldCookie := http.Cookie{
+			Name:     "api_token",
+			HttpOnly: true,
+			Path:     "/",
+			MaxAge:   -1,
+		}
+		api.SetCookie(&oldCookie)
+
+		to, err := url.QueryUnescape(ctx.Query("to"))
+		if to == "" || err != nil {
+			to = "/live"
+		}
+
+		api.Redirect(to)
 	}
 }
 
@@ -650,6 +700,10 @@ func feedHandler(api *utils.APIRequest, templateName string) {
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
+		if api.UpgradeAuth() {
+			return
+		}
+
 		api.QueryCookieName("live_feed")
 		api.ForwardTo("/entries/live")
 		api.SetScrollHrefs()
@@ -739,8 +793,11 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 
 		name := ctx.Param("name")
 		api := utils.NewRequest(mdw, ctx)
-		var profile interface{}
+		if api.UpgradeAuth() {
+			return
+		}
 
+		var profile interface{}
 		if !api.IsAjax() {
 			api.SetFieldNoKey("profile", "/users/"+name)
 			if api.Error() != nil {
