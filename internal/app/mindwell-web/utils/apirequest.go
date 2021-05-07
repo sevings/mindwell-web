@@ -276,6 +276,42 @@ func (api *APIRequest) UpgradeAuth() bool {
 	return true
 }
 
+func (api *APIRequest) RefreshAuth() bool {
+	if api.err != nil {
+		return false
+	}
+
+	if api.IsAjax() || api.ctx.Request.Method != "GET" {
+		return false
+	}
+
+	_, err := api.Cookie("trr")
+	if err == nil {
+		return false
+	}
+
+	_, err = api.Cookie("trp")
+	if err != nil {
+		return false
+	}
+
+	to := url.QueryEscape(api.ctx.Request.URL.String())
+	api.RedirectToNoJs("/refresh?to=" + to)
+
+	return true
+}
+
+func (api *APIRequest) RequestRefreshAuth() {
+	to := url.QueryEscape(api.ctx.Request.URL.String())
+
+	_, err := api.Cookie("trp")
+	if err == nil && api.ctx.Request.Method == "GET" && api.IsWebRequest() {
+		api.RedirectToNoJs("/refresh?to=" + to)
+	} else {
+		api.Redirect("/index.html?to=" + to)
+	}
+}
+
 func (api *APIRequest) doNamed(req *http.Request, name string) {
 	defer api.st.Add(name).Start().Stop()
 
@@ -368,11 +404,16 @@ func (api *APIRequest) ClearCookieToken() {
 	}
 
 	cookie.Name = "api_token"
-	cookie.Domain = ""
 	api.SetCookie(cookie)
 
 	cookie.Name = "at"
 	cookie.Domain = api.mdw.ConfigString("web.domain")
+	api.SetCookie(cookie)
+
+	cookie.Name = "trr"
+	api.SetCookie(cookie)
+
+	cookie.Name = "trp"
 	api.SetCookie(cookie)
 
 	cookie.Name = "rt"
@@ -388,8 +429,7 @@ func (api *APIRequest) checkError() {
 	code := api.resp.StatusCode
 	switch {
 	case code == 401:
-		api.ClearCookieToken()
-		api.Redirect("/index.html")
+		api.RequestRefreshAuth()
 		api.err = http.ErrNoCookie
 	case code >= 400 && code < 500:
 		if api.err != nil {
@@ -438,8 +478,7 @@ func (api *APIRequest) copyRequest(path string) *http.Request {
 
 func (api *APIRequest) MethodForwardToHost(method, path, host string, allowNoKey bool) {
 	if !api.setUserKey(allowNoKey) {
-		to := url.QueryEscape(api.ctx.Request.URL.String())
-		api.Redirect("/index.html?to=" + to)
+		api.RequestRefreshAuth()
 		return
 	}
 
@@ -720,6 +759,11 @@ func (api *APIRequest) RedirectToNoJs(path string) {
 
 func (api *APIRequest) ClientIP() string {
 	return api.ctx.GetHeader("X-Forwarded-For")
+}
+
+func (api *APIRequest) IsWebRequest() bool {
+	host := api.mdw.ConfigString("web.domain")
+	return api.ctx.Request.URL.Host == host
 }
 
 func (api *APIRequest) IsAjax() bool {

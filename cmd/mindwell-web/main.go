@@ -48,6 +48,7 @@ func main() {
 	withCors.POST("/logout", logoutHandler(mdw))
 
 	router.GET("/nojs/upgrade", upgradeHandler(mdw))
+	router.GET("/nojs/refresh", refreshHandler(mdw))
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
@@ -381,6 +382,30 @@ func setOAuthCookie(api *utils.APIRequest) {
 	}
 	api.SetCookie(&accessCookie)
 
+	refreshReqCookie := http.Cookie{
+		Name:     "trr",
+		Value:    "n",
+		MaxAge:   int(maxAge / 2),
+		HttpOnly: true,
+		Path:     "/",
+		SameSite: http.SameSiteLaxMode,
+		Domain:   webDomain,
+		Secure:   secure,
+	}
+	api.SetCookie(&refreshReqCookie)
+
+	refreshPosCookie := http.Cookie{
+		Name:     "trp",
+		Value:    "y",
+		MaxAge:   60 * 60 * 24 * 30,
+		HttpOnly: true,
+		Path:     "/",
+		SameSite: http.SameSiteLaxMode,
+		Domain:   webDomain,
+		Secure:   secure,
+	}
+	api.SetCookie(&refreshPosCookie)
+
 	refreshToken := api.Data()["refresh_token"].(string)
 	refreshCookie := http.Cookie{
 		Name:     "rt",
@@ -474,7 +499,7 @@ func upgradeHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			}
 
 			api.ClearCookieToken()
-			api.WriteTemplate("error")
+			api.Redirect("/index.html?to=" + ctx.Query("to"))
 			return
 		}
 
@@ -487,6 +512,50 @@ func upgradeHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			MaxAge:   -1,
 		}
 		api.SetCookie(&oldCookie)
+
+		to, err := url.QueryUnescape(ctx.Query("to"))
+		if to == "" || err != nil {
+			to = "/live"
+		}
+
+		api.Redirect(to)
+	}
+}
+
+func refreshHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	clientID := mdw.ConfigInt("api.client_id")
+	clientSecret := mdw.ConfigString("api.client_secret")
+
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+
+		token, err := api.Cookie("rt")
+		if err != nil {
+			api.ClearCookieToken()
+			api.Redirect("/index.html?to=" + ctx.Query("to"))
+			return
+		}
+
+		args := url.Values{
+			"grant_type":    {"refresh_token"},
+			"client_id":     {strconv.Itoa(clientID)},
+			"client_secret": {clientSecret},
+			"refresh_token": {token.Value},
+		}
+		api.SetRequestData(args)
+
+		api.MethodForwardTo("POST", "/oauth2/token", true)
+		if api.Error() != nil {
+			if err, ok := api.Data()["error"].(string); ok {
+				mdw.LogWeb().Warn(err)
+			}
+
+			api.ClearCookieToken()
+			api.Redirect("/index.html?to=" + ctx.Query("to"))
+			return
+		}
+
+		setOAuthCookie(api)
 
 		to, err := url.QueryUnescape(ctx.Query("to"))
 		if to == "" || err != nil {
@@ -700,7 +769,7 @@ func feedHandler(api *utils.APIRequest, templateName string) {
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		if api.UpgradeAuth() {
+		if api.UpgradeAuth() || api.RefreshAuth() {
 			return
 		}
 
@@ -793,7 +862,7 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 
 		name := ctx.Param("name")
 		api := utils.NewRequest(mdw, ctx)
-		if api.UpgradeAuth() {
+		if api.UpgradeAuth() || api.RefreshAuth() {
 			return
 		}
 
