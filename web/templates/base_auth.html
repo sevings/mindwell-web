@@ -230,7 +230,7 @@
 						</a>
 					</li>
 					<li>
-						<a class="logout-link" href="{{ __nojs_url }}/logout">
+						<a class="logout-link" href="{{ __auth_url }}/logout">
 							<span class="left-menu-title">Выйти</span>
 						</a>
 					</li>
@@ -403,7 +403,7 @@
 									</li>
 									<hr>
 									<li>
-										<a class="logout-link" href="{{ __nojs_url }}/logout">
+										<a class="logout-link" href="{{ __auth_url }}/logout">
 											<span>Выйти</span>
 										</a>
 									</li>
@@ -422,7 +422,7 @@
 	{% else %}
 		<div class="header-content-wrapper">
 			<div class="form--login-logout">
-				<form class="form-inline" action="{{ __nojs_url }}/login?to={{ __to_url }}" method="post">
+				<form class="form-inline" action="{{ __auth_url }}/login?to={{ __to_url }}" method="post">
 					<div class="form-group">
 						<input class="form-control form-control-sm" maxlength="500" type="text" name="name" placeholder="Логин или почта" required>
 					</div>

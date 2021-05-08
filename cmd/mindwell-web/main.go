@@ -39,15 +39,15 @@ func main() {
 	router.POST("/oauth/allow", oauthAllowHandler(mdw))
 	router.GET("/oauth/deny", oauthDenyHandler(mdw))
 
-	withCors := router.Group("/nojs", corsHandler(mdw))
+	withCors := router.Group("/auth", corsHandler(mdw))
 	withCors.OPTIONS("/login")
 	withCors.POST("/login", accountHandler(mdw, false))
 	withCors.OPTIONS("/register")
 	withCors.POST("/register", accountHandler(mdw, true))
 
-	router.GET("/nojs/upgrade", upgradeHandler(mdw))
-	router.GET("/nojs/refresh", refreshHandler(mdw))
-	router.GET("/nojs/logout", logoutHandler(mdw))
+	router.GET("/auth/upgrade", upgradeHandler(mdw))
+	router.GET("/auth/refresh", refreshHandler(mdw))
+	router.GET("/auth/logout", logoutHandler(mdw))
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
@@ -241,8 +241,8 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		if err == nil {
 			api.RedirectQuery("/live")
 		} else {
-			api.SetCsrfToken("/nojs/login")
-			api.SetCsrfToken("/nojs/register")
+			api.SetCsrfToken("/auth/login")
+			api.SetCsrfToken("/auth/register")
 			api.SetData("__verification", verification)
 			api.SetData("__vk_group", vkGroup)
 
@@ -356,7 +356,7 @@ func corsHandler(mdw *utils.Mindwell) gin.HandlerFunc {
 
 func setOAuthCookie(api *utils.APIRequest) {
 	webDomain := api.Server().ConfigString("web.domain")
-	nojsDomain := api.Server().ConfigString("nojs.domain")
+	authDomain := api.Server().ConfigString("auth.domain")
 	secure := api.Server().ConfigString("web.proto") == "https"
 
 	accessToken := api.Data()["access_token"].(string)
@@ -409,7 +409,7 @@ func setOAuthCookie(api *utils.APIRequest) {
 		HttpOnly: true,
 		Path:     "/",
 		SameSite: http.SameSiteLaxMode,
-		Domain:   nojsDomain,
+		Domain:   authDomain,
 		Secure:   secure,
 	}
 	api.SetCookie(&refreshCookie)
@@ -881,8 +881,8 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 		api.SetData("__feed", isTlog)
 
 		if !api.HasUserKey() {
-			api.SetCsrfToken("/nojs/login")
-			api.SetCsrfToken("/nojs/register")
+			api.SetCsrfToken("/auth/login")
+			api.SetCsrfToken("/auth/register")
 		}
 
 		feedHandler(api, "entries/tlog")
@@ -1086,8 +1086,8 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetMe()
 
 		if !api.HasUserKey() {
-			api.SetCsrfToken("/nojs/login")
-			api.SetCsrfToken("/nojs/register")
+			api.SetCsrfToken("/auth/login")
+			api.SetCsrfToken("/auth/register")
 		}
 
 		if api.IsAjax() {

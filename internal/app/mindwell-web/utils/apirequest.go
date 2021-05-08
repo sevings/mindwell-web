@@ -413,7 +413,7 @@ func (api *APIRequest) ClearCookieToken() {
 	api.SetCookie(cookie)
 
 	cookie.Name = "rt"
-	cookie.Domain = api.mdw.ConfigString("nojs.domain")
+	cookie.Domain = api.mdw.ConfigString("auth.domain")
 	api.SetCookie(cookie)
 }
 
@@ -665,8 +665,8 @@ func (api *APIRequest) WriteTemplate(name string) {
 	api.SetData("__domain", api.mdw.ConfigString("web.domain"))
 	api.SetData("__to_url", api.NextRedirect())
 
-	nojsUrl := api.mdw.ConfigString("nojs.proto") + "://" + api.mdw.ConfigString("nojs.domain")
-	api.SetData("__nojs_url", nojsUrl)
+	authUrl := api.mdw.ConfigString("auth.proto") + "://" + api.mdw.ConfigString("auth.domain")
+	api.SetData("__auth_url", authUrl)
 
 	if api.mdw.DevMode {
 		api.SetData("__test", true)
@@ -750,7 +750,7 @@ func (api *APIRequest) Redirect(path string) {
 }
 
 func (api *APIRequest) RedirectToNoJs(path string) {
-	base := api.mdw.ConfigString("nojs.proto") + "://" + api.mdw.ConfigString("nojs.domain")
+	base := api.mdw.ConfigString("auth.proto") + "://" + api.mdw.ConfigString("auth.domain")
 	api.RedirectToHost(base + path)
 }
 
