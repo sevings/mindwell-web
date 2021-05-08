@@ -44,11 +44,10 @@ func main() {
 	withCors.POST("/login", accountHandler(mdw, false))
 	withCors.OPTIONS("/register")
 	withCors.POST("/register", accountHandler(mdw, true))
-	withCors.OPTIONS("/logout")
-	withCors.POST("/logout", logoutHandler(mdw))
 
 	router.GET("/nojs/upgrade", upgradeHandler(mdw))
 	router.GET("/nojs/refresh", refreshHandler(mdw))
+	router.GET("/nojs/logout", logoutHandler(mdw))
 
 	router.POST("/account/verification", proxyHandler(mdw))
 	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
@@ -473,8 +472,7 @@ func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ClearCookieToken()
-		api.SetData("path", "/index.html")
-		api.WriteJson()
+		api.Redirect("/index.html")
 	}
 }
 
