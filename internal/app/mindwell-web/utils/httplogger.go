@@ -3,6 +3,7 @@ package utils
 import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"strings"
 	"time"
 )
 
@@ -16,16 +17,10 @@ func LogHandler(logger *zap.Logger) gin.HandlerFunc {
 
 		ctx.Next()
 
-		token := ctx.GetHeader("X-User-Key")
-		if token == "" {
-			token, _ = ctx.Cookie("api_token")
-		}
+		user, _ := ctx.Cookie("at")
+		user = strings.SplitN(user, ".", 2)[0]
 
-		dev := ""
-		devCookie, err := ctx.Request.Cookie("dev")
-		if err == nil {
-			dev = devCookie.Value
-		}
+		dev, _ := ctx.Cookie("dev")
 
 		logger.Info("http",
 			zap.String("method", ctx.Request.Method),
@@ -34,7 +29,7 @@ func LogHandler(logger *zap.Logger) gin.HandlerFunc {
 			zap.String("browser", idBuilder.Build(ctx.Request).String()),
 			zap.String("user_agent", ctx.Request.UserAgent()),
 			zap.String("dev", dev),
-			zap.String("api_key", token),
+			zap.String("user", user),
 			zap.String("ip", ctx.GetHeader("X-Forwarded-For")),
 			zap.Int64("request_size", ctx.Request.ContentLength),
 			zap.Int("status", ctx.Writer.Status()),
