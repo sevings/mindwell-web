@@ -14,7 +14,7 @@
     <div class="tab-content">
         <div class="tab-pane" id="login" role="tabpanel" data-mh="log-tab">
             <div class="title h6">Войти в аккаунт</div>
-            <form class="content" action="{{ __nojs_url }}/login" method="post">
+            <form class="content" action="{{ __nojs_url }}/login?to={{ __to_url }}" method="post">
                 <div class="row">
                     <div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div class="form-group label-floating is-empty">
@@ -43,7 +43,7 @@
 
         <div class="tab-pane active" id="register" role="tabpanel" data-mh="log-tab">
             <div class="title h6">Зарегистрироваться</div>
-            <form class="content" name="register" action="{{ __nojs_url }}/register" method="post">
+            <form class="content" name="register" action="{{ __nojs_url }}/register?to={{ __to_url }}" method="post">
                 <div class="row">
                     <div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div class="form-group label-floating is-empty">

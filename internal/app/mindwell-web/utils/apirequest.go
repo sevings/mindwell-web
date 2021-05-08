@@ -270,8 +270,7 @@ func (api *APIRequest) UpgradeAuth() bool {
 	}
 	api.SetCookie(&tokenCookie)
 
-	to := url.QueryEscape(api.ctx.Request.URL.String())
-	api.RedirectToNoJs("/upgrade?to=" + to)
+	api.RedirectToNoJs("/upgrade?to=" + api.NextRedirect())
 
 	return true
 }
@@ -295,20 +294,17 @@ func (api *APIRequest) RefreshAuth() bool {
 		return false
 	}
 
-	to := url.QueryEscape(api.ctx.Request.URL.String())
-	api.RedirectToNoJs("/refresh?to=" + to)
+	api.RedirectToNoJs("/refresh?to=" + api.NextRedirect())
 
 	return true
 }
 
 func (api *APIRequest) RequestRefreshAuth() {
-	to := url.QueryEscape(api.ctx.Request.URL.String())
-
 	_, err := api.Cookie("trp")
 	if err == nil && api.ctx.Request.Method == "GET" && api.IsWebRequest() {
-		api.RedirectToNoJs("/refresh?to=" + to)
+		api.RedirectToNoJs("/refresh?to=" + api.NextRedirect())
 	} else {
-		api.Redirect("/index.html?to=" + to)
+		api.Redirect("/index.html?to=" + api.NextRedirect())
 	}
 }
 
@@ -667,6 +663,7 @@ func (api *APIRequest) WriteTemplate(name string) {
 	api.SetData("__large_screen", api.IsLargeScreen())
 	api.SetData("__proto", api.mdw.ConfigString("web.proto"))
 	api.SetData("__domain", api.mdw.ConfigString("web.domain"))
+	api.SetData("__to_url", api.NextRedirect())
 
 	nojsUrl := api.mdw.ConfigString("nojs.proto") + "://" + api.mdw.ConfigString("nojs.domain")
 	api.SetData("__nojs_url", nojsUrl)
@@ -755,6 +752,24 @@ func (api *APIRequest) Redirect(path string) {
 func (api *APIRequest) RedirectToNoJs(path string) {
 	base := api.mdw.ConfigString("nojs.proto") + "://" + api.mdw.ConfigString("nojs.domain")
 	api.RedirectToHost(base + path)
+}
+
+func (api *APIRequest) RedirectQuery(def string) {
+	to := api.ctx.Query("to")
+	if to == "" {
+		to = def
+	}
+
+	api.Redirect(to)
+}
+
+func (api *APIRequest) NextRedirect() string {
+	to := api.ctx.Query("to")
+	if to == "" {
+		to = api.ctx.Request.URL.String()
+	}
+
+	return url.QueryEscape(to)
 }
 
 func (api *APIRequest) ClientIP() string {

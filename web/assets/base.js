@@ -267,7 +267,7 @@ $(".register").click(function() {
             withCredentials: true
         },
         success: function(data) {
-            window.location.pathname = data.path
+            window.location.href = data.href
         },
         error: showAjaxError,
         complete: function() {

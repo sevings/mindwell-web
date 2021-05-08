@@ -238,19 +238,15 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		_, err := ctx.Request.Cookie("api_token")
+		_, err := api.Cookie("at")
 		if err == nil {
-			to, err := url.QueryUnescape(ctx.Query("to"))
-			if to == "" || err != nil {
-				to = "/live"
-			}
-
-			ctx.Redirect(http.StatusSeeOther, to)
+			api.RedirectQuery("/live")
 		} else {
 			api.SetCsrfToken("/nojs/login")
 			api.SetCsrfToken("/nojs/register")
 			api.SetData("__verification", verification)
 			api.SetData("__vk_group", vkGroup)
+
 			api.WriteTemplate("index")
 		}
 	}
@@ -458,14 +454,17 @@ func accountHandler(mdw *utils.Mindwell, create bool) func(ctx *gin.Context) {
 
 		setOAuthCookie(api)
 
-		api.ClearData()
-
-		if create {
-			api.SetData("path", "/me")
-		} else {
-			api.SetData("path", "/live")
+		to := ctx.Query("to")
+		if to == "" {
+			if create {
+				to = "/me"
+			} else {
+				to = "/live"
+			}
 		}
 
+		api.ClearData()
+		api.SetData("href", to)
 		api.WriteJson()
 	}
 }
@@ -499,7 +498,7 @@ func upgradeHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			}
 
 			api.ClearCookieToken()
-			api.Redirect("/index.html?to=" + ctx.Query("to"))
+			api.Redirect("/index.html?to=" + api.NextRedirect())
 			return
 		}
 
@@ -513,12 +512,7 @@ func upgradeHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		}
 		api.SetCookie(&oldCookie)
 
-		to, err := url.QueryUnescape(ctx.Query("to"))
-		if to == "" || err != nil {
-			to = "/live"
-		}
-
-		api.Redirect(to)
+		api.RedirectQuery("/live")
 	}
 }
 
@@ -532,7 +526,7 @@ func refreshHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		token, err := api.Cookie("rt")
 		if err != nil {
 			api.ClearCookieToken()
-			api.Redirect("/index.html?to=" + ctx.Query("to"))
+			api.Redirect("/index.html?to=" + api.NextRedirect())
 			return
 		}
 
@@ -551,18 +545,13 @@ func refreshHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			}
 
 			api.ClearCookieToken()
-			api.Redirect("/index.html?to=" + ctx.Query("to"))
+			api.Redirect("/index.html?to=" + api.NextRedirect())
 			return
 		}
 
 		setOAuthCookie(api)
 
-		to, err := url.QueryUnescape(ctx.Query("to"))
-		if to == "" || err != nil {
-			to = "/live"
-		}
-
-		api.Redirect(to)
+		api.RedirectQuery("/live")
 	}
 }
 
