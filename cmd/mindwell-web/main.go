@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -27,154 +28,158 @@ func main() {
 	router.Use(utils.LogHandler(mdw.LogWeb()))
 	router.Use(gin.Recovery())
 
-	router.Static("/assets/", "./web/assets/")
+	web := router.Group("/", hostHandler(mdw.ConfigString("web.domain")))
 
-	router.GET("/", rootHandler)
-	router.GET("/robots.txt", robotsHandler(mdw))
-	router.GET("/sitemap.xml", sitemapHandler(mdw))
-	router.GET("/index.html", indexHandler(mdw))
+	web.Static("/assets/", "./web/assets/")
 
-	router.GET("/blank", blankHandler(mdw))
-	router.GET("/oauth", oauthFormHandler(mdw))
-	router.POST("/oauth/allow", oauthAllowHandler(mdw))
-	router.GET("/oauth/deny", oauthDenyHandler(mdw))
+	web.GET("/", rootHandler)
+	web.GET("/robots.txt", robotsHandler(mdw))
+	web.GET("/sitemap.xml", sitemapHandler(mdw))
+	web.GET("/index.html", indexHandler(mdw))
 
-	withCors := router.Group("/auth", corsHandler(mdw))
+	web.GET("/blank", blankHandler(mdw))
+	web.GET("/oauth", oauthFormHandler(mdw))
+	web.POST("/oauth/allow", oauthAllowHandler(mdw))
+	web.GET("/oauth/deny", oauthDenyHandler(mdw))
+
+	auth := router.Group("/", hostHandler(mdw.ConfigString("auth.domain")))
+
+	withCors := auth.Group("/", corsHandler(mdw))
 	withCors.OPTIONS("/login")
 	withCors.POST("/login", accountHandler(mdw, false))
 	withCors.OPTIONS("/register")
 	withCors.POST("/register", accountHandler(mdw, true))
 
-	router.GET("/auth/upgrade", upgradeHandler(mdw))
-	router.GET("/auth/refresh", refreshHandler(mdw))
-	router.GET("/auth/logout", logoutHandler(mdw))
+	auth.GET("/upgrade", upgradeHandler(mdw))
+	auth.GET("/refresh", refreshHandler(mdw))
+	auth.GET("/logout", logoutHandler(mdw))
 
-	router.POST("/account/verification", proxyHandler(mdw))
-	router.GET("/account/verification/:email", verifyEmailHandler(mdw))
+	web.POST("/account/verification", proxyHandler(mdw))
+	web.GET("/account/verification/:email", verifyEmailHandler(mdw))
 
-	router.GET("/account/invites", invitesHandler(mdw))
+	web.GET("/account/invites", invitesHandler(mdw))
 
-	router.GET("/account/password", passwordHandler(mdw))
-	router.POST("/account/password", savePasswordHandler(mdw))
+	web.GET("/account/password", passwordHandler(mdw))
+	web.POST("/account/password", savePasswordHandler(mdw))
 
-	router.GET("/account/email", emailHandler(mdw))
-	router.POST("/account/email", saveEmailHandler(mdw))
+	web.GET("/account/email", emailHandler(mdw))
+	web.POST("/account/email", saveEmailHandler(mdw))
 
-	router.GET("/account/ignored", ignoredHandler(mdw))
-	router.GET("/account/hidden", hiddenHandler(mdw))
+	web.GET("/account/ignored", ignoredHandler(mdw))
+	web.GET("/account/hidden", hiddenHandler(mdw))
 
-	router.GET("/account/notifications", notificationsSettingsHandler(mdw))
-	router.PUT("/account/settings/email", proxyHandler(mdw))
-	router.PUT("/account/settings/telegram", proxyHandler(mdw))
+	web.GET("/account/notifications", notificationsSettingsHandler(mdw))
+	web.PUT("/account/settings/email", proxyHandler(mdw))
+	web.PUT("/account/settings/telegram", proxyHandler(mdw))
 
-	router.GET("/account/subscribe/token", proxyHandler(mdw))
+	web.GET("/account/subscribe/token", proxyHandler(mdw))
 
-	router.GET("/adm", admHandler(mdw))
+	web.GET("/adm", admHandler(mdw))
 
-	router.POST("/adm/grandson", grandsonSaverHandler(mdw))
-	router.GET("/adm/grandson/status", proxyHandler(mdw))
-	router.POST("/adm/grandson/status", proxyHandler(mdw))
+	web.POST("/adm/grandson", grandsonSaverHandler(mdw))
+	web.GET("/adm/grandson/status", proxyHandler(mdw))
+	web.POST("/adm/grandson/status", proxyHandler(mdw))
 
-	router.GET("/adm/grandfather/status", proxyHandler(mdw))
-	router.POST("/adm/grandfather/status", proxyHandler(mdw))
+	web.GET("/adm/grandfather/status", proxyHandler(mdw))
+	web.POST("/adm/grandfather/status", proxyHandler(mdw))
 
-	router.GET("/account/recover", resetPasswordHandler(mdw))
-	router.POST("/account/recover", proxyNoKeyHandler(mdw))
-	router.POST("/account/recover/password", recoverHandler(mdw))
+	web.GET("/account/recover", resetPasswordHandler(mdw))
+	web.POST("/account/recover", proxyNoKeyHandler(mdw))
+	web.POST("/account/recover/password", recoverHandler(mdw))
 
-	router.GET("/live", liveHandler(mdw))
-	router.GET("/best", bestHandler(mdw))
-	router.GET("/friends", friendsHandler(mdw))
-	router.GET("/watching", watchingHandler(mdw))
+	web.GET("/live", liveHandler(mdw))
+	web.GET("/best", bestHandler(mdw))
+	web.GET("/friends", friendsHandler(mdw))
+	web.GET("/watching", watchingHandler(mdw))
 
-	router.GET("/users", topsHandler(mdw))
-	router.GET("/users/:name", tlogHandler(mdw, false))
-	router.GET("/users/:name/calendar", proxyNoKeyHandler(mdw))
-	router.GET("/users/:name/entries", tlogHandler(mdw, true))
-	router.GET("/users/:name/favorites", favoritesHandler(mdw))
-	router.GET("/users/:name/relations/:relation", usersHandler(mdw))
+	web.GET("/users", topsHandler(mdw))
+	web.GET("/users/:name", tlogHandler(mdw, false))
+	web.GET("/users/:name/calendar", proxyNoKeyHandler(mdw))
+	web.GET("/users/:name/entries", tlogHandler(mdw, true))
+	web.GET("/users/:name/favorites", favoritesHandler(mdw))
+	web.GET("/users/:name/relations/:relation", usersHandler(mdw))
 
-	router.GET("/me", meHandler(mdw, ""))
-	router.GET("/me/entries", meHandler(mdw, "/entries"))
+	web.GET("/me", meHandler(mdw, ""))
+	web.GET("/me/entries", meHandler(mdw, "/entries"))
 
-	router.POST("/profile/save", meSaverHandler(mdw))
-	router.POST("/profile/avatar", avatarSaverHandler(mdw))
-	router.POST("/profile/cover", coverSaverHandler(mdw))
+	web.POST("/profile/save", meSaverHandler(mdw))
+	web.POST("/profile/avatar", avatarSaverHandler(mdw))
+	web.POST("/profile/cover", coverSaverHandler(mdw))
 
-	router.GET("/design", designEditorHandler(mdw))
-	router.POST("/design", designSaverHandler(mdw))
+	web.GET("/design", designEditorHandler(mdw))
+	web.POST("/design", designSaverHandler(mdw))
 
-	router.GET("/editor", editorHandler(mdw))
-	router.POST("/entries", postHandler(mdw))
+	web.GET("/editor", editorHandler(mdw))
+	web.POST("/entries", postHandler(mdw))
 
-	router.GET("/entries/:id/edit", editorExistingHandler(mdw))
-	router.POST("/entries/:id", editPostHandler(mdw))
+	web.GET("/entries/:id/edit", editorExistingHandler(mdw))
+	web.POST("/entries/:id", editPostHandler(mdw))
 
-	router.GET("/entries/:id", entryHandler(mdw))
-	router.DELETE("/entries/:id", proxyHandler(mdw))
+	web.GET("/entries/:id", entryHandler(mdw))
+	web.DELETE("/entries/:id", proxyHandler(mdw))
 
-	router.GET("/entries/:id/comments", commentsHandler(mdw))
-	router.POST("/entries/:id/comments", postCommentHandler(mdw))
+	web.GET("/entries/:id/comments", commentsHandler(mdw))
+	web.POST("/entries/:id/comments", postCommentHandler(mdw))
 
-	router.POST("/comments/:id", editCommentHandler(mdw))
-	router.DELETE("/comments/:id", proxyHandler(mdw))
+	web.POST("/comments/:id", editCommentHandler(mdw))
+	web.DELETE("/comments/:id", proxyHandler(mdw))
 
-	router.PUT("/me/online", proxyHandler(mdw))
+	web.PUT("/me/online", proxyHandler(mdw))
 
-	router.PUT("/entries/:id/vote", proxyHandler(mdw))
-	router.DELETE("/entries/:id/vote", proxyHandler(mdw))
+	web.PUT("/entries/:id/vote", proxyHandler(mdw))
+	web.DELETE("/entries/:id/vote", proxyHandler(mdw))
 
-	router.PUT("/comments/:id/vote", proxyHandler(mdw))
-	router.DELETE("/comments/:id/vote", proxyHandler(mdw))
+	web.PUT("/comments/:id/vote", proxyHandler(mdw))
+	web.DELETE("/comments/:id/vote", proxyHandler(mdw))
 
-	router.PUT("/entries/:id/watching", proxyHandler(mdw))
-	router.DELETE("/entries/:id/watching", proxyHandler(mdw))
+	web.PUT("/entries/:id/watching", proxyHandler(mdw))
+	web.DELETE("/entries/:id/watching", proxyHandler(mdw))
 
-	router.PUT("/entries/:id/favorite", proxyHandler(mdw))
-	router.DELETE("/entries/:id/favorite", proxyHandler(mdw))
+	web.PUT("/entries/:id/favorite", proxyHandler(mdw))
+	web.DELETE("/entries/:id/favorite", proxyHandler(mdw))
 
-	router.POST("/entries/:id/complain", proxyHandler(mdw))
-	router.POST("/comments/:id/complain", proxyHandler(mdw))
+	web.POST("/entries/:id/complain", proxyHandler(mdw))
+	web.POST("/comments/:id/complain", proxyHandler(mdw))
 
-	router.GET("/relations/to/:name", proxyHandler(mdw))
-	router.PUT("/relations/to/:name", proxyHandler(mdw))
-	router.DELETE("/relations/to/:name", proxyHandler(mdw))
+	web.GET("/relations/to/:name", proxyHandler(mdw))
+	web.PUT("/relations/to/:name", proxyHandler(mdw))
+	web.DELETE("/relations/to/:name", proxyHandler(mdw))
 
-	router.POST("/relations/invited/:name", proxyHandler(mdw))
+	web.POST("/relations/invited/:name", proxyHandler(mdw))
 
-	router.GET("/relations/from/:name", proxyHandler(mdw))
-	router.PUT("/relations/from/:name", proxyHandler(mdw))
-	router.DELETE("/relations/from/:name", proxyHandler(mdw))
+	web.GET("/relations/from/:name", proxyHandler(mdw))
+	web.PUT("/relations/from/:name", proxyHandler(mdw))
+	web.DELETE("/relations/from/:name", proxyHandler(mdw))
 
-	router.GET("/notifications", notificationsHandler(mdw))
-	router.GET("/notifications/:id", singleNotificationHandler(mdw))
-	router.PUT("/notifications/read", proxyHandler(mdw))
+	web.GET("/notifications", notificationsHandler(mdw))
+	web.GET("/notifications/:id", singleNotificationHandler(mdw))
+	web.PUT("/notifications/read", proxyHandler(mdw))
 
-	router.POST("/images", imageHandler(mdw))
-	router.GET("/images/:id", imageHandler(mdw))
-	router.DELETE("/images/:id", deleteImageHandler(mdw))
+	web.POST("/images", imageHandler(mdw))
+	web.GET("/images/:id", imageHandler(mdw))
+	web.DELETE("/images/:id", deleteImageHandler(mdw))
 
-	router.GET("/chats", chatsHandler(mdw))
-	router.GET("/chats/:name", chatHandler(mdw))
-	router.PUT("/chats/:name/read", proxyHandler(mdw))
+	web.GET("/chats", chatsHandler(mdw))
+	web.GET("/chats/:name", chatHandler(mdw))
+	web.PUT("/chats/:name/read", proxyHandler(mdw))
 
-	router.GET("/chats/:name/messages", messagesHandler(mdw))
-	router.POST("/chats/:name/messages", sendMessageHandler(mdw))
+	web.GET("/chats/:name/messages", messagesHandler(mdw))
+	web.POST("/chats/:name/messages", sendMessageHandler(mdw))
 
-	router.GET("/messages/:id", singleMessageHandler(mdw))
-	router.POST("/messages/:id", editMessageHandler(mdw))
-	router.DELETE("/messages/:id", proxyHandler(mdw))
+	web.GET("/messages/:id", singleMessageHandler(mdw))
+	web.POST("/messages/:id", editMessageHandler(mdw))
+	web.DELETE("/messages/:id", proxyHandler(mdw))
 
-	router.GET("/help/about", aboutHandler(mdw))
-	router.GET("/help/rules", rulesHandler(mdw))
-	router.GET("/help/faq/", faqHandler(mdw))
-	router.GET("/help/faq/md", faqMdHandler(mdw))
-	router.GET("/help/faq/votes", faqVotesHandler(mdw))
-	router.GET("/help/faq/invites", faqInvitesHandler(mdw))
+	web.GET("/help/about", aboutHandler(mdw))
+	web.GET("/help/rules", rulesHandler(mdw))
+	web.GET("/help/faq/", faqHandler(mdw))
+	web.GET("/help/faq/md", faqMdHandler(mdw))
+	web.GET("/help/faq/votes", faqVotesHandler(mdw))
+	web.GET("/help/faq/invites", faqInvitesHandler(mdw))
 
 	router.NoRoute(error404Handler(mdw))
 
-	addr := mdw.ConfigString("web.listen_address")
+	addr := mdw.ConfigString("listen_address")
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: router,
@@ -202,6 +207,20 @@ func main() {
 	}
 
 	mdw.LogSystem().Info("Exit server")
+}
+
+func hostHandler(host string) func(ctx *gin.Context) {
+	host = strings.ToLower(host)
+
+	return func(ctx *gin.Context) {
+		actualHost := ctx.Request.Host
+		actualHost = strings.SplitN(actualHost, ":", 2)[0]
+		actualHost = strings.ToLower(actualHost)
+
+		if actualHost != host {
+			ctx.AbortWithStatus(http.StatusNotFound)
+		}
+	}
 }
 
 func rootHandler(ctx *gin.Context) {
@@ -241,8 +260,8 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		if err == nil {
 			api.RedirectQuery("/live")
 		} else {
-			api.SetCsrfToken("/auth/login")
-			api.SetCsrfToken("/auth/register")
+			api.SetCsrfToken("/login")
+			api.SetCsrfToken("/register")
 			api.SetData("__verification", verification)
 			api.SetData("__vk_group", vkGroup)
 
