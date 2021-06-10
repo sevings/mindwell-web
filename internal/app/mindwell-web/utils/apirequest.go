@@ -18,7 +18,7 @@ import (
 )
 
 var mobReFull, mobRe4 *regexp.Regexp
-var clientError, serverError, csrfError error
+var clientError, serverError, csrfError, redirectedErr error
 
 func init() {
 	// https://stackoverflow.com/a/11381730
@@ -27,6 +27,7 @@ func init() {
 	clientError = errors.New("client error")
 	serverError = errors.New("server error")
 	csrfError = errors.New("csrf error")
+	redirectedErr = errors.New("redirected")
 }
 
 type APIRequest struct {
@@ -45,12 +46,18 @@ func NewRequest(mdw *Mindwell, ctx *gin.Context) *APIRequest {
 	st := NewServerTiming()
 	st.Add("api").Start()
 
-	return &APIRequest{
+	api := &APIRequest{
 		mdw:  mdw,
 		ctx:  ctx,
 		read: false,
 		st:   st,
 	}
+
+	if !api.UpgradeAuth() {
+		api.RefreshAuth()
+	}
+
+	return api
 }
 
 func (api *APIRequest) Server() *Mindwell {
@@ -62,7 +69,9 @@ func (api *APIRequest) Error() error {
 }
 
 func (api *APIRequest) SkipError() {
-	api.err = nil
+	if api.err != redirectedErr {
+		api.err = nil
+	}
 }
 
 func (api *APIRequest) StatusCode() int {
@@ -234,7 +243,7 @@ func (api *APIRequest) UpgradeAuth() bool {
 		return false
 	}
 
-	if api.IsAjax() || api.ctx.Request.Method != "GET" {
+	if api.IsAjax() || !api.IsGet() || !api.IsWebRequest() {
 		return false
 	}
 
@@ -261,7 +270,7 @@ func (api *APIRequest) UpgradeAuth() bool {
 	tokenCookie := http.Cookie{
 		Name:     "api_token",
 		Value:    oldToken.Value,
-		MaxAge:   60 * 5,
+		MaxAge:   60 * 2,
 		HttpOnly: true,
 		Path:     "/",
 		SameSite: http.SameSiteLaxMode,
@@ -271,6 +280,7 @@ func (api *APIRequest) UpgradeAuth() bool {
 	api.SetCookie(&tokenCookie)
 
 	api.RedirectToNoJs("/upgrade?to=" + api.NextRedirect())
+	api.err = redirectedErr
 
 	return true
 }
@@ -280,28 +290,26 @@ func (api *APIRequest) RefreshAuth() bool {
 		return false
 	}
 
-	if api.IsAjax() || api.ctx.Request.Method != "GET" {
+	if api.IsAjax() || !api.IsGet() || !api.IsWebRequest() {
 		return false
 	}
 
-	_, err := api.Cookie("trr")
-	if err == nil {
+	if !api.IsAuthRefreshRequired() {
 		return false
 	}
 
-	_, err = api.Cookie("trp")
-	if err != nil {
+	if !api.IsAuthRefreshPossible() {
 		return false
 	}
 
 	api.RedirectToNoJs("/refresh?to=" + api.NextRedirect())
+	api.err = redirectedErr
 
 	return true
 }
 
 func (api *APIRequest) RequestRefreshAuth() {
-	_, err := api.Cookie("trp")
-	if err == nil && api.ctx.Request.Method == "GET" && api.IsWebRequest() {
+	if api.IsAuthRefreshPossible() && api.IsGet() && api.IsWebRequest() {
 		api.RedirectToNoJs("/refresh?to=" + api.NextRedirect())
 	} else {
 		api.Redirect("/index.html?to=" + api.NextRedirect())
@@ -639,6 +647,8 @@ func (api *APIRequest) WriteTemplate(name string) {
 		name = "error"
 		api.ctx.Status(419)
 		break
+	case redirectedErr:
+		return
 	case nil:
 		break
 	default:
@@ -776,14 +786,28 @@ func (api *APIRequest) ClientIP() string {
 	return api.ctx.GetHeader("X-Forwarded-For")
 }
 
+func (api *APIRequest) IsGet() bool {
+	return api.ctx.Request.Method == "GET"
+}
+
 func (api *APIRequest) IsWebRequest() bool {
 	host := api.mdw.ConfigString("web.domain")
-	return api.ctx.Request.URL.Host == host
+	return api.ctx.Request.Host == host
 }
 
 func (api *APIRequest) IsAjax() bool {
 	with := api.ctx.GetHeader("X-Requested-With")
 	return with == "XMLHttpRequest"
+}
+
+func (api *APIRequest) IsAuthRefreshRequired() bool {
+	_, err := api.Cookie("trr")
+	return err != nil
+}
+
+func (api *APIRequest) IsAuthRefreshPossible() bool {
+	_, err := api.Cookie("trp")
+	return err == nil
 }
 
 func (api *APIRequest) ExpectsJsonError() bool {

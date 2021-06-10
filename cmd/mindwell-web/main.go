@@ -775,10 +775,6 @@ func feedHandler(api *utils.APIRequest, templateName string) {
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		if api.UpgradeAuth() || api.RefreshAuth() {
-			return
-		}
-
 		api.QueryCookieName("live_feed")
 		api.ForwardTo("/entries/live")
 		api.SetScrollHrefs()
@@ -868,9 +864,6 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 
 		name := ctx.Param("name")
 		api := utils.NewRequest(mdw, ctx)
-		if api.UpgradeAuth() || api.RefreshAuth() {
-			return
-		}
 
 		var profile interface{}
 		if !api.IsAjax() {
