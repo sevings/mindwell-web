@@ -37,7 +37,6 @@ func main() {
 	web.GET("/sitemap.xml", sitemapHandler(mdw))
 	web.GET("/index.html", indexHandler(mdw))
 
-	web.GET("/blank", blankHandler(mdw))
 	web.GET("/oauth", oauthFormHandler(mdw))
 	web.POST("/oauth/allow", oauthAllowHandler(mdw))
 	web.GET("/oauth/deny", oauthDenyHandler(mdw))
@@ -50,6 +49,7 @@ func main() {
 	withCors.OPTIONS("/register")
 	withCors.POST("/register", accountHandler(mdw, true))
 
+	auth.GET("/blank", blankHandler(mdw))
 	auth.GET("/upgrade", upgradeHandler(mdw))
 	auth.GET("/refresh", refreshHandler(mdw))
 	auth.GET("/logout", logoutHandler(mdw))
@@ -270,13 +270,6 @@ func indexHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func blankHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-		api.WriteTemplate("oauth/blank")
-	}
-}
-
 var authCache = cache.New(15*time.Minute, time.Hour)
 
 func oauthFormHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
@@ -358,6 +351,13 @@ func oauthDenyHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.ForwardTo("/oauth2/deny")
 
 		handleOAuth(ctx, api)
+	}
+}
+
+func blankHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.WriteTemplate("oauth/blank")
 	}
 }
 
