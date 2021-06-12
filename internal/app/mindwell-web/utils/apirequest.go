@@ -279,7 +279,7 @@ func (api *APIRequest) UpgradeAuth() bool {
 	}
 	api.SetCookie(&tokenCookie)
 
-	api.RedirectToNoJs("/upgrade?to=" + api.NextRedirect())
+	api.RedirectToAuth("/upgrade?to=" + api.NextRedirect())
 	api.err = redirectedErr
 
 	return true
@@ -302,7 +302,7 @@ func (api *APIRequest) RefreshAuth() bool {
 		return false
 	}
 
-	api.RedirectToNoJs("/refresh?to=" + api.NextRedirect())
+	api.RedirectToAuth("/refresh?to=" + api.NextRedirect())
 	api.err = redirectedErr
 
 	return true
@@ -310,7 +310,7 @@ func (api *APIRequest) RefreshAuth() bool {
 
 func (api *APIRequest) RequestRefreshAuth() {
 	if api.IsAuthRefreshPossible() && api.IsGet() && api.IsWebRequest() {
-		api.RedirectToNoJs("/refresh?to=" + api.NextRedirect())
+		api.RedirectToAuth("/refresh?to=" + api.NextRedirect())
 	} else {
 		api.Redirect("/index.html?to=" + api.NextRedirect())
 	}
@@ -759,7 +759,7 @@ func (api *APIRequest) Redirect(path string) {
 	api.RedirectToHost(base + path)
 }
 
-func (api *APIRequest) RedirectToNoJs(path string) {
+func (api *APIRequest) RedirectToAuth(path string) {
 	base := api.mdw.ConfigString("auth.proto") + "://" + api.mdw.ConfigString("auth.domain")
 	api.RedirectToHost(base + path)
 }
