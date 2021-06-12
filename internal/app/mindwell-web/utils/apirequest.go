@@ -655,7 +655,7 @@ func (api *APIRequest) WriteTemplate(name string) {
 		return
 	}
 
-	if (name == "error" || name == "server_error") && api.ExpectsJsonError() {
+	if (name == "error" || name == "server_error") && (api.ExpectsJsonError() || !api.IsWebRequest()) {
 		api.WriteJson()
 		return
 	}
