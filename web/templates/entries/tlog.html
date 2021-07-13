@@ -55,6 +55,20 @@
                                 {% endif %}
                             </li>
                             <li>
+                                <span class="title">Тлог открыт:</span>
+                                <span class="text">
+                                    {% if profile.privacy == "all" %}
+                                        всем
+                                    {% elif profile.privacy == "registered" %}
+                                        зарегистрированным
+                                    {% elif profile.privacy == "invited" %}
+                                        приглашенным
+                                    {% else %}
+                                        подписчикам
+                                    {% endif %}
+                                </span>
+                            </li>
+                            <li>
                                 <span class="title">В рейтинге:</span>
                                 <span class="text">{{ profile.rank }}</span>
                             </li>
