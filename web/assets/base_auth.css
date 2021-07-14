@@ -57,6 +57,11 @@ img.mfp-img {
     height: 42px;
 }
 
+.top-header-author .author-thumb {
+    width: 136px;
+    height: 136px;
+}
+
 .btn-control .triangle-top-right {
     top: calc(100% + 15px);
     bottom: auto;
