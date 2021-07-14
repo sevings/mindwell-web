@@ -877,14 +877,16 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 			api.ClearData()
 		}
 
+		api.QueryCookieName("tlog_feed")
+
 		if isTlog || api.IsLargeScreen() {
-			api.QueryCookieName("tlog_feed")
 			api.ForwardToNoKey("/users/" + name + "/tlog")
 			api.SetScrollHrefs()
 		}
 
 		if !isTlog || api.IsLargeScreen() {
 			api.SetFieldNoKey("tags", "/users/"+name+"/tags")
+			api.SetFieldNoKey("calendar", "/users/"+name+"/calendar")
 		}
 
 		api.SkipError()
