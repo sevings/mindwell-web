@@ -26,8 +26,19 @@
     </div>
 </div>
 
-{% if __view == "masonry" %}
-    <div class="container">
+<div class="container">
+    {% if !me.id %}
+        <div class="row">
+            <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="ui-block">
+                    <div class="ui-block-title">
+                        <div class="h6 title">Больше записей доступно зарегистрированным пользователям.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% if __view == "masonry" %}
         <div id="feed" class="row sorting-container" data-layout="masonry">
             {% if entries %}
                 {% include "feed_page.html" %}
@@ -35,9 +46,7 @@
                 <h6 id="empty-feed" class="title hcenter">Нет записей</h6>
             {% endif %}
         </div>
-    </div>
-{% else %}
-    <div class="container">
+    {% else %}
         <div class="row justify-content-center">
             <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 order-3">
                 <div id="feed">
@@ -49,8 +58,8 @@
                 </div>
             </div>
         </div>
-    </div>
-{% endif %}
+    {% endif %}
+</div>
 
 
 

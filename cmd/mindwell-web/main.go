@@ -776,7 +776,7 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.QueryCookieName("live_feed")
-		api.ForwardTo("/entries/live")
+		api.ForwardToNoKey("/entries/live")
 		api.SetScrollHrefs()
 
 		api.SetDataFromQuery("section", "entries")
@@ -785,6 +785,11 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 		if ctx.Query("section") != "comments" {
 			api.SetData("__search", true)
+		}
+
+		if !api.HasUserKey() {
+			api.SetCsrfToken("/login")
+			api.SetCsrfToken("/register")
 		}
 
 		feedHandler(api, "entries/live")
