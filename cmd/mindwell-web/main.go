@@ -874,7 +874,12 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 		if !api.IsAjax() {
 			api.SetFieldNoKey("profile", "/users/"+name)
 			if api.Error() != nil {
-				api.WriteTemplate("error")
+				if api.HasUserKey() {
+					api.WriteTemplate("error")
+				} else {
+					ctx.Redirect(http.StatusSeeOther, "/index.html?to="+api.NextRedirect())
+				}
+
 				return
 			}
 
