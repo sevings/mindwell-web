@@ -213,13 +213,13 @@ $("#post-entry").click(function() {
 
 $("#show-upload-image").click(function(){
     let cnt = $("#attached-images").children().length
-    if(cnt < 5)
+    if(cnt < 10)
     {
         $("#upload-image-popup").modal("show")
         return false
     }
 
-    alert("К посту можно прикрепить не более пяти изображений.")
+    alert("К посту можно прикрепить не более десяти изображений.")
     return false
 })
 
