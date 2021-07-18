@@ -856,17 +856,6 @@ func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		if _, err := ctx.Request.Cookie("tlog_feed"); err == nil {
-			cookie := &http.Cookie{
-				Name:     "tlog_feed",
-				Value:    "limit=10",
-				Path:     "/",
-				MaxAge:   60 * 60 * 24 * 90,
-				SameSite: http.SameSiteLaxMode,
-			}
-			http.SetCookie(ctx.Writer, cookie)
-		}
-
 		name := ctx.Param("name")
 		api := utils.NewRequest(mdw, ctx)
 
@@ -915,17 +904,6 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 
 func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		if _, err := ctx.Request.Cookie("tlog_feed"); err == nil {
-			cookie := &http.Cookie{
-				Name:     "tlog_feed",
-				Value:    "limit=10",
-				Path:     "/",
-				MaxAge:   60 * 60 * 24 * 90,
-				SameSite: http.SameSiteLaxMode,
-			}
-			http.SetCookie(ctx.Writer, cookie)
-		}
-
 		name := ctx.Param("name")
 		api := utils.NewRequest(mdw, ctx)
 		var profile interface{}
