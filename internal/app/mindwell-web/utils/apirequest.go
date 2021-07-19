@@ -345,16 +345,21 @@ func (api *APIRequest) QueryCookie() {
 	path := strings.Split(link.Path, "/")
 	name := path[len(path)-1]
 
-	api.QueryCookieName(name)
+	api.QueryCookieName(name, "")
 }
 
-func (api *APIRequest) QueryCookieName(name string) {
+func (api *APIRequest) QueryCookieName(name, defQuery string) {
 	urlValues := url.Values{}
 	cookieValues := url.Values{}
 
 	cookie, err := api.ctx.Request.Cookie(name)
 	if err == nil {
 		cookieValues, err = url.ParseQuery(cookie.Value)
+		if err != nil {
+			api.mdw.LogWeb().Warn(api.err.Error())
+		}
+	} else {
+		cookieValues, err = url.ParseQuery(defQuery)
 		if err != nil {
 			api.mdw.LogWeb().Warn(api.err.Error())
 		}

@@ -775,7 +775,7 @@ func feedHandler(api *utils.APIRequest, templateName string) {
 func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.QueryCookieName("live_feed")
+		api.QueryCookieName("live_feed", "")
 		api.ForwardToNoKey("/entries/live")
 		api.SetScrollHrefs()
 
@@ -799,7 +799,7 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.QueryCookieName("best_feed")
+		api.QueryCookieName("best_feed", "")
 		api.ForwardTo("/entries/best")
 		api.SetScrollHrefs()
 
@@ -815,7 +815,7 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.QueryCookieName("friends_feed")
+		api.QueryCookieName("friends_feed", "")
 		api.ForwardTo("/entries/friends")
 		api.SetScrollHrefs()
 
@@ -831,7 +831,7 @@ func friendsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func watchingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.QueryCookieName("friends_feed")
+		api.QueryCookieName("friends_feed", "")
 		api.ForwardTo("/entries/watching")
 		api.SetScrollHrefs()
 
@@ -876,7 +876,7 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 			api.ClearData()
 		}
 
-		api.QueryCookieName("tlog_feed")
+		api.QueryCookieName("tlog_feed", "limit=10")
 
 		if isTlog || api.IsLargeScreen() {
 			api.ForwardToNoKey("/users/" + name + "/tlog")
@@ -919,7 +919,7 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.ClearData()
 		}
 
-		api.QueryCookieName("tlog_feed")
+		api.QueryCookieName("tlog_feed", "limit=10")
 		api.ForwardTo("/users/" + name + "/favorites")
 		api.SetScrollHrefs()
 		api.SkipError()
