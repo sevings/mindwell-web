@@ -2,7 +2,7 @@
 {% block title %}Редактор{% endblock %}
 {% block scripts %}
     <script src="/assets/js/basil.min.js"></script>
-    <script src="/assets/editor.js?d=20210718"></script>
+    <script src="/assets/editor.js?d=20210725"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -45,13 +45,15 @@
                                     <label class="control-label">Пост будет виден</label>
                                     <select class="selectpicker form-control" name="privacy">
                                         <option value="all" {% if privacy == "all" %}selected{% endif %}>всем</option>
-                                        {% comment %} <option value="followers">только подписчикам</option> {% endcomment %}
+                                        <option value="registered" {% if privacy == "registered" %}selected{% endif %}>только зарегистрированным</option>
+                                        <option value="invited" {% if privacy == "invited" %}selected{% endif %}>только приглашенным</option>
+                                        <option value="followers" {% if privacy == "followers" %}selected{% endif %}>только подписчикам</option>
                                         <option value="me" {% if privacy == "me" %}selected{% endif %}>только мне</option>
                                     </select>
                                 </fieldset>                
 
                                 {% if me.invitedBy.id %}
-                                    <div class="switcher-block for-public-only">
+                                    <div id="allow-voting" class="switcher-block">
                                         <div class="h6 title">Разрешить голосование</div>
                                         <div class="togglebutton">
                                             <label>
@@ -64,7 +66,7 @@
                                 {% endif %}
 
                                 {% if me.account.verified %}
-                                <div class="switcher-block for-public-only">
+                                <div id="allow-live" class="switcher-block">
                                     <div class="h6 title">Отправить в Прямой эфир</div>
                                     <div class="togglebutton">
                                         <label>

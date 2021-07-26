@@ -14,6 +14,16 @@
                             <span>{{ wc }}&nbsp;слов{{ wc|quantity:"о,а," }}</span>
                         {% endwith %}
                     {% endif %}
+                    {% if entry.privacy != "all" && entry.privacy != "me" %}
+                        <span class="dot-divider"></span>
+                        {% if entry.privacy == "registered" %}
+                            <span>зарег-ным</span>
+                        {% elif entry.privacy == "invited" %}
+                            <span>приглашенным</span>
+                        {% else %}
+                            <span>подписчикам</span>
+                        {% endif %}
+                    {% endif %}
                     {% if !cutEntry && entry.inLive %}
                         <span class="post-live" title="Запись отправлена в Прямой эфир" data-toggle="tooltip" data-placement="top" >
                             <i class="fas fa-bullhorn"></i>

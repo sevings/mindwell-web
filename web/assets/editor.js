@@ -70,13 +70,21 @@ function removeDraft() {
 }
 
 function togglePublicOnly() {
-    let elements = $(".for-public-only")
     let privacy = privacyElem().val()
+
+    let voting = $("#allow-voting")
     if(privacy === "me") {
-        elements.hide()
+        voting.hide()
     } else {
-        elements.show()
-    }    
+        voting.show()
+    }
+
+    let live = $("#allow-live")
+    if(privacy === "me" || privacy === "followers") {
+        live.hide()
+    } else {
+        live.show()
+    }
 }
 
 function init(){
