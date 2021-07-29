@@ -50,7 +50,10 @@
                                         <option value="followers" {% if privacy == "followers" %}selected{% endif %}>только подписчикам</option>
                                         <option value="me" {% if privacy == "me" %}selected{% endif %}>только мне</option>
                                     </select>
-                                </fieldset>                
+                                    {% if me.privacy != "all" %}
+                                        <span class="hint">Приватность записей работает в пределах приватности профиля.</span>
+                                    {% endif %}
+                                </fieldset>
 
                                 {% if me.invitedBy.id %}
                                     <div id="allow-voting" class="switcher-block">
@@ -74,6 +77,9 @@
                                         </label>
                                     </div>
                                 </div>
+                                {% if me.privacy != "all" %}
+                                    <span class="hint">Запись появится в Прямом эфире, если открыть профиль.</span>
+                                {% endif %}
                                 {% else %}
                                     <p class="alert alert-danger for-public-only" role="alert">
                                         Чтобы публиковать записи в Прямой эфир, <a href="/account/email" class="alert-link">подтверди адрес своей почты</a>.

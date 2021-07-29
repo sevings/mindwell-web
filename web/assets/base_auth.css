@@ -325,6 +325,17 @@ li.cat-list__item > a {
     white-space: nowrap;
 }
 
+.hint {
+    margin: 0 1.1rem;
+    color: #888da8;
+    display: block;
+}
+
+.switcher-block + .hint {
+    margin-top: -19px;
+    margin-bottom: 19px;
+}
+
 .editor-tags a:not(:hover) {
     color: #888da8;
 }

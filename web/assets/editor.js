@@ -49,9 +49,11 @@ function loadDraft() {
     privacyElem().val(draft.privacy)
     $('.selectpicker').selectpicker('refresh');
     togglePublicOnly()
+    togglePrivacyHint()
 
     isVotableElem().prop("checked", draft.isVotable)
     inLiveElem().prop("checked", draft.inLive)
+    toggleLiveHint()
 }
 
 function removeDraft() {
@@ -87,10 +89,36 @@ function togglePublicOnly() {
     }
 }
 
-function init(){
-    privacyElem().change(togglePublicOnly)
+function togglePrivacyHint() {
+    let entryPrivacy = privacyElem().val()
+    let mePrivacy = $("body").data("mePrivacy")
 
-    togglePublicOnly()
+    let show = false
+    if(mePrivacy === "registered")
+        show = (entryPrivacy === "all")
+    else if(mePrivacy === "invited")
+        show = (entryPrivacy === "all" || entryPrivacy === "registered")
+    else
+        show = (entryPrivacy === "all" || entryPrivacy === "registered" || entryPrivacy === "invited")
+
+    privacyElem().parents(".form-group").find(".hint").toggle(show)
+}
+
+function toggleLiveHint() {
+    let entryPrivacy = privacyElem().val()
+    let mePrivacy = $("body").data("mePrivacy")
+    let inLIve = inLiveElem().prop("checked")
+
+    let show = inLIve && (mePrivacy === "followers") && (entryPrivacy !== "me" && entryPrivacy !== "followers")
+    $("#allow-live").next(".hint").toggle(show)
+}
+
+function init() {
+    privacyElem().change(togglePublicOnly)
+    privacyElem().change(togglePrivacyHint)
+    privacyElem().change(toggleLiveHint)
+    inLiveElem().change(toggleLiveHint)
+
     if(!isCreating())
         return;
 
