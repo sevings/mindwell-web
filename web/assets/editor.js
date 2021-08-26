@@ -1,25 +1,27 @@
 store = new window.Basil();
 
-function titleElem()        { return $("input[name='title']") }
-function contentElem()      { return $("textarea[name='content']") }
-function privacyElem()      { return $("select[name='privacy']") }
-function isVotableElem()    { return $("input[name='isVotable']") }
-function inLiveElem()       { return $("input[name='inLive']") }
-function imagesElem()       { return $("input[name='images']") }
-function tagsElem()         { return $("input[name='tags']") }
+function titleElem()         { return $("input[name='title']") }
+function contentElem()       { return $("textarea[name='content']") }
+function privacyElem()       { return $("select[name='privacy']") }
+function isCommentableElem() { return $("input[name='isCommentable']") }
+function isVotableElem()     { return $("input[name='isVotable']") }
+function inLiveElem()        { return $("input[name='inLive']") }
+function imagesElem()        { return $("input[name='images']") }
+function tagsElem()          { return $("input[name='tags']") }
 
-function entryId()          { return parseInt($("#entry-editor").data("entryId")) }
-function isCreating()       { return entryId() <= 0 }
+function entryId()           { return parseInt($("#entry-editor").data("entryId")) }
+function isCreating()        { return entryId() <= 0 }
 
 function storeDraft() {
     let draft = {
-        title       : titleElem().val(),
-        content     : contentElem().val(),
-        tags        : tagsElem().val(),
-        privacy     : privacyElem().val(),
-        images      : imagesElem().val(),
-        isVotable   : isVotableElem().prop("checked"),
-        inLive      : inLiveElem().prop("checked"),
+        title         : titleElem().val(),
+        content       : contentElem().val(),
+        tags          : tagsElem().val(),
+        privacy       : privacyElem().val(),
+        images        : imagesElem().val(),
+        isCommentable : isCommentableElem().prop("checked"),
+        isVotable     : isVotableElem().prop("checked"),
+        inLive        : inLiveElem().prop("checked"),
     }
 
     store.set("draft", draft)
@@ -51,6 +53,7 @@ function loadDraft() {
     togglePublicOnly()
     togglePrivacyHint()
 
+    isCommentableElem().prop("checked", draft.isCommentable)
     isVotableElem().prop("checked", draft.isVotable)
     inLiveElem().prop("checked", draft.inLive)
     toggleLiveHint()
@@ -58,9 +61,10 @@ function loadDraft() {
 
 function removeDraft() {
     let draft = {
-        privacy     : privacyElem().val(),
-        isVotable   : isVotableElem().prop("checked"),
-        inLive      : inLiveElem().prop("checked"),
+        privacy       : privacyElem().val(),
+        isCommentable : isCommentableElem().prop("checked"),
+        isVotable     : isVotableElem().prop("checked"),
+        inLive        : inLiveElem().prop("checked"),
     }
 
     store.set("draft", draft)
@@ -74,10 +78,13 @@ function removeDraft() {
 function togglePublicOnly() {
     let privacy = privacyElem().val()
 
+    let commenting = $("#allow-commenting")
     let voting = $("#allow-voting")
     if(privacy === "me") {
+        commenting.hide()
         voting.hide()
     } else {
+        commenting.show()
         voting.show()
     }
 

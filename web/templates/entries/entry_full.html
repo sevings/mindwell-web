@@ -13,6 +13,11 @@
         {% endif %}
     </ul>
     {% if entry.rights.comment %}
+        {% if !entry.isCommentable %}
+            <div class="alert alert-secondary" role="alert">
+                Только ты можешь комментировать эту запись.
+            </div>
+        {% endif %}
         <form class="comment-form inline-items" action="/entries/{{ entry.id }}/comments" method="post" enctype="application/x-www-form-urlencoded">
             <div class="post__author author vcard inline-items">
                 <img src="{{ me.avatar.x42 }}" alt="{{ me.showName }}">
@@ -25,12 +30,14 @@
         </form>
     {% else %}
         <div class="alert alert-secondary" role="alert">
-            {% if me.invitedBy.id %}
-                Тебе нельзя комментировать эту запись.
-            {% elif me.id %}
-                Только <a href="/help/faq/invites">получившие приглашение</a> пользователи могут комментировать чужие записи.
-            {% else %}
+            {% if !me.id %}
                 Только зарегистрированные пользователи могут читать комментарии.
+            {% elif !me.invitedBy.id %}
+                Только <a href="/help/faq/invites">получившие приглашение</a> пользователи могут комментировать чужие записи.
+            {% elif !entry.isCommentable %}
+                Эту запись может комментировать только её автор.
+            {% else %}
+                Тебе нельзя комментировать эту запись.
             {% endif %}
         </div>
     {% endif %}

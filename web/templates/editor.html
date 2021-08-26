@@ -2,7 +2,7 @@
 {% block title %}Редактор{% endblock %}
 {% block scripts %}
     <script src="/assets/js/basil.min.js"></script>
-    <script src="/assets/editor.js?d=20210725"></script>
+    <script src="/assets/editor.js?d=20210822"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -68,15 +68,25 @@
                                     <input type="hidden" name="isVotable" value="true" />
                                 {% endif %}
 
-                                {% if me.account.verified %}
-                                <div id="allow-live" class="switcher-block">
-                                    <div class="h6 title">Отправить в Прямой эфир</div>
+                                <div id="allow-commenting" class="switcher-block">
+                                    <div class="h6 title">Разрешить комментирование</div>
                                     <div class="togglebutton">
                                         <label>
-                                            <input type="checkbox" name="inLive" {% if !id || inLive %}checked{% endif %}>
+                                            <input type="hidden" name="isCommentable" value="false" />
+                                            <input type="checkbox" name="isCommentable" {% if !id || isCommentable %}checked{% endif %}>
                                         </label>
                                     </div>
                                 </div>
+
+                                {% if me.account.verified %}
+                                    <div id="allow-live" class="switcher-block">
+                                        <div class="h6 title">Отправить в Прямой эфир</div>
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="inLive" {% if !id || inLive %}checked{% endif %}>
+                                            </label>
+                                        </div>
+                                    </div>
                                 {% if me.privacy != "all" %}
                                     <span class="hint">Запись появится в Прямом эфире, если открыть профиль.</span>
                                 {% endif %}
