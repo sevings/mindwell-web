@@ -3,7 +3,7 @@ store = new window.Basil();
 function titleElem()         { return $("input[name='title']") }
 function contentElem()       { return $("textarea[name='content']") }
 function privacyElem()       { return $("select[name='privacy']") }
-function isCommentableElem() { return $("input[name='isCommentable']") }
+function isCommentableElem() { return $("input[type='checkbox'][name='isCommentable']") }
 function isVotableElem()     { return $("input[name='isVotable']") }
 function inLiveElem()        { return $("input[name='inLive']") }
 function imagesElem()        { return $("input[name='images']") }
