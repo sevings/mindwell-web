@@ -562,6 +562,7 @@ func refreshHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			}
 
 			api.ClearCookieToken()
+			api.SkipError()
 			api.Redirect("/index.html?to=" + api.NextRedirect())
 			return
 		}
