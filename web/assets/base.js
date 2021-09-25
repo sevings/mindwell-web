@@ -269,7 +269,9 @@ $(".register").click(function() {
         success: function(data) {
             window.location.href = data.href
         },
-        error: showAjaxError,
+        error: function() {
+            alert("Неверный логин или пароль.")
+        },
         complete: function() {
             btn.removeClass("disabled")
         },
