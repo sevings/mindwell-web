@@ -114,9 +114,9 @@ function togglePrivacyHint() {
 function toggleLiveHint() {
     let entryPrivacy = privacyElem().val()
     let mePrivacy = $("body").data("mePrivacy")
-    let inLIve = inLiveElem().prop("checked")
+    let inLive = inLiveElem().prop("checked")
 
-    let show = inLIve && (mePrivacy === "followers") && (entryPrivacy !== "me" && entryPrivacy !== "followers")
+    let show = inLive && (mePrivacy === "followers") && (entryPrivacy !== "me" && entryPrivacy !== "followers")
     $("#allow-live").next(".hint").toggle(show)
 }
 
