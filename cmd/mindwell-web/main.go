@@ -435,7 +435,7 @@ func setOAuthCookie(api *utils.APIRequest) {
 }
 
 func accountHandler(mdw *utils.Mindwell, create bool) func(ctx *gin.Context) {
-	clientID := mdw.ConfigInt("api.client_id")
+	clientID := strconv.Itoa(mdw.ConfigInt("api.client_id"))
 	clientSecret := mdw.ConfigString("api.client_secret")
 
 	return func(ctx *gin.Context) {
@@ -457,7 +457,7 @@ func accountHandler(mdw *utils.Mindwell, create bool) func(ctx *gin.Context) {
 
 		args := url.Values{
 			"grant_type":    {"password"},
-			"client_id":     {strconv.Itoa(clientID)},
+			"client_id":     {clientID},
 			"client_secret": {clientSecret},
 			"username":      {api.FormString("name")},
 			"password":      {api.FormString("password")},
@@ -496,14 +496,14 @@ func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func upgradeHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	clientID := mdw.ConfigInt("api.client_id")
+	clientID := strconv.Itoa(mdw.ConfigInt("api.client_id"))
 	clientSecret := mdw.ConfigString("api.client_secret")
 
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 
 		args := url.Values{
-			"client_id":     {strconv.Itoa(clientID)},
+			"client_id":     {clientID},
 			"client_secret": {clientSecret},
 		}
 		api.SetRequestData(args)
@@ -534,7 +534,7 @@ func upgradeHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func refreshHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	clientID := mdw.ConfigInt("api.client_id")
+	clientID := strconv.Itoa(mdw.ConfigInt("api.client_id"))
 	clientSecret := mdw.ConfigString("api.client_secret")
 
 	return func(ctx *gin.Context) {
@@ -549,7 +549,7 @@ func refreshHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 		args := url.Values{
 			"grant_type":    {"refresh_token"},
-			"client_id":     {strconv.Itoa(clientID)},
+			"client_id":     {clientID},
 			"client_secret": {clientSecret},
 			"refresh_token": {token.Value},
 		}
