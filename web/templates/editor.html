@@ -87,9 +87,9 @@
                                             </label>
                                         </div>
                                     </div>
-                                {% if me.privacy != "all" %}
-                                    <span class="hint">Запись появится в Прямом эфире, если открыть профиль.</span>
-                                {% endif %}
+                                    {% if (!id || inLive) && me.privacy == "followers" %}
+                                        <span class="hint">Запись появится в Прямом эфире, если открыть профиль.</span>
+                                    {% endif %}
                                 {% else %}
                                     <p class="alert alert-danger for-public-only" role="alert">
                                         Чтобы публиковать записи в Прямой эфир, <a href="/account/email" class="alert-link">подтверди адрес своей почты</a>.

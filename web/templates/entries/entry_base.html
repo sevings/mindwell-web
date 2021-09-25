@@ -20,8 +20,10 @@
                             <span>зарег-ным</span>
                         {% elif entry.privacy == "invited" %}
                             <span>приглашенным</span>
-                        {% else %}
+                        {% elif entry.privacy == "followers" %}
                             <span>подписчикам</span>
+                        {% else %}
+                            <span>некоторым</span>
                         {% endif %}
                     {% endif %}
                     {% if !cutEntry && entry.inLive %}
