@@ -9,8 +9,6 @@ import (
 
 func LogHandler(logger *zap.Logger) gin.HandlerFunc {
 	idBuilder := NewDefaultBrowserIDBuilder()
-	idBuilder.AddField(CookieFieldFunc("dev"))
-	idBuilder.AddField(CookieNumberFieldFunc("tzo"))
 
 	return func(ctx *gin.Context) {
 		start := time.Now()
@@ -21,6 +19,7 @@ func LogHandler(logger *zap.Logger) gin.HandlerFunc {
 		user = strings.SplitN(user, ".", 2)[0]
 
 		dev, _ := ctx.Cookie("dev")
+		uid, _ := ctx.Cookie("uid")
 
 		logger.Info("http",
 			zap.String("method", ctx.Request.Method),
@@ -28,6 +27,7 @@ func LogHandler(logger *zap.Logger) gin.HandlerFunc {
 			zap.String("referrer", ctx.Request.Referer()),
 			zap.String("browser", idBuilder.Build(ctx.Request).String()),
 			zap.String("user_agent", ctx.Request.UserAgent()),
+			zap.String("uid", uid),
 			zap.String("dev", dev),
 			zap.String("user", user),
 			zap.String("ip", ctx.GetHeader("X-Forwarded-For")),

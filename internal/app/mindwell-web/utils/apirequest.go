@@ -19,6 +19,7 @@ import (
 
 var mobReFull, mobRe4 *regexp.Regexp
 var clientError, serverError, csrfError, redirectedErr error
+var requestBrowserID BrowserIDBuilder
 
 func init() {
 	// https://stackoverflow.com/a/11381730
@@ -28,6 +29,8 @@ func init() {
 	serverError = errors.New("server error")
 	csrfError = errors.New("csrf error")
 	redirectedErr = errors.New("redirected")
+
+	requestBrowserID = NewDefaultBrowserIDBuilder()
 }
 
 type APIRequest struct {
@@ -476,6 +479,21 @@ func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 		req.Header.Set("X-User-Key", api.uKey)
 	} else {
 		req.Header.Set("X-User-Key", "no auth")
+	}
+
+	if api.IsGet() && !api.IsAjax() {
+		dev, err := api.ctx.Cookie("dev")
+		if err == nil {
+			req.Header.Set("X-Dev", dev)
+		}
+
+		uid, err := api.ctx.Cookie("uid")
+		if err == nil {
+			req.Header.Set("X-Uid", uid)
+		}
+
+		app := requestBrowserID.Build(api.ctx.Request)
+		req.Header.Set("X-App", app.String())
 	}
 
 	return req

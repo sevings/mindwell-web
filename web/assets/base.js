@@ -127,27 +127,35 @@ function unescapeHtml(text) {
         .replace(/&#39;/g,  "'")
 }
 
-function setCookie(key, value, days) {
-    let date = new Date()
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
-    document.cookie = key + "=" + value + ";expires=" + date.toUTCString() + ";path=/;sameSite=Lax"
-}
-
 $(function() {
     let w = window
     let s = w.screen
     let n = w.navigator
 
     let vpw = Math.round($(w).width())
-    setCookie("vpw", vpw, 365)
+    Cookies.set("vpw", vpw, { expires: 365, sameSite: "Lax" })
 
-    let dev = (n.platform || "no") + ";" + (n.hardwareConcurrency || 0) + ";" + (n.deviceMemory || 0) +
-        ";" + s.width + ";" + s.height + ";" + s.colorDepth
-    dev = btoa(dev)
-    setCookie("dev", dev, 365)
+    let isLs = ((screen.orientation || {}).type || "").startsWith("landscape")
+    let dev = (n.platform || "no") + ";" + (n.hardwareConcurrency || 0) + ";" + (n.maxTouchPoints || 0) +
+        ";" + (isLs ? s.width : s.height) + ";" + (isLs ? s.height : s.width) + ";" + s.colorDepth +
+        ";" + new Date().getTimezoneOffset()
 
-    let tzo = new Date().getTimezoneOffset()
-    setCookie("tzo", tzo, 365)
+    let a = 1, b = 0
+    for(let i = 0; i < dev.length; i++)
+    {
+        let c = dev.charCodeAt(i)
+        a += c
+        b += a
+    }
+    dev = b % 65521 * 65536 + a % 65521
+    dev = dev.toString(16)
+
+    Cookies.set("dev", dev, { expires: 1826, sameSite: "Lax" })
+
+    if(!Cookies.get("uid")) {
+        let uid = Math.floor(Math.random() * 4294967296).toString(16)
+        Cookies.set("uid", uid, { expires: 1826, sameSite: "Lax" })
+    }
 })
 
 $("#login-scroll").click(function() {
