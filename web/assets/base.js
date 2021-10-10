@@ -152,7 +152,8 @@ $(function() {
 
     Cookies.set("dev", dev, { expires: 1826, sameSite: "Lax" })
 
-    if(!Cookies.get("uid")) {
+    let uid = Cookies.get("uid")
+    if(!uid || uid === "0") {
         let uid = Math.floor(Math.random() * 4294967296).toString(16)
         Cookies.set("uid", uid, { expires: 1826, sameSite: "Lax" })
     }
