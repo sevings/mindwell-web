@@ -258,7 +258,7 @@ $(".register").click(function() {
     let accept = $("input[name='accept']", form)
     if(accept.length > 0 && !accept.prop("checked"))
     {
-        alert("Для регистрации необходимо соглвсие с правилами")
+        alert("Для регистрации необходимо согласие с правилами")
         return false
     }
 
