@@ -278,8 +278,12 @@ $(".register").click(function() {
         success: function(data) {
             window.location.href = data.href
         },
-        error: function() {
-            alert("Неверный логин или пароль.")
+        error: function(req) {
+            let resp = JSON.parse(req.responseText)
+            if(resp.message)
+                alert(resp.message)
+            else
+                alert("Неверный логин или пароль.")
         },
         complete: function() {
             btn.removeClass("disabled")
