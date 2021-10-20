@@ -429,6 +429,7 @@
 					<div class="form-group">
 						<input class="form-control form-control-sm" type="password" name="password" pattern=".{6,}" placeholder="Пароль" required>
 					</div>
+					<input type="hidden" name="antibot">
 					<input type="hidden" name="csrf" value="{{ __csrf_login }}">
 					<button class="btn btn-primary btn-md-2 register" type="submit">Войти</button>
 					<button class="btn btn-purple btn-md-2 ml-5" type="button" data-toggle="modal" data-target="#registration-login-form-popup">Зарегистрироваться</button>

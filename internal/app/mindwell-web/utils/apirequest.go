@@ -140,6 +140,10 @@ func (api *APIRequest) FormString(key string) string {
 	return api.ctx.PostForm(key)
 }
 
+func (api *APIRequest) Header(key string) string {
+	return api.ctx.GetHeader(key)
+}
+
 func (api *APIRequest) SetRequestData(args url.Values) {
 	data := args.Encode()
 	api.ctx.Request.Body = ioutil.NopCloser(strings.NewReader(data))
@@ -189,28 +193,44 @@ func (api *APIRequest) SetCsrfToken(action string) {
 	api.SetData("__csrf_"+name, token)
 }
 
-func (api *APIRequest) CheckCsrfToken() {
+func (api *APIRequest) ReadBody() []byte {
 	req := api.ctx.Request
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		api.mdw.LogWeb().Error(err.Error())
 	}
-	req.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
+	api.SetBody(body)
+
+	return body
+}
+
+func (api *APIRequest) SetBody(body []byte) {
+	api.ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+}
+
+func (api *APIRequest) CheckCsrfTokenRead() {
+	req := api.ctx.Request
 	token := req.PostFormValue("csrf")
-	action := api.ctx.Request.URL.Path
+	action := req.URL.Path
 	client := api.ClientIP()
 
-	if err = api.mdw.CheckCsrfToken(token, action, client); err != nil {
+	if err := api.mdw.CheckCsrfToken(token, action, client); err != nil {
 		api.mdw.LogWeb().Error(err.Error())
 
 		api.SetData("code", 419)
 		api.SetData("message", "Время сессии истекло. Необходимо перезагрузить страницу.")
 		api.err = csrfError
-		return
 	}
+}
 
-	req.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+func (api *APIRequest) CheckCsrfToken() {
+	body := api.ReadBody()
+	api.CheckCsrfTokenRead()
+
+	if api.err != csrfError {
+		api.SetBody(body)
+	}
 }
 
 func (api *APIRequest) HasUserKey() bool {
@@ -806,7 +826,7 @@ func (api *APIRequest) NextRedirect() string {
 }
 
 func (api *APIRequest) ClientIP() string {
-	return api.ctx.GetHeader("X-Forwarded-For")
+	return api.Header("X-Forwarded-For")
 }
 
 func (api *APIRequest) IsGet() bool {
@@ -819,7 +839,7 @@ func (api *APIRequest) IsWebRequest() bool {
 }
 
 func (api *APIRequest) IsAjax() bool {
-	with := api.ctx.GetHeader("X-Requested-With")
+	with := api.Header("X-Requested-With")
 	return with == "XMLHttpRequest"
 }
 
@@ -834,7 +854,7 @@ func (api *APIRequest) IsAuthRefreshPossible() bool {
 }
 
 func (api *APIRequest) ExpectsJsonError() bool {
-	errType := api.ctx.GetHeader("X-Error-Type")
+	errType := api.Header("X-Error-Type")
 	return errType == "JSON"
 }
 

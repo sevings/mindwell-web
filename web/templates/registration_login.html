@@ -33,9 +33,10 @@
                             </div>
                             <a href="#" class="forgot" data-toggle="modal" data-target="#recover">Не получается войти</a>
                         </div>
+
+                        <input type="hidden" name="antibot">
                         <input type="hidden" name="csrf" value="{{ __csrf_login }}">
                         <input class="btn btn-lg btn-primary full-width register" type="submit" value="Войти" />
-
                     </div>
                 </div>
             </form>
@@ -84,6 +85,7 @@
                             </div>
                         </div>
 
+                        <input type="hidden" name="antibot">
                         <input type="hidden" name="csrf" value="{{ __csrf_register }}">
                         <input type ="submit" value ="Зарегистрироваться" class="btn btn-purple btn-lg full-width register" />
                     </div>

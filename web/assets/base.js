@@ -265,6 +265,9 @@ $(".register").click(function() {
     if(!form[0].reportValidity())
         return false
 
+    let name = form.find("input[name='name']").val()
+    form.find("input[name='antibot']").val(name + name)
+
     btn.addClass("disabled")
 
     form.ajaxSubmit({

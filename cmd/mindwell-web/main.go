@@ -441,11 +441,24 @@ func accountHandler(mdw *utils.Mindwell, create bool) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 
-		api.CheckCsrfToken()
+		body := api.ReadBody()
+
+		api.CheckCsrfTokenRead()
 		if api.Error() != nil {
 			api.WriteTemplate("error")
 			return
 		}
+
+		antibot := api.FormString("antibot")
+		name := api.FormString("name")
+		if antibot != name+name { // no js, probably bot
+			api.ClearData()
+			api.SetData("href", "/live")
+			api.WriteJson()
+			return
+		}
+
+		api.SetBody(body)
 
 		if create {
 			api.ForwardToNoKey("/account/register")
