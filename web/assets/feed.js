@@ -207,10 +207,17 @@ function onFavoritePostClick() {
             favorited = !!resp.isFavorited
             info.data("favorited", favorited)
 
-            if(favorited)
-                link.html("Удалить из&nbsp;избранного")
-            else
-                link.html("Добавить в&nbsp;избранное")
+            let span = link.find("span")
+            let count = (resp["count"] || "")
+            span.text(count)
+
+            let title = favorited ? "Удалить из избранного" : "Добавить в избранное"
+            link.attr("title", title)
+            span.attr("title", title)
+
+            link.find("[data-fa-i2svg]")
+                .toggleClass("far", !favorited)
+                .toggleClass("fas", favorited)
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)

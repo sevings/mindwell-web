@@ -39,15 +39,6 @@
             <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
                 <ul class="more-dropdown">
                     <li>
-                        <a href="#" class="favorite-post">
-                            {% if entry.isFavorited %}
-                                Удалить из&nbsp;избранного
-                            {% else %}
-                                Добавить в&nbsp;избранное
-                            {% endif%}
-                        </a>
-                    </li>
-                    <li>
                         <a href="#" class="watch-post">
                             {% if entry.isWatching %}
                                 Отписаться от&nbsp;комментариев
@@ -151,45 +142,49 @@
         </div>
     {% endif %}
 
-    {% if entry.privacy == "me" || entry.rating.isVotable || entry.isCommentable || entry.commentCount > 0 %}
-        <div class="post-additional-info inline-items">
+    <div class="post-additional-info inline-items">
 
-            {% if entry.privacy == "me" %}
-                <div class="post-add-icon inline-items" title="Эта запись видна только тебе" data-toggle="tooltip" data-placement="top">
-                    <i class="far fa-eye-slash fa-2x"></i>
-                </div>
-            {% elif entry.rating.isVotable %}
+        {% if entry.privacy == "me" %}
+            <div class="post-add-icon inline-items" title="Эта запись видна только тебе" data-toggle="tooltip" data-placement="top">
+                <i class="far fa-eye-slash fa-2x"></i>
+            </div>
+        {% elif entry.rating.isVotable %}
 
-                {% if entry.rights.vote || entry.rating.vote > 0 %}<a href="#"{% else %}<div{% endif %}
-                        class="post-add-icon inline-items post-up"
-                        title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
+            {% if entry.rights.vote || entry.rating.vote > 0 %}<a href="#"{% else %}<div{% endif %}
+                    class="post-add-icon inline-items post-up"
+                    title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
 Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
-                    <i class="{% if entry.rating.vote <= 0 && entry.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-up fa-2x"></i>
-                {% if entry.rights.vote || entry.rating.vote > 0 %}</a>{% else %}</div>{% endif %}
+                <i class="{% if entry.rating.vote <= 0 && entry.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-up fa-2x"></i>
+            {% if entry.rights.vote || entry.rating.vote > 0 %}</a>{% else %}</div>{% endif %}
 
-                <span class="post-rating" title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
-    Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">{{ entry.rating.upCount|default:0 - entry.rating.downCount|default:0 }}</span>
+            <span class="post-rating" title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
+Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">{{ entry.rating.upCount|default:0 - entry.rating.downCount|default:0 }}</span>
 
-                {% if entry.rights.vote || entry.rating.vote < 0 %}<a href="#"{% else %}<div{% endif %}
-                        class="post-add-icon inline-items post-down"
-                        title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
+            {% if entry.rights.vote || entry.rating.vote < 0 %}<a href="#"{% else %}<div{% endif %}
+                    class="post-add-icon inline-items post-down"
+                    title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
 Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
-                    <i class="{% if entry.rating.vote >= 0 && entry.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-down fa-2x"></i>
-                {% if entry.rights.vote || entry.rating.vote < 0 %}</a>{% else %}</div>{% endif %}
+                <i class="{% if entry.rating.vote >= 0 && entry.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-down fa-2x"></i>
+            {% if entry.rights.vote || entry.rating.vote < 0 %}</a>{% else %}</div>{% endif %}
 
+        {% endif %}
+
+        <a href="#" class="post-add-icon inline-items favorite-post"
+           title="{% if entry.isFavorited %}Удалить из&nbsp;избранного{% else %}Добавить в&nbsp;избранное{% endif%}">
+            <i class="{% if entry.isFavorited %}fas{% else %}far{% endif %} fa-star fa-2x"></i>
+            <span>{{ entry.favoriteCount }}</span>
+        </a>
+
+        {% block commentButton %}
+            {% if entry.isCommentable || entry.commentCount > 0 %}
+                <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button"
+                        data-entry="{{ entry.id }}">
+                    <svg class="olymp-speech-balloon-icon"><use xlink:href="#olymp-speech-balloon-icon"></use></svg>
+                    <span class="comment-count">{{ entry.commentCount|default:0 }}</span>
+                </a>
             {% endif %}
+        {% endblock commentButton %}
 
-            {% block commentButton %}
-                {% if entry.isCommentable || entry.commentCount > 0 %}
-                    <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button"
-                            data-entry="{{ entry.id }}">
-                        <svg class="olymp-speech-balloon-icon"><use xlink:href="#olymp-speech-balloon-icon"></use></svg>
-                        <span class="comment-count">{{ entry.commentCount|default:0 }}</span>
-                    </a>
-                {% endif %}
-            {% endblock commentButton %}
-
-        </div>
-    {% endif %}
+    </div>
 </article>
 {% block comments %}{% endblock comments %}
