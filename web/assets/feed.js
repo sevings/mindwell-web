@@ -30,6 +30,21 @@ function addFeedClickHandlers(feed) {
     $(".post-tags a", feed).click(onTagClick)
 }
 
+function addCommentClickHandlers(comments) {
+    $("a.comment-down", comments).click(function() {
+        return voteComment($(this), false)
+    })
+
+    $("a.comment-up", comments).click(function() {
+        return voteComment($(this), true)
+    })
+
+    $("a.edit-comment", comments).click(onEditCommentClick)
+    $("a.delete-comment", comments).click(onDeleteCommentClick)
+    $("a.complain-comment", comments).click(onComplainCommentClick)
+    $("a.reply", comments).click(onReplyCommentClick)
+}
+
 function findPostElement(elem) {
     elem = $(elem)
 
@@ -37,6 +52,10 @@ function findPostElement(elem) {
     let id = post.data("id")
     post = $(".entry[data-id=\"" + id + "\"]")
     return post
+}
+
+function findCommentElement(elem) {
+    return $(elem).parents(".comment-item")
 }
 
 function updateVoting(resp, span, upLink, downLink, vote, canVote, positive) {
@@ -278,8 +297,9 @@ function setTagHref() {
     this.href = "?tag=" + tag
 }
 
-function complainComment(id) {
-    let info = $("#comment" + id)
+function onComplainCommentClick() {
+    let info = findCommentElement(this)
+    let id = info.data("id")
     let name = info.find(".post__author-name").text();
     $("#complain-user").text(name)
     $("#complain-type").text("комментарий")
@@ -316,6 +336,7 @@ function loadComments() {
             window.embedder.addEmbeds(comments)
             comments.each(function(){ CRUMINA.mediaPopups(this) })
             ul.prepend(comments)
+            addCommentClickHandlers(comments)
             fixSvgUse(comments)
             a.remove()
 
@@ -355,6 +376,7 @@ function updateComments(entry) {
             window.embedder.addEmbeds(comments)
             comments.each(function(){ CRUMINA.mediaPopups(this) })
             ul.append(comments)
+            addCommentClickHandlers(comments)
             fixSvgUse(comments)
 
             let upd = ul.find(".update-comments")
@@ -426,6 +448,7 @@ function postComment(entry) {
                 incCommentCounter(ul)
             }
 
+            addCommentClickHandlers(cmt)
             fixSvgUse(cmt)
         },
         error: showAjaxError,
@@ -475,9 +498,12 @@ function scrollToCommentEdit(area) {
         $("html, body").animate({ scrollTop: area.offset().top }, 500);    
 }
 
-function replyComment(showName, a) { 
-    var entry = $(a).parents(".entry")
-    var area = entry.find("form.comment-form textarea")
+function onReplyCommentClick() {
+    let cmt = findCommentElement(this)
+    let showName = cmt.data("showName")
+
+    let entry = findPostElement(this)
+    let area = entry.find("form.comment-form textarea")
     area.val(function(i, val){
         if(val.includes(showName))
             return val
@@ -490,17 +516,18 @@ function replyComment(showName, a) {
     return false
 }
 
-function editComment(id) {
-    var cmt = $("#comment" + id)
-    var content = unescapeHtml(cmt.data("content") + "")
-    var form = cmt.parents(".entry").find(".comment-form")
+function onEditCommentClick() {
+    let cmt = findCommentElement(this)
+    let id = cmt.data("id")
+    let content = unescapeHtml(cmt.data("content") + "")
+    let form = cmt.parents(".entry").find(".comment-form")
     form.attr("action", "/comments/"+id)
     form.data("id", id)
     form.find("textarea").val(content)
     form.find(".cancel-comment").toggleClass("hidden", false)
     form.find(".post-comment").text("Сохранить")
 
-    var area = form.find("textarea")
+    let area = form.find("textarea")
     scrollToCommentEdit(area)
 
     return false
@@ -526,6 +553,7 @@ function saveComment(entry) {
             CRUMINA.mediaPopups(cmt)
             var id = form.data("id")
             $("#comment"+id).replaceWith(cmt)
+            addCommentClickHandlers(cmt)
             fixSvgUse(cmt)
         },
         error: showAjaxError,
@@ -554,15 +582,18 @@ function onCancelCommentClick(){
     return clearCommentForm(entry)
 }
 
-function deleteComment(id) {
+function onDeleteCommentClick() {
     if(!confirm("Комментарий будет удален навсегда."))
         return false
+
+    let cmt = findCommentElement(this)
+    let id = cmt.data("id")
 
     $.ajax({
         url: "/comments/" + id,
         method: "DELETE",
         success: function() {
-            $("#comment" + id).remove()
+            cmt.remove()
         },
         error: showAjaxError,
     })
@@ -570,15 +601,16 @@ function deleteComment(id) {
     return false
 }
 
-function voteComment(id, positive) {
-    var cmt = $("#comment"+id)
+function voteComment(a, positive) {
+    let cmt = findCommentElement(a)
     if(cmt.data("enabled") == false)
         return false
 
     cmt.data("enabled", false)
 
-    var vote = cmt.data("vote")
-    var delVote = vote && (positive == vote > 0)
+    let id = cmt.data("id")
+    let vote = cmt.data("vote")
+    let delVote = vote && (positive == vote > 0)
 
     $.ajax({
         url: "/comments/" + id + "/vote?positive=" + positive,
@@ -677,6 +709,7 @@ $(window).on("hashchange", function () {
 
 $(function(){
     addFeedClickHandlers()
+    addCommentClickHandlers()
 
     window.embedder.addEmbeds(document)
 
@@ -747,6 +780,7 @@ function openPost(id) {
             body.replaceWith(entry)
 
             addFeedClickHandlers(modal)
+            addCommentClickHandlers(modal)
             formatTimeElements(modal)
             window.embedder.addEmbeds(modal)
             modal.find(".gif-play-image").gifplayer()

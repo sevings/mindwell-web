@@ -1,5 +1,6 @@
 <li id="comment{{ comment.id }}" class="comment-item" 
         data-id="{{ comment.id }}" data-vote="{{ comment.rating.vote }}"  data-can-vote="{{ comment.rights.vote }}"
+        data-show-name="{{ comment.author.showName }}"
         {% if comment.rights.edit %} data-content="{{ comment.editContent }}" {% endif %}>
     <div class="post__author author vcard inline-items">
         <a href="/users/{{ comment.author.name }}"><img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}"></a>
@@ -16,17 +17,17 @@
                 <ul class="more-dropdown">
                     {% if comment.rights.edit %}
                         <li>
-                            <a href="#" onclick="return editComment({{ comment.id }})">Редактировать</a>
+                            <a href="#" class="edit-comment">Редактировать</a>
                         </li>
                     {% endif %}
                     {% if comment.rights.delete %}
                         <li>
-                            <a href="#" onclick="return deleteComment({{ comment.id }})">Удалить</a>
+                            <a href="#" class="delete-comment">Удалить</a>
                         </li>
                     {% endif %}
                     {% if comment.rights.complain %}
                         <li>
-                            <a href="#" onclick="return complainComment({{ comment.id }})">Пожаловаться</a>
+                            <a href="#" class="complain-comment">Пожаловаться</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -37,7 +38,7 @@
     <div class="comment-content wrapped-text">{{ comment.content|media:"embed" }}</div>
 
     <div class="comment-additional-info inline-items">
-        {% if comment.rights.vote || comment.rating.vote > 0 %}<a href="#" onclick="return voteComment({{ comment.id }}, true);"{% else %}<div{% endif %}
+        {% if comment.rights.vote || comment.rating.vote > 0 %}<a href="#"{% else %}<div{% endif %}
             class="post-add-icon inline-items comment-up"
             title="{{ comment.rating.upCount|default:0 }} за, {{ comment.rating.downCount|default:0 }} против. 
 Рейтинг: {{ comment.rating.rating|floatformat:0|default:0 }}">
@@ -47,14 +48,14 @@
         <span class="comment-rating" title="{{ comment.rating.upCount|default:0 }} за, {{ comment.rating.downCount|default:0 }} против. 
 Рейтинг: {{ comment.rating.rating|floatformat:0|default:0 }}">{{ comment.rating.upCount|default:0 - comment.rating.downCount|default:0 }}</span>
 
-        {% if comment.rights.vote || comment.rating.vote < 0 %}<a href="#" onclick="return voteComment({{ comment.id }}, false);"{% else %}<div{% endif %}
+        {% if comment.rights.vote || comment.rating.vote < 0 %}<a href="#"{% else %}<div{% endif %}
             class="post-add-icon inline-items comment-down"
             title="{{ comment.rating.upCount|default:0 }} за, {{ comment.rating.downCount|default:0 }} против. 
 Рейтинг: {{ comment.rating.rating|floatformat:0|default:0 }}">
         <i class="{% if comment.rating.vote >= 0 && comment.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-down fa-2x"></i>
         {% if comment.rights.vote || comment.rating.vote < 0 %}</a>{% else %}</div>{% endif %}
 
-        <a href="#" class="reply" onclick="return replyComment('{{ comment.author.showName|escapejs }}', this);">Ответить</a>
+        <a href="#" class="reply">Ответить</a>
     </div>
 
 </li>
