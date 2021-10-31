@@ -151,7 +151,7 @@
         </div>
     {% endif %}
 
-    {% if entry.privacy == "me" || entry.rating.isVotable || entry.isCommentable %}
+    {% if entry.privacy == "me" || entry.rating.isVotable || entry.isCommentable || entry.commentCount > 0 %}
         <div class="post-additional-info inline-items">
 
             {% if entry.privacy == "me" %}
@@ -180,7 +180,7 @@
             {% endif %}
 
             {% block commentButton %}
-                {% if entry.isCommentable %}
+                {% if entry.isCommentable || entry.commentCount > 0 %}
                     <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button"
                             data-entry="{{ entry.id }}">
                         <svg class="olymp-speech-balloon-icon"><use xlink:href="#olymp-speech-balloon-icon"></use></svg>
