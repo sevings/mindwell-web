@@ -1,6 +1,6 @@
 {% for entry in entries %}
     <div id="post{{ entry.id }}" class="col col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 sorting-item entry" 
-            data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}"
+            data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}" data-can-vote="{{ entry.rights.vote }}"
             data-watching="{{ entry.isWatching }}" data-favorited="{{ entry.isFavorited }}">
         <div class="ui-block">
             {% include "entry_base.html" with cutEntry = true %}
