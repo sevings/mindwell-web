@@ -39,6 +39,37 @@ function findPostElement(elem) {
     return post
 }
 
+function updateVoting(resp, span, upLink, downLink, vote, canVote, positive) {
+    var upCount = (resp.upCount || 0)
+    var downCount = (resp.downCount || 0)
+    span.text(upCount - downCount)
+
+    var title = upCount + " за, " + downCount + " против.\nРейтинг: " + Math.round(resp.rating || 0)
+    upLink.attr("title", title)
+    downLink.attr("title", title)
+    span.attr("title", title)
+
+    var up = vote > 0
+    upLink.find("[data-fa-i2svg]")
+        .toggleClass("far", !up || canVote)
+        .toggleClass("fas", up || !canVote)
+
+    var down = vote < 0
+    downLink.find("[data-fa-i2svg]")
+        .toggleClass("far", !down || canVote)
+        .toggleClass("fas", down || !canVote)
+
+    if(!canVote) {
+        (positive ? upLink : downLink).off("click").replaceWith(function() {
+            let div = $('<div>').html($(this).html())
+            for(let i = 0; i < this.attributes.length; i++) {
+                div.attr(this.attributes[i].name, this.attributes[i].value)
+            }
+            return div
+        })
+    }
+}
+
 function vote(counter, positive) {
     var info = findPostElement(counter)
     if(info.data("enabled") == false)
@@ -63,34 +94,7 @@ function vote(counter, positive) {
             var span = info.find(".post-rating")
             let canVote = info.data("canVote")
 
-            var upCount = (resp.upCount || 0)
-            var downCount = (resp.downCount || 0)
-            span.text(upCount - downCount)
-            
-            var title = upCount + " за, " + downCount + " против.\nРейтинг: " + Math.round(resp.rating || 0)
-            upLink.attr("title", title)
-            downLink.attr("title", title)
-            span.attr("title", title)
-
-            var up = vote > 0
-            upLink.find("[data-fa-i2svg]")
-                .toggleClass("far", !up || canVote)
-                .toggleClass("fas", up || !canVote)
-
-            var down = vote < 0
-            downLink.find("[data-fa-i2svg]")
-                .toggleClass("far", !down || canVote)
-                .toggleClass("fas", down || !canVote)
-
-            if(!canVote) {
-                (positive ? upLink : downLink).off("click").replaceWith(function() {
-                    let div = $('<div>').html($(this).html())
-                    for (let i = 0; i < this.attributes.length; i++) {
-                        div.attr(this.attributes[i].name, this.attributes[i].value)
-                    }
-                    return div
-                })
-            }
+            updateVoting(resp, span, upLink, downLink, vote, canVote, positive)
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
@@ -589,34 +593,7 @@ function voteComment(id, positive) {
             var span = cmt.find(".comment-rating")
             let canVote = cmt.data("canVote")
 
-            var upCount = (resp.upCount || 0)
-            var downCount = (resp.downCount || 0)
-            span.text(upCount - downCount)
-            
-            var title = upCount + " за, " + downCount + " против.\nРейтинг: " + Math.round(resp.rating || 0)
-            upLink.attr("title", title)
-            downLink.attr("title", title)
-            span.attr("title", title)
-
-            var up = vote > 0
-            upLink.find("[data-fa-i2svg]")
-                .toggleClass("far", !up || canVote)
-                .toggleClass("fas", up || !canVote)
-
-            var down = vote < 0
-            downLink.find("[data-fa-i2svg]")
-                .toggleClass("far", !down || canVote)
-                .toggleClass("fas", down || !canVote)
-
-            if(!canVote) {
-                (positive ? upLink : downLink).off("click").replaceWith(function() {
-                    let div = $('<div>').html($(this).html())
-                    for (let i = 0; i < this.attributes.length; i++) {
-                        div.attr(this.attributes[i].name, this.attributes[i].value)
-                    }
-                    return div
-                })
-            }
+            updateVoting(resp, span, upLink, downLink, vote, canVote, positive)
         },
         error: showAjaxError,
         complete: function() {
