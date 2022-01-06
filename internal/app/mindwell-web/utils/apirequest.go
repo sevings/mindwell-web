@@ -40,7 +40,6 @@ type APIRequest struct {
 	resp *http.Response
 	read bool // whether resp is read
 	data map[string]interface{}
-	uKey string
 	aTok string
 	st   *ServerTiming
 }
@@ -56,9 +55,7 @@ func NewRequest(mdw *Mindwell, ctx *gin.Context) *APIRequest {
 		st:   st,
 	}
 
-	if !api.UpgradeAuth() {
-		api.RefreshAuth()
-	}
+	api.RefreshAuth()
 
 	return api
 }
@@ -234,7 +231,7 @@ func (api *APIRequest) CheckCsrfToken() {
 }
 
 func (api *APIRequest) HasUserKey() bool {
-	return api.aTok != "" || api.uKey != ""
+	return api.aTok != ""
 }
 
 func (api *APIRequest) setUserKey(allowNoKey bool) bool {
@@ -252,60 +249,7 @@ func (api *APIRequest) setUserKey(allowNoKey bool) bool {
 		return true
 	}
 
-	token, err = api.Cookie("api_token")
-	if err == nil {
-		api.uKey = token.Value
-		return true
-	}
-
 	return allowNoKey
-}
-
-func (api *APIRequest) UpgradeAuth() bool {
-	if api.err != nil {
-		return false
-	}
-
-	if api.IsAjax() || !api.IsGet() || !api.IsWebRequest() {
-		return false
-	}
-
-	oldToken, err := api.Cookie("api_token")
-	if err != nil {
-		return false
-	}
-
-	_, err = api.Cookie("at")
-	if err == nil {
-		cookie := &http.Cookie{
-			Name:     "api_token",
-			Path:     "/",
-			MaxAge:   -1,
-			HttpOnly: true,
-		}
-		api.SetCookie(cookie)
-
-		return false
-	}
-
-	webDomain := api.Server().ConfigString("web.domain")
-	secure := api.Server().ConfigString("web.proto") == "https"
-	tokenCookie := http.Cookie{
-		Name:     "api_token",
-		Value:    oldToken.Value,
-		MaxAge:   60 * 2,
-		HttpOnly: true,
-		Path:     "/",
-		SameSite: http.SameSiteLaxMode,
-		Domain:   webDomain,
-		Secure:   secure,
-	}
-	api.SetCookie(&tokenCookie)
-
-	api.RedirectToAuth("/upgrade?to=" + api.NextRedirect())
-	api.err = redirectedErr
-
-	return true
 }
 
 func (api *APIRequest) RefreshAuth() bool {
@@ -435,9 +379,6 @@ func (api *APIRequest) ClearCookieToken() {
 		HttpOnly: true,
 	}
 
-	cookie.Name = "api_token"
-	api.SetCookie(cookie)
-
 	cookie.Name = "at"
 	cookie.Domain = api.mdw.ConfigString("web.domain")
 	api.SetCookie(cookie)
@@ -495,8 +436,6 @@ func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 
 	if api.aTok != "" {
 		req.Header.Set("Authorization", "Bearer "+api.aTok)
-	} else if api.uKey != "" {
-		req.Header.Set("X-User-Key", api.uKey)
 	} else {
 		req.Header.Set("X-User-Key", "no auth")
 	}

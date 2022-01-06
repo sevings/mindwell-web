@@ -50,7 +50,6 @@ func main() {
 	withCors.POST("/register", accountHandler(mdw, true))
 
 	auth.GET("/blank", blankHandler(mdw))
-	auth.GET("/upgrade", upgradeHandler(mdw))
 	auth.GET("/refresh", refreshHandler(mdw))
 	auth.GET("/logout", logoutHandler(mdw))
 
@@ -505,44 +504,6 @@ func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ClearCookieToken()
 		api.Redirect("/index.html")
-	}
-}
-
-func upgradeHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	clientID := strconv.Itoa(mdw.ConfigInt("api.client_id"))
-	clientSecret := mdw.ConfigString("api.client_secret")
-
-	return func(ctx *gin.Context) {
-		api := utils.NewRequest(mdw, ctx)
-
-		args := url.Values{
-			"client_id":     {clientID},
-			"client_secret": {clientSecret},
-		}
-		api.SetRequestData(args)
-
-		api.MethodForwardTo("POST", "/oauth2/upgrade", false)
-		if api.Error() != nil {
-			if err, ok := api.Data()["error"].(string); ok {
-				mdw.LogWeb().Warn(err)
-			}
-
-			api.ClearCookieToken()
-			api.Redirect("/index.html?to=" + api.NextRedirect())
-			return
-		}
-
-		setOAuthCookie(api)
-
-		oldCookie := http.Cookie{
-			Name:     "api_token",
-			HttpOnly: true,
-			Path:     "/",
-			MaxAge:   -1,
-		}
-		api.SetCookie(&oldCookie)
-
-		api.RedirectQuery("/live")
 	}
 }
 
