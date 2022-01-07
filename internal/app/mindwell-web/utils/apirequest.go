@@ -252,6 +252,14 @@ func (api *APIRequest) setUserKey(allowNoKey bool) bool {
 	return allowNoKey
 }
 
+func (api *APIRequest) authToken() string {
+	if api.aTok != "" {
+		return api.aTok
+	}
+
+	return api.mdw.AppToken()
+}
+
 func (api *APIRequest) RefreshAuth() bool {
 	if api.err != nil {
 		return false
@@ -434,11 +442,7 @@ func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 		req.Header[k] = vv2
 	}
 
-	if api.aTok != "" {
-		req.Header.Set("Authorization", "Bearer "+api.aTok)
-	} else {
-		req.Header.Set("X-User-Key", "no auth")
-	}
+	req.Header.Set("Authorization", "Bearer "+api.authToken())
 
 	if api.IsGet() && !api.IsAjax() {
 		dev, err := api.ctx.Cookie("dev")
@@ -818,4 +822,12 @@ func (api *APIRequest) IsLargeScreen() bool {
 	}
 
 	return !mobRe4.MatchString(ua[:4])
+}
+
+func (api *APIRequest) AppID() string {
+	return api.mdw.apiID
+}
+
+func (api *APIRequest) AppSecret() string {
+	return api.mdw.apiSecret
 }

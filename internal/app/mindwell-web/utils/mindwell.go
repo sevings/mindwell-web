@@ -1,10 +1,16 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"go.uber.org/zap"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/flosch/pongo2"
@@ -19,6 +25,10 @@ type Mindwell struct {
 	path      string
 	host      string
 	scheme    string
+	apiID     string
+	apiSecret string
+	appToken  string
+	appTokThr time.Time
 	url       string
 	imgHost   string
 	imgUrl    string
@@ -47,6 +57,8 @@ func NewMindwell() *Mindwell {
 	m.path = m.ConfigString("api.path")
 	m.host = m.ConfigString("api.host")
 	m.scheme = m.ConfigString("api.scheme")
+	m.apiID = strconv.Itoa(m.ConfigInt("api.client_id"))
+	m.apiSecret = m.ConfigString("api.client_secret")
 	m.url = m.scheme + "://" + m.host + m.path
 	m.imgHost = m.ConfigString("images.host")
 	m.imgUrl = m.scheme + "://" + m.imgHost + m.path
@@ -189,4 +201,70 @@ func (m *Mindwell) CheckCsrfToken(tokenString, action, client string) error {
 	}
 
 	return nil
+}
+
+type appToken struct {
+	AccessToken string `json:"access_token"`
+	ExpiresIn   int64  `json:"expires_in"`
+	TokenType   string `json:"token_type"`
+}
+
+func (m *Mindwell) AppToken() string {
+	if m.appTokThr.After(time.Now()) {
+		return m.appToken
+	}
+
+	args := url.Values{
+		"grant_type":    {"client_credentials"},
+		"client_id":     {m.apiID},
+		"client_secret": {m.apiSecret},
+	}
+	body := ioutil.NopCloser(strings.NewReader(args.Encode()))
+
+	req, err := http.NewRequest(http.MethodPost, m.url+"/oauth2/token", body)
+	if err != nil {
+		m.LogSystem().Error(err.Error())
+		return ""
+	}
+
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("User-Agent", "MindwellWeb")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		m.LogSystem().Error(err.Error())
+		return ""
+	}
+
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		m.LogSystem().Error(err.Error())
+		return ""
+	}
+
+	if resp.StatusCode != 200 {
+		m.LogSystem().Error(string(data))
+		return ""
+	}
+
+	var tok appToken
+	err = json.Unmarshal(data, &tok)
+	if err != nil {
+		m.LogSystem().Error(err.Error())
+		return ""
+	}
+
+	if tok.TokenType != "bearer" {
+		m.LogSystem().Error(string(data))
+		return ""
+	}
+
+	m.appToken = tok.AccessToken
+	m.appTokThr = time.Now().Add(time.Duration(tok.ExpiresIn) * time.Second)
+
+	m.LogSystem().Info(tok.AccessToken)
+
+	return m.appToken
 }

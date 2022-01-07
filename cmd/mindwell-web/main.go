@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
-	"strconv"
 	"strings"
 	"time"
 
@@ -434,9 +433,6 @@ func setOAuthCookie(api *utils.APIRequest) {
 }
 
 func accountHandler(mdw *utils.Mindwell, create bool) func(ctx *gin.Context) {
-	clientID := strconv.Itoa(mdw.ConfigInt("api.client_id"))
-	clientSecret := mdw.ConfigString("api.client_secret")
-
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 
@@ -469,8 +465,8 @@ func accountHandler(mdw *utils.Mindwell, create bool) func(ctx *gin.Context) {
 
 		args := url.Values{
 			"grant_type":    {"password"},
-			"client_id":     {clientID},
-			"client_secret": {clientSecret},
+			"client_id":     {api.AppID()},
+			"client_secret": {api.AppSecret()},
 			"username":      {api.FormString("name")},
 			"password":      {api.FormString("password")},
 		}
@@ -508,9 +504,6 @@ func logoutHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 }
 
 func refreshHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
-	clientID := strconv.Itoa(mdw.ConfigInt("api.client_id"))
-	clientSecret := mdw.ConfigString("api.client_secret")
-
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 
@@ -523,8 +516,8 @@ func refreshHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 
 		args := url.Values{
 			"grant_type":    {"refresh_token"},
-			"client_id":     {clientID},
-			"client_secret": {clientSecret},
+			"client_id":     {api.AppID()},
+			"client_secret": {api.AppSecret()},
 			"refresh_token": {token.Value},
 		}
 		api.SetRequestData(args)
