@@ -746,6 +746,9 @@ function openPost(id) {
         id = $(this).data("entry")
 
     let modal = $("#post-popup")
+    if(!modal.length)
+        return
+
     if(modal.data("id") == id)
     {
         if(modal.data("loading"))
@@ -763,7 +766,10 @@ function openPost(id) {
     modal.data("id", id)
     modal.modal("show")
 
-   window.location.hash = "post-popup" + id
+    if(window.location.hash.length > 1)
+        window.location.replace("#post-popup" + id)
+    else
+        window.location.hash = "post-popup" + id
 
     let body = modal.find(".modal-body")
     body.removeData("id").removeClass("entry")

@@ -1051,6 +1051,8 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			if ok {
 				api.SetScrollHrefsWithData("/entries/"+entryID+"/comments", cmts)
 			}
+
+			api.SetField("adjacent", "/entries/"+entryID+"/adjacent")
 		}
 
 		api.SetMe()

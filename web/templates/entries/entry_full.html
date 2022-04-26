@@ -1,5 +1,39 @@
 {% extends "entry_base.html" %}
 {% block commentButton %}{% endblock commentButton %}
+{% block adjacent %}
+    {% if adjacent.newer || adjacent.older %}
+            <div class="row no-gutters wrapped-text border-bottom">
+                <div class="col col-12 col-sm-6 order-1 order-sm-0">
+                    {% if adjacent.newer %}
+                        <article class="hentry post border-0">
+                            <a href="/entries/{{ adjacent.newer.id }}" class="h6 post-title open-post wrapped-text pl-5 pr-5 pr-sm-0"
+                               data-entry="{{ adjacent.newer.id }}">{{ adjacent.newer.title|safe }}</a>
+                            <a href="/entries/{{ adjacent.newer.id }}" class="post__date open-post pl-5 pr-5 pr-sm-0" data-entry="{{ adjacent.newer.id }}">
+                                <time class="published" datetime="{{ adjacent.newer.createdAt }}"></time>
+                            </a>
+                        </article>
+                        <a href="/entries/{{ adjacent.newer.id }}" class="open-post" data-entry="{{ adjacent.newer.id }}">
+                            <svg class="btn-prev-without olymp-popup-left-arrow"><use xlink:href="#olymp-popup-left-arrow"></use></svg>
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="col col-12 col-sm-6 order-0 order-sm-1">
+                    {% if adjacent.older %}
+                        <article class="hentry post border-0">
+                            <a href="/entries/{{ adjacent.older.id }}" class="h6 post-title open-post wrapped-text pl-5 pr-5 pl-sm-0"
+                               data-entry="{{ adjacent.older.id }}">{{ adjacent.older.title|safe }}</a>
+                            <a href="/entries/{{ adjacent.older.id }}" class="post__date open-post pl-5 pr-5 pl-sm-0" data-entry="{{ adjacent.older.id }}">
+                                <time class="published" datetime="{{ adjacent.older.createdAt }}"></time>
+                            </a>
+                        </article>
+                        <a href="/entries/{{ adjacent.older.id }}" class="open-post" data-entry="{{ adjacent.older.id }}">
+                            <svg class="btn-next-without olymp-popup-right-arrow"><use xlink:href="#olymp-popup-right-arrow"></use></svg>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+    {% endif %}
+{% endblock adjacent %}
 {% block comments %}
     <a name="comments"></a>
     <ul class="comments-list">

@@ -29,6 +29,20 @@ img.mfp-img {
     margin-top: 25px;
 }
 
+.open-post>.btn-prev-without, .open-post>.btn-next-without {
+    width: 14px;
+    height: 25px;
+    fill: #515365;
+}
+
+.open-post>.btn-prev-without {
+    left: 25px;
+}
+
+.open-post>.btn-next-without {
+    right: 25px;
+}
+
 .header-responsive {
     padding: 0;
 }
