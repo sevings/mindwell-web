@@ -50,13 +50,10 @@ function loadDraft() {
 
     privacyElem().val(draft.privacy)
     $('.selectpicker').selectpicker('refresh');
-    togglePublicOnly()
-    togglePrivacyHint()
 
     isCommentableElem().prop("checked", draft.isCommentable)
     isVotableElem().prop("checked", draft.isVotable)
     inLiveElem().prop("checked", draft.inLive)
-    toggleLiveHint()
 }
 
 function removeDraft() {
@@ -126,12 +123,16 @@ function init() {
     privacyElem().change(toggleLiveHint)
     inLiveElem().change(toggleLiveHint)
 
-    if(!isCreating())
-        return;
+    if(isCreating())
+    {
+        loadDraft()
+        setInterval(storeDraft, 60000)
+        $(window).on("pagehide", storeDraft)
+    }
 
-    loadDraft()
-    setInterval(storeDraft, 60000)
-    $(window).on("pagehide", storeDraft)
+    togglePublicOnly()
+    toggleLiveHint()
+    togglePrivacyHint()
 }
 
 init()
