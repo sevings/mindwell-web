@@ -90,12 +90,18 @@ func main() {
 	web.GET("/friends", friendsHandler(mdw))
 	web.GET("/watching", watchingHandler(mdw))
 
-	web.GET("/users", topsHandler(mdw))
-	web.GET("/users/:name", tlogHandler(mdw, false))
+	web.GET("/users", topsHandler(mdw, "users/top_users"))
+	web.GET("/users/:name", tlogHandler(mdw, "/users", false))
 	web.GET("/users/:name/calendar", proxyNoKeyHandler(mdw))
-	web.GET("/users/:name/entries", tlogHandler(mdw, true))
+	web.GET("/users/:name/entries", tlogHandler(mdw, "/users", true))
 	web.GET("/users/:name/favorites", favoritesHandler(mdw))
-	web.GET("/users/:name/relations/:relation", usersHandler(mdw))
+	web.GET("/users/:name/relations/:relation", usersHandler(mdw, "/users"))
+
+	web.GET("/themes", topsHandler(mdw, "users/top_themes"))
+	web.GET("/themes/:name", tlogHandler(mdw, "/themes", false))
+	web.GET("/themes/:name/calendar", proxyNoKeyHandler(mdw))
+	web.GET("/themes/:name/entries", tlogHandler(mdw, "/themes", true))
+	web.GET("/themes/:name/relations/:relation", usersHandler(mdw, "/themes"))
 
 	web.GET("/me", meHandler(mdw, ""))
 	web.GET("/me/entries", meHandler(mdw, "/entries"))
@@ -811,25 +817,25 @@ func watchingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func topsHandler(mdw *utils.Mindwell, templateName string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.QueryCookie()
 		api.Forward()
 		api.SetScrollHrefs()
 		api.SetMe()
-		api.WriteTemplate("users/top_users")
+		api.WriteTemplate(templateName)
 	}
 }
 
-func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
+func tlogHandler(mdw *utils.Mindwell, baseApiPath string, isTlog bool) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		name := ctx.Param("name")
 		api := utils.NewRequest(mdw, ctx)
 
 		var profile interface{}
 		if !api.IsAjax() {
-			api.SetFieldNoKey("profile", "/users/"+name)
+			api.SetFieldNoKey("profile", baseApiPath+"/"+name)
 			if api.Error() != nil {
 				if api.HasUserKey() {
 					api.WriteTemplate("error")
@@ -847,13 +853,13 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 		api.QueryCookieName("tlog_feed", "limit=10")
 
 		if isTlog || api.IsLargeScreen() {
-			api.ForwardToNoKey("/users/" + name + "/tlog")
+			api.ForwardToNoKey(baseApiPath + "/" + name + "/tlog")
 			api.SetScrollHrefs()
 		}
 
 		if !isTlog || api.IsLargeScreen() {
-			api.SetFieldNoKey("tags", "/users/"+name+"/tags")
-			api.SetFieldNoKey("calendar", "/users/"+name+"/calendar")
+			api.SetFieldNoKey("tags", baseApiPath+"/"+name+"/tags")
+			api.SetFieldNoKey("calendar", baseApiPath+"/"+name+"/calendar")
 		}
 
 		api.SkipError()
@@ -900,20 +906,20 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func usersHandler(mdw *utils.Mindwell, baseApiPath string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		relation := ctx.Param("relation")
 		name := ctx.Param("name")
 
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo("/users/" + name + "/" + relation)
+		api.ForwardTo(baseApiPath + "/" + name + "/" + relation)
 		api.SetScrollHrefs()
 
 		if api.IsAjax() {
 			api.WriteTemplate("users/users_page")
 		} else {
 			api.SetMe()
-			api.SetField("profile", "/users/"+name)
+			api.SetField("profile", baseApiPath+"/"+name)
 			api.WriteTemplate("users/friendlist")
 		}
 	}

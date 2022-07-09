@@ -1,0 +1,7 @@
+{% for user in themes %}
+    {% include "friend.html" %}
+{% empty %}
+    <h6 class="title hcenter">Здесь ничего нет</h6>
+{% endfor %}
+
+{% include "../nav.html" %}
