@@ -1,8 +1,8 @@
 {% extends "base_auth.html" %}
 {% block meta %}
-    <link rel="canonical" href="{{ __proto }}://{{ __domain }}/users/{{ profile.name }}">
-    <meta property="og:url" content="{{ __proto }}://{{ __domain }}/users/{{ profile.name }}">
-    <meta property="og:description" content="{% block description %}{% if profile.title %}{{ profile.title }}{% else %}Личный дневник {{ profile.showName }}.{% endif %}{% endblock %}">
+    <link rel="canonical" href="{{ __proto }}://{{ __domain }}/{% if profile.isTheme %}themes{% else %}users{% endif %}/{{ profile.name }}">
+    <meta property="og:url" content="{{ __proto }}://{{ __domain }}/{% if profile.isTheme %}themes{% else %}users{% endif %}/{{ profile.name }}">
+    <meta property="og:description" content="{% block description %}{% if profile.title %}{{ profile.title }}{% else %}{% if profile.isTheme %}Тема{% else %}Личный дневник{% endif %} {{ profile.showName }}.{% endif %}{% endblock %}">
     <meta property="og:title" content="{% block title %}{{ profile.showName }}{% endblock %}">
     <meta property="og:type" content="profile">
     <meta property="og:profile:username" content="{{ profile.name }}">
@@ -17,179 +17,270 @@
     <script src="/assets/js/fullcalendar/main.min.js"></script>
     <script src='/assets/js/fullcalendar/locales/ru.js'></script>
     <script src="/assets/feed.js?d=20220408"></script>
-    <script src="/assets/tlog.js?d=20210106"></script>
+    <script src="/assets/tlog.js?d=20220710"></script>
 {% endblock %}
 {% block body %}
-<div id="profile" class="container" data-name="{{ profile.name }}" data-privacy="{{ profile.privacy }}" 
-        data-rel-to-me="{{ profile.relations.toMe }}" data-rel-from-me="{{ profile.relations.fromMe }}"
-        data-created-at="{{ profile.createdAt }}">
-	<div class="row">
-		<div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-			<div class="ui-block">
-				<div class="top-header">
-					<div class="top-header-thumb">
-						<img src="{{ profile.cover.x1920 }}" alt="cover" width="1920" height="640">
-					</div>
-					<div class="profile-section">
-						<div class="row">
-							<div class="col col-lg-5 col-md-5 col-sm-12 col-12">
-								<ul class="profile-menu">
-                                    {% if profile.counts.entries %}
-                                        <li>
-                                            {% if profile.relations.isOpenForMe %}
-                                                <a href="/users/{{ profile.name }}{% if !__large_screen %}/entries{% endif %}"
-                                            {% else %}
-                                                <div
-                                            {% endif %}
-                                                    class="friend-count-item">
-                                                <div class="h6">{{ profile.counts.entries }}</div>
-                                                <div class="title">запис{{ profile.counts.entries|quantity:"ь,и,ей" }}</div>
-                                            {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
-                                        </li>
-                                    {% endif %}
-                                    {% if profile.counts.favorites %}
-                                        <li>
-                                            {% if profile.relations.isOpenForMe %}
-                                                <a href="/users/{{ profile.name }}/favorites" 
-                                            {% else %}
-                                                <div
-                                            {% endif %}
-                                                    class="friend-count-item">
-                                                <div class="h6">{{ profile.counts.favorites }}</div>
-                                                <div class="title">в избранном</div>
-                                            {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
-                                        </li>
-                                    {% endif %}
-								</ul>
-							</div>
-							<div class="col col-lg-5 ml-auto col-md-5 col-sm-12 col-12">
-								<ul class="profile-menu">
-                                    {% if profile.counts.followings %}
-                                        <li>
-                                            {% if profile.relations.isOpenForMe %}
-                                                <a href="/users/{{ profile.name }}/relations/followings" 
-                                            {% else %}
-                                                <div
-                                            {% endif %}
-                                                    class="friend-count-item">
-                                                <div class="h6">{{ profile.counts.followings }}</div>
-                                                <div class="title">подпис{{ profile.counts.followings|quantity:"ка,ки,ок" }}</div>
-                                            {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
-                                        </li>
-                                    {% endif %}
-                                    {% if profile.counts.followers %}
-                                        <li>
-                                            {% if profile.relations.isOpenForMe %}
-                                                <a href="/users/{{ profile.name }}/relations/followers" 
-                                            {% else %}
-                                                <div
-                                            {% endif %}
-                                                    class="friend-count-item">
-                                                <div class="h6">{{ profile.counts.followers }}</div>
-                                                <div class="title">подписчик{{ profile.counts.followers|quantity:",а,ов" }}</div>
-                                            {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
-                                        </li>
-                                    {% endif %}
-                                    {% if profile.counts.invited %}
-                                        <li>
-                                            {% if profile.relations.isOpenForMe %}
-                                                <a href="/users/{{ profile.name }}/relations/invited" 
-                                            {% else %}
-                                                <div
-                                            {% endif %}
-                                                    class="friend-count-item">
-                                                <div class="h6">{{ profile.counts.invited }}</div>
-                                                <div class="title">приглашенны{{ profile.counts.invited|quantity:"й,х,х" }}</div>
-                                            {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
-                                        </li>
-                                    {% endif %}
-                                    {% if me.id && me.id != profile.id %}
-                                        <div class="more">
-											<svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
-											<ul class="more-dropdown more-with-triangle">
-												<li {% if profile.relations.fromMe != "followed" %}hidden{% endif %}>
-													<a id="unfollow" href="#">Отписаться</a>
-												</li>
-												<li>
-													<a id="hide-posts" href="#"></a>
-												</li>
-												<li>
-													<a id="blacklist" href="#"></a>
-												</li>
-											</ul>
-										</div>
-                                    {% endif %}
-								</ul>
-							</div>
+<div id="profile" class="container" data-name="{{ profile.name }}" data-privacy="{{ profile.privacy }}"
+     data-rel-to-me="{{ profile.relations.toMe }}" data-rel-from-me="{{ profile.relations.fromMe }}"
+     data-created-at="{{ profile.createdAt }}" data-is-theme="{{ profile.isTheme }}">
+    <div class="row">
+        <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="ui-block">
+                {% if profile.isTheme %}
+                    <div class="top-header top-header-favorit">
+                        <div class="top-header-thumb">
+                            <img src="{{ profile.cover.x1920 }}" alt="cover" width="1920" height="640">
+                            <div class="top-header-author">
+                                <a href="/themes/{{ profile.name }}" class="author-thumb">
+                                    <img src="{{ profile.avatar.x124 }}" alt="{{ profile.showName }}" width="124" height="124">
+                                </a>
+                                <div class="author-content">
+                                    <a href="/themes/{{ profile.name }}" class="h3 author-name">{{ profile.showName }}</a>
+                                </div>
+                            </div>
                         </div>
-						<div class="control-block-button">
-                            {% if me.id == profile.id %}
-                                <div class="btn btn-control bg-primary more">
-                                    <svg class="olymp-settings-icon"><use xlink:href="#olymp-settings-icon"></use></svg>
-
-                                    <ul class="more-dropdown more-with-triangle triangle-top-right">
-                                        <li>
-                                            <a href="#" data-toggle="modal" data-target="#update-avatar">Обновить аватар</a>
-                                        </li>
-                                        <li>
-                                            <a href="#" data-toggle="modal" data-target="#update-cover">Обновить обложку</a>
-                                        </li>
-                                        <li>
-                                            <a href="#" data-toggle="modal" data-target="#edit-profile">Редактировать</a>
-                                        </li>
+                        <div class="profile-section">
+                            <div class="row">
+                                <div class="col col-xl-8 m-auto col-lg-8 col-md-12">
+                                    <ul class="profile-menu">
+                                        {% if profile.counts.entries %}
+                                            <li>
+                                                {% if profile.relations.isOpenForMe %}
+                                                    <a href="/themes/{{ profile.name }}{% if !__large_screen %}/entries{% endif %}"
+                                                       {% if __feed %}class="active"{% endif %}>
+                                                {% else %}
+                                                    <div>
+                                                {% endif %}
+                                                {{ profile.counts.entries }} запис{{ profile.counts.entries|quantity:"ь,и,ей" }}
+                                                {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                            </li>
+                                        {% endif %}
+                                        {% if profile.counts.followers %}
+                                            <li>
+                                                {% if profile.relations.isOpenForMe %}
+                                                    <a href="/themes/{{ profile.name }}/relations/followers"
+                                                       {% if relation == "followers" %}class="active"{% endif %}>
+                                                {% else %}
+                                                    <div>
+                                                {% endif %}
+                                                {{ profile.counts.followers }} участник{{ profile.counts.followers|quantity:",а,ов" }}
+                                                {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                            </li>
+                                        {% endif %}
+                                        {% if me.id %}
+                                            <div class="more">
+                                                <svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
+                                                <ul class="more-dropdown more-with-triangle">
+                                                    <li {% if profile.relations.fromMe != "followed" %}hidden{% endif %}>
+                                                        <a id="unfollow" href="#">Отписаться</a>
+                                                    </li>
+                                                    <li>
+                                                        <a id="hide-posts" href="#"></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        {% endif %}
                                     </ul>
                                 </div>
-                            {% elif me.id %}
-                                <a id="permit-rel" href="#" class="btn btn-control bg-green" title="Принять заявку" hidden>
-                                    <svg class="olymp-check-icon"><use xlink:href="#olymp-check-icon"></use></svg>
-                                </a>
-                                <a id="cancel-rel" href="#" class="btn btn-control bg-google" title="Отклонить заявку" hidden>
-                                    <svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
-                                </a>
-                                <a id="follow" href="#" class="btn btn-control">
-                                    <svg class="olymp-happy-face-icon"><use xlink:href="#olymp-happy-face-icon"></use></svg>
-                                </a>
-                                {% if me.invitedBy.id && profile.relations.toMe != "ignored" %}
-                                    <a href="#" class="btn btn-control bg-purple" title="Отправить сообщение"
-                                            data-toggle="modal" data-target="#private-message">
-                                        <svg class="olymp-chat---messages-icon"><use xlink:href="#olymp-chat---messages-icon"></use></svg>
+                            </div>
+
+                            <div class="control-block-button">
+                                {% if me.id %}
+                                    <a id="follow" href="#" class="btn btn-control">
+                                        <svg class="olymp-happy-face-icon"><use xlink:href="#olymp-happy-face-icon"></use></svg>
                                     </a>
                                 {% endif %}
-                                {% if !profile.invitedBy.id && me.invitedBy.id %}
-                                    <a id="give-invite" href="#" class="btn btn-control bg-primary" title="Отправить приглашение" 
-                                            data-toggle="modal" data-target="#invite-user">
-                                        <svg class="olymp-happy-sticker-icon"><use xlink:href="#olymp-happy-sticker-icon"></use></svg>
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-						</div>
-					</div>
-					<div class="top-header-author">
-						<a href="/users/{{ profile.name }}" class="author-thumb">
-							<img src="{{ profile.avatar.x124 }}" alt="{{ profile.showName }}" width="124" height="124">
-						</a>
-						<div class="author-content">
-							<a href="/users/{{ profile.name }}" class="h4 author-name">{{ profile.showName }}</a>
-							<div class="country">
-                                {% if profile.isOnline %}
-                                    Онлайн
-                                {% else %}
-                                    Заходил{{ profile.gender|gender }} <time class="text-lowercase" datetime="{{ profile.lastSeenAt }}"></time>
+                                {% if me.id == profile.createdBy.id %}
+                                    <div class="btn btn-control bg-primary more">
+                                        <svg class="olymp-settings-icon"><use xlink:href="#olymp-settings-icon"></use></svg>
+
+                                        <ul class="more-dropdown more-with-triangle triangle-top-right">
+                                            <li>
+                                                <a href="#" data-toggle="modal" data-target="#update-avatar">Обновить аватар</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" data-toggle="modal" data-target="#update-cover">Обновить обложку</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" data-toggle="modal" data-target="#edit-profile">Редактировать</a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 {% endif %}
                             </div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="top-header">
+                        <div class="top-header-thumb">
+                            <img src="{{ profile.cover.x1920 }}" alt="cover" width="1920" height="640">
+                        </div>
+                        <div class="profile-section">
+                            <div class="row">
+                                <div class="col col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <ul class="profile-menu">
+                                        {% if profile.counts.entries %}
+                                            <li>
+                                                {% if profile.relations.isOpenForMe %}
+                                                    <a href="/users/{{ profile.name }}{% if !__large_screen %}/entries{% endif %}"
+                                                {% else %}
+                                                    <div
+                                                {% endif %}
+                                                class="friend-count-item">
+                                                <div class="h6">{{ profile.counts.entries }}</div>
+                                                <div class="title">запис{{ profile.counts.entries|quantity:"ь,и,ей" }}</div>
+                                                {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                            </li>
+                                        {% endif %}
+                                        {% if profile.counts.favorites %}
+                                            <li>
+                                                {% if profile.relations.isOpenForMe %}
+                                                    <a href="/users/{{ profile.name }}/favorites"
+                                                {% else %}
+                                                    <div
+                                                {% endif %}
+                                                class="friend-count-item">
+                                                <div class="h6">{{ profile.counts.favorites }}</div>
+                                                <div class="title">в избранном</div>
+                                                {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                <div class="col col-lg-5 ml-auto col-md-5 col-sm-12 col-12">
+                                    <ul class="profile-menu">
+                                        {% if profile.counts.followings %}
+                                            <li>
+                                                {% if profile.relations.isOpenForMe %}
+                                                    <a href="/users/{{ profile.name }}/relations/followings"
+                                                {% else %}
+                                                    <div
+                                                {% endif %}
+                                                class="friend-count-item">
+                                                <div class="h6">{{ profile.counts.followings }}</div>
+                                                <div class="title">подпис{{ profile.counts.followings|quantity:"ка,ки,ок" }}</div>
+                                                {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                            </li>
+                                        {% endif %}
+                                        {% if profile.counts.followers %}
+                                            <li>
+                                                {% if profile.relations.isOpenForMe %}
+                                                    <a href="/users/{{ profile.name }}/relations/followers"
+                                                {% else %}
+                                                    <div
+                                                {% endif %}
+                                                class="friend-count-item">
+                                                <div class="h6">{{ profile.counts.followers }}</div>
+                                                <div class="title">подписчик{{ profile.counts.followers|quantity:",а,ов" }}</div>
+                                                {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                            </li>
+                                        {% endif %}
+                                        {% if profile.counts.invited %}
+                                            <li>
+                                            {% if profile.relations.isOpenForMe %}
+                                                <a href="/users/{{ profile.name }}/relations/invited"
+                                           {% else %}
+                                                <div
+                                            {% endif %}
+                                                class="friend-count-item">
+                                                <div class="h6">{{ profile.counts.invited }}</div>
+                                                <div class="title">приглашенны{{ profile.counts.invited|quantity:"й,х,х" }}</div>
+                                                {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                            </li>
+                                        {% endif %}
+                                        {% if me.id && me.id != profile.id %}
+                                            <div class="more">
+                                                <svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
+                                                <ul class="more-dropdown more-with-triangle">
+                                                    <li {% if profile.relations.fromMe != "followed" %}hidden{% endif %}>
+                                                        <a id="unfollow" href="#">Отписаться</a>
+                                                    </li>
+                                                    <li>
+                                                        <a id="hide-posts" href="#"></a>
+                                                    </li>
+                                                    <li>
+                                                        <a id="blacklist" href="#"></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="control-block-button">
+                                {% if me.id == profile.id %}
+                                    <div class="btn btn-control bg-primary more">
+                                        <svg class="olymp-settings-icon"><use xlink:href="#olymp-settings-icon"></use></svg>
+
+                                        <ul class="more-dropdown more-with-triangle triangle-top-right">
+                                            <li>
+                                                <a href="#" data-toggle="modal" data-target="#update-avatar">Обновить аватар</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" data-toggle="modal" data-target="#update-cover">Обновить обложку</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" data-toggle="modal" data-target="#edit-profile">Редактировать</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                {% elif me.id %}
+                                    <a id="permit-rel" href="#" class="btn btn-control bg-green" title="Принять заявку" hidden>
+                                        <svg class="olymp-check-icon"><use xlink:href="#olymp-check-icon"></use></svg>
+                                    </a>
+                                    <a id="cancel-rel" href="#" class="btn btn-control bg-google" title="Отклонить заявку" hidden>
+                                        <svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
+                                    </a>
+                                    <a id="follow" href="#" class="btn btn-control">
+                                        <svg class="olymp-happy-face-icon"><use xlink:href="#olymp-happy-face-icon"></use></svg>
+                                    </a>
+                                    {% if me.invitedBy.id && profile.relations.toMe != "ignored" %}
+                                        <a href="#" class="btn btn-control bg-purple" title="Отправить сообщение"
+                                           data-toggle="modal" data-target="#private-message">
+                                            <svg class="olymp-chat---messages-icon"><use xlink:href="#olymp-chat---messages-icon"></use></svg>
+                                        </a>
+                                    {% endif %}
+                                    {% if !profile.invitedBy.id && me.invitedBy.id %}
+                                        <a id="give-invite" href="#" class="btn btn-control bg-primary" title="Отправить приглашение"
+                                           data-toggle="modal" data-target="#invite-user">
+                                            <svg class="olymp-happy-sticker-icon"><use xlink:href="#olymp-happy-sticker-icon"></use></svg>
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="top-header-author">
+                            <a href="/users/{{ profile.name }}" class="author-thumb">
+                                <img src="{{ profile.avatar.x124 }}" alt="{{ profile.showName }}" width="124" height="124">
+                            </a>
+                            <div class="author-content">
+                                <a href="/users/{{ profile.name }}" class="h4 author-name">{{ profile.showName }}</a>
+                                <div class="country">
+                                    {% if profile.isOnline %}
+                                        Онлайн
+                                    {% else %}
+                                        Заходил{{ profile.gender|gender }} <time class="text-lowercase" datetime="{{ profile.lastSeenAt }}"></time>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 
 {% block content %}{% endblock %}
 
-{% if me.id == profile.id %}
-    {% include "images/upload.html" with modalID="update-avatar" title="Загрузить новый аватар" action="/profile/avatar" %}
-    {% include "images/upload.html" with modalID="update-cover" title="Загрузить новую обложку профиля" action="/profile/cover" %}
+{% if me.id == profile.id || me.id == profile.createdBy.id %}
+    {% if profile.isTheme %}
+        {% include "images/upload.html" with modalID="update-avatar" title="Загрузить новый аватар" action=profile.name|stringformat:"/themes/%s/avatar" %}
+        {% include "images/upload.html" with modalID="update-cover" title="Загрузить новую обложку темы" action=profile.name|stringformat:"/themes/%s/cover" %}
+    {% else %}
+        {% include "images/upload.html" with modalID="update-avatar" title="Загрузить новый аватар" action="/profile/avatar" %}
+        {% include "images/upload.html" with modalID="update-cover" title="Загрузить новую обложку профиля" action="/profile/cover" %}
+    {% endif %}
 
     <div class="modal fade" id="edit-profile" tabindex="-1" role="dialog" aria-labelledby="edit-profile" aria-hidden="true">
         <div class="modal-dialog window-popup edit-widget" role="document">
@@ -199,41 +290,46 @@
                 </a>
 
                 <div class="modal-header">
-                    <h6 class="title">Редактировать профиль</h6>
+                    <h6 class="title">{% if profile.isTheme %}Редактировать тему{% else %}Редактировать профиль{% endif %}</h6>
                 </div>
 
                 <div class="modal-body">
-                    <form name="profile-editor" action="/profile/save" method="post" enctype="application/x-www-form-urlencoded">
+                    <form name="profile-editor" action="{% if profile.isTheme %}/themes/{{ profile.name }}/save{% else %}/profile/save{% endif %}"
+                          method="post" enctype="application/x-www-form-urlencoded">
 
                         <label class="control-label">Краткая информация</label>
-                        <textarea class="form-control" maxlength="500" name="title">{{ me.title }}</textarea>
+                        <textarea class="form-control" maxlength="500" name="title">{{ profile.title }}</textarea>
 
-                        <label class="control-label">Имя</label>
+                        <label class="control-label">{% if profile.isTheme %}Название{% else %}Имя{% endif %}</label>
                         <input class="form-control" maxlength="20"
-                            type="text" name="showName" value="{{ me.showName }}" placeholder="{{ me.name }}" required>
+                            type="text" name="showName" value="{{ profile.showName }}" placeholder="{{ profile.name }}" required>
 
-                        <label class="control-label">Пол</label>
-                        <select class="selectpicker form-control" name="gender">
-                            <option value="not set" {% if me.gender == "not set" %}selected{% endif %}>не указан</option>
-                            <option value="female" {% if me.gender == "female" %}selected{% endif %}>женский</option>
-                            <option value="male" {% if me.gender == "male" %}selected{% endif %}>мужской</option>
-                        </select>
+                        {% if !profile.isTheme %}
+                            <label class="control-label">Пол</label>
+                            <select class="selectpicker form-control" name="gender">
+                                <option value="not set" {% if profile.gender == "not set" %}selected{% endif %}>не указан</option>
+                                <option value="female" {% if profile.gender == "female" %}selected{% endif %}>женский</option>
+                                <option value="male" {% if profile.gender == "male" %}selected{% endif %}>мужской</option>
+                            </select>
+                        {% endif %}
 
-                        <label class="control-label">Приватность тлога</label>
+                        <label class="control-label">Приватность записей</label>
                         <select class="selectpicker form-control" name="privacy">
-                            <option value="all" {% if me.privacy == "all" %}selected{% endif %}>открыт для всех</option>
-                            <option value="registered" {% if me.privacy == "registered" %}selected{% endif %}>открыт для зарегистрированных</option>
-                            <option value="invited" {% if me.privacy == "invited" %}selected{% endif %}>открыт для приглашенных</option>
-                            <option value="followers" {% if me.privacy == "followers" %}selected{% endif %}>открыт для подписчиков</option>
+                            <option value="all" {% if profile.privacy == "all" %}selected{% endif %}>открыты для всех</option>
+                            <option value="registered" {% if profile.privacy == "registered" %}selected{% endif %}>открыты для зарегистрированных</option>
+                            <option value="invited" {% if profile.privacy == "invited" %}selected{% endif %}>открыты для приглашенных</option>
+                            {% if !profile.isTheme %}<option value="followers" {% if profile.privacy == "followers" %}selected{% endif %}>открыты для подписчиков</option>{% endif %}
                         </select>
 
                         <div id="privacy-info" class="alert alert-secondary" role="alert"></div>
 
-                        <label class="control-label">Страна</label>
-                        <input class="form-control" maxlength="50" type="text" name="country" value="{{ me.country }}">
+                        {% if !profile.isTheme %}
+                            <label class="control-label">Страна</label>
+                            <input class="form-control" maxlength="50" type="text" name="country" value="{{ profile.country }}">
 
-                        <label class="control-label">Город</label>
-                        <input class="form-control" maxlength="50" type="text" name="city" value="{{ me.city }}">
+                            <label class="control-label">Город</label>
+                            <input class="form-control" maxlength="50" type="text" name="city" value="{{ profile.city }}">
+                        {% endif %}
 
                         {% comment %} <input type="checkbox" name="isDaylog" {% if isDaylog %}checked{% endif %}> Тлогодень<br /> 
                         <input type="checkbox" name="showInTops" {% if showInTops %}checked{% endif %}> Разрешить показывать в топах<br />  {% endcomment %}
@@ -244,7 +340,7 @@
             </div>
         </div>
     </div>
-{% elif me.invitedBy.id && profile.relations.toMe != "ignored" %}
+{% elif !profile.isTheme && me.invitedBy.id && profile.relations.toMe != "ignored" %}
     <div class="modal fade" id="private-message" tabindex="-1" role="dialog" aria-labelledby="private-message" aria-hidden="true">
         <div class="modal-dialog modal-sm window-popup edit-widget" role="document">
             <div class="modal-content">
@@ -271,7 +367,7 @@
     </div>
 {% endif %}
 
-{% if !profile.invitedBy.id && me.invitedBy.id %}
+{% if !profile.isTheme && !profile.invitedBy.id && me.invitedBy.id %}
     <div class="modal fade" id="invite-user" tabindex="-1" role="dialog" aria-labelledby="invite-user" aria-hidden="true">
         <div class="modal-dialog modal-sm window-popup edit-widget" role="document">
             <div class="modal-content">

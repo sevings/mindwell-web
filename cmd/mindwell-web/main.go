@@ -110,6 +110,10 @@ func main() {
 	web.POST("/profile/avatar", avatarSaverHandler(mdw))
 	web.POST("/profile/cover", coverSaverHandler(mdw))
 
+	web.POST("/themes/:name/save", themeSaverHandler(mdw))
+	web.POST("/themes/:name/avatar", themeAvatarSaverHandler(mdw))
+	web.POST("/themes/:name/cover", themeCoverSaverHandler(mdw))
+
 	web.GET("/design", designEditorHandler(mdw))
 	web.POST("/design", designSaverHandler(mdw))
 
@@ -960,6 +964,33 @@ func coverSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForwardToImages("PUT", "/me/cover")
+		api.WriteResponse()
+	}
+}
+
+func themeSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		name := ctx.Param("name")
+		api.MethodForwardTo("PUT", "/themes/"+name, false)
+		api.Redirect("/themes/" + name)
+	}
+}
+
+func themeAvatarSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		name := ctx.Param("name")
+		api.MethodForwardToImages("PUT", "/themes/"+name+"/avatar")
+		api.WriteResponse()
+	}
+}
+
+func themeCoverSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		name := ctx.Param("name")
+		api.MethodForwardToImages("PUT", "/themes/"+name+"/cover")
 		api.WriteResponse()
 	}
 }

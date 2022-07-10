@@ -1,41 +1,48 @@
 {% extends "../profile.html" %}
 {% block title %}
-    {% if relation == "followers" %}
-        Подписчики
-    {% elif relation == "followings" %}
-        Подписки
-    {% elif relation == "requested" %}
-        Заявки
-    {% elif relation == "ignored" %}
-        Заблокированные пользователи
-    {% elif relation == "invited" %}
-        Приглашенные
+    {% if profile.isTheme %}
+        Участники
+    {% else %}
+        {% if relation == "followers" %}
+            Подписчики
+        {% elif relation == "followings" %}
+            Подписки
+        {% elif relation == "requested" %}
+            Заявки
+        {% elif relation == "ignored" %}
+            Заблокированные пользователи
+        {% elif relation == "invited" %}
+            Приглашенные
+        {% endif %}
     {% endif %}
 {% endblock %}
 {% block content %}
-<div class="container">
-	<div class="row">
-		<div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-			<div class="ui-block responsive-flex">
-				<div class="ui-block-title">
-					<div class="h6 title">
-                        {% if relation == "followers" %}
-                            Подписчики
-                        {% elif relation == "followings" %}
-                            Подписки
-                        {% elif relation == "requested" %}
-                            Заявки
-                        {% elif relation == "ignored" %}
-                            Заблокированные пользователи
-                        {% elif relation == "invited" %}
-                            Приглашенные
-                        {% endif %}                        
+
+{% if !profile.isTheme %}
+    <div class="container">
+        <div class="row">
+            <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="ui-block responsive-flex">
+                    <div class="ui-block-title">
+                        <div class="h6 title">
+                            {% if relation == "followers" %}
+                                Подписчики
+                            {% elif relation == "followings" %}
+                                Подписки
+                            {% elif relation == "requested" %}
+                                Заявки
+                            {% elif relation == "ignored" %}
+                                Заблокированные пользователи
+                            {% elif relation == "invited" %}
+                                Приглашенные
+                            {% endif %}
+                        </div>
                     </div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 
 <div class="container">
 	<div id="users" class="row sorting-container" data-layout="masonry">

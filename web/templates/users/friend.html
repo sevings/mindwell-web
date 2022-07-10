@@ -35,7 +35,7 @@
                     {% if user.privacy == "all" %}<a href="/{% if user.isTheme %}themes{% else %}users{% endif %}/{{ user.name }}/relations/followers"{% else %}<span{% endif %}
                         class="friend-count-item">
                     <div class="h6">{{ user.counts.followers|default:0 }}</div>
-                    <div class="title">подписчик{{ user.counts.followers|quantity:",а,ов" }}</div>
+                    <div class="title">{% if user.isTheme %}участник{% else %}подписчик{% endif %}{{ user.counts.followers|quantity:",а,ов" }}</div>
                     {% if user.privacy == "all" %}</a>{% else %}</span>{% endif %}
                     <a href="/{% if user.isTheme %}themes{% else %}users{% endif %}/{{ user.name }}" class="friend-count-item">
                         <div class="h6">{{ user.rank }}</div>
