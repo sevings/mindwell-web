@@ -1011,8 +1011,8 @@ func designSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func suggestTags(api *utils.APIRequest) {
-	api.SetField("suggestedTags", "/me/tags")
+func suggestTags(api *utils.APIRequest, firstPath string) {
+	api.SetField("suggestedTags", firstPath)
 	tags := api.Data()["suggestedTags"].(map[string]interface{})
 	data, ok := tags["data"].([]interface{})
 	if !ok || len(data) == 0 {
@@ -1024,7 +1024,15 @@ func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
-		suggestTags(api)
+
+		theme := ctx.Query("theme")
+		if len(theme) > 0 {
+			api.SetField("theme", "/themes/"+theme)
+			suggestTags(api, "/themes/"+theme+"/tags")
+		} else {
+			suggestTags(api, "/me/tags")
+		}
+
 		api.WriteTemplate("editor")
 	}
 }
@@ -1032,7 +1040,13 @@ func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo("/me/tlog")
+
+		theme := ctx.Query("theme")
+		if len(theme) > 0 {
+			api.ForwardTo("/themes/" + theme + "/tlog")
+		} else {
+			api.ForwardTo("/me/tlog")
+		}
 
 		entry := api.Data()
 		entryID, ok := entry["id"].(json.Number)
@@ -1051,7 +1065,7 @@ func editorExistingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/entries/" + ctx.Param("id"))
 		api.SetMe()
-		suggestTags(api)
+		suggestTags(api, "/me/tags")
 		api.WriteTemplate("editor")
 	}
 }

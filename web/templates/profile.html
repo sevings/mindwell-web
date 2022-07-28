@@ -17,12 +17,12 @@
     <script src="/assets/js/fullcalendar/main.min.js"></script>
     <script src='/assets/js/fullcalendar/locales/ru.js'></script>
     <script src="/assets/feed.js?d=20220408"></script>
-    <script src="/assets/tlog.js?d=20220710"></script>
+    <script src="/assets/tlog.js?d=20220711"></script>
 {% endblock %}
 {% block body %}
 <div id="profile" class="container" data-name="{{ profile.name }}" data-privacy="{{ profile.privacy }}"
      data-rel-to-me="{{ profile.relations.toMe }}" data-rel-from-me="{{ profile.relations.fromMe }}"
-     data-created-at="{{ profile.createdAt }}" data-is-theme="{{ profile.isTheme }}">
+     data-created-at="{{ profile.createdAt }}" data-created-by="{{ profile.createdBy.id }}">
     <div class="row">
         <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="ui-block">
@@ -47,7 +47,7 @@
                                             <li>
                                                 {% if profile.relations.isOpenForMe %}
                                                     <a href="/themes/{{ profile.name }}{% if !__large_screen %}/entries{% endif %}"
-                                                       {% if __feed %}class="active"{% endif %}>
+                                                       {% if entries %}class="active"{% endif %}>
                                                 {% else %}
                                                     <div>
                                                 {% endif %}
@@ -88,6 +88,10 @@
                                 {% if me.id %}
                                     <a id="follow" href="#" class="btn btn-control">
                                         <svg class="olymp-happy-face-icon"><use xlink:href="#olymp-happy-face-icon"></use></svg>
+                                    </a>
+                                    <a id="create-post" href="/editor?theme={{ profile.name }}" class="btn btn-control bg-green" title="Новая запись"
+                                        {% if profile.relations.fromMe != "followed" && profile.createdBy.id !=" me.id" %}hidden{% endif %}>
+                                        <svg class="olymp-plus-icon"><use xlink:href="#olymp-plus-icon"></use></svg>
                                     </a>
                                 {% endif %}
                                 {% if me.id == profile.createdBy.id %}

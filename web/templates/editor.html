@@ -13,9 +13,10 @@
                     <div class="row">
                         <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 
-                            <form id="entry-editor" name="editor" data-entry-id="{{ id|default:0 }}"
-                                    action={% if id %}"/entries/{{ id }}"{% else %}"/entries"{% endif %} method="post"
-                                    enctype="application/x-www-form-urlencoded">
+                            <form id="entry-editor" name="editor"
+                                    data-entry-id="{{ id|default:0 }}" data-theme="{{ theme.name }}"
+                                    action="/entries{% if id %}/{{ id }}{% elif theme %}?theme={{ theme.name }}{% endif %}"
+                                    method="post" enctype="application/x-www-form-urlencoded">
                                 <div class="form-group">
                                     <input type="text" class="form-control" maxlength="500" autocomplete="off"
                                         name="title" placeholder="Заголовок поста" value="{{ title|safe }}"/>
@@ -48,9 +49,9 @@
                                         <option value="registered" {% if privacy == "registered" %}selected{% endif %}>только зарегистрированным</option>
                                         <option value="invited" {% if privacy == "invited" %}selected{% endif %}>только приглашенным</option>
                                         <option value="followers" {% if privacy == "followers" %}selected{% endif %}>только подписчикам</option>
-                                        <option value="me" {% if privacy == "me" %}selected{% endif %}>только мне</option>
+                                        {% if !theme %}<option value="me" {% if privacy == "me" %}selected{% endif %}>только мне</option>{% endif %}
                                     </select>
-                                    {% if me.privacy != "all" %}
+                                    {% if (!theme && me.privacy != "all") || (theme && theme.privacy != "all") %}
                                         <span class="hint">Приватность записей работает в пределах приватности профиля.</span>
                                     {% endif %}
                                 </fieldset>
@@ -79,6 +80,16 @@
                                 </div>
 
                                 {% if me.account.verified %}
+                                    {% if theme %}
+                                        <div id="anonymous" class="switcher-block">
+                                            <div class="h6 title">Опубликовать анонимно</div>
+                                            <div class="togglebutton">
+                                                <label>
+                                                    <input type="checkbox" name="isAnonymous" {% if isAnonymous %}checked{% endif %}>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                     <div id="allow-live" class="switcher-block">
                                         <div class="h6 title">Отправить в Прямой эфир</div>
                                         <div class="togglebutton">
@@ -87,12 +98,13 @@
                                             </label>
                                         </div>
                                     </div>
-                                    {% if (!id || inLive) && me.privacy == "followers" %}
+                                    {% if (!id || inLive) && !theme && me.privacy == "followers" %}
                                         <span class="hint">Запись появится в Прямом эфире, если открыть профиль.</span>
                                     {% endif %}
                                 {% else %}
                                     <p class="alert alert-danger for-public-only" role="alert">
-                                        Чтобы публиковать записи в Прямой эфир, <a href="/account/email" class="alert-link">подтверди адрес своей почты</a>.
+                                        Чтобы публиковать записи в Прямой эфир{% if theme %} и анонимно{% endif %},
+                                        <a href="/account/email" class="alert-link">подтверди адрес своей почты</a>.
                                     </p>
                                     <input type="hidden" name="inLive" value="false" />
                                 {% endif %}

@@ -116,7 +116,6 @@ function updateRelations() {
     var permit = $("#permit-rel")
     var cancel = $("#cancel-rel")
     var requested = relationToMe == "requested"
-    var followed  = relationToMe === "followed"
     permit.attr("hidden", !requested)
     cancel.attr("hidden", mePrivacy != "followers" || (!requested && !followed))
 
@@ -136,6 +135,12 @@ function updateRelations() {
         hidePosts.text("Не скрывать из эфира")
     else
         hidePosts.text("Скрывать из эфира")
+
+    let createdBy = profile.data("createdBy")
+    let meID = $("body").data("meId")
+    let isCreator = createdBy === meID
+    let postBtn = $("#create-post")
+    postBtn.attr("hidden", !followed && !isCreator)
 }
 
 updateRelations()
