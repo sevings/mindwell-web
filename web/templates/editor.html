@@ -124,7 +124,9 @@
                                             <use xlink:href="#olymp-camera-icon"></use>
                                         </svg>
 									</a>
-									<button id="post-entry" class="btn btn-primary btn-md-2">{% if id %}Сохранить{% else %}Опубликовать{% endif %}</button>
+									<button id="post-entry" class="btn btn-primary btn-md-2">
+                                        {% if id %}Сохранить{% elif theme %}Опубликовать в тему{% else %}Записать в дневник{% endif %}
+                                    </button>
 								</div>
                             </form>
                             

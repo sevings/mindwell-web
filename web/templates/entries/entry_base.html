@@ -1,10 +1,11 @@
+{% with isTheme = entry.isAnonymous || entry.user %}
 <article class="hentry post {% if cutEntry %}cut-post{% endif %}">
     <div class="post__author author vcard inline-items">
         
-        <a href="/users/{{ entry.author.name }}"><img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}"></a>
+        <a href="/{% if isTheme %}themes{% else %}users{% endif %}/{{ entry.author.name }}"><img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}"></a>
 
         <div class="author-date">
-            <a class="h6 post__author-name fn" href="/users/{{ entry.author.name }}">{{ entry.author.showName }}</a> 
+            <a class="h6 post__author-name fn" href="/{% if isTheme %}themes{% else %}users{% endif %}/{{ entry.author.name }}">{{ entry.author.showName }}</a>
             <div class="post__date">
                 <a href="/entries/{{ entry.id }}"{% if cutEntry %} class="open-post" data-entry="{{ entry.id }}"{% endif %}>
                     <time class="published" datetime="{{ entry.createdAt }}"></time>
@@ -136,7 +137,7 @@
     {% if !cutEntry && entry.tags %}
         <div class="post-tags wrapped-text">
             {% for tag in entry.tags %}
-                <a href="/users/{{ entry.author.name }}{% if !__large_screen %}/entries{% endif %}?tag={{ tag }}">{{ tag }}</a>
+                <a href="/{% if isTheme %}themes{% else %}users{% endif %}/{{ entry.author.name }}{% if !__large_screen %}/entries{% endif %}?tag={{ tag }}">{{ tag }}</a>
                 {% if !forloop.Last %}<span class="dot-divider"></span>{% endif %}
             {% endfor %}
         </div>
@@ -187,5 +188,6 @@
 
     </div>
 </article>
+{% endwith %}
 {% block adjacent %}{% endblock adjacent %}
 {% block comments %}{% endblock comments %}
