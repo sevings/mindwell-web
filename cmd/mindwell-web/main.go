@@ -110,6 +110,7 @@ func main() {
 	web.POST("/profile/avatar", avatarSaverHandler(mdw))
 	web.POST("/profile/cover", coverSaverHandler(mdw))
 
+	web.POST("/themes", themeCreatorHandler(mdw))
 	web.POST("/themes/:name/save", themeSaverHandler(mdw))
 	web.POST("/themes/:name/avatar", themeAvatarSaverHandler(mdw))
 	web.POST("/themes/:name/cover", themeCoverSaverHandler(mdw))
@@ -965,6 +966,27 @@ func coverSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.MethodForwardToImages("PUT", "/me/cover")
 		api.WriteResponse()
+	}
+}
+
+func themeCreatorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+
+		if api.Error() != nil {
+			api.WriteResponse()
+			return
+		}
+
+		name, ok := api.Data()["name"].(string)
+		if ok {
+			api.ClearData()
+			api.SetData("path", "/themes/"+name)
+			api.WriteJson()
+		} else {
+			api.WriteResponse()
+		}
 	}
 }
 

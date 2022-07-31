@@ -6,6 +6,9 @@
         Рейтинг тем
     {% endif %}
 {% endblock %}
+{% block scripts %}
+    <script src="/assets/themes.js?d=20220731"></script>
+{% endblock %}
 {% block body %}
 <div class="container">
     <div class="row">
@@ -13,6 +16,13 @@
             <ul class="cat-list-bg-style align-center sorting-menu">
                 <li class="cat-list__item {% if top == "new" %}active{% endif %}"><a href="/themes?top=new">Новые</a></li>
                 <li class="cat-list__item {% if top == "rank" %}active{% endif %}"><a href="/themes?top=rank">Рейтинг</a></li>
+                {% if me.invitedBy.id %}
+                    <li class="cat-list__item">
+                        <a href="#" data-toggle="modal" data-target="#new-theme">
+                            <svg class="customize-feed"><use xlink:href="#olymp-plus-icon"></use></svg>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -21,4 +31,40 @@
         {% include "themes_page.html" %}
     </div>
 </div>
+
+{% if me.invitedBy.id %}
+    <div class="modal fade" id="new-theme" tabindex="-1" role="dialog" aria-labelledby="new-theme" aria-hidden="true">
+        <div class="modal-dialog window-popup edit-widget" role="document">
+            <div class="modal-content">
+                <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                    <svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
+                </a>
+
+                <div class="modal-header">
+                    <h6 class="title">Создать новую тему</h6>
+                </div>
+
+                <div class="modal-body">
+                    <form id="theme-creator" action="/themes" method="post" enctype="application/x-www-form-urlencoded">
+                        <label class="control-label">Ник в адресе</label>
+                        <input class="form-control" maxlength="20" pattern="^[a-zA-Z][a-zA-Z0-9\-_]*$"
+                               title="Разрешены латинские буквы, цифры, дефис и нижнее подчеркивание"
+                               data-toggle="tooltip" data-placement="top" type="text" name="name" required>
+
+                        <label class="control-label">Название</label>
+                        <input class="form-control" maxlength="20" type="text" name="showName" required>
+
+                        <p>
+                            Чтобы создать новую тему, требуется использовать приглашение.
+                        </p>
+
+                        <button id="create-theme" class="btn btn-primary btn-lg full-width disabled">
+                            Создать тему
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}
