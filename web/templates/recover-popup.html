@@ -1,0 +1,24 @@
+<div class="modal fade" id="recover-popup" tabindex="-1" role="dialog" aria-labelledby="recover" aria-hidden="true">
+    <div class="modal-dialog window-popup edit-widget modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+                <svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
+            </a>
+
+            <div class="modal-header">
+                <h6 class="title">Сбросить пароль</h6>
+            </div>
+
+            <div class="modal-body">
+                <p>На данную почту будет отправлено письмо с инструкцией для сброса пароля.</p>
+                <form id="recover-email" action="/account/recover" method="POST" enctype="multipart/form-data">
+                    <input class="form-control" name="email" type="email" required />
+                    <button id="send-recover" class="btn btn-primary btn-lg full-width">Отправить</button>
+                </form>
+                <h6 id="recover-status" role="alert"></h6>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -295,3 +295,10 @@ $(".register").click(function() {
 
     return false;
 })
+
+$("a.forgot").click(function(){
+    $("#registration-login-form-popup").modal("hide")
+    $("#recover-popup").modal("show")
+
+    return false
+})
