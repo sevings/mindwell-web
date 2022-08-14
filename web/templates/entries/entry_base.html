@@ -176,6 +176,8 @@
             <span>{{ entry.favoriteCount }}</span>
         </a>
 
+        {% block entryUser %}{% endblock %}
+
         {% block commentButton %}
             {% if entry.isCommentable || entry.commentCount > 0 %}
                 <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button"

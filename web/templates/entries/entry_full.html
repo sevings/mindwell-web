@@ -1,4 +1,11 @@
 {% extends "entry_base.html" %}
+{% block entryUser %}
+    {% if entry.user %}
+        <div class="names-people-likes">
+            <a href="/users/{{ entry.user.name }}">{{ entry.user.showName }}</a>
+        </div>
+    {% endif %}
+{% endblock %}
 {% block commentButton %}{% endblock commentButton %}
 {% block adjacent %}
     {% if adjacent.newer || adjacent.older %}
