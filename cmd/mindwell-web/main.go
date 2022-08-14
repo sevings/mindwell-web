@@ -1126,6 +1126,14 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			}
 
 			api.SetField("adjacent", "/entries/"+entryID+"/adjacent")
+
+			rights, ok := entry["rights"].(map[string]interface{})
+			if ok {
+				canComment, ok := rights["comment"].(bool)
+				if canComment && ok {
+					api.SetField("commentator", "/entries/"+entryID+"/commentator")
+				}
+			}
 		}
 
 		api.SetMe()
