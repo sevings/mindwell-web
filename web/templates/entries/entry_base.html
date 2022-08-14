@@ -1,4 +1,4 @@
-{% with isTheme = entry.isAnonymous || entry.user %}
+{% with isTheme = entry.author.isTheme %}
 <article class="hentry post {% if cutEntry %}cut-post{% endif %}">
     <div class="post__author author vcard inline-items">
         
