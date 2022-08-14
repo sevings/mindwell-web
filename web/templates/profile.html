@@ -90,6 +90,8 @@
                                     <a id="follow" href="#" class="btn btn-control">
                                         <svg class="olymp-happy-face-icon"><use xlink:href="#olymp-happy-face-icon"></use></svg>
                                     </a>
+                                {% endif %}
+                                {% if me.invitedBy.id %}
                                     <a id="create-post" href="/editor?theme={{ profile.name }}" class="btn btn-control bg-green" title="Новая запись"
                                         {% if profile.relations.fromMe != "followed" && profile.createdBy.id !=" me.id" %}hidden{% endif %}>
                                         <svg class="olymp-plus-icon"><use xlink:href="#olymp-plus-icon"></use></svg>
