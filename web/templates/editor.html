@@ -2,7 +2,7 @@
 {% block title %}Редактор{% endblock %}
 {% block scripts %}
     <script src="/assets/js/basil.min.js"></script>
-    <script src="/assets/editor.js?d=20220501"></script>
+    <script src="/assets/editor.js?d=20220915"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -14,7 +14,7 @@
                         <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 
                             <form id="entry-editor" name="editor"
-                                    data-entry-id="{{ id|default:0 }}" data-theme="{{ theme.name }}"
+                                    data-entry-id="{{ id|default:0 }}" data-theme="{{ theme.name }}" data-theme-id="{{ theme.id }}"
                                     action="/entries{% if id %}/{{ id }}{% elif theme %}?theme={{ theme.name }}{% endif %}"
                                     method="post" enctype="application/x-www-form-urlencoded">
                                 <div class="form-group">
