@@ -15,7 +15,7 @@
                                     <span class="text">{{ profile.title }}</span>
                                 </li>
                             {% endif %}
-                            {% if profile.gender != "not set" %}
+                            {% if profile.gender && profile.gender != "not set" %}
                                 <li>
                                     <span class="title">Пол:</span>
                                     <span class="text">{% if profile.gender == "male" %}Мужской{% else %}Женский{% endif %}</span>
