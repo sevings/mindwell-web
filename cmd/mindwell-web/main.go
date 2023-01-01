@@ -90,12 +90,18 @@ func main() {
 	web.GET("/friends", friendsHandler(mdw))
 	web.GET("/watching", watchingHandler(mdw))
 
-	web.GET("/users", topsHandler(mdw))
-	web.GET("/users/:name", tlogHandler(mdw, false))
+	web.GET("/users", topsHandler(mdw, "users/top_users"))
+	web.GET("/users/:name", tlogHandler(mdw, "/users", false))
 	web.GET("/users/:name/calendar", proxyNoKeyHandler(mdw))
-	web.GET("/users/:name/entries", tlogHandler(mdw, true))
+	web.GET("/users/:name/entries", tlogHandler(mdw, "/users", true))
 	web.GET("/users/:name/favorites", favoritesHandler(mdw))
-	web.GET("/users/:name/relations/:relation", usersHandler(mdw))
+	web.GET("/users/:name/relations/:relation", usersHandler(mdw, "/users"))
+
+	web.GET("/themes", topsHandler(mdw, "users/top_themes"))
+	web.GET("/themes/:name", tlogHandler(mdw, "/themes", false))
+	web.GET("/themes/:name/calendar", proxyNoKeyHandler(mdw))
+	web.GET("/themes/:name/entries", tlogHandler(mdw, "/themes", true))
+	web.GET("/themes/:name/relations/:relation", usersHandler(mdw, "/themes"))
 
 	web.GET("/me", meHandler(mdw, ""))
 	web.GET("/me/entries", meHandler(mdw, "/entries"))
@@ -103,6 +109,11 @@ func main() {
 	web.POST("/profile/save", meSaverHandler(mdw))
 	web.POST("/profile/avatar", avatarSaverHandler(mdw))
 	web.POST("/profile/cover", coverSaverHandler(mdw))
+
+	web.POST("/themes", themeCreatorHandler(mdw))
+	web.POST("/themes/:name/save", themeSaverHandler(mdw))
+	web.POST("/themes/:name/avatar", themeAvatarSaverHandler(mdw))
+	web.POST("/themes/:name/cover", themeCoverSaverHandler(mdw))
 
 	web.GET("/design", designEditorHandler(mdw))
 	web.POST("/design", designSaverHandler(mdw))
@@ -811,25 +822,25 @@ func watchingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func topsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func topsHandler(mdw *utils.Mindwell, templateName string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.QueryCookie()
 		api.Forward()
 		api.SetScrollHrefs()
 		api.SetMe()
-		api.WriteTemplate("users/top_users")
+		api.WriteTemplate(templateName)
 	}
 }
 
-func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
+func tlogHandler(mdw *utils.Mindwell, baseApiPath string, isTlog bool) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		name := ctx.Param("name")
 		api := utils.NewRequest(mdw, ctx)
 
 		var profile interface{}
 		if !api.IsAjax() {
-			api.SetFieldNoKey("profile", "/users/"+name)
+			api.SetFieldNoKey("profile", baseApiPath+"/"+name)
 			if api.Error() != nil {
 				if api.HasUserKey() {
 					api.WriteTemplate("error")
@@ -847,13 +858,13 @@ func tlogHandler(mdw *utils.Mindwell, isTlog bool) func(ctx *gin.Context) {
 		api.QueryCookieName("tlog_feed", "limit=10")
 
 		if isTlog || api.IsLargeScreen() {
-			api.ForwardToNoKey("/users/" + name + "/tlog")
+			api.ForwardToNoKey(baseApiPath + "/" + name + "/tlog")
 			api.SetScrollHrefs()
 		}
 
 		if !isTlog || api.IsLargeScreen() {
-			api.SetFieldNoKey("tags", "/users/"+name+"/tags")
-			api.SetFieldNoKey("calendar", "/users/"+name+"/calendar")
+			api.SetFieldNoKey("tags", baseApiPath+"/"+name+"/tags")
+			api.SetFieldNoKey("calendar", baseApiPath+"/"+name+"/calendar")
 		}
 
 		api.SkipError()
@@ -900,20 +911,20 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func usersHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+func usersHandler(mdw *utils.Mindwell, baseApiPath string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		relation := ctx.Param("relation")
 		name := ctx.Param("name")
 
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo("/users/" + name + "/" + relation)
+		api.ForwardTo(baseApiPath + "/" + name + "/" + relation)
 		api.SetScrollHrefs()
 
 		if api.IsAjax() {
 			api.WriteTemplate("users/users_page")
 		} else {
 			api.SetMe()
-			api.SetField("profile", "/users/"+name)
+			api.SetField("profile", baseApiPath+"/"+name)
 			api.WriteTemplate("users/friendlist")
 		}
 	}
@@ -958,6 +969,54 @@ func coverSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
+func themeCreatorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		api.Forward()
+
+		if api.Error() != nil {
+			api.WriteResponse()
+			return
+		}
+
+		name, ok := api.Data()["name"].(string)
+		if ok {
+			api.ClearData()
+			api.SetData("path", "/themes/"+name)
+			api.WriteJson()
+		} else {
+			api.WriteResponse()
+		}
+	}
+}
+
+func themeSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		name := ctx.Param("name")
+		api.MethodForwardTo("PUT", "/themes/"+name, false)
+		api.Redirect("/themes/" + name)
+	}
+}
+
+func themeAvatarSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		name := ctx.Param("name")
+		api.MethodForwardToImages("PUT", "/themes/"+name+"/avatar")
+		api.WriteResponse()
+	}
+}
+
+func themeCoverSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		api := utils.NewRequest(mdw, ctx)
+		name := ctx.Param("name")
+		api.MethodForwardToImages("PUT", "/themes/"+name+"/cover")
+		api.WriteResponse()
+	}
+}
+
 func designEditorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
@@ -974,8 +1033,8 @@ func designSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func suggestTags(api *utils.APIRequest) {
-	api.SetField("suggestedTags", "/me/tags")
+func suggestTags(api *utils.APIRequest, firstPath string) {
+	api.SetField("suggestedTags", firstPath)
 	tags := api.Data()["suggestedTags"].(map[string]interface{})
 	data, ok := tags["data"].([]interface{})
 	if !ok || len(data) == 0 {
@@ -987,7 +1046,15 @@ func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.SetMe()
-		suggestTags(api)
+
+		theme := ctx.Query("theme")
+		if len(theme) > 0 {
+			api.SetField("theme", "/themes/"+theme)
+			suggestTags(api, "/themes/"+theme+"/tags")
+		} else {
+			suggestTags(api, "/me/tags")
+		}
+
 		api.WriteTemplate("editor")
 	}
 }
@@ -995,7 +1062,13 @@ func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
-		api.ForwardTo("/me/tlog")
+
+		theme := ctx.Query("theme")
+		if len(theme) > 0 {
+			api.ForwardTo("/themes/" + theme + "/tlog")
+		} else {
+			api.ForwardTo("/me/tlog")
+		}
 
 		entry := api.Data()
 		entryID, ok := entry["id"].(json.Number)
@@ -1014,7 +1087,7 @@ func editorExistingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/entries/" + ctx.Param("id"))
 		api.SetMe()
-		suggestTags(api)
+		suggestTags(api, "/me/tags")
 		api.WriteTemplate("editor")
 	}
 }
@@ -1053,6 +1126,14 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			}
 
 			api.SetField("adjacent", "/entries/"+entryID+"/adjacent")
+
+			rights, ok := entry["rights"].(map[string]interface{})
+			if ok {
+				canComment, ok := rights["comment"].(bool)
+				if canComment && ok {
+					api.SetField("commentator", "/entries/"+entryID+"/commentator")
+				}
+			}
 		}
 
 		api.SetMe()

@@ -3,10 +3,15 @@
         data-show-name="{{ comment.author.showName }}"
         {% if comment.rights.edit %} data-content="{{ comment.editContent }}" {% endif %}>
     <div class="post__author author vcard inline-items">
-        <a href="/users/{{ comment.author.name }}"><img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}"></a>
+        <a href="/{% if comment.author.isTheme %}themes{% else %}users{% endif %}/{{ comment.author.name }}">
+            <img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}">
+        </a>
 
         <div class="author-date">
-            <a class="h6 post__author-name fn" href="/users/{{ comment.author.name }}">{{ comment.author.showName }}</a>
+            <a class="h6 post__author-name fn"
+               href="/{% if comment.author.isTheme %}themes{% else %}users{% endif %}/{{ comment.author.name }}">
+                {{ comment.author.showName }}
+            </a>
             <div class="post__date">
                 <time class="published" datetime="{{ comment.createdAt }}"></time>
             </div>

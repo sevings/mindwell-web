@@ -5,12 +5,14 @@ function contentElem()       { return $("textarea[name='content']") }
 function privacyElem()       { return $("select[name='privacy']") }
 function isCommentableElem() { return $("input[type='checkbox'][name='isCommentable']") }
 function isVotableElem()     { return $("input[name='isVotable']") }
+function isAnonymousElem()   { return $("input[name='isAnonymous']") }
 function inLiveElem()        { return $("input[name='inLive']") }
 function imagesElem()        { return $("input[name='images']") }
 function tagsElem()          { return $("input[name='tags']") }
 
 function entryId()           { return parseInt($("#entry-editor").data("entryId")) }
 function isCreating()        { return entryId() <= 0 }
+function draftName()         { return "draft" + $("#entry-editor").data("themeId") }
 
 function storeDraft() {
     let draft = {
@@ -22,13 +24,14 @@ function storeDraft() {
         isCommentable : isCommentableElem().prop("checked"),
         isVotable     : isVotableElem().prop("checked"),
         inLive        : inLiveElem().prop("checked"),
+        isAnonymous   : isAnonymousElem().prop("checked"),
     }
 
-    store.set("draft", draft)
+    store.set(draftName(), draft)
 }
 
 function loadDraft() {
-    let draft = store.get("draft")
+    let draft = store.get(draftName())
     if(!draft)
         return
 
@@ -54,6 +57,7 @@ function loadDraft() {
     isCommentableElem().prop("checked", draft.isCommentable)
     isVotableElem().prop("checked", draft.isVotable)
     inLiveElem().prop("checked", draft.inLive)
+    isAnonymousElem().prop("checked", draft.isAnonymous)
 }
 
 function removeDraft() {
@@ -62,9 +66,10 @@ function removeDraft() {
         isCommentable : isCommentableElem().prop("checked"),
         isVotable     : isVotableElem().prop("checked"),
         inLive        : inLiveElem().prop("checked"),
+        isAnonymous   : isAnonymousElem().prop("checked"),
     }
 
-    store.set("draft", draft)
+    store.set(draftName(), draft)
 
     titleElem().val("")
     contentElem().val("")

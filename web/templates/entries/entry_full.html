@@ -1,4 +1,11 @@
 {% extends "entry_base.html" %}
+{% block entryUser %}
+    {% if entry.user %}
+        <div class="names-people-likes">
+            <a href="/users/{{ entry.user.name }}">{{ entry.user.showName }}</a>
+        </div>
+    {% endif %}
+{% endblock %}
 {% block commentButton %}{% endblock commentButton %}
 {% block adjacent %}
     {% if adjacent.newer || adjacent.older %}
@@ -54,7 +61,7 @@
         {% endif %}
         <form class="comment-form inline-items" action="/entries/{{ entry.id }}/comments" method="post" enctype="application/x-www-form-urlencoded">
             <div class="post__author author vcard inline-items">
-                <img src="{{ me.avatar.x42 }}" alt="{{ me.showName }}">
+                <img src="{{ commentator.avatar.x42 }}" alt="{{ commentator.showName }}">
                 <div class="form-group">
                     <textarea class="form-control" name="content" maxlength="1000" placeholder="Написать комментарий…" required></textarea>
                 </div>

@@ -15,7 +15,7 @@
                                     <span class="text">{{ profile.title }}</span>
                                 </li>
                             {% endif %}
-                            {% if profile.gender != "not set" %}
+                            {% if profile.gender && profile.gender != "not set" %}
                                 <li>
                                     <span class="title">Пол:</span>
                                     <span class="text">{% if profile.gender == "male" %}Мужской{% else %}Женский{% endif %}</span>
@@ -41,7 +41,7 @@
                             {% endif %}
                             {% if profile.counts.days > 0 %}
                                 <li>
-                                    <span class="title">С нами:</span>
+                                    <span class="title">{% if profile.isTheme %}На сайте{% else %}С нами{% endif %}:</span>
                                     <span id="user-days" class="text" data-created-at="{{ profile.createdAt }}">
                                         {{ profile.counts.days }} д{{profile.counts.days|quantity:"ень,ня,ней"}}</span>
                                 </li>
@@ -54,8 +54,18 @@
                                     <span class="text">(неизвестно)</span>
                                 {% endif %}
                             </li>
+                            {% if profile.createdBy.id %}
+                                <li>
+                                    <span class="title">Создана:</span>
+                                    {% if profile.createdBy.name %}
+                                        <a href="/users/{{ profile.createdBy.name }}" class="text">{{ profile.createdBy.showName }}</a>
+                                    {% else %}
+                                        <span class="text">(неизвестно)</span>
+                                    {% endif %}
+                                </li>
+                            {% endif %}
                             <li>
-                                <span class="title">Тлог открыт:</span>
+                                <span class="title">Записи открыты:</span>
                                 <span class="text">
                                     {% if profile.privacy == "all" %}
                                         всем
@@ -153,7 +163,7 @@
                                         </select>
                                     </div>
 
-                                    {% include "feed_search.html" with __class = "w-search" __placeholder = "Поиск в тлоге" %}
+                                    {% include "feed_search.html" with __class = "w-search" __placeholder = "Поиск записей" %}
                                 </div>
                             </div>
                         {% endif %}
