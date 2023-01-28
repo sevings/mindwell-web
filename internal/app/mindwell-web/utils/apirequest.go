@@ -426,7 +426,7 @@ func (api *APIRequest) checkError() {
 }
 
 func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
-	req := api.ctx.Request.WithContext(api.ctx.Request.Context())
+	req := api.ctx.Request.Clone(api.ctx.Request.Context())
 	req.URL.Scheme = api.mdw.scheme
 	req.URL.Host = host
 	req.Host = host
