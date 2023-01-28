@@ -20,6 +20,7 @@ func LogHandler(logger *zap.Logger) gin.HandlerFunc {
 
 		dev, _ := ctx.Cookie("dev")
 		uid, _ := ctx.Cookie("uid")
+		uid2, _ := ctx.Cookie("uid2")
 
 		logger.Info("http",
 			zap.String("method", ctx.Request.Method),
@@ -28,6 +29,7 @@ func LogHandler(logger *zap.Logger) gin.HandlerFunc {
 			zap.String("browser", idBuilder.Build(ctx.Request).String()),
 			zap.String("user_agent", ctx.Request.UserAgent()),
 			zap.String("uid", uid),
+			zap.String("uid2", uid2),
 			zap.String("dev", dev),
 			zap.String("user", user),
 			zap.String("ip", ctx.GetHeader("X-Forwarded-For")),

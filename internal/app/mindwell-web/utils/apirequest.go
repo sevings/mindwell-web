@@ -41,6 +41,7 @@ type APIRequest struct {
 	read bool // whether resp is read
 	data map[string]interface{}
 	aTok string
+	uid2 string
 	st   *ServerTiming
 }
 
@@ -244,12 +245,19 @@ func (api *APIRequest) setUserKey(allowNoKey bool) bool {
 	}
 
 	token, err := api.Cookie("at")
-	if err == nil {
-		api.aTok = token.Value
-		return true
+	if err != nil {
+		return allowNoKey
 	}
 
-	return allowNoKey
+	api.aTok = token.Value
+
+	uid2, err := api.ctx.Cookie("uid2")
+	if err != nil {
+		uid2 = api.mdw.Uid2(api.aTok)
+	}
+	api.uid2 = uid2
+
+	return true
 }
 
 func (api *APIRequest) authToken() string {
@@ -453,6 +461,10 @@ func (api *APIRequest) copyRequestToHost(path, host string) *http.Request {
 		uid, err := api.ctx.Cookie("uid")
 		if err == nil {
 			req.Header.Set("X-Uid", uid)
+		}
+
+		if api.uid2 != "" {
+			req.Header.Set("X-Uid2", api.uid2)
 		}
 
 		app := requestBrowserID.Build(api.ctx.Request)
@@ -672,6 +684,17 @@ func (api *APIRequest) WriteTemplate(name string) {
 	api.ctx.Header("Content-Type", "text/html; charset=utf-8")
 	api.ctx.Header("Referrer-Policy", "origin")
 	api.st.WriteHeader(api.ctx.Writer)
+
+	if _, err := api.ctx.Cookie("uid2"); err != nil && api.uid2 != "" {
+		cookie := &http.Cookie{
+			Name:     "uid2",
+			Value:    api.uid2,
+			Path:     "/",
+			MaxAge:   60 * 60 * 24 * 365 * 5,
+			SameSite: http.SameSiteLaxMode,
+		}
+		api.SetCookie(cookie)
+	}
 
 	templ.ExecuteWriter(api.Data(), api.ctx.Writer)
 }

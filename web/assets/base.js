@@ -135,27 +135,24 @@ $(function() {
     let vpw = Math.round($(w).width())
     Cookies.set("vpw", vpw, { expires: 365, sameSite: "Lax" })
 
-    let isLs = ((screen.orientation || {}).type || "").startsWith("landscape")
-    let dev = (n.platform || "no") + ";" + (n.hardwareConcurrency || 0) + ";" + (n.maxTouchPoints || 0) +
-        ";" + (isLs ? s.width : s.height) + ";" + (isLs ? s.height : s.width) + ";" + s.colorDepth +
-        ";" + new Date().getTimezoneOffset()
+    let dev = Cookies.get("dev")
+    if(!dev) {
+        let isLs = ((screen.orientation || {}).type || "").startsWith("landscape")
+        dev = (n.platform || "no") + ";" + (n.hardwareConcurrency || 0) + ";" + (n.maxTouchPoints || 0) +
+            ";" + (isLs ? s.width : s.height) + ";" + (isLs ? s.height : s.width) + ";" + s.colorDepth +
+            ";" + new Date().getTimezoneOffset()
 
-    let a = 1, b = 0
-    for(let i = 0; i < dev.length; i++)
-    {
-        let c = dev.charCodeAt(i)
-        a += c
-        b += a
-    }
-    dev = b % 65521 * 65536 + a % 65521
-    dev = dev.toString(16)
+        let a = 1, b = 0
+        for(let i = 0; i < dev.length; i++)
+        {
+            let c = dev.charCodeAt(i)
+            a += c
+            b += a
+        }
+        dev = b % 65521 * 65536 + a % 65521
+        dev = dev.toString(16)
 
-    Cookies.set("dev", dev, { expires: 1826, sameSite: "Lax" })
-
-    let uid = Cookies.get("uid")
-    if(!uid || uid === "0") {
-        let uid = Math.floor(Math.random() * 4294967296).toString(16)
-        Cookies.set("uid", uid, { expires: 1826, sameSite: "Lax" })
+        Cookies.set("dev", dev, { expires: 1826, sameSite: "Lax" })
     }
 })
 

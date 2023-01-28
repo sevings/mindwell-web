@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
@@ -25,6 +27,7 @@ type Mindwell struct {
 	path      string
 	host      string
 	scheme    string
+	uidSalt   string
 	apiID     string
 	apiSecret string
 	appToken  string
@@ -57,6 +60,7 @@ func NewMindwell() *Mindwell {
 	m.path = m.ConfigString("api.path")
 	m.host = m.ConfigString("api.host")
 	m.scheme = m.ConfigString("api.scheme")
+	m.uidSalt = m.ConfigString("web.uid2_salt")
 	m.apiID = strconv.Itoa(m.ConfigInt("api.client_id"))
 	m.apiSecret = m.ConfigString("api.client_secret")
 	m.url = m.scheme + "://" + m.host + m.path
@@ -267,4 +271,11 @@ func (m *Mindwell) AppToken() string {
 	m.LogSystem().Info(tok.AccessToken)
 
 	return m.appToken
+}
+
+func (m *Mindwell) Uid2(accessToken string) string {
+	salt := m.ConfigString("web.uid2_salt")
+	user := strings.SplitN(accessToken, ".", 2)[0]
+	sum := sha256.Sum256([]byte(user + salt))
+	return hex.EncodeToString(sum[:8])
 }
