@@ -117,7 +117,7 @@ function updateRelations() {
     var cancel = $("#cancel-rel")
     var requested = relationToMe == "requested"
     permit.attr("hidden", !requested)
-    cancel.attr("hidden", mePrivacy != "followers" || (!requested && !followed))
+    cancel.attr("hidden", mePrivacy != "followers" || (!requested && relationToMe !== "followed"))
 
     if(requested)
         cancel.attr("title", "Отклонить заявку")
