@@ -6,7 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/flosch/pongo2 v0.0.0-20200913210552-0d938eb266f3
 	github.com/gin-contrib/cors v1.3.1
-	github.com/gin-gonic/gin v1.7.4
+	github.com/gin-gonic/gin v1.7.7
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/sevings/mindwell-server v0.0.0-20210903172120-10062b368adc
 	github.com/zpatrick/go-config v0.0.0-20191118215128-80ba6b3e54f6
