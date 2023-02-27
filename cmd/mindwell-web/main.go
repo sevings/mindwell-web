@@ -761,6 +761,7 @@ func liveHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetDataFromQuery("section", "entries")
 		api.SetDataFromQuery("limit", "30")
 		api.SetDataFromQuery("view", "masonry")
+		api.SetDataFromQuery("source", "all")
 
 		if ctx.Query("section") != "comments" {
 			api.SetData("__search", true)
@@ -785,6 +786,7 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetDataFromQuery("category", "month")
 		api.SetDataFromQuery("limit", "30")
 		api.SetDataFromQuery("view", "masonry")
+		api.SetDataFromQuery("source", "all")
 		api.SetData("__search", true)
 
 		feedHandler(api, "entries/best")

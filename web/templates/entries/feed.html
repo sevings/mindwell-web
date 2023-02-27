@@ -87,6 +87,17 @@
                         </select>
                     </fieldset>
 
+                    {% block feed_source %}
+                        <fieldset class="form-group label-floating is-select">
+                            <label class="control-label">Источники записей</label>
+                            <select name="source" class="selectpicker form-control">
+                                <option value="all" {% if __source == "all" %}selected{% endif %}>Дневники и темы</option>
+                                <option value="users" {% if __source == "users" %}selected{% endif %}>Дневники</option>
+                                <option value="themes" {% if __source == "themes" %}selected{% endif %}>Темы</option>
+                            </select>
+                        </fieldset>
+                    {% endblock %}
+
                     <fieldset class="form-group label-floating is-select">
                         <label class="control-label">Вид ленты</label>
                         <select name="view" class="selectpicker form-control">
