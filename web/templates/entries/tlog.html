@@ -113,7 +113,7 @@
                             </div>
                             <div id="profile-tags" class="ui-block-content wrapped-text">
                                 {% for tag in tags.data %}
-                                    <a href="/users/{{ profile.name }}{% if !__large_screen %}/entries{% endif %}?tag={{ tag.tag }}">{{ tag.tag }}</a>
+                                    <a href="/{% if profile.isTheme %}themes{% else %}users{% endif %}/{{ profile.name }}{% if !__large_screen %}/entries{% endif %}?tag={{ tag.tag }}">{{ tag.tag }}</a>
                                     {% if !forloop.Last %}<span class="dot-divider"></span>{% endif %}
                                 {% endfor %}
                             </div>
