@@ -109,7 +109,7 @@
                     {% if tags.data %}
                         <div class="ui-block">
                             <div class="ui-block-title">
-                                <h6 class="title">Последние теги</h6>
+                                <h6 class="title">{% if tags.data|length < profile.counts.tags %}Последние теги{% else %}Теги{% endif %}</h6>
                             </div>
                             <div id="profile-tags" class="ui-block-content wrapped-text">
                                 {% for tag in tags.data %}

@@ -379,6 +379,16 @@ func (api *APIRequest) QueryCookieName(name, defQuery string) {
 	}
 }
 
+func (api *APIRequest) SetQuery(key, value string) string {
+	reqURL := api.ctx.Request.URL
+	urlValues := reqURL.Query()
+	oldValue := urlValues.Get(key)
+	urlValues.Set(key, value)
+	reqURL.RawQuery = urlValues.Encode()
+
+	return oldValue
+}
+
 func (api *APIRequest) SetCookie(cookie *http.Cookie) {
 	http.SetCookie(api.ctx.Writer, cookie)
 }
