@@ -92,6 +92,7 @@ func main() {
 
 	web.GET("/users", topsHandler(mdw, "users/top_users"))
 	web.GET("/users/:name", tlogHandler(mdw, "/users", false))
+	web.GET("/users/:name/tags", proxyNoKeyHandler(mdw))
 	web.GET("/users/:name/calendar", proxyNoKeyHandler(mdw))
 	web.GET("/users/:name/entries", tlogHandler(mdw, "/users", true))
 	web.GET("/users/:name/favorites", favoritesHandler(mdw))
@@ -99,9 +100,12 @@ func main() {
 
 	web.GET("/themes", topsHandler(mdw, "users/top_themes"))
 	web.GET("/themes/:name", tlogHandler(mdw, "/themes", false))
+	web.GET("/themes/:name/tags", proxyNoKeyHandler(mdw))
 	web.GET("/themes/:name/calendar", proxyNoKeyHandler(mdw))
 	web.GET("/themes/:name/entries", tlogHandler(mdw, "/themes", true))
 	web.GET("/themes/:name/relations/:relation", usersHandler(mdw, "/themes"))
+
+	web.GET("/entries/tags", proxyNoKeyHandler(mdw))
 
 	web.GET("/me", meHandler(mdw, ""))
 	web.GET("/me/entries", meHandler(mdw, "/entries"))
@@ -1038,15 +1042,6 @@ func designSaverHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	}
 }
 
-func suggestTags(api *utils.APIRequest, firstPath string) {
-	api.SetField("suggestedTags", firstPath)
-	tags := api.Data()["suggestedTags"].(map[string]interface{})
-	data, ok := tags["data"].([]interface{})
-	if !ok || len(data) == 0 {
-		api.SetField("suggestedTags", "/entries/tags")
-	}
-}
-
 func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
@@ -1055,9 +1050,6 @@ func editorHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		theme := ctx.Query("theme")
 		if len(theme) > 0 {
 			api.SetField("theme", "/themes/"+theme)
-			suggestTags(api, "/themes/"+theme+"/tags")
-		} else {
-			suggestTags(api, "/me/tags")
 		}
 
 		api.WriteTemplate("editor")
@@ -1092,7 +1084,6 @@ func editorExistingHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/entries/" + ctx.Param("id"))
 		api.SetMe()
-		suggestTags(api, "/me/tags")
 		api.WriteTemplate("editor")
 	}
 }

@@ -44,8 +44,6 @@ function loadDraft() {
     if(draft.tags)
         tagsElem().val(draft.tags)
 
-    simplifiedTags().forEach(tag => removeSuggestedTag(tag))
-
     if(draft.images) {
         imagesElem().val(draft.images)
         loadImages()
@@ -138,6 +136,7 @@ function init() {
     togglePublicOnly()
     toggleLiveHint()
     togglePrivacyHint()
+    initTags()
 }
 
 init()
@@ -169,64 +168,6 @@ function loadImages(){
     }
 }
 
-function simplifiedTags() {
-    let tags = tagsElem().val().split(",")
-    tags.forEach((tag, i) => { tags[i] = tag.trim() })
-    tags = tags.filter(t => t !== "")
-
-    return tags
-}
-
-function removeSuggestedTag(tag) {
-    if(typeof tag === "string")
-        tag = $(".editor-tags a").filter(function() { return $(this).text() === tag })
-    else
-        tag = $(tag)
-
-    if(!tag.length)
-        return
-
-    let dot = tag.next(".dot-divider")
-    if(!dot.length)
-        dot = tag.prev(".dot-divider")
-
-    dot.remove()
-    tag.remove()
-}
-
-$(".editor-tags a").click(function() {
-    let newTag = $(this).text().trim()
-    let tags = simplifiedTags()
-
-    if(tags.length >= 5)
-        return false
-
-    if(tags.includes(newTag))
-        return false
-
-    tags.push(newTag)
-    tagsElem().val(tags.join(", "))
-
-    removeSuggestedTag(this)
-
-    return false
-})
-
-function checkTags() {
-    let tags = simplifiedTags()
-    if(tags.length > 5) {
-        alert("Можно использовать не более пяти тегов.")
-        return false
-    }
-
-    if(!tags.every(tag => tag.length <= 50)) {
-        alert("Длина тега не может превышать 50 символов.")
-        return false
-    }
-
-    return true
-}
-
 $("#post-entry").click(function() { 
     let btn = $(this)
     if(btn.hasClass("disabled"))
@@ -234,9 +175,6 @@ $("#post-entry").click(function() {
 
     let form = $("#entry-editor")
     if(!form[0].reportValidity())
-        return false
-
-    if(!checkTags())
         return false
 
     btn.addClass("disabled")
@@ -398,4 +336,68 @@ function removeImage(id) {
     })
 
     return false
+}
+
+function initTags() {
+    const loadUrl = tagsElem().data("action")
+
+    tagsElem().selectize({
+        create: true,
+        createOnBlur: true,
+        createFilter: (value) => value.length <= 50,
+        maxItems: 5,
+        hideSelected: true,
+        addPrecedence: true,
+        selectOnTab: true,
+        preload: "focus",
+        valueField: "tag",
+        labelField: "tag",
+        sortField: [
+            {
+                field: "count",
+                direction: "desc"
+            }
+        ],
+        searchField: "tag",
+        load: function (query, callback) {
+            if(query) {
+                callback()
+                return
+            }
+
+            $.ajax({
+                method: "GET",
+                url: loadUrl + "?limit=100",
+                dataType: "json",
+                success: function (resp) {
+                    if(resp.data) {
+                        callback(resp.data)
+                        return
+                    }
+
+                    $.ajax({
+                        method: "GET",
+                        url: "/entries/tags?limit=100",
+                        dataType: "json",
+                        success: function (resp) {
+                            callback(resp.data)
+                        },
+                        error: showAjaxError,
+                    })
+                },
+                error: showAjaxError,
+            })
+        },
+        render: {
+            option: function (data, escape) {
+                return "<span>" + escape(data.tag) + (data.count ? " <b>(" + data.count + ")</b>" : "") + "</span>"
+            },
+            option_create: function (data, escape) {
+                return "<span class='create'>" + escape(data.input) + " <b>(новый)</b></span>"
+            },
+            item: function (data, escape) {
+                return "<span>" + escape(data.tag) + "</span>"
+            }
+        }
+    })
 }

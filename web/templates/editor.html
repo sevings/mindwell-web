@@ -1,8 +1,9 @@
 {% extends "base_auth.html" %}
 {% block title %}Редактор{% endblock %}
 {% block scripts %}
+    <script src="/assets/olympus/js/selectize.js"></script>
     <script src="/assets/js/basil.min.js"></script>
-    <script src="/assets/editor.js?d=20220915"></script>
+    <script src="/assets/editor.js?d=20230423"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -27,20 +28,9 @@
                                         name="content" placeholder="Текст поста" required>{{ editContent|safe }}</textarea>
                                 </div>
 
-                                <div class="form-group">
-                                    <input type="text" class="form-control" maxlength="255" autocomplete="off"
-                                           name="tags" placeholder="Теги через запятую, не более пяти" value="{{ tags|join:", " }}"/>
-
-                                    {% if suggestedTags.data %}
-                                        <div class="editor-tags">
-                                            {% for tag in suggestedTags.data %}
-                                                <a href="#">{{ tag.tag }}</a>
-                                                {% if !forloop.Last %}<span class="dot-divider"></span>{% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-
-                                </div>
+                                <input type="text" name="tags" value="{{ tags|join:',' }}"
+                                       placeholder="Теги через запятую (не более пяти)"
+                                       data-action="/{% if theme %}themes/{{ theme.name }}{% else %}users/{{ me.name }}{% endif %}/tags">
 
                                 <fieldset class="form-group label-floating is-select">
                                     <label class="control-label">Пост будет виден</label>
