@@ -95,6 +95,7 @@ func main() {
 	web.GET("/users/:name/tags", proxyNoKeyHandler(mdw))
 	web.GET("/users/:name/calendar", proxyNoKeyHandler(mdw))
 	web.GET("/users/:name/entries", tlogHandler(mdw, "/users", true))
+	web.GET("/users/:name/comments", authorCommentsHandler(mdw, "/users"))
 	web.GET("/users/:name/favorites", favoritesHandler(mdw))
 	web.GET("/users/:name/relations/:relation", usersHandler(mdw, "/users"))
 
@@ -103,6 +104,7 @@ func main() {
 	web.GET("/themes/:name/tags", proxyNoKeyHandler(mdw))
 	web.GET("/themes/:name/calendar", proxyNoKeyHandler(mdw))
 	web.GET("/themes/:name/entries", tlogHandler(mdw, "/themes", true))
+	web.GET("/themes/:name/comments", authorCommentsHandler(mdw, "/themes"))
 	web.GET("/themes/:name/relations/:relation", usersHandler(mdw, "/themes"))
 
 	web.GET("/entries/tags", proxyNoKeyHandler(mdw))
@@ -887,6 +889,60 @@ func tlogHandler(mdw *utils.Mindwell, baseApiPath string, isTlog bool) func(ctx 
 		}
 
 		feedHandler(api, "entries/tlog")
+	}
+}
+
+func authorCommentsHandler(mdw *utils.Mindwell, baseApiPath string) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		name := ctx.Param("name")
+		api := utils.NewRequest(mdw, ctx)
+
+		var profile interface{}
+		if !api.IsAjax() {
+			api.SetFieldNoKey("profile", baseApiPath+"/"+name)
+			if api.Error() != nil {
+				if api.HasUserKey() {
+					api.WriteTemplate("error")
+				} else {
+					ctx.Redirect(http.StatusSeeOther, "/index.html?to="+api.NextRedirect())
+				}
+
+				return
+			}
+
+			profile = api.Data()["profile"]
+			api.ClearData()
+		}
+
+		api.QueryCookieName("tlog_feed", "limit=10")
+
+		api.ForwardToNoKey(baseApiPath + "/" + name + "/comments")
+		api.SetScrollHrefs()
+
+		if !api.IsAjax() && api.IsLargeScreen() {
+			limit := api.SetQuery("limit", "100")
+			api.SetFieldNoKey("tags", baseApiPath+"/"+name+"/tags")
+			api.SetQuery("limit", limit)
+
+			api.SetFieldNoKey("calendar", baseApiPath+"/"+name+"/calendar")
+		}
+
+		api.SkipError()
+
+		api.SetData("profile", profile)
+		api.SetData("__feed", true)
+
+		if !api.HasUserKey() {
+			api.SetCsrfToken("/login")
+			api.SetCsrfToken("/register")
+		}
+
+		if api.IsAjax() {
+			api.WriteTemplate("entries/comment_feed_page")
+		} else {
+			api.SetMe()
+			api.WriteTemplate("entries/tlog_comments")
+		}
 	}
 }
 

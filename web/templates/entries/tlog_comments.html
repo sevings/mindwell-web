@@ -1,0 +1,23 @@
+{% extends "tlog_base.html" %}
+{% block title %}Комментарии{% endblock %}
+{% block tlog_content %}
+    <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 order-xl-2 order-last">
+        <div id="feed">
+            {% if data %}
+                {% include "comment_feed_page.html" %}
+            {% else %}
+                <div id="empty-feed" class="ui-block">
+                    <div class="ui-block-title">
+                        <h6 class="title">
+                            {% if !profile.relations.isOpenForMe %}
+                                {{ profile.showName }} скрыл{{ profile.gender|gender }} свои записи.
+                            {% else %}
+                                Нет комментариев
+                            {% endif %}
+                        </h6>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

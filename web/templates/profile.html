@@ -16,7 +16,7 @@
 {% block scripts %}
     <script src="/assets/js/fullcalendar/main.min.js"></script>
     <script src='/assets/js/fullcalendar/locales/ru.js'></script>
-    <script src="/assets/feed.js?d=20220408"></script>
+    <script src="/assets/feed.js?d=20230429"></script>
     <script src="/assets/tlog.js?d=20230209"></script>
 {% endblock %}
 {% block body %}
@@ -137,6 +137,19 @@
                                                 <div class="h6">{{ profile.counts.entries }}</div>
                                                 <div class="title">запис{{ profile.counts.entries|quantity:"ь,и,ей" }}</div>
                                                 {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
+                                            </li>
+                                        {% endif %}
+                                        {% if profile.counts.comments %}
+                                            <li>
+                                                {% if profile.relations.isOpenForMe %}
+                                                    <a href="/users/{{ profile.name }}/comments"
+                                                {% else %}
+                                                    <div
+                                                {% endif %}
+                                                        class="friend-count-item">
+                                                    <div class="h6">{{ profile.counts.comments }}</div>
+                                                    <div class="title">комментари{{ profile.counts.comments|quantity:"й,я,ев" }}</div>
+                                                    {% if profile.relations.isOpenForMe %}</a>{% else %}</div>{% endif %}
                                             </li>
                                         {% endif %}
                                         {% if profile.counts.favorites %}

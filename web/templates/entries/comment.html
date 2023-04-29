@@ -1,7 +1,7 @@
-<li id="comment{{ comment.id }}" class="comment-item" 
+{% if __feed %}<div{% else %}<li{% endif %} id="comment{{ comment.id }}" class="comment-item"
         data-id="{{ comment.id }}" data-vote="{{ comment.rating.vote }}"  data-can-vote="{{ comment.rights.vote }}"
         data-show-name="{{ comment.author.showName }}"
-        {% if comment.rights.edit %} data-content="{{ comment.editContent }}" {% endif %}>
+        {% if !__feed && comment.rights.edit %} data-content="{{ comment.editContent }}" {% endif %}>
     <div class="post__author author vcard inline-items">
         <a href="/{% if comment.author.isTheme %}themes{% else %}users{% endif %}/{{ comment.author.name }}">
             <img src="{{ comment.author.avatar.x42 }}" alt="{{ comment.author.showName }}">
@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        {% if comment.rights.edit || comment.rights.delete || comment.rights.complain %}
+        {% if !__feed && (comment.rights.edit || comment.rights.delete || comment.rights.complain) %}
             <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
                 <ul class="more-dropdown">
                     {% if comment.rights.edit %}
@@ -60,7 +60,12 @@
         <i class="{% if comment.rating.vote >= 0 && comment.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-down fa-2x"></i>
         {% if comment.rights.vote || comment.rating.vote < 0 %}</a>{% else %}</div>{% endif %}
 
-        <a href="#" class="reply">Ответить</a>
+        {% if __feed %}
+            <a href="/entries/{{ comment.entryId }}" data-entry="{{ comment.entryId }}"
+               class="c-grey open-post">Запись</a>
+        {% else %}
+            <a href="#" class="reply">Ответить</a>
+        {% endif %}
     </div>
 
-</li>
+{% if __feed %}</div>{% else %}</li>{% endif %}

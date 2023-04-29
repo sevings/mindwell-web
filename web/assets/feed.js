@@ -863,7 +863,8 @@ function loadFeed(url, onSuccess, removeOld) {
             fixSvgUse(page)
 
             let empty = $("#empty-feed")
-            if((!removeOld && container.children(".entry").length) || page.filter(".entry").length){
+            if((!removeOld && container.children(".entry").length)
+                || page.filter(".entry,.ui-block").length){
                 empty.remove()
             } else {
                 if(!empty.length)

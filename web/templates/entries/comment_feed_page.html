@@ -1,0 +1,8 @@
+{% for comment in data %}
+    <div class="ui-block">
+        <article class="post">
+            {% include "comment.html" %}
+        </article>
+    </div>
+{% endfor %}
+{% include "../nav.html" %}
