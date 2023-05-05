@@ -2,6 +2,11 @@
 {% block title %}Комментарии{% endblock %}
 {% block tlog_content %}
     <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 order-xl-2 order-last">
+        <div class="ui-block responsive-flex">
+            <div class="ui-block-title">
+                <div class="h6 title">Комментарии</div>
+            </div>
+        </div>
         <div id="feed">
             {% if data %}
                 {% include "comment_feed_page.html" %}
