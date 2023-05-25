@@ -786,7 +786,7 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.QueryCookieName("best_feed", "")
-		api.ForwardTo("/entries/best")
+		api.ForwardToNoKey("/entries/best")
 		api.SetScrollHrefs()
 
 		api.SetDataFromQuery("category", "month")
@@ -794,6 +794,11 @@ func bestHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetDataFromQuery("view", "masonry")
 		api.SetDataFromQuery("source", "all")
 		api.SetData("__search", true)
+
+		if !api.HasUserKey() {
+			api.SetCsrfToken("/login")
+			api.SetCsrfToken("/register")
+		}
 
 		feedHandler(api, "entries/best")
 	}
