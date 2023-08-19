@@ -1,0 +1,36 @@
+mode = "debug"
+listen_address = ":8080"
+
+[web]
+proto        = "http"
+domain       = "mindwell.local"
+verification = "<!-- html tag, can be empty -->"
+csrf_secret  = "csrf_secret_dev"
+uid2_salt    = "uid2_salt_dev"
+
+[auth]
+proto = "http"
+domain = "auth.mindwell.local"
+
+[api]
+scheme = "http"
+host = "127.0.0.1:8000"
+path = "/api/v1"
+# create OAuth2 app on the server and set here its credentials
+client_id = 1
+client_secret = "client_secret"
+
+[images]
+host = "127.0.0.1:8888"
+
+[telegram]
+bot = "telegram_bot_login"
+
+[vk]
+#vk group id
+group = 201028371
+
+[adm]
+reg_finished = true
+adm_finished = true
+
