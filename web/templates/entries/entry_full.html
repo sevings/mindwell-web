@@ -15,7 +15,7 @@
                         <article class="hentry post border-0">
                             <a href="/entries/{{ adjacent.newer.id }}" class="h6 post-title open-post wrapped-text pl-5 pr-5 pr-sm-0"
                                data-entry="{{ adjacent.newer.id }}">{{ adjacent.newer.title|safe }}</a>
-                            <a href="/entries/{{ adjacent.newer.id }}" class="post__date open-post pl-5 pr-5 pr-sm-0" data-entry="{{ adjacent.newer.id }}">
+                            <a href="/entries/{{ adjacent.newer.id }}" class="post__date open-post pl-5 pr-5 pr-sm-0 d-inline-block" data-entry="{{ adjacent.newer.id }}">
                                 <time class="published" datetime="{{ adjacent.newer.createdAt }}"></time>
                             </a>
                         </article>
@@ -29,7 +29,7 @@
                         <article class="hentry post border-0">
                             <a href="/entries/{{ adjacent.older.id }}" class="h6 post-title open-post wrapped-text pl-5 pr-5 pl-sm-0"
                                data-entry="{{ adjacent.older.id }}">{{ adjacent.older.title|safe }}</a>
-                            <a href="/entries/{{ adjacent.older.id }}" class="post__date open-post pl-5 pr-5 pl-sm-0" data-entry="{{ adjacent.older.id }}">
+                            <a href="/entries/{{ adjacent.older.id }}" class="post__date open-post pl-5 pr-5 pl-sm-0 d-inline-block" data-entry="{{ adjacent.older.id }}">
                                 <time class="published" datetime="{{ adjacent.older.createdAt }}"></time>
                             </a>
                         </article>
