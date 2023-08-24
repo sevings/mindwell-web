@@ -97,6 +97,7 @@ func main() {
 	web.GET("/users/:name/entries", tlogHandler(mdw, "/users", true))
 	web.GET("/users/:name/comments", authorCommentsHandler(mdw, "/users"))
 	web.GET("/users/:name/favorites", favoritesHandler(mdw))
+	web.GET("/users/:name/images", imagesHandler(mdw, "/users"))
 	web.GET("/users/:name/relations/:relation", usersHandler(mdw, "/users"))
 
 	web.GET("/themes", topsHandler(mdw, "users/top_themes"))
@@ -105,6 +106,7 @@ func main() {
 	web.GET("/themes/:name/calendar", proxyNoKeyHandler(mdw))
 	web.GET("/themes/:name/entries", tlogHandler(mdw, "/themes", true))
 	web.GET("/themes/:name/comments", authorCommentsHandler(mdw, "/themes"))
+	web.GET("/themes/:name/images", imagesHandler(mdw, "/themes"))
 	web.GET("/themes/:name/relations/:relation", usersHandler(mdw, "/themes"))
 
 	web.GET("/entries/tags", proxyNoKeyHandler(mdw))
@@ -978,6 +980,24 @@ func favoritesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetData("__search", true)
 
 		feedHandler(api, "entries/favorites")
+	}
+}
+
+func imagesHandler(mdw *utils.Mindwell, baseApiPath string) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		name := ctx.Param("name")
+
+		api := utils.NewRequest(mdw, ctx)
+		api.ForwardTo(baseApiPath + "/" + name + "/images")
+		api.SetScrollHrefs()
+
+		if api.IsAjax() {
+			api.WriteTemplate("images/images_page")
+		} else {
+			api.SetMe()
+			api.SetField("profile", baseApiPath+"/"+name)
+			api.WriteTemplate("images/profile_images")
+		}
 	}
 }
 

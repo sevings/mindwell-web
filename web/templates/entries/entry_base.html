@@ -118,7 +118,7 @@
             <div class="post-block-photo js-zoom-gallery">
                 {% for image in entry.images %}
                     {% if !image.isAnimated %}
-                        <a href="{{ image.large.url }}" target="__blank" class="post-thumb">
+                        <a href="{{ image.large.url }}" target="__blank" class="post-thumb js-zoom-link">
                             <img src="{{ image.medium.url }}"
                                 srcset="{{ image.medium.url }}, {{ image.large.url }} 1.5x"
                                 width="{{ image.medium.width }}" height="{{ image.medium.height }}">

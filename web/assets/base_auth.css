@@ -589,3 +589,11 @@ div.profile-section {
     background-color: #7b81ab !important;
     border-color: #737aa6 !important;
 }
+
+.w-last-photo.js-zoom-gallery {
+    margin-right: -4px;
+}
+
+#feed.js-zoom-gallery {
+    margin: -0.25rem;
+}

@@ -1,0 +1,9 @@
+{% extends "../profile.html" %}
+{% block title %}Изображения{% endblock %}
+{% block content %}
+<div class="container">
+    <div id="feed" class="row sorting-container js-zoom-gallery" data-layout="masonry">
+        {% include "images_page.html" %}
+    </div>
+</div>
+{% endblock %}

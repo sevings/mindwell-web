@@ -863,7 +863,7 @@ function loadFeed(url, onSuccess, removeOld) {
             fixSvgUse(page)
 
             let empty = $("#empty-feed")
-            if((!removeOld && container.children(".entry").length)
+            if((!removeOld && container.children(".entry,.col").length)
                 || page.filter(".entry,.ui-block").length){
                 empty.remove()
             } else {
@@ -954,9 +954,62 @@ function onUsersWindowScroll() {
     })
 }
 
+function onZoomGalleryChange() {
+    let magnificPopup = $.magnificPopup.instance
+    if(magnificPopup.index < magnificPopup.items.length - 3)
+        return
+
+    let container = $("#feed")
+    if(!container.length)
+        return
+
+    if(container.data("loading"))
+        return
+
+    let a = container.find(".page-link.older")
+    if(!a.length)
+        return
+
+    if(a.parent().hasClass("disabled")) {
+        a.parents(".sorting-item").remove()
+        return
+    }
+
+    container.data("loading", true)
+
+    $.ajax({
+        url: a.attr("href"),
+        method: "GET",
+        success: function(data) {
+            a.parents(".sorting-item").remove()
+
+            let page = $(data)
+
+            if(container.hasClass("sorting-container")) {
+                container.isotope("insert", page)
+                page.find("a.js-zoom-link").imagesLoaded()
+                    .progress(function() { container.isotope('layout') })
+            }
+            else
+                container.append(page)
+
+            magnificPopup.items = container.find("a.js-zoom-link")
+            magnificPopup.updateItemHTML()
+        },
+        error: function(req) {
+            let resp = JSON.parse(req.responseText)
+            console.log(resp.message)
+        },
+        complete: function() {
+            container.removeData("loading")
+        },
+    })
+}
+
 $(document).ready(function(){
     $(window).scroll(onFeedWindowScroll)
     $(window).scroll(onUsersWindowScroll)
+    $("#feed.js-zoom-gallery").on("mfpChange", onZoomGalleryChange)
 })
 
 $("#complain").click(function() {

@@ -607,7 +607,7 @@ CRUMINA.mediaPopups = function (element) {
 	});
 	$('.js-zoom-gallery', element).each(function() {
 		$(this).magnificPopup({
-			delegate: 'a',
+			delegate: 'a.js-zoom-link',
 			type: 'image',
 			gallery: {
 				enabled: true
