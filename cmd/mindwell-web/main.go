@@ -880,6 +880,8 @@ func tlogHandler(mdw *utils.Mindwell, baseApiPath string, isTlog bool) func(ctx 
 		if !isTlog || api.IsLargeScreen() {
 			limit := api.SetQuery("limit", "100")
 			api.SetFieldNoKey("tags", baseApiPath+"/"+name+"/tags")
+			api.SetQuery("limit", "9")
+			api.SetFieldNoKey("images", baseApiPath+"/"+name+"/images")
 			api.SetQuery("limit", limit)
 
 			api.SetFieldNoKey("calendar", baseApiPath+"/"+name+"/calendar")

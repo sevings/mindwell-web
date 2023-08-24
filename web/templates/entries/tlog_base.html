@@ -103,6 +103,30 @@
                         </ul>
                     </div>
                 </div>
+                {% if profile.relations.isOpenForMe %}
+                    {% if images.data %}
+                        <div class="ui-block">
+                            <div class="ui-block-title">
+                                <h6 class="title">{% if images.hasBefore %}Последние изображения{% else %}Изображения{% endif %}</h6>
+                            </div>
+                            <div class="ui-block-content">
+                                <ul class="widget w-last-photo js-zoom-gallery">
+                                    {% for image in images.data %}
+                                        <li>
+                                            <a href="{{ image.large.url }}" class="js-zoom-link">
+                                                <img src="{% if image.isAnimated%}{{ image.thumbnail.preview}}{% else %}{{ image.thumbnail.url }}{% endif %}" alt="image"
+                                                     width="{{ image.thumbnail.width }}" height="{{ image.thumbnail.height }}">
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                {% if images.hasBefore %}
+                                    <a href="/users/{{ profile.name }}/images" class="btn btn-primary btn-lg full-width">Показать все</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
             </div>
             {% if profile.relations.isOpenForMe %}
                 <div class="col col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 order-xl-3 order-2">
