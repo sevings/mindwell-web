@@ -121,7 +121,7 @@
                                     {% endfor %}
                                 </ul>
                                 {% if images.hasBefore %}
-                                    <a href="/users/{{ profile.name }}/images" class="btn btn-primary btn-lg full-width">Показать все</a>
+                                    <a href="/{% if profile.isTheme %}themes{% else %}users{% endif %}/{{ profile.name }}/images" class="btn btn-primary btn-lg full-width">Показать все</a>
                                 {% endif %}
                             </div>
                         </div>
