@@ -1,8 +1,10 @@
 {% for image in data %}
     <div class="col col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6 sorting-item p-1">
         <a href="{{ image.large.url }}" class="js-zoom-link">
-            <img src="{{ image.small.url }}" alt="photo" class="rounded w-100"
-                 width="{{ image.small.width }}" height="{{ image.small.height }}">
+            <img src="{% if image.small.width > 285 %}{{ image.small.url }}{% else %}{{ image.medium.url }}{% endif %}"
+                 alt="photo" class="rounded w-100"
+                 width="{% if image.small.width > 285 %}{{ image.small.width }}{% else %}{{ image.medium.width }}{% endif %}"
+                 height="{% if image.small.width > 285 %}{{ image.small.height }}{% else %}{{ image.medium.height }}{% endif %}">
         </a>
     </div>
 {% empty %}
