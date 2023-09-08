@@ -3,7 +3,8 @@ package embedder
 import (
 	"fmt"
 	"github.com/sevings/mindwell-server/utils"
-	"io/ioutil"
+	"golang.org/x/net/html/charset"
+	"io"
 	"net/http"
 	"regexp"
 	"strings"
@@ -62,7 +63,12 @@ func (hp *htmlProvider) Load(href string) (Embeddable, error) {
 	}
 
 	defer resp.Body.Close()
-	html, err := ioutil.ReadAll(resp.Body)
+	htmlReader, err := charset.NewReader(resp.Body, contentType)
+	if err != nil {
+		return nil, err
+	}
+
+	html, err := io.ReadAll(htmlReader)
 	if err != nil {
 		return nil, err
 	}
