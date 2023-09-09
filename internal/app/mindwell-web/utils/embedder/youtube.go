@@ -11,7 +11,7 @@ type ytProvider struct {
 }
 
 func newYouTube(cli *http.Client) EmbeddableProvider {
-	const hrefRe = `(?i)(?:https?://)?(?:www\.)?(?:m\.)?(?:youtube.com/watch\?.*v=|youtu.be/)([a-z0-9\-_]+).*`
+	const hrefRe = `(?i)(?:https?://)?(?:www\.)?(?:m\.)?(?:youtube.com/watch\?.*v=|youtu.be/|youtube.com/shorts/)([a-z0-9\-_]+).*`
 	const apiUrl = "https://www.youtube.com/oembed?url="
 
 	return &ytProvider{
