@@ -1,16 +1,18 @@
 <div class="birthday-item inline-items ignored-user" data-user-name="{{ user.name }}">
-    <a href="/users/{{ user.name }}" class="author-thumb">
+    <a href="/{% if user.isTheme %}themes{% else %}users{% endif %}/{{ user.name }}" class="author-thumb">
         <img class="avatar-x42" src="{{ user.avatar.x42 }}" alt="{{ user.showName }}">
     </a>
     <div class="birthday-author-name">
-        <a href="/users/{{ user.name }}" class="h6 author-name">{{ user.showName }}</a>
-        <div class="birthday-date">
-            {% if user.isOnline %}
-                Онлайн
-            {% else %}
-                Заходил{{ user.gender|gender }} <time class="text-lowercase" datetime="{{ user.lastSeenAt }}"></time>
-            {% endif %}
-        </div>
+        <a href="/{% if user.isTheme %}themes{% else %}users{% endif %}/{{ user.name }}" class="h6 author-name">{{ user.showName }}</a>
+        {% if !user.isTheme %}
+            <div class="birthday-date">
+                {% if user.isOnline %}
+                    Онлайн
+                {% else %}
+                    Заходил{{ user.gender|gender }} <time class="text-lowercase" datetime="{{ user.lastSeenAt }}"></time>
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
     <a href="#" class="accept-request remove-user" title="{{ __buttonTitle }}" data-toggle="tooltip" data-placement="top">
         <span class="icon-minus">
