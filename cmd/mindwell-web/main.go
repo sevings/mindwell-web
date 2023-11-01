@@ -652,9 +652,15 @@ func ignoredHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/me/ignored")
-		api.SetMe()
-		SetAdm(mdw, ctx, api)
-		api.WriteTemplate("settings/ignored")
+		api.SetScrollHrefs()
+
+		if api.IsAjax() {
+			api.WriteTemplate("settings/ignored_page")
+		} else {
+			api.SetMe()
+			SetAdm(mdw, ctx, api)
+			api.WriteTemplate("settings/ignored")
+		}
 	}
 }
 
@@ -662,9 +668,15 @@ func hiddenHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		api := utils.NewRequest(mdw, ctx)
 		api.ForwardTo("/me/hidden")
-		api.SetMe()
-		SetAdm(mdw, ctx, api)
-		api.WriteTemplate("settings/hidden")
+		api.SetScrollHrefs()
+
+		if api.IsAjax() {
+			api.WriteTemplate("settings/hidden_page")
+		} else {
+			api.SetMe()
+			SetAdm(mdw, ctx, api)
+			api.WriteTemplate("settings/hidden")
+		}
 	}
 }
 
