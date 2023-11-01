@@ -24,7 +24,7 @@
                 {% endif %}
                 <p>
                     Тебе необходимо отправить подарок по следующему адресу: 
-                    <i>{{ fullname }}, {{ postcode }}, {{ country }}, {{ address }}</i>.
+                    <i>{{ fullname }}, {% if phone %}{{ phone }}, {% endif %}{{ postcode }}, {{ country }}, {{ address }}</i>.
                 </p>
                 {% if comment %}
                     <p>Комментарий твоего получателя подарка: <br><i>«{{ comment }}»</i>.</p>
