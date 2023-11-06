@@ -254,7 +254,7 @@
                                     <a id="follow" href="#" class="btn btn-control">
                                         <svg class="olymp-happy-face-icon"><use xlink:href="#olymp-happy-face-icon"></use></svg>
                                     </a>
-                                    {% if me.invitedBy.id && profile.relations.toMe != "ignored" %}
+                                    {% if profile.relations.isChatAllowed %}
                                         <a href="#" class="btn btn-control bg-purple" title="Отправить сообщение"
                                            data-toggle="modal" data-target="#private-message">
                                             <svg class="olymp-chat---messages-icon"><use xlink:href="#olymp-chat---messages-icon"></use></svg>
@@ -333,15 +333,30 @@
                             </select>
                         {% endif %}
 
-                        <label class="control-label">Приватность записей</label>
+                        <label class="control-label">Кто может видеть мои записи</label>
                         <select class="selectpicker form-control" name="privacy">
-                            <option value="all" {% if profile.privacy == "all" %}selected{% endif %}>открыты для всех</option>
-                            <option value="registered" {% if profile.privacy == "registered" %}selected{% endif %}>открыты для зарегистрированных</option>
-                            <option value="invited" {% if profile.privacy == "invited" %}selected{% endif %}>открыты для приглашенных</option>
-                            {% if !profile.isTheme %}<option value="followers" {% if profile.privacy == "followers" %}selected{% endif %}>открыты для подписчиков</option>{% endif %}
+                            <option value="all" {% if profile.privacy == "all" %}selected{% endif %}>Весь интернет</option>
+                            <option value="registered" {% if profile.privacy == "registered" %}selected{% endif %}>Зарегистрированные пользователи</option>
+                            <option value="invited" {% if profile.privacy == "invited" %}selected{% endif %}>Приглашенные пользователи</option>
+                            {% if !profile.isTheme %}<option value="followers" {% if profile.privacy == "followers" %}selected{% endif %}>Мои подписчики</option>{% endif %}
                         </select>
 
                         <div id="privacy-info" class="alert alert-secondary" role="alert"></div>
+
+                        <label class="control-label">Кто может начинать со мной диалог</label>
+                        <select class="selectpicker form-control" name="chatPrivacy">
+                            <option value="invited" {% if profile.chatPrivacy == "invited" %}selected{% endif %}>Все приглашенные пользователи</option>
+                            <option value="followers" {% if profile.chatPrivacy == "followers" %}selected{% endif %}>Подписанные на меня приглашенные пользователи</option>
+                            <option value="friends" {% if profile.chatPrivacy == "friends" %}selected{% endif %}>Мои взаимные подписчики</option>
+                            <option value="me" {% if profile.chatPrivacy == "me" %}selected{% endif %}>Никто</option>
+                        </select>
+
+                        <div id="chat-privacy-info" class="alert alert-secondary" role="alert">
+                            Пользователи, с которыми вы уже начали диалог, могут писать
+                            тебе независимо от этой настройки. В таком случае, чтобы
+                            запретить человеку отправлять тебе сообщения, нужно
+                            заблокировать его аккаунт.
+                        </div>
 
                         {% if !profile.isTheme %}
                             <label class="control-label">Страна</label>
@@ -360,7 +375,7 @@
             </div>
         </div>
     </div>
-{% elif !profile.isTheme && me.invitedBy.id && profile.relations.toMe != "ignored" %}
+{% elif profile.relations.isChatAllowed %}
     <div class="modal fade" id="private-message" tabindex="-1" role="dialog" aria-labelledby="private-message" aria-hidden="true">
         <div class="modal-dialog modal-sm window-popup edit-widget" role="document">
             <div class="modal-content">
