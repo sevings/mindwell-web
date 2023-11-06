@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        {% if msg.rights.edit || msg.rights.delete %}
+        {% if msg.rights.edit || msg.rights.delete || msg.rights.complain %}
             <div class="more">
                 <svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
                 <ul class="more-dropdown">
@@ -25,6 +25,11 @@
                     {% if msg.rights.delete %}
                     <li>
                         <a href="#" class="delete-message">Удалить</a>
+                    </li>
+                    {% endif %}
+                    {% if msg.rights.complain %}
+                    <li>
+                        <a href="#" class="complain-message">Пожаловаться</a>
                     </li>
                     {% endif %}
                 </ul>

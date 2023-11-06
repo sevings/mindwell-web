@@ -116,6 +116,19 @@ class Messages extends Feed {
 
         return false
     }
+    complain(msg) {
+        let id = msg.data("id")
+        let name = msg.find(".post__author-name").text();
+        $("#complain-user").text(name)
+        $("#complain-type").text("сообщение")
+
+        let popup = $("#complain-popup")
+        popup.data("ready", true)
+        popup.find(".contact-form").attr("action", "/messages/" + id + "/complain")
+        popup.modal("show")
+
+        return false
+    }
     clearForm() {
         let form = $("#message-form")
         let name = $("#chat-wrapper").data("name")
@@ -145,6 +158,10 @@ class Messages extends Feed {
         li.find("a.edit-message").click((event) => {
             let msg = $(event.currentTarget).closest(".comment-item")
             return this.edit(msg)
+        })
+        li.find("a.complain-message").click((event) => {
+            let msg = $(event.currentTarget).closest(".comment-item")
+            return this.complain(msg)
         })
     }
     readAll() {
@@ -378,3 +395,7 @@ $('#chat-title').headroom(
         }
     }
 )
+
+$("#complain-popup").on("hidden.bs.modal", function(){
+    $("#complain-popup").data("ready", false)
+})

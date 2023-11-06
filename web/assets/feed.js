@@ -1012,36 +1012,6 @@ $(document).ready(function(){
     $("#feed.js-zoom-gallery").on("mfpChange", onZoomGalleryChange)
 })
 
-$("#complain").click(function() {
-    let popup = $("#complain-popup")
-    if(!popup.data("ready"))
-        return false
-
-    let btn = $("#complain")
-    if(btn.hasClass("disabled"))
-        return false
-    
-    btn.addClass("disabled")
-
-    popup.find(".contact-form").ajaxSubmit({
-        resetForm: true,
-        headers: {
-            "X-Error-Type": "JSON",
-        },
-        success: function() {
-            popup.modal("hide")
-
-            alert("Модераторы рассмотрят твою жалобу в ближайшее время.")
-        },
-        error: showAjaxError,
-        complete: function() {
-            btn.removeClass("disabled")
-        },
-    })
-
-    return false
-})
-
 $("#feed-search").submit(function(){
     if(!this.reportValidity())
         return false

@@ -157,6 +157,7 @@ func main() {
 
 	web.POST("/entries/:id/complain", proxyHandler(mdw))
 	web.POST("/comments/:id/complain", proxyHandler(mdw))
+	web.POST("/messages/:id/complain", proxyHandler(mdw))
 
 	web.GET("/relations/to/:name", proxyHandler(mdw))
 	web.PUT("/relations/to/:name", proxyHandler(mdw))

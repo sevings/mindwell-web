@@ -542,3 +542,33 @@ $(".file-upload__input").change(function(){
     let fileName = input.val().split('/').pop().split('\\').pop();
     input.prev().text(fileName)
 })
+
+$("#complain").click(function() {
+    let popup = $("#complain-popup")
+    if(!popup.data("ready"))
+        return false
+
+    let btn = $("#complain")
+    if(btn.hasClass("disabled"))
+        return false
+
+    btn.addClass("disabled")
+
+    popup.find(".contact-form").ajaxSubmit({
+        resetForm: true,
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function() {
+            popup.modal("hide")
+
+            alert("Модераторы рассмотрят твою жалобу в ближайшее время.")
+        },
+        error: showAjaxError,
+        complete: function() {
+            btn.removeClass("disabled")
+        },
+    })
+
+    return false
+})
