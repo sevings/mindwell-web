@@ -152,6 +152,23 @@ $(function(){
     el.attr("title", date)
 })
 
+$("#complain-profile").click(function() {
+    let profile = $("#profile")
+    let name = profile.data("name")
+    let isTheme = profile.data("isTheme")
+    let url = (isTheme ? "/themes/" : "/users/") + name + "/complain"
+
+    $("#complain-user").text(name)
+    $("#complain-type").text(isTheme ? "тему" : "профиль")
+
+    let popup = $("#complain-popup")
+    popup.data("ready", true)
+    popup.find(".contact-form").attr("action", url)
+    popup.modal("show")
+
+    return false
+})
+
 function updatePrivacyInfo() {
     let isTheme = $("#profile").data("isTheme")
     let value = $("#edit-profile select[name='privacy']").val()
