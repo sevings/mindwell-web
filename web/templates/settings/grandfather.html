@@ -40,12 +40,33 @@
                     отметки. Тогда твои получатель и отправитель будут знать, что всё в порядке. 
                 </p>
 
-                <div class="checkbox">
-                    <label>
-                        <input id="gift-sent" type="checkbox" {% if father.sent %}checked{% endif %}>
-                        Я отправил{{ me.gender|gender }} подарок
-                    </label>
-                </div>
+                <form id="grandfather" action="/adm/grandfather/status" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="sent" {% if father.sent %}checked{% endif %}>
+                                    Я отправил{{ me.gender|gender }} подарок
+                                </label>
+                            </div>
+
+                            <div class="form-group label-floating">
+                                <label class="control-label">Трек-номер</label>
+                                <input class="form-control" type="text" name="tracking" value="{{ father.tracking }}">
+                            </div>
+
+                            <div class="form-group">
+                                <textarea class="form-control" maxlength="1000" name="comment"
+                                          placeholder="Комментарий (место и время получения, дополнительные инструкции и пожелания)">{{ father.comment }}</textarea>
+                            </div>
+
+                            <button id="save-grandfather" class="btn btn-primary btn-lg full-width">
+                                Сохранить</button>
+                        </div>
+                    </div>
+                </form>
+
+                <h6 id="grandfather-status" role="alert"></h6>
 
                 {% if father.sent || father.received %}
                     <p>
@@ -55,7 +76,13 @@
 
                 <p>
                     Твой Дед Мороз {% if son.sent %}уже{% else %}еще не{% endif %} отправил тебе подарок.
+                    {% if son.tracking %}
+                        Отследить можно по трек-номеру <i>{{ son.tracking }}</i>.
+                    {% endif %}
                 </p>
+                {% if son.comment %}
+                    <p>Комментарий: <br><i>«{{ son.comment }}»</i>.</p>
+                {% endif %}
 
                 <div class="checkbox">
                     <label>
@@ -64,7 +91,7 @@
                     </label>
                 </div>
 
-                <h6 id="grandfather-status" role="alert"></h6>
+                <h6 id="grandson-status" role="alert"></h6>
             </div>
         </div>
     </div>
