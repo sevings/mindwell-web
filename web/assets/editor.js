@@ -7,6 +7,7 @@ function isCommentableElem() { return $("input[type='checkbox'][name='isCommenta
 function isVotableElem()     { return $("input[name='isVotable']") }
 function isAnonymousElem()   { return $("input[name='isAnonymous']") }
 function inLiveElem()        { return $("input[name='inLive']") }
+function isSharedElem()      { return $("input[name='isShared']") }
 function imagesElem()        { return $("input[name='images']") }
 function tagsElem()          { return $("input[name='tags']") }
 
@@ -24,6 +25,7 @@ function storeDraft() {
         isCommentable : isCommentableElem().prop("checked"),
         isVotable     : isVotableElem().prop("checked"),
         inLive        : inLiveElem().prop("checked"),
+        isShared      : isSharedElem().prop("checked"),
         isAnonymous   : isAnonymousElem().prop("checked"),
     }
 
@@ -55,6 +57,7 @@ function loadDraft() {
     isCommentableElem().prop("checked", draft.isCommentable)
     isVotableElem().prop("checked", draft.isVotable)
     inLiveElem().prop("checked", draft.inLive)
+    isSharedElem().prop("checked", draft.isShared)
     isAnonymousElem().prop("checked", draft.isAnonymous)
 }
 
@@ -64,6 +67,7 @@ function removeDraft() {
         isCommentable : isCommentableElem().prop("checked"),
         isVotable     : isVotableElem().prop("checked"),
         inLive        : inLiveElem().prop("checked"),
+        isShared      : isSharedElem().prop("checked"),
         isAnonymous   : isAnonymousElem().prop("checked"),
     }
 

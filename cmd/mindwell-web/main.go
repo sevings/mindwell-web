@@ -1219,7 +1219,8 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 				api.SetScrollHrefsWithData("/entries/"+entryID+"/comments", cmts)
 			}
 
-			api.SetField("adjacent", "/entries/"+entryID+"/adjacent")
+			api.SetFieldNoKey("adjacent", "/entries/"+entryID+"/adjacent")
+			api.SkipError()
 
 			rights, ok := entry["rights"].(map[string]interface{})
 			if ok {

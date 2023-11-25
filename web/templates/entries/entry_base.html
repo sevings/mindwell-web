@@ -1,7 +1,7 @@
 {% with isTheme = entry.author.isTheme %}
 <article class="hentry post {% if cutEntry %}cut-post{% endif %}">
     <div class="post__author author vcard inline-items">
-        
+
         <a href="/{% if isTheme %}themes{% else %}users{% endif %}/{{ entry.author.name }}"><img src="{{ entry.author.avatar.x42 }}" alt="{{ entry.author.showName }}"></a>
 
         <div class="author-date">
@@ -15,7 +15,7 @@
                             <span>{{ wc }}&nbsp;слов{{ wc|quantity:"о,а," }}</span>
                         {% endwith %}
                     {% endif %}
-                    {% if entry.privacy != "all" && entry.privacy != "me" %}
+                    {% if entry.privacy != "all" && entry.privacy != "me" && me.id %}
                         <span class="dot-divider"></span>
                         {% if entry.privacy == "registered" %}
                             <span>зарег-ным</span>
@@ -30,6 +30,11 @@
                     {% if !cutEntry && entry.inLive %}
                         <span class="post-live" title="Запись отправлена в Прямой эфир" data-toggle="tooltip" data-placement="top" >
                             <i class="fas fa-bullhorn"></i>
+                        </span>
+                    {% endif %}
+                    {% if !cutEntry && entry.isShared %}
+                    <span class="post-live" title="Запись доступна для всех по прямой ссылке" data-toggle="tooltip" data-placement="top" >
+                            <i class="fas fa-hand-pointer"></i>
                         </span>
                     {% endif %}
                 </a>
@@ -143,52 +148,56 @@
         </div>
     {% endif %}
 
-    <div class="post-additional-info inline-items">
+    {% if me.id || entry.rating.isVotable || entry.favoriteCount || cutEntry %}
+        <div class="post-additional-info inline-items">
 
-        {% if entry.privacy == "me" %}
-            <div class="post-add-icon inline-items" title="Эта запись видна только тебе" data-toggle="tooltip" data-placement="top">
-                <i class="far fa-eye-slash fa-2x"></i>
-            </div>
-        {% elif entry.rating.isVotable %}
+            {% if entry.privacy == "me" && me.id == entry.author.id %}
+                <div class="post-add-icon inline-items" title="Эта запись видна только тебе" data-toggle="tooltip" data-placement="top">
+                    <i class="far fa-eye-slash fa-2x"></i>
+                </div>
+            {% elif entry.rating.isVotable %}
 
-            {% if entry.rights.vote || entry.rating.vote > 0 %}<a href="#"{% else %}<div{% endif %}
-                    class="post-add-icon inline-items post-up"
-                    title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
-Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
-                <i class="{% if entry.rating.vote <= 0 && entry.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-up fa-2x"></i>
-            {% if entry.rights.vote || entry.rating.vote > 0 %}</a>{% else %}</div>{% endif %}
+                {% if entry.rights.vote || entry.rating.vote > 0 %}<a href="#"{% else %}<div{% endif %}
+                        class="post-add-icon inline-items post-up"
+                        title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
+    Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
+                    <i class="{% if entry.rating.vote <= 0 && entry.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-up fa-2x"></i>
+                {% if entry.rights.vote || entry.rating.vote > 0 %}</a>{% else %}</div>{% endif %}
 
-            <span class="post-rating" title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
-Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">{{ entry.rating.upCount|default:0 - entry.rating.downCount|default:0 }}</span>
+                <span class="post-rating" title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
+    Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">{{ entry.rating.upCount|default:0 - entry.rating.downCount|default:0 }}</span>
 
-            {% if entry.rights.vote || entry.rating.vote < 0 %}<a href="#"{% else %}<div{% endif %}
-                    class="post-add-icon inline-items post-down"
-                    title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
-Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
-                <i class="{% if entry.rating.vote >= 0 && entry.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-down fa-2x"></i>
-            {% if entry.rights.vote || entry.rating.vote < 0 %}</a>{% else %}</div>{% endif %}
+                {% if entry.rights.vote || entry.rating.vote < 0 %}<a href="#"{% else %}<div{% endif %}
+                        class="post-add-icon inline-items post-down"
+                        title="{{ entry.rating.upCount|default:0 }} за, {{ entry.rating.downCount|default:0 }} против.
+    Рейтинг: {{ entry.rating.rating|floatformat:0|default:0 }}">
+                    <i class="{% if entry.rating.vote >= 0 && entry.rights.vote %}far{% else %}fas{% endif %} fa-thumbs-down fa-2x"></i>
+                {% if entry.rights.vote || entry.rating.vote < 0 %}</a>{% else %}</div>{% endif %}
 
-        {% endif %}
+            {% endif %}
 
-        <a href="#" class="post-add-icon inline-items favorite-post"
-           title="{% if entry.isFavorited %}Удалить из&nbsp;избранного{% else %}Добавить в&nbsp;избранное{% endif%}">
-            <i class="{% if entry.isFavorited %}fas{% else %}far{% endif %} fa-star fa-2x"></i>
-            <span>{{ entry.favoriteCount }}</span>
-        </a>
-
-        {% block entryUser %}{% endblock %}
-
-        {% block commentButton %}
-            {% if entry.isCommentable || entry.commentCount > 0 %}
-                <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button"
-                        data-entry="{{ entry.id }}">
-                    <svg class="olymp-speech-balloon-icon"><use xlink:href="#olymp-speech-balloon-icon"></use></svg>
-                    <span class="comment-count">{{ entry.commentCount|default:0 }}</span>
+            {% if me.id || entry.favoriteCount %}
+                <a href="#" class="post-add-icon inline-items favorite-post"
+                   title="{% if entry.isFavorited %}Удалить из&nbsp;избранного{% else %}Добавить в&nbsp;избранное{% endif%}">
+                    <i class="{% if entry.isFavorited %}fas{% else %}far{% endif %} fa-star fa-2x"></i>
+                    <span>{{ entry.favoriteCount }}</span>
                 </a>
             {% endif %}
-        {% endblock commentButton %}
 
-    </div>
+            {% block entryUser %}{% endblock %}
+
+            {% block commentButton %}
+                {% if entry.isCommentable || entry.commentCount > 0 %}
+                    <a href="/entries/{{ entry.id }}#comments" class="post-add-icon inline-items comment-button"
+                            data-entry="{{ entry.id }}">
+                        <svg class="olymp-speech-balloon-icon"><use xlink:href="#olymp-speech-balloon-icon"></use></svg>
+                        <span class="comment-count">{{ entry.commentCount|default:0 }}</span>
+                    </a>
+                {% endif %}
+            {% endblock commentButton %}
+
+        </div>
+    {% endif %}
 </article>
 {% endwith %}
 {% block adjacent %}{% endblock adjacent %}
