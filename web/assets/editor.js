@@ -81,6 +81,7 @@ function removeDraft() {
 
 function togglePublicOnly() {
     let privacy = privacyElem().val()
+    let mePrivacy = $("body").data("mePrivacy")
 
     let commenting = $("#allow-commenting")
     let voting = $("#allow-voting")
@@ -90,6 +91,13 @@ function togglePublicOnly() {
     } else {
         commenting.show()
         voting.show()
+    }
+
+    let shared = $("#shared")
+    if(privacy === "all" && mePrivacy === "all") {
+        shared.hide()
+    } else {
+        shared.show()
     }
 
     let live = $("#allow-live")
