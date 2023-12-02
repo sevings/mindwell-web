@@ -78,9 +78,11 @@
                                                     <li>
                                                         <a id="hide-posts" href="#"></a>
                                                     </li>
-                                                    <li>
-                                                        <a id="complain-profile" href="#">Пожаловаться</a>
-                                                    </li>
+                                                    {% if profile.rights.complain %}
+                                                        <li>
+                                                            <a id="complain-profile" href="#">Пожаловаться</a>
+                                                        </li>
+                                                    {% endif %}
                                                 </ul>
                                             </div>
                                         {% endif %}
@@ -221,12 +223,16 @@
                                                     <li>
                                                         <a id="hide-posts" href="#"></a>
                                                     </li>
-                                                    <li>
-                                                        <a id="blacklist" href="#"></a>
-                                                    </li>
-                                                    <li>
-                                                        <a id="complain-profile" href="#">Пожаловаться</a>
-                                                    </li>
+                                                    {% if profile.rights.ignore %}
+                                                        <li>
+                                                            <a id="blacklist" href="#"></a>
+                                                        </li>
+                                                    {% endif %}
+                                                    {% if profile.rights.complain %}
+                                                        <li>
+                                                            <a id="complain-profile" href="#">Пожаловаться</a>
+                                                        </li>
+                                                    {% endif %}
                                                 </ul>
                                             </div>
                                         {% endif %}
@@ -260,7 +266,7 @@
                                     <a id="follow" href="#" class="btn btn-control">
                                         <svg class="olymp-happy-face-icon"><use xlink:href="#olymp-happy-face-icon"></use></svg>
                                     </a>
-                                    {% if profile.relations.isChatAllowed %}
+                                    {% if profile.rights.chat %}
                                         <a href="#" class="btn btn-control bg-purple" title="Отправить сообщение"
                                            data-toggle="modal" data-target="#private-message">
                                             <svg class="olymp-chat---messages-icon"><use xlink:href="#olymp-chat---messages-icon"></use></svg>
@@ -381,7 +387,7 @@
             </div>
         </div>
     </div>
-{% elif profile.relations.isChatAllowed %}
+{% elif profile.rights.chat %}
     <div class="modal fade" id="private-message" tabindex="-1" role="dialog" aria-labelledby="private-message" aria-hidden="true">
         <div class="modal-dialog modal-sm window-popup edit-widget" role="document">
             <div class="modal-content">
