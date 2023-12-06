@@ -15,7 +15,7 @@
                             <span>{{ wc }}&nbsp;слов{{ wc|quantity:"о,а," }}</span>
                         {% endwith %}
                     {% endif %}
-                    {% if entry.privacy != "all" && entry.privacy != "me" && me.id %}
+                    {% if entry.privacy != "all" && entry.privacy != "me" && __logged_in %}
                         <span class="dot-divider"></span>
                         {% if entry.privacy == "registered" %}
                             <span>зарег-ным</span>
@@ -42,7 +42,8 @@
         </div>
 
         {% if entry.rights.edit || entry.rights.delete || entry.rights.complain %}
-            <div class="more"><svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
+            <div class="more">
+                <svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
                 <ul class="more-dropdown">
                     <li>
                         <a href="#" class="watch-post">
@@ -148,10 +149,10 @@
         </div>
     {% endif %}
 
-    {% if me.id || entry.rating.isVotable || entry.favoriteCount || cutEntry %}
+    {% if __logged_in || entry.rating.isVotable || entry.favoriteCount || cutEntry %}
         <div class="post-additional-info inline-items">
 
-            {% if entry.privacy == "me" && me.id == entry.author.id %}
+            {% if entry.privacy == "me" && entry.rights.edit %}
                 <div class="post-add-icon inline-items" title="Эта запись видна только тебе" data-toggle="tooltip" data-placement="top">
                     <i class="far fa-eye-slash fa-2x"></i>
                 </div>
@@ -176,7 +177,7 @@
 
             {% endif %}
 
-            {% if me.id || entry.favoriteCount %}
+            {% if __logged_in || entry.favoriteCount %}
                 <a href="#" class="post-add-icon inline-items favorite-post"
                    title="{% if entry.isFavorited %}Удалить из&nbsp;избранного{% else %}Добавить в&nbsp;избранное{% endif%}">
                     <i class="{% if entry.isFavorited %}fas{% else %}far{% endif %} fa-star fa-2x"></i>

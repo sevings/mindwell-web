@@ -682,6 +682,7 @@ func (api *APIRequest) WriteTemplate(name string) {
 	api.SetData("__proto", api.mdw.ConfigString("web.proto"))
 	api.SetData("__domain", api.mdw.ConfigString("web.domain"))
 	api.SetData("__to_url", api.NextRedirect())
+	api.SetData("__logged_in", api.HasUserKey())
 
 	authUrl := api.mdw.ConfigString("auth.proto") + "://" + api.mdw.ConfigString("auth.domain")
 	api.SetData("__auth_url", authUrl)
