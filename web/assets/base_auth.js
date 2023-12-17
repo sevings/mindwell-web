@@ -193,7 +193,9 @@ class Notifications extends Feed {
             this.readAll()
             let link = $(".notification-action", event.currentTarget).prop("href")
             setTimeout(() => {
-                if(window.location.pathname === new URL(link).pathname)
+                let url = new URL(link)
+                if(window.location.pathname === url.pathname
+                        && window.location.hash === url.hash)
                     window.location.reload()
                 else
                     window.location = link
@@ -572,3 +574,254 @@ $("#complain").click(function() {
 
     return false
 })
+
+$("#wish-created-popup, #wish-received-popup").on("hidden.bs.modal", function() {
+    if(window.location.hash.startsWith("#wish"))
+        window.history.back()
+})
+
+$(function(){
+    let hash = window.location.hash
+    if(hash.length > 1)
+        $(window).trigger("hashchange")
+})
+
+$(window).on("hashchange", function () {
+    let hash = window.location.hash
+    let shown = $(".modal.show")
+    if(shown.length && !hash.startsWith("#" + shown.attr("id"))) {
+        shown.modal("hide")
+    } else if(hash.startsWith("#wish-created-popup")) {
+        loadCreatedWish(hash.substring(19))
+    } else if(hash.startsWith("#wish-received-popup")) {
+        loadReceivedWish(hash.substring(20))
+    }
+})
+
+function loadCreatedWish(id) {
+    if(!id) {
+        alert("Пожелание не найдено.")
+        if(window.location.hash.startsWith("#wish"))
+            window.history.back()
+        return false
+    }
+
+    let modal = $("#wish-created-popup")
+    modal.data("id", id)
+
+    $.ajax({
+        url: "/wishes/" + id,
+        method: "GET",
+        dataType: "json",
+        success: function(resp) {
+            if(modal.data("id") !== id)
+                return
+
+            let user = $("#wish-receiver")
+            user.text(resp.receiver.showName)
+            user.prop("href", "/users/" + resp.receiver.name)
+
+            let until = $("#wish-send-until time")
+            until.attr("datetime", resp.sendUntil)
+            formatTimeElements(modal)
+
+            let form = modal.find("form")
+            form.prop("action", "/wishes/" + id)
+
+            form.find("textarea").val(resp.content)
+
+            setWishCreatedStatus(resp.state)
+
+            modal.modal("show")
+        },
+        error: function(req) {
+            showAjaxError(req)
+            if(window.location.hash.startsWith("#wish"))
+                window.history.back()
+        },
+    })
+
+    return false
+}
+
+function loadReceivedWish(id) {
+    if(!id) {
+        alert("Пожелание не найдено.")
+        if(window.location.hash.startsWith("#wish"))
+            window.history.back()
+        return false
+    }
+
+    let modal = $("#wish-received-popup")
+    modal.data("id", id)
+
+    $.ajax({
+        url: "/wishes/" + id,
+        method: "GET",
+        dataType: "json",
+        success: function(resp) {
+            if(modal.data("id") !== id)
+                return
+
+            $("#wish-content").text(resp.content)
+
+            setWishReceivedStatus(resp.state)
+
+            modal.modal("show")
+        },
+        error: function(req) {
+            showAjaxError(req)
+            if(window.location.hash.startsWith("#wish"))
+                window.history.back()
+        },
+    })
+
+    return false
+}
+
+$("#send-wish").click(function() {
+    let btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false
+
+    let form = btn.parent()
+    if(!form[0].reportValidity())
+        return false
+
+    btn.addClass("disabled")
+
+    form.ajaxSubmit({
+        method: "PUT",
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function() {
+            setWishCreatedStatus("sent")
+        },
+        error: showAjaxError,
+        complete: function() {
+            btn.removeClass("disabled")
+        },
+    })
+
+    return false
+})
+
+$("#decline-wish").click(function() {
+    let btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false
+
+    let action = btn.parent().prop("action")
+
+    btn.addClass("disabled")
+
+    $.ajax({
+        url: action,
+        method: "DELETE",
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function() {
+            setWishCreatedStatus("declined")
+        },
+        error: showAjaxError,
+        complete: function () {
+            btn.removeClass("disabled")
+        }
+    })
+
+    return false
+})
+
+$("#thank-wish").click(function() {
+    let btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false
+
+    let id = $("#wish-received-popup").data("id")
+
+    btn.addClass("disabled")
+
+    $.ajax({
+        url: "/wishes/" + id + "/thank",
+        method: "POST",
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function() {
+            setWishReceivedStatus("thanked")
+        },
+        error: showAjaxError,
+        complete: function () {
+            btn.removeClass("disabled")
+        }
+    })
+
+    return false
+})
+
+$("#complain-wish").click(function() {
+    let btn = $(this)
+    if(btn.hasClass("disabled"))
+        return false
+
+    if(!confirm("Отправить модераторам жалобу на это пожелание?")) {
+        return false
+    }
+
+    let id = $("#wish-received-popup").data("id")
+
+    btn.addClass("disabled")
+
+    $.ajax({
+        url: "/wishes/" + id + "/complain",
+        method: "POST",
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function() {
+            setWishReceivedStatus("complained")
+        },
+        error: showAjaxError,
+        complete: function () {
+            btn.removeClass("disabled")
+        }
+    })
+
+    return false
+})
+
+function setWishCreatedStatus(state) {
+    let buttons = $("#send-wish, #decline-wish")
+    let status = $("#wish-created-status")
+    let until = $("#wish-send-until")
+    let content = $("#wish-created-popup textarea")
+    let isNew = state === "new"
+    buttons.toggleClass("hidden", !isNew)
+    status.toggleClass("hidden", isNew)
+    until.toggleClass("hidden", !isNew)
+    content.prop("disabled", !isNew)
+    if(!isNew) {
+        if(state === "sent")
+            status.text("Пожелание отправлено.")
+        else if (state === "declined")
+            status.text("Пожелание отклонено.")
+        else if (state === "expired")
+            status.text("Срок действия пожелания истек.")
+    }
+}
+
+function setWishReceivedStatus(state) {
+    let buttons = $("#thank-wish, #complain-wish")
+    let status = $("#wish-received-status")
+    let isSent = state === "sent"
+    buttons.toggleClass("hidden", !isSent)
+    status.toggleClass("hidden", isSent)
+    if(!isSent) {
+        if(state === "thanked")
+            status.text("Благодарность за пожелание отправлена.")
+        else if (state === "complained")
+            status.text("Жалоба на пожелание отправлена.")
+    }
+}

@@ -73,6 +73,24 @@
         <span class="notification-icon">
             <svg class="olymp-cupcake-icon"><use xlink:href="#olymp-cupcake-icon"></use></svg>
         </span>
+    {% elif ntf.type == "wish_created" %}
+        <div class="author-thumb"></div>
+        <div class="notification-event">
+            Настала твоя очередь <a href="#wish-created-popup{{ ntf.wish.id }}" class="notification-action">отправить</a> кому-то новогоднее пожелание.
+            <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
+        </div>
+        <span class="notification-icon">
+            <svg class="olymp-cupcake-icon"><use xlink:href="#olymp-cupcake-icon"></use></svg>
+        </span>
+    {% elif ntf.type == "wish_received" %}
+        <div class="author-thumb"></div>
+        <div class="notification-event">
+            Тебе пришло новое <a href="#wish-received-popup{{ ntf.wish.id }}" class="notification-action">новогоднее пожелание</a>!
+            <span class="notification-date"><time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time></span>
+        </div>
+        <span class="notification-icon">
+            <svg class="olymp-cupcake-icon"><use xlink:href="#olymp-cupcake-icon"></use></svg>
+        </span>
     {% elif ntf.type == "info" %}
         <div class="author-thumb">
         </div>

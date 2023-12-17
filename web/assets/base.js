@@ -23,6 +23,13 @@ function formatDate(unix) {
         && yesterday.getFullYear() == date.getFullYear())
         return "Вчера в " + time()
 
+    let tomorrow = today
+    tomorrow.setDate(today.getDate() + 1)
+    if(tomorrow.getDate() === date.getDate()
+        && tomorrow.getMonth() === date.getMonth()
+        && tomorrow.getFullYear() === date.getFullYear())
+        return "Завтра в " + time()
+
     var str = date.getDate()
 
     switch (date.getMonth()) {

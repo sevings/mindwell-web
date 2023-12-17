@@ -81,6 +81,11 @@ func main() {
 	web.GET("/adm/grandfather/status", proxyHandler(mdw))
 	web.POST("/adm/grandfather/status", proxyHandler(mdw))
 
+	web.GET("/wishes/:id", proxyHandler(mdw))
+	web.PUT("/wishes/:id", proxyHandler(mdw))
+	web.DELETE("/wishes/:id", proxyHandler(mdw))
+	web.POST("/wishes/:id/thank", proxyHandler(mdw))
+
 	web.GET("/account/recover", resetPasswordHandler(mdw))
 	web.POST("/account/recover", proxyNoKeyHandler(mdw))
 	web.POST("/account/recover/password", recoverHandler(mdw))
@@ -160,6 +165,7 @@ func main() {
 	web.POST("/messages/:id/complain", proxyHandler(mdw))
 	web.POST("/users/:name/complain", proxyHandler(mdw))
 	web.POST("/themes/:name/complain", proxyHandler(mdw))
+	web.POST("/wishes/:id/complain", proxyHandler(mdw))
 
 	web.GET("/relations/to/:name", proxyHandler(mdw))
 	web.PUT("/relations/to/:name", proxyHandler(mdw))

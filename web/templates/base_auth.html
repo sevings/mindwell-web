@@ -4,7 +4,7 @@
     {% block styles %}{% endblock %}
 {% endblock %}
 {% block base_scripts %}
-	<script src="/assets/base_auth.js?d=20231106"></script>
+	<script src="/assets/base_auth.js?d=20231217"></script>
 	<script src="/assets/embed.js?d=20201216"></script>
 	{% block scripts %}{% endblock %}
 {% endblock %}
@@ -461,7 +461,70 @@
 
 {% endblock %}
 {% block footer %}
-	{% if !me.id %}
+	{% if __logged_in %}
+		<div class="modal fade" id="wish-created-popup" tabindex="-1" role="dialog" aria-labelledby="wish-created" aria-hidden="true">
+			<div class="modal-dialog window-popup edit-widget modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+					<a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+						<svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
+					</a>
+
+					<div class="modal-header">
+						<h6 class="title">Отправить пожелание</h6>
+					</div>
+
+					<div class="modal-body">
+						<p>
+							В этот раз тебе выпало отправить пожелание для <a id="wish-receiver" href="#">(receiver)</a>.
+							Поделись своей добротой, напиши хотя бы пару приятных фраз. Можешь посмотреть профиль,
+							а потом снова вернуться в этот диалог.
+							<span id="wish-send-until">
+								Срок, в который необходимо отправить это пожелание, истечет
+								<b><time class="text-lowercase"></time></b>.
+							</span>
+							Но если тебе сейчас совсем не до этого, можно его пропустить.
+						</p>
+						<form action="" enctype="multipart/form-data">
+							<div class="form-group">
+								<textarea class="form-control" maxlength="1000"
+							  		name="content" placeholder="Текст пожелания" required>
+								</textarea>
+							</div>
+							<button id="send-wish" class="btn btn-primary btn-lg full-width">Поздравить</button>
+							<button id="decline-wish" class="btn btn-secondary btn-lg full-width">В другой раз</button>
+							<p id="wish-created-status" class="alert alert-secondary hidden" role="alert"></p>
+						</form>
+						<p>Если больше не хочешь отправлять пожелания, их можно отключить <a href="/account/notifications">в настройках</a>.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="wish-received-popup" tabindex="-1" role="dialog" aria-labelledby="wish-received" aria-hidden="true">
+			<div class="modal-dialog window-popup edit-widget modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+					<a href="#" class="close icon-close" data-dismiss="modal" aria-label="Закрыть">
+						<svg class="olymp-close-icon"><use xlink:href="#olymp-close-icon"></use></svg>
+					</a>
+
+					<div class="modal-header">
+						<h6 class="title">Анонимное пожелание</h6>
+					</div>
+
+					<div class="modal-body">
+						<h1 class="text-left ml-4">«</h1>
+						<p id="wish-content" class="font-italic text-center mb-2 wrapped-text"></p>
+						<h1 class="text-right mr-4">»</h1>
+						<button id="thank-wish" class="btn btn-primary btn-lg full-width">Спасибо, понравилось!</button>
+						<button id="complain-wish" class="btn btn-secondary btn-lg full-width">Мне неприятно</button>
+						<p id="wish-received-status" class="alert alert-secondary hidden" role="alert"></p>
+						<p>Если больше не хочешь получать пожелания, их можно отключить <a href="/account/notifications">в настройках</a>.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% else %}
 		<div class="modal fade" id="registration-login-form-popup" tabindex="-1" role="dialog" aria-labelledby="registration-login-form-popup" aria-hidden="true">
 			<div class="modal-dialog window-popup registration-login-form-popup" role="document">
 				<div class="modal-content">

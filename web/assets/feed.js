@@ -708,9 +708,7 @@ $("#complain-popup").on("hidden.bs.modal", function(){
 $(window).on("hashchange", function () {
     let hash = window.location.hash
     let shown = $(".modal.show")
-    if(shown.length && !hash.startsWith("#" + shown.attr("id")))
-        shown.modal("hide")
-    else
+    if(!shown.length || hash.startsWith("#" + shown.attr("id")))
         openHashModal()
 })
 
@@ -719,20 +717,16 @@ $(function(){
     addCommentClickHandlers()
 
     window.embedder.addEmbeds(document)
-
-    let hash = window.location.hash
-    if(hash.startsWith("#post-popup"))
-        openPost(hash.substring(11))
 })
 
 function openHashModal() {
     let hash = window.location.hash
     if(hash.startsWith("#post-popup")) {
         let id = hash.substring(11)
-        if($("#post-popup.show").data("id") != id)
+        if($("#post-popup.show").data("id") !== id)
             openPost(id)
     }
-    else if(hash == "#complain-popup") {
+    else if(hash === "#complain-popup") {
         let modal = $(hash)
         if(modal.data("ready"))
             modal.modal("show")
