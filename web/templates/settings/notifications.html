@@ -85,6 +85,23 @@
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <th></th><th></th><th>На сайте</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="h6 title">Отправлять новогодние пожелания</div>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" name="wishes" class="onsite" {% if onsite.wishes %}checked{% endif %}>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
                 </table>
 
                 <button id="save-notification-settings" class="btn btn-primary btn-lg full-width">Сохранить</button>

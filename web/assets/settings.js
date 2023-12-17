@@ -96,12 +96,14 @@ $("#save-notification-settings").click(function() {
         url: "/account/settings/email",
         success: () => {
             status.data("email", "success")
-            if(status.data("telegram") === "success")
+            if(status.data("telegram") === "success"
+                    && status.data("onsite") === "success")
                 onSuccess()
         },
         error: (req) => {
             status.data("email", "error")
-            if(status.data("telegram") !== "error")
+            if(status.data("telegram") !== "error"
+                    && status.data("onsite") !== "error")
                 onError(req)
         },
     })
@@ -112,12 +114,32 @@ $("#save-notification-settings").click(function() {
         url: "/account/settings/telegram",
         success: () => {
             status.data("telegram", "success")
-            if(status.data("email") === "success")
+            if(status.data("email") === "success"
+                    && status.data("onsite") === "success")
                 onSuccess()
         },
         error: (req) => {
             status.data("telegram", "error")
-            if(status.data("email") !== "error")
+            if(status.data("email") !== "error"
+                    && status.data("onsite") !== "error")
+                onError(req)
+        },
+    })
+
+    $.ajax({
+        method: "PUT",
+        data: $("#notification-settings .onsite").fieldSerialize(),
+        url: "/account/settings/onsite",
+        success: () => {
+            status.data("onsite", "success")
+            if(status.data("email") === "success"
+                    && status.data("telegram") === "success")
+                onSuccess()
+        },
+        error: (req) => {
+            status.data("onsite", "error")
+            if(status.data("email") !== "error"
+                    && status.data("telegram") !== "error")
                 onError(req)
         },
     })

@@ -69,6 +69,7 @@ func main() {
 	web.GET("/account/notifications", notificationsSettingsHandler(mdw))
 	web.PUT("/account/settings/email", proxyHandler(mdw))
 	web.PUT("/account/settings/telegram", proxyHandler(mdw))
+	web.PUT("/account/settings/onsite", proxyHandler(mdw))
 
 	web.GET("/account/subscribe/token", proxyHandler(mdw))
 
@@ -697,6 +698,7 @@ func notificationsSettingsHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 		api.SetMe()
 		api.SetField("email", "/account/settings/email")
 		api.SetField("telegram", "/account/settings/telegram")
+		api.SetField("onsite", "/account/settings/onsite")
 		api.SetField("bot", "/account/subscribe/telegram")
 		api.SetData("__tg", bot)
 		SetAdm(mdw, ctx, api)
