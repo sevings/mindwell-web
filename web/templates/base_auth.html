@@ -4,7 +4,7 @@
     {% block styles %}{% endblock %}
 {% endblock %}
 {% block base_scripts %}
-	<script src="/assets/base_auth.js?d=20231217"></script>
+	<script src="/assets/base_auth.js?d=20231218"></script>
 	<script src="/assets/embed.js?d=20201216"></script>
 	{% block scripts %}{% endblock %}
 {% endblock %}
@@ -485,7 +485,7 @@
 							</span>
 							Но если тебе сейчас совсем не до этого, можно его пропустить.
 						</p>
-						<form action="" enctype="multipart/form-data">
+						<form action="" enctype="multipart/form-data" method="POST">
 							<div class="form-group">
 								<textarea class="form-control" maxlength="1000"
 							  		name="content" placeholder="Текст пожелания" required>
@@ -516,10 +516,14 @@
 						<h1 class="text-left ml-4">«</h1>
 						<p id="wish-content" class="font-italic text-center mb-2 wrapped-text"></p>
 						<h1 class="text-right mr-4">»</h1>
-						<button id="thank-wish" class="btn btn-primary btn-lg full-width">Спасибо, понравилось!</button>
-						<button id="complain-wish" class="btn btn-secondary btn-lg full-width">Мне неприятно</button>
+						<button id="thank-wish" class="btn btn-primary btn-lg full-width">Спасибо, приятно!</button>
 						<p id="wish-received-status" class="alert alert-secondary hidden" role="alert"></p>
-						<p>Если больше не хочешь получать пожелания, их можно отключить <a href="/account/notifications">в настройках</a>.</p>
+						<p>
+							Если больше не хочешь получать пожелания, их можно отключить
+							<a href="/account/notifications">в настройках</a>.
+							<span id="complain-wish">А на пожелание, нарушающее правила,
+								можно <a href="#">пожаловаться</a>.</span>
+						</p>
 					</div>
 				</div>
 			</div>

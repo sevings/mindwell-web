@@ -761,7 +761,7 @@ $("#thank-wish").click(function() {
     return false
 })
 
-$("#complain-wish").click(function() {
+$("#complain-wish a").click(function() {
     let btn = $(this)
     if(btn.hasClass("disabled"))
         return false
@@ -808,15 +808,15 @@ function setWishCreatedStatus(state) {
         else if (state === "declined")
             status.text("Пожелание отклонено.")
         else if (state === "expired")
-            status.text("Срок действия пожелания истек.")
+            status.text("Период возможности отправить пожелание истек.")
     }
 }
 
 function setWishReceivedStatus(state) {
-    let buttons = $("#thank-wish, #complain-wish")
+    let links = $("#thank-wish, #complain-wish")
     let status = $("#wish-received-status")
     let isSent = state === "sent"
-    buttons.toggleClass("hidden", !isSent)
+    links.toggleClass("hidden", !isSent)
     status.toggleClass("hidden", isSent)
     if(!isSent) {
         if(state === "thanked")
