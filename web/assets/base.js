@@ -1,5 +1,4 @@
 function formatDate(unix) {
-    var today = new Date()
     var date = new Date(unix * 1000)
     
     function time() {
@@ -10,21 +9,22 @@ function formatDate(unix) {
         return date.getHours() + ":" + min 
     }
 
-    if(today.getDate() == date.getDate() 
-        && today.getMonth() == date.getMonth() 
-        && today.getFullYear() == date.getFullYear())
+    let today = new Date()
+    if(today.getDate() === date.getDate()
+        && today.getMonth() === date.getMonth()
+        && today.getFullYear() === date.getFullYear())
         return "Сегодня в " + time()
 
-    var yesterday = today
-    yesterday.setDate(today.getDate() - 1)
+    let yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
 
-    if(yesterday.getDate() == date.getDate()
-        && yesterday.getMonth() == date.getMonth() 
-        && yesterday.getFullYear() == date.getFullYear())
+    if(yesterday.getDate() === date.getDate()
+        && yesterday.getMonth() === date.getMonth()
+        && yesterday.getFullYear() === date.getFullYear())
         return "Вчера в " + time()
 
-    let tomorrow = today
-    tomorrow.setDate(today.getDate() + 1)
+    let tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
     if(tomorrow.getDate() === date.getDate()
         && tomorrow.getMonth() === date.getMonth()
         && tomorrow.getFullYear() === date.getFullYear())
