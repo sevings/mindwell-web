@@ -663,7 +663,7 @@ function loadReceivedWish(id) {
             if(modal.data("id") !== id)
                 return
 
-            $("#wish-content").text(resp.content)
+            $("#wish-content").html(resp.content)
 
             setWishReceivedStatus(resp.state)
 
