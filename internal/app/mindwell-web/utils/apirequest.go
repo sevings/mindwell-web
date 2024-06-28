@@ -739,10 +739,10 @@ func (api *APIRequest) WriteResponse() {
 		}
 	}
 
+	api.ctx.Status(api.resp.StatusCode)
+
 	api.ctx.Header("Cache-Control", "no-store")
 	api.st.WriteHeader(api.ctx.Writer)
-
-	api.ctx.Status(api.resp.StatusCode)
 
 	if jsonData != nil {
 		api.ctx.Writer.Write(jsonData)

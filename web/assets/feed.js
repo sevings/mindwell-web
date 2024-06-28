@@ -739,6 +739,9 @@ function openPost(id) {
     if(typeof id != "string" && typeof id != "number")
         id = $(this).data("entry")
 
+    if(id === "")
+        return
+
     let modal = $("#post-popup")
     if(!modal.length)
         return

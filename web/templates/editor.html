@@ -3,7 +3,8 @@
 {% block scripts %}
     <script src="/assets/olympus/js/selectize.js"></script>
     <script src="/assets/js/basil.min.js"></script>
-    <script src="/assets/editor.js?d=20231125"></script>
+    <script src="/assets/feed.js?d=20240628"></script>
+    <script src="/assets/editor.js?d=20240628"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -107,6 +108,8 @@
                                     <input type="hidden" name="inLive" value="false" />
                                 {% endif %}
 
+                                <input type="hidden" name="isDraft" value="false" />
+
                                 <input id="input-images" type="hidden" name="images" 
                                     value="{% for image in images %}{{ image.id }},{% endfor %}"/>
 
@@ -122,6 +125,13 @@
                                             <use xlink:href="#olymp-camera-icon"></use>
                                         </svg>
 									</a>
+                                    {% if !id %}
+                                        <a id="show-draft" href="#" class="options-message">
+                                            <svg class="olymp-photos-icon" data-toggle="tooltip" data-placement="top" data-original-title="Предпросмотр записи">
+                                                <use xlink:href="#olymp-photos-icon"></use>
+                                            </svg>
+                                        </a>
+                                    {% endif %}
 									<button id="post-entry" class="btn btn-primary btn-md-2">
                                         {% if id %}Сохранить{% elif theme %}Опубликовать в тему{% else %}Записать в дневник{% endif %}
                                     </button>
@@ -136,4 +146,5 @@
     </div>
 </div>
 {% include "images/upload.html" with modalID="upload-image-popup" title="Прикрепить новое изображение" action="/images" %}
+{% include "entries/entry_popup.html" %}
 {% endblock %}

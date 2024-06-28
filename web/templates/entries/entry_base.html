@@ -7,7 +7,7 @@
         <div class="author-date">
             <a class="h6 post__author-name fn" href="/{% if isTheme %}themes{% else %}users{% endif %}/{{ entry.author.name }}">{{ entry.author.showName }}</a>
             <div class="post__date">
-                <a href="/entries/{{ entry.id }}"{% if cutEntry %} class="open-post" data-entry="{{ entry.id }}"{% endif %}>
+                <a href="{% if entry.id %}/entries/{{ entry.id }}{% else %}#{% endif %}"{% if cutEntry %} class="open-post" data-entry="{{ entry.id }}"{% endif %}>
                     <time class="published" datetime="{{ entry.createdAt }}"></time>
                     {% if entry.cutContent %}
                         <span class="dot-divider"></span>
@@ -149,14 +149,14 @@
         </div>
     {% endif %}
 
-    {% if __logged_in || entry.rating.isVotable || entry.favoriteCount || cutEntry %}
+    {% if (entry.id || entry.user) && (__logged_in || entry.rating.isVotable || entry.favoriteCount || cutEntry) %}
         <div class="post-additional-info inline-items">
 
             {% if entry.privacy == "me" && entry.rights.edit %}
                 <div class="post-add-icon inline-items" title="Эта запись видна только тебе" data-toggle="tooltip" data-placement="top">
                     <i class="far fa-eye-slash fa-2x"></i>
                 </div>
-            {% elif entry.rating.isVotable %}
+            {% elif entry.id && entry.rating.isVotable %}
 
                 {% if entry.rights.vote || entry.rating.vote > 0 %}<a href="#"{% else %}<div{% endif %}
                         class="post-add-icon inline-items post-up"
@@ -177,7 +177,7 @@
 
             {% endif %}
 
-            {% if __logged_in || entry.favoriteCount %}
+            {% if entry.id && (__logged_in || entry.favoriteCount) %}
                 <a href="#" class="post-add-icon inline-items favorite-post"
                    title="{% if entry.isFavorited %}Удалить из&nbsp;избранного{% else %}Добавить в&nbsp;избранное{% endif%}">
                     <i class="{% if entry.isFavorited %}fas{% else %}far{% endif %} fa-star fa-2x"></i>

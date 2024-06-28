@@ -1179,6 +1179,15 @@ func postHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.ClearData()
 			api.SetData("path", "/entries/"+entryID.String())
 			api.WriteJson()
+		} else if api.StatusCode() == 201 {
+			api.ClearData()
+			api.SetData("entry", entry)
+
+			if api.IsAjax() {
+				api.WriteTemplate("entries/entry_modal")
+			} else {
+				api.WriteTemplate("entries/entry")
+			}
 		} else {
 			api.WriteResponse()
 		}

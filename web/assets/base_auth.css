@@ -17,6 +17,10 @@
     width: auto;
 }
 
+.post-block-photo:last-child {
+    margin-bottom: 0;
+}
+
 .post-video .video-content {
     min-width: 200px;
 }

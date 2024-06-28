@@ -8,6 +8,7 @@ function isVotableElem()     { return $("input[name='isVotable']") }
 function isAnonymousElem()   { return $("input[name='isAnonymous']") }
 function inLiveElem()        { return $("input[name='inLive']") }
 function isSharedElem()      { return $("input[name='isShared']") }
+function isDraftElem()       { return $("input[name='isDraft']") }
 function imagesElem()        { return $("input[name='images']") }
 function tagsElem()          { return $("input[name='tags']") }
 
@@ -208,6 +209,55 @@ $("#post-entry").click(function() {
     })
 
     return false;
+})
+
+$("#show-draft").click(function() {
+    let btn = $(this)
+    let postBtn = $("#post-entry")
+    if(btn.hasClass("disabled") || postBtn.hasClass("disabled"))
+        return false
+
+    let form = $("#entry-editor")
+    if(!form[0].reportValidity())
+        return false
+
+    let modal = $("#post-popup")
+    if(!modal.length)
+        return
+
+    modal.data("loading", true)
+    modal.modal("show")
+    $("#show-draft>svg").tooltip("hide")
+
+    btn.addClass("disabled")
+    postBtn.addClass("disabled")
+    isDraftElem().val("true")
+
+    form.ajaxSubmit({
+        dataType: "HTML",
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        success: function(entry) {
+            window.location.hash = "post-popup"
+            let body = modal.find(".modal-body")
+            body.replaceWith(entry)
+            formatTimeElements(modal)
+            window.embedder.addEmbeds(modal)
+            modal.find(".gif-play-image").gifplayer()
+            modal.each(function(){ CRUMINA.mediaPopups(this) })
+            fixSvgUse(modal)
+        },
+        error: showAjaxError,
+        complete: function() {
+            btn.removeClass("disabled")
+            postBtn.removeClass("disabled")
+            isDraftElem().val("false")
+            modal.removeData("loading")
+        },
+    })
+
+    return false
 })
 
 $("#show-upload-image").click(function(){
