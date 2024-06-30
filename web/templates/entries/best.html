@@ -3,6 +3,7 @@
 {% block submenu %}
     <li class="cat-list__item {% if __category == "week" %}active{% endif %}"><a href="/best?category=week">За неделю</a></li>
     <li class="cat-list__item {% if __category == "month" %}active{% endif %}"><a href="/best?category=month">За месяц</a></li>
+    <li class="cat-list__item {% if __category == "year" %}active{% endif %}"><a href="/best?category=year">За год</a></li>
 {% endblock %}
 {% block feed_settings %}
     <input type="hidden" name="category" value="{{ __category }}">
