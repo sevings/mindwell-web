@@ -380,11 +380,52 @@ function removeImageID(id) {
     inp.val(ids.join(","))
 }
 
+function insertImage(id) {
+    let img = $("#attached-image" + id)
+    let src = img.data("src")
+    let idx = $("#input-images").val().split(",").indexOf(id+"") + 1
+    let title = "изображение " + idx
+    let md = "\n\n![" + title + "](" + src + ")\n\n"
+
+    let area = contentElem()[0]
+    let selStart = area.selectionStart
+    while(selStart > 0 && area.value[selStart-1] === "\n")
+        selStart--
+    selStart = area.value.indexOf("\n", selStart)
+    if(selStart < 0)
+        selStart = area.value.length
+    let selEnd = selStart
+    while(selEnd < area.value.length && area.value[selEnd] === "\n") {
+        selEnd++
+    }
+    area.selectionStart = selStart
+    area.selectionEnd = selEnd
+
+    area.setRangeText(md)
+    area.selectionStart = selStart + 4
+    area.selectionEnd = area.selectionStart + title.length
+
+    area.scrollIntoView()
+    area.focus()
+
+    return false
+}
+
 function removeImage(id) {
     if(!confirm("Удалить изображение?"))
         return false
 
-    $("#attached-image"+id).remove()
+    let img = $("#attached-image" + id)
+    let src = img.data("src")
+    let pattern = "\\n*!\\[[^\\]]*\\]\\(" + src + "\\)\\n*"
+    let re = new RegExp(pattern, "gi")
+    let oldText = contentElem().val()
+    let newText = oldText.replace(re, "\n\n")
+    if (oldText !== newText) {
+        contentElem().val(newText)
+    }
+
+    img.remove()
 
     removeImageID(id)
 

@@ -1,4 +1,12 @@
-<a id="attached-image{{ image.id }}" href="#" onclick="return removeImage({{ image.id }})" 
-        data-image-id="{{ image.id }}" data-processing="{{ image.processing }}">
-    <img src="{{ image.thumbnail.url }}" alt="{% if image.processing %}Изображение обрабатывается{% else %}Прикрепленное изображение{% endif %}">
-</a>
+<div id="attached-image{{ image.id }}"
+     data-image-id="{{ image.id }}" data-processing="{{ image.processing }}" data-src="{{ image.large.url }}"
+     class="dropdown" style="display: inline">
+    <a href="#"
+       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <img src="{{ image.thumbnail.url }}" alt="{% if image.processing %}Изображение обрабатывается{% else %}Прикрепленное изображение{% endif %}">
+    </a>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <button class="dropdown-item btn-lg" type="button" onclick="insertImage({{ image.id }})">Вставить в текст</button>
+        <button class="dropdown-item btn-lg" type="button" onclick="removeImage({{ image.id }})">Удалить</button>
+    </div>
+</div>

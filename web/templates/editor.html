@@ -4,7 +4,7 @@
     <script src="/assets/olympus/js/selectize.js"></script>
     <script src="/assets/js/basil.min.js"></script>
     <script src="/assets/feed.js?d=20240628"></script>
-    <script src="/assets/editor.js?d=20240628"></script>
+    <script src="/assets/editor.js?d=20240630"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -111,10 +111,13 @@
                                 <input type="hidden" name="isDraft" value="false" />
 
                                 <input id="input-images" type="hidden" name="images" 
-                                    value="{% for image in images %}{{ image.id }},{% endfor %}"/>
+                                    value="{% for image in images %}{{ image.id }},{% endfor %}{% for image in insertedImages %}{{ image.id }},{% endfor %}"/>
 
                                 <div id="attached-images">
                                     {% for image in images %}
+                                        {% include "images/attached.html" %}
+                                    {% endfor %}
+                                    {% for image in insertedImages %}
                                         {% include "images/attached.html" %}
                                     {% endfor %}
                                 </div>
