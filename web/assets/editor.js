@@ -272,6 +272,26 @@ $("#show-upload-image").click(function(){
     return false
 })
 
+function appendImage(data) {
+    let img = $(data)
+    $("#attached-images").append(img)
+
+    let id = img.data("imageId")
+    let inp = $("#input-images")
+    let ids = inp.val()
+    if(ids)
+        ids += "," + id
+    else
+        ids = id
+    inp.val(ids)
+
+    updImageIDs.push(id)
+    if(updImageIDs.length === 1)
+        updateNextImage()
+
+    return id
+}
+
 $(".upload-image").click(function() { 
     let btn = $(this)
     if(btn.hasClass("disabled"))
@@ -301,21 +321,7 @@ $(".upload-image").click(function() {
             units.text(Math.round(pos / 1024) + " из " + Math.round(total / 1024) + " Кб")
         },
         success: function(data) {
-            let img = $(data)
-            $("#attached-images").append(img)
-
-            let id = img.data("imageId")
-            let inp = $("#input-images")
-            let ids = inp.val()
-            if(ids)
-                ids += "," + id
-            else
-                ids = id
-            inp.val(ids)
-
-            updImageIDs.push(id)
-            if(updImageIDs.length === 1)
-                updateNextImage()    
+            appendImage(data)
                         
             btn.parents(".modal").modal("hide")
         },
@@ -333,6 +339,7 @@ $(".upload-image").click(function() {
 })
 
 let updImageIDs = []
+let insImageID = 0
 
 function updateNextImage(timeout = 1000) {
     if(!updImageIDs.length)
@@ -341,6 +348,11 @@ function updateNextImage(timeout = 1000) {
     let id = updImageIDs[0]
     let img = $("#attached-image" + id)
     if(!img.data("processing")) {
+        if(insImageID === id) {
+            $("#paste-image-popup").modal("hide")
+            insertImage(id)
+        }
+
         updImageIDs.shift()
         updateNextImage()
         return
@@ -440,6 +452,73 @@ function removeImage(id) {
 
     return false
 }
+
+contentElem().on("paste", function (event) {
+    let items = event.originalEvent.clipboardData.items
+    let file
+    for (let i = 0 ; i < items.length ; i++) {
+        let item = items[i]
+        if (item.type.indexOf("image") !== -1) {
+
+            file = item.getAsFile()
+            break
+        }
+    }
+    if (!file)
+        return
+
+    let maxSize = $("#upload-image-popup input[type=file][data-max-size]").data("maxSize")
+    if(file.size / 1024 / 1024 > parseInt(maxSize, 10)) {
+        alert("Можно загружать файлы размером не более " + maxSize + " Мб.")
+        return false
+    }
+
+    const formData = new FormData()
+    formData.set("file", file)
+
+    let modal = $("#paste-image-popup")
+    let sk = modal.find(".skills-item")
+    let bar = sk.find(".skills-item-meter-active")
+    let units = sk.find(".units")
+    let state = $("#paste-image-state")
+    state.text("Отправка…")
+    bar.width(0)
+    units.text("")
+    modal.modal("show")
+
+    $.ajax({
+        method: "POST",
+        url: "/images",
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: {
+            "X-Error-Type": "JSON",
+        },
+        xhr: function(){
+            let xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener('progress', function(e){
+                if(!e.lengthComputable)
+                    return
+
+                bar.width(e.loaded / e.total * 100 + "%")
+                units.text(Math.round(e.loaded / 1024) + " из " + Math.round(e.total / 1024) + " Кб")
+            }, false);
+
+            return xhr;
+        },
+        success: function(data) {
+            insImageID = appendImage(data)
+            state.text("Обработка…")
+        },
+        error: function(req) {
+            modal.modal("hide")
+            showAjaxError(req)
+        },
+    })
+
+    return false
+})
 
 function initTags() {
     const loadUrl = tagsElem().data("action")
