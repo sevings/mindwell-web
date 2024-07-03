@@ -6,7 +6,9 @@
         <img src="{{ image.thumbnail.url }}" alt="{% if image.processing %}Изображение обрабатывается{% else %}Прикрепленное изображение{% endif %}">
     </a>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-        <button class="dropdown-item btn-lg" type="button" onclick="insertImage({{ image.id }})">Вставить в текст</button>
+        {% if !image.processing %}
+            <button class="dropdown-item btn-lg" type="button" onclick="insertImage({{ image.id }})">Вставить в текст</button>
+        {% endif %}
         <button class="dropdown-item btn-lg" type="button" onclick="removeImage({{ image.id }})">Удалить</button>
     </div>
 </div>
