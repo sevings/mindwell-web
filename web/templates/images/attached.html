@@ -7,7 +7,8 @@
     </a>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
         {% if !image.processing %}
-            <button class="dropdown-item btn-lg" type="button" onclick="insertImage({{ image.id }})">Вставить в текст</button>
+            <button class="dropdown-item btn-lg js-zoom-image" type="button" data-mfp-src="{{ image.large.url }}">Открыть</button>
+            <button class="dropdown-item btn-lg" type="button" onclick="insertImage({{ image.id }})">Вставить</button>
         {% endif %}
         <button class="dropdown-item btn-lg" type="button" onclick="removeImage({{ image.id }})">Удалить</button>
     </div>

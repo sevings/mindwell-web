@@ -170,6 +170,7 @@ function loadImages(){
             success: function(data) {
                 let img = $(data)
                 $("#attached-images").append(img)
+                CRUMINA.mediaPopups(img)
             },
             error: function(req) {
                 if(req.status === 404)
@@ -352,6 +353,8 @@ function updateNextImage(timeout = 1000) {
             $("#paste-image-popup").modal("hide")
             insertImage(id)
         }
+
+        CRUMINA.mediaPopups(img)
 
         updImageIDs.shift()
         updateNextImage()
