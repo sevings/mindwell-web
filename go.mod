@@ -11,7 +11,7 @@ require (
 	github.com/sevings/mindwell-server v0.0.0-20230908202829-818700babcf8
 	github.com/zpatrick/go-config v0.0.0-20221109193159-0ab1ea9ffd6e
 	go.uber.org/zap v1.25.0
-	golang.org/x/net v0.17.0
+	golang.org/x/net v0.23.0
 )
 
 require (
@@ -91,8 +91,8 @@ require (
 	go.mongodb.org/mongo-driver v1.12.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.5.0 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
