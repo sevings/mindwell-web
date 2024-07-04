@@ -22,6 +22,8 @@ client_secret = "client_secret"
 
 [images]
 host = "127.0.0.1:8888"
+proto = "http"
+domain = "img.mindwell.local"
 
 [telegram]
 bot = "telegram_bot_login"

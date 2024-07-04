@@ -1,5 +1,15 @@
 <div id="attached-image{{ image.id }}"
-     data-image-id="{{ image.id }}" data-processing="{{ image.processing }}" data-src="{{ image.large.url }}"
+     data-image-id="{{ image.id }}" data-processing="{{ image.processing }}"
+     data-small-url="{{ image.small.url }}"
+     data-medium-url="{{ image.medium.url }}"
+     data-large-url="{{ image.large.url }}"
+     data-small-preview="{{ image.small.preview }}"
+     data-medium-preview="{{ image.medium.preview }}"
+     data-large-preview="{{ image.large.preview }}"
+     data-is-animated="{{ image.isAnimated }}"
+     data-sh="{{ image.small.height }}" data-sw="{{ image.small.width }}"
+     data-mh="{{ image.medium.height }}" data-mw="{{ image.medium.width }}"
+     data-lh="{{ image.large.height }}" data-lw="{{ image.large.width }}"
      class="dropdown" style="display: inline">
     <a href="#"
        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -397,7 +397,24 @@ function removeImageID(id) {
 
 function insertImage(id) {
     let img = $("#attached-image" + id)
-    let src = img.data("src")
+    let params = new URLSearchParams()
+    if(img.data("isAnimated")) {
+        params.set("mp", img.data("mediumPreview"))
+        params.set("mu", img.data("mediumUrl"))
+        params.set("mh", img.data("mh"))
+        params.set("mw", img.data("mw"))
+    } else {
+        params.set("su", img.data("smallUrl"))
+        params.set("mu", img.data("mediumUrl"))
+        params.set("lu", img.data("largeUrl"))
+        params.set("mh", img.data("mh"))
+        params.set("mw", img.data("mw"))
+        params.set("sh", img.data("sh"))
+        params.set("sw", img.data("sw"))
+    }
+    let src = img.data("largeUrl")
+    src += "?" + params.toString()
+
     let idx = $("#input-images").val().split(",").indexOf(id+"") + 1
     let title = "изображение " + idx
     let md = "\n\n![" + title + "](" + src + ")\n\n"
@@ -431,8 +448,8 @@ function removeImage(id) {
         return false
 
     let img = $("#attached-image" + id)
-    let src = img.data("src")
-    let pattern = "\\n*!\\[[^\\]]*\\]\\(" + src + "\\)\\n*"
+    let src = img.data("largeUrl")
+    let pattern = "\\n*!\\[[^\\]]*\\]\\(" + src + "[^)]*\\)\\n*"
     let re = new RegExp(pattern, "gi")
     let oldText = contentElem().val()
     let newText = oldText.replace(re, "\n\n")

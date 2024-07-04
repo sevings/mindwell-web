@@ -3,8 +3,8 @@ package utils
 import (
 	"errors"
 	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils/embedder"
+	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils/images"
 	"log"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -80,8 +80,11 @@ func gender(gender *pongo2.Value, _ *pongo2.Value) (*pongo2.Value, *pongo2.Error
 
 // usage: {{ html|media:"embed" }}
 func media(m *Mindwell) func(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
-	var imgSrcRe = regexp.MustCompile(`(?i)<img[^>]+src="([^"]+)"[^>]*>`)
-	var emb = embedder.NewEmbedder(m.LogSystem(), m.ConfigString("web.domain"))
+	var linkEmb = embedder.NewEmbedder(m.LogSystem(), m.ConfigString("web.domain"))
+	var imgEmb = images.NewImageEmbedder(
+		m.ConfigString("images.proto"),
+		m.ConfigString("images.domain"),
+		m.LogSystem())
 
 	return func(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
 		if content.IsNil() {
@@ -100,13 +103,11 @@ func media(m *Mindwell) func(content *pongo2.Value, param *pongo2.Value) (*pongo
 		html := content.String()
 
 		if embed {
-			html = imgSrcRe.ReplaceAllString(html, `<a href="$1" target="__blank" class="js-zoom-image">$0</a>`)
-		}
-
-		if embed {
-			html = emb.EmbedAll(html)
+			html = imgEmb.EmbedAll(html)
+			html = linkEmb.EmbedAll(html)
 		} else {
-			html = emb.PreviewAll(html)
+			html = imgEmb.PreviewAll(html)
+			html = linkEmb.PreviewAll(html)
 		}
 
 		return pongo2.AsSafeValue(html), nil
