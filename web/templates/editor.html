@@ -128,13 +128,11 @@
                                             <use xlink:href="#olymp-camera-icon"></use>
                                         </svg>
 									</a>
-                                    {% if !id %}
-                                        <a id="show-draft" href="#" class="options-message">
-                                            <svg class="olymp-photos-icon" data-toggle="tooltip" data-placement="top" data-original-title="Предпросмотр записи">
-                                                <use xlink:href="#olymp-photos-icon"></use>
-                                            </svg>
-                                        </a>
-                                    {% endif %}
+                                    <a id="show-draft" href="#" class="options-message">
+                                        <svg class="olymp-photos-icon" data-toggle="tooltip" data-placement="top" data-original-title="Предпросмотр записи">
+                                            <use xlink:href="#olymp-photos-icon"></use>
+                                        </svg>
+                                    </a>
 									<button id="post-entry" class="btn btn-primary btn-md-2">
                                         {% if id %}Сохранить{% elif theme %}Опубликовать в тему{% else %}Записать в дневник{% endif %}
                                     </button>

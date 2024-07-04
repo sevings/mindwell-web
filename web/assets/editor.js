@@ -234,6 +234,10 @@ $("#show-draft").click(function() {
     postBtn.addClass("disabled")
     isDraftElem().val("true")
 
+    let action = form.prop("action")
+    if(!isCreating())
+        form.prop("action", "/entries")
+
     form.ajaxSubmit({
         dataType: "HTML",
         headers: {
@@ -255,6 +259,8 @@ $("#show-draft").click(function() {
             postBtn.removeClass("disabled")
             isDraftElem().val("false")
             modal.removeData("loading")
+            if(!isCreating())
+                form.prop("action", action)
         },
     })
 

@@ -8,7 +8,7 @@
             <a class="h6 post__author-name fn" href="/{% if isTheme %}themes{% else %}users{% endif %}/{{ entry.author.name }}">{{ entry.author.showName }}</a>
             <div class="post__date">
                 <a href="{% if entry.id %}/entries/{{ entry.id }}{% else %}#{% endif %}"{% if cutEntry %} class="open-post" data-entry="{{ entry.id }}"{% endif %}>
-                    <time class="published" datetime="{{ entry.createdAt }}"></time>
+                    {% if entry.id %}<time class="published" datetime="{{ entry.createdAt }}"></time>{% else %}Черновик{% endif %}
                     {% if entry.cutContent %}
                         <span class="dot-divider"></span>
                         {% with wc=entry.wordCount %}
