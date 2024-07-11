@@ -158,7 +158,7 @@ func cutHtml(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2
 	}
 
 	html := content.String()
-	html, _ = utils.CutHtml(html, maxLineCount, maxLineLen)
+	html, _ = utils.CutHtml(html, maxLineCount, maxLineLen, 1)
 
 	return pongo2.AsSafeValue(html), nil
 }
