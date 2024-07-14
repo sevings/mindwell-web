@@ -273,6 +273,10 @@ func (m *Mindwell) AppToken() string {
 	return m.appToken
 }
 
+func (m *Mindwell) ImgApiUrl() string {
+	return m.imgUrl
+}
+
 func (m *Mindwell) Uid2(accessToken string) string {
 	salt := m.ConfigString("web.uid2_salt")
 	user := strings.SplitN(accessToken, ".", 2)[0]

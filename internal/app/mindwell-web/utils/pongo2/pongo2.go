@@ -1,7 +1,8 @@
-package utils
+package pongo2
 
 import (
 	"errors"
+	webUtils "github.com/sevings/mindwell-web/internal/app/mindwell-web/utils"
 	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils/embedder"
 	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils/images"
 	"log"
@@ -12,7 +13,7 @@ import (
 	"github.com/sevings/mindwell-server/utils"
 )
 
-func InitPongo2(m *Mindwell) {
+func InitPongo2(m *webUtils.Mindwell) {
 	registerFilter("quantity", quantity)
 	registerFilter("gender", gender)
 	registerFilter("media", media(m))
@@ -79,12 +80,9 @@ func gender(gender *pongo2.Value, _ *pongo2.Value) (*pongo2.Value, *pongo2.Error
 }
 
 // usage: {{ html|media:"embed" }}
-func media(m *Mindwell) func(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
+func media(m *webUtils.Mindwell) func(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
 	var linkEmb = embedder.NewEmbedder(m.LogSystem(), m.ConfigString("web.domain"))
-	var imgEmb = images.NewImageEmbedder(
-		m.ConfigString("images.proto"),
-		m.ConfigString("images.domain"),
-		m.LogSystem())
+	var imgEmb = images.NewImageEmbedder(m, m.LogSystem())
 
 	return func(content *pongo2.Value, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
 		if content.IsNil() {

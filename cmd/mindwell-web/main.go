@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/gin-contrib/cors"
+	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils/pongo2"
 	"net/http"
 	"net/url"
 	"os"
@@ -19,7 +20,7 @@ import (
 
 func main() {
 	mdw := utils.NewMindwell()
-	utils.InitPongo2(mdw)
+	pongo2.InitPongo2(mdw)
 
 	gin.SetMode(gin.ReleaseMode)
 

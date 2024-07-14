@@ -2,98 +2,151 @@ package images
 
 import (
 	"errors"
+	"github.com/patrickmn/go-cache"
+	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils"
 	"go.uber.org/zap"
-	"html"
-	"net/url"
+	"net/http"
 	"regexp"
+	"time"
 )
 
-type Embeddable interface {
-	Embed(href, props string) (string, error)
-	Preview(href, props string) (string, error)
+type ImageData struct {
+	Embed   string
+	Preview string
+	Exp     time.Duration
+	access  time.Time
+	load    time.Time
 }
 
-type ConvertImage func(emb Embeddable, href, props string) (string, error)
+func (data *ImageData) isUsed() bool {
+	return data.access.Add(180 * 24 * time.Hour).After(time.Now())
+}
+
+func (data *ImageData) isExpired() bool {
+	return data.load.Add(data.Exp).Before(time.Now())
+}
+
+func NewImageData(tag string) *ImageData {
+	return &ImageData{
+		Embed:   tag,
+		Preview: tag,
+	}
+}
+
+type ImageProvider interface {
+	Load(href, props string) (*ImageData, error)
+}
 
 var errorNoMatch = errors.New("could not embed this image")
 
 type ImageEmbedder struct {
-	es      []Embeddable
-	imgRe   *regexp.Regexp
-	propRe  *regexp.Regexp
-	baseUrl string
-	log     *zap.Logger
+	es     []ImageProvider
+	cache  *cache.Cache
+	imgRe  *regexp.Regexp
+	propRe *regexp.Regexp
+	log    *zap.Logger
 }
 
-func NewImageEmbedder(proto, domain string, log *zap.Logger) *ImageEmbedder {
+func NewImageEmbedder(m *utils.Mindwell, log *zap.Logger) *ImageEmbedder {
 	e := &ImageEmbedder{
-		imgRe:   regexp.MustCompile(`(?i)<img[^>]+>`),
-		propRe:  regexp.MustCompile(`(?i)<img([^>]+)src="([^"]+)"([^>]*)>`),
-		baseUrl: proto + "://" + domain,
-		log:     log,
+		cache:  cache.New(180*24*time.Hour, 24*time.Hour),
+		imgRe:  regexp.MustCompile(`(?i)<img[^>]+>`),
+		propRe: regexp.MustCompile(`(?i)<img([^>]+)src="([^"]+)"([^>]*)>`),
+		log:    log,
 	}
 
-	e.AddEmbeddable(NewZoomEmbed(e.baseUrl))
-	e.AddEmbeddable(NewGifEmbed(e.baseUrl))
-	e.AddEmbeddable(NewBaseEmbed())
+	e.cache.OnEvicted(func(tag string, cached interface{}) {
+		data := cached.(*ImageData)
+
+		if data.access.After(data.load) {
+			e.reload(tag, data)
+			return
+		}
+
+		if data.isUsed() {
+			e.cache.SetDefault(tag, data)
+		}
+	})
+
+	cli := &http.Client{Timeout: 2 * time.Second}
+
+	e.AddImageProvider(NewMindwellProvider(m, cli))
+	e.AddImageProvider(NewBaseEmbed())
 
 	return e
 }
 
-func (e *ImageEmbedder) AddEmbeddable(emb Embeddable) {
+func (e *ImageEmbedder) AddImageProvider(emb ImageProvider) {
 	e.es = append(e.es, emb)
 }
 
-func (e *ImageEmbedder) PreviewAll(html string) string {
-	return e.ConvertAll(html, Embeddable.Preview)
-}
-
 func (e *ImageEmbedder) EmbedAll(html string) string {
-	return e.ConvertAll(html, Embeddable.Embed)
-}
-
-func (e *ImageEmbedder) ConvertAll(htmlText string, conv ConvertImage) string {
-	return e.imgRe.ReplaceAllStringFunc(htmlText, func(tag string) string {
-		match := e.propRe.FindAllStringSubmatch(tag, -1)
-		if len(match) == 0 {
-			return tag
-		}
-
-		props := match[0][1] + match[0][3]
-		href := match[0][2]
-
-		for _, emb := range e.es {
-			res, err := conv(emb, href, props)
-			if err == nil {
-				return res
-			}
-
-			if !errors.Is(err, errorNoMatch) {
-				e.log.Warn("images", zap.Error(err))
-			}
-		}
-
-		return tag
+	return e.imgRe.ReplaceAllStringFunc(html, func(tag string) string {
+		return e.Convert(tag).Embed
 	})
 }
 
-func GetQueryValues(href string, keys ...string) ([]string, error) {
-	href = html.UnescapeString(href)
-	u, err := url.Parse(href)
-	if err != nil {
-		return nil, err
+func (e *ImageEmbedder) PreviewAll(html string) string {
+	return e.imgRe.ReplaceAllStringFunc(html, func(tag string) string {
+		return e.Convert(tag).Preview
+	})
+}
+
+func (e *ImageEmbedder) Convert(tag string) *ImageData {
+	var data *ImageData
+
+	cached, found := e.cache.Get(tag)
+	if found {
+		data = cached.(*ImageData)
+		if data.isExpired() {
+			go e.reload(tag, data)
+		}
+	} else {
+		data = NewImageData(tag)
+		e.reload(tag, data)
 	}
 
-	v := u.Query()
-	res := make([]string, len(keys))
-	for i, k := range keys {
-		val := v.Get(k)
-		if len(val) > 0 {
-			res[i] = val
-		} else {
-			return res, errorNoMatch
+	data.access = time.Now()
+
+	return data
+}
+
+func (e *ImageEmbedder) reload(tag string, data *ImageData) {
+	match := e.propRe.FindAllStringSubmatch(tag, -1)
+	if len(match) == 0 {
+		return
+	}
+
+	props := match[0][1] + match[0][3]
+	href := match[0][2]
+
+	e.log.Info("images",
+		zap.String("act", "load"),
+		zap.String("url", href))
+
+	var img *ImageData
+	var err error
+
+	for _, ep := range e.es {
+		img, err = ep.Load(href, props)
+		if err == nil {
+			break
+		}
+		if !errors.Is(err, errorNoMatch) {
+			e.log.Warn("images", zap.Error(err))
 		}
 	}
 
-	return res, nil
+	if img == nil || err != nil {
+		return
+	}
+
+	data.Embed = img.Embed
+	data.Preview = img.Preview
+	data.Exp = img.Exp
+	data.load = time.Now()
+
+	if data.Exp > 0 {
+		e.cache.Set(tag, data, data.Exp)
+	}
 }
