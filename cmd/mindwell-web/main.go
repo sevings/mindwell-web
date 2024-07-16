@@ -901,7 +901,7 @@ func tlogHandler(mdw *utils.Mindwell, baseApiPath string, isTlog bool) func(ctx 
 			api.SetScrollHrefs()
 		}
 
-		if !isTlog || api.IsLargeScreen() {
+		if !api.IsAjax() && (!isTlog || api.IsLargeScreen()) {
 			limit := api.SetQuery("limit", "100")
 			api.SetFieldNoKey("tags", baseApiPath+"/"+name+"/tags")
 			api.SetQuery("limit", "9")
@@ -916,7 +916,7 @@ func tlogHandler(mdw *utils.Mindwell, baseApiPath string, isTlog bool) func(ctx 
 		api.SetData("profile", profile)
 		api.SetData("__feed", isTlog)
 
-		if !api.HasUserKey() {
+		if !api.IsAjax() && !api.HasUserKey() {
 			api.SetCsrfToken("/login")
 			api.SetCsrfToken("/register")
 		}
