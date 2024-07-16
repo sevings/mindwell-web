@@ -13,7 +13,7 @@
             <div class="modal-body">
                 <p>На данную почту будет отправлено письмо с инструкцией для сброса пароля.</p>
                 <form id="recover-email" action="/account/recover" method="POST" enctype="multipart/form-data">
-                    <input class="form-control" name="email" type="email" required />
+                    <input class="form-control" name="email" type="email" pattern="^.+@.+\..+$" required />
                     <button id="send-recover" class="btn btn-primary btn-lg full-width">Отправить</button>
                 </form>
                 <h6 id="recover-status" role="alert"></h6>

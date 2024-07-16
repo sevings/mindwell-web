@@ -34,12 +34,16 @@ $("#save-email").click(function() {
     var btn = $(this)
     if(btn.hasClass("disabled"))
         return false;
-        
+
+    let form = $("#change-email")
+    if(!form[0].reportValidity())
+        return false
+
     btn.addClass("disabled")
 
     var status = $("#email-status")
     
-    $("#change-email").ajaxSubmit({
+    form.ajaxSubmit({
         resetForm: true,
         headers: {
             "X-Error-Type": "JSON",
