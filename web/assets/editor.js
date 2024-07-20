@@ -552,33 +552,34 @@ function initTags() {
         ],
         searchField: "tag",
         load: function (query, callback) {
-            if(query) {
+            if(query.length > 50) {
                 callback()
                 return
             }
 
-            $.ajax({
-                method: "GET",
-                url: loadUrl + "?limit=100",
-                dataType: "json",
-                success: function (resp) {
-                    if(resp.data) {
+            let loadTags = function (url, callback) {
+                $.ajax({
+                    method: "GET",
+                    url: url,
+                    dataType: "json",
+                    success: function (resp) {
                         callback(resp.data)
-                        return
-                    }
+                    },
+                    error: showAjaxError,
+                })
+            }
 
-                    $.ajax({
-                        method: "GET",
-                        url: "/entries/tags?limit=100",
-                        dataType: "json",
-                        success: function (resp) {
-                            callback(resp.data)
-                        },
-                        error: showAjaxError,
-                    })
-                },
-                error: showAjaxError,
-            })
+            if(query) {
+                loadTags("/entries/tags?query=" + query, callback)
+            } else {
+                loadTags(loadUrl + "?limit=100", function (tags) {
+                    if(tags) {
+                        callback(tags)
+                    } else {
+                        loadTags("/entries/tags?limit=100", callback)
+                    }
+                })
+            }
         },
         render: {
             option: function (data, escape) {
