@@ -866,6 +866,15 @@ func topsHandler(mdw *utils.Mindwell, templateName string) func(ctx *gin.Context
 		api := utils.NewRequest(mdw, ctx)
 		api.QueryCookie()
 		api.Forward()
+
+		data := api.Data()
+		users, ok := data["users"].([]interface{})
+		if ok && len(users) == 1 {
+			name := users[0].(map[string]interface{})["name"].(string)
+			api.Redirect("/users/" + name)
+			return
+		}
+
 		api.SetScrollHrefs()
 		api.SetMe()
 		api.WriteTemplate(templateName)
