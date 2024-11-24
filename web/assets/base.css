@@ -132,3 +132,7 @@ body {
         margin-bottom: 40px;
     }
 }
+
+#login-section>.container>.row {
+    flex-direction: row-reverse;
+}
