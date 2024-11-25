@@ -232,7 +232,7 @@ function onFavoritePostClick() {
 }
 
 function onDeletePostClick() {
-    if(!confirm("Пост будет удален навсегда."))
+    if(!confirm("Удалить пост без возможности восстановления?"))
         return false
 
     var info = findPostElement(this)
