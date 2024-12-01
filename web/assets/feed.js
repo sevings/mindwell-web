@@ -14,6 +14,7 @@ function addFeedClickHandlers(feed) {
     $("a.watch-post", feed).click(onWatchPostClick)
     $("a.favorite-post", feed).click(onFavoritePostClick)
     $("a.delete-post", feed).click(onDeletePostClick)
+    $("a.pin-post", feed).click(onPinPostClick)
     $("a.complain-post", feed).click(onComplainPostClick)
 
     $(".comment-form textarea", feed).on("keydown", onCommentFormKeyDown)
@@ -178,6 +179,43 @@ function onWatchPostClick() {
         },
         error: function(req) {
             var resp = JSON.parse(req.responseText)
+            alert(resp.message)
+        },
+        complete: function() {
+            info.data("enabled", true)
+        },
+    })
+
+    return false
+}
+
+function onPinPostClick() {
+    let info = findPostElement(this)
+    if(info.data("enabled") === false)
+        return false
+
+    info.data("enabled", false)
+
+    let id = info.data("id")
+    let pinned = !!info.data("pinned")
+    let link = info.find("a.pin-post")
+
+    $.ajax({
+        url: "/entries/" + id + "/pin",
+        method: pinned ? "DELETE" : "PUT",
+        dataType: "json",
+        success: function(resp) {
+            pinned = !!resp.isPinned
+            info.data("pinned", pinned)
+            info.find(".post-pin").toggleClass("hidden", !pinned)
+
+            if(pinned)
+                link.html("Открепить")
+            else
+                link.html("Закрепить")
+        },
+        error: function(req) {
+            let resp = JSON.parse(req.responseText)
             alert(resp.message)
         },
         complete: function() {

@@ -33,18 +33,34 @@
                         </span>
                     {% endif %}
                     {% if !cutEntry && entry.isShared %}
-                    <span class="post-live" title="Запись доступна для всех по прямой ссылке" data-toggle="tooltip" data-placement="top" >
+                        <span class="post-live" title="Запись доступна для всех по прямой ссылке" data-toggle="tooltip" data-placement="top" >
                             <i class="fas fa-hand-pointer"></i>
+                        </span>
+                    {% endif %}
+                    {% if __show_pin %}
+                        <span class="post-live post-pin {% if !entry.isPinned %}hidden{% endif %}" title="Запись закреплена" data-toggle="tooltip" data-placement="top" >
+                            <i class="fas fa-thumbtack"></i>
                         </span>
                     {% endif %}
                 </a>
             </div>
         </div>
 
-        {% if entry.rights.edit || entry.rights.delete || entry.rights.complain %}
+        {% if entry.rights.edit || entry.rights.delete || entry.rights.pin || entry.rights.complain %}
             <div class="more">
                 <svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon"></use></svg>
                 <ul class="more-dropdown">
+                    {% if __show_pin && entry.rights.pin %}
+                        <li>
+                            <a href="#" class="pin-post">
+                                {% if entry.isPinned %}
+                                    Открепить
+                                {% else %}
+                                    Закрепить
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a href="#" class="watch-post">
                             {% if entry.isWatching %}

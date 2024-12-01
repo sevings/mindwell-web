@@ -3,7 +3,11 @@
             data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}" data-can-vote="{{ entry.rights.vote }}"
             data-watching="{{ entry.isWatching }}" data-favorited="{{ entry.isFavorited }}">
         <div class="ui-block">
-            {% include "entry_base.html" with cutEntry = false %}
+            {% if __show_pin && entry.isPinned %}
+                {% include "entry_base.html" with cutEntry = true %}
+            {% else %}
+                {% include "entry_base.html" with cutEntry = false %}
+            {% endif %}
         </div>
     </div>
 {% endfor %}

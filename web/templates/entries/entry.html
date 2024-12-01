@@ -25,7 +25,7 @@
 {% endblock %}
 {% block title %}Запись{% endblock %}
 {% block scripts %}
-    <script src="/assets/feed.js?d=20241125"></script>
+    <script src="/assets/feed.js?d=20241201"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -33,7 +33,7 @@
 		<div class="col col-xl-8 m-auto col-lg-10 col-md-12 col-sm-12 col-12">
             <div class="ui-block entry"
                     data-id="{{ entry.id }}" data-vote="{{ entry.rating.vote }}" data-can-vote="{{ entry.rights.vote }}"
-                    data-watching="{{ entry.isWatching }}" data-favorited="{{ entry.isFavorited }}">
+                    data-watching="{{ entry.isWatching }}" data-favorited="{{ entry.isFavorited }}" data-pinned="{{ entry.isPinned }}">
                 {% include "entry_full.html" with cutEntry = false %}
             </div>
         </div>

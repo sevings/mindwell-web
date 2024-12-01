@@ -162,6 +162,9 @@ func main() {
 	web.PUT("/entries/:id/favorite", proxyHandler(mdw))
 	web.DELETE("/entries/:id/favorite", proxyHandler(mdw))
 
+	web.PUT("/entries/:id/pin", proxyHandler(mdw))
+	web.DELETE("/entries/:id/pin", proxyHandler(mdw))
+
 	web.POST("/entries/:id/complain", proxyHandler(mdw))
 	web.POST("/comments/:id/complain", proxyHandler(mdw))
 	web.POST("/messages/:id/complain", proxyHandler(mdw))
@@ -924,6 +927,7 @@ func tlogHandler(mdw *utils.Mindwell, baseApiPath string, isTlog bool) func(ctx 
 
 		api.SetData("profile", profile)
 		api.SetData("__feed", isTlog)
+		api.SetData("__show_pin", true)
 
 		if !api.IsAjax() && !api.HasUserKey() {
 			api.SetCsrfToken("/login")
@@ -1264,6 +1268,8 @@ func entryHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
 			api.SetCsrfToken("/login")
 			api.SetCsrfToken("/register")
 		}
+
+		api.SetData("__show_pin", true)
 
 		if api.IsAjax() {
 			api.WriteTemplate("entries/entry_modal")
