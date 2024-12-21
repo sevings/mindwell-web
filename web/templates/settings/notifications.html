@@ -68,6 +68,25 @@
                     </tr>
                     <tr>
                         <td>
+                            <div class="h6 title">мою запись удаляют из темы</div>
+                        </td>
+                        <td>
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" name="movedEntries" class="email" {% if email.movedEntries %}checked{% endif %}>
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" name="movedEntries" class="telegram" {% if telegram.movedEntries %}checked{% endif %}>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             <div class="h6 title">мне выдается новое приглашение</div>
                         </td>
                         <td>
@@ -120,13 +139,13 @@
                     Чтобы получать уведомления в Телеграме, открой ссылку
                     <a href="https://t.me/{{ __tg }}?start={{ bot.token }}" target="__blank">
                         t.me/{{ __tg }}?start={{ bot.token }}
-                    </a> или добавь себе в контакты бота @{{ __tg }} и отправь ему команду 
+                    </a> или добавь себе в контакты бота @{{ __tg }} и отправь ему команду
                     <code>/login?{{ bot.token }}</code>.
                 </p>
                 <p>
                     Ссылка и команда содержат автоматически сгенерированный пароль. Любой, кто отправит
                     его боту, получит доступ к твоим уведомлениям. Пароль будет действителен в течение
-                    десяти минут.                
+                    десяти минут.
                 </p>
             </div>
         </div>
