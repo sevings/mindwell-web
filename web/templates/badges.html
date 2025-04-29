@@ -1,0 +1,47 @@
+{% extends "entries/tlog_base.html" %}
+{% block title %}Значки{% endblock %}
+{% block tlog_content %}
+    <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 order-xl-2 order-last">
+        <div class="ui-block responsive-flex">
+            <div class="ui-block-title">
+                <div class="h6 title">Значки</div>
+            </div>
+        </div>
+        {% if data %}
+            <!-- <div class="container"> -->
+                <div class="row">
+                    <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        {% for badge in data %}
+                            <div class="ui-block">
+                				<div class="birthday-item inline-items badges">
+                   					<div class="author-thumb">
+                  						<img src="{{ badge.icon }}" alt="{{ badge.code }}" loading="lazy" width="38" height="38">
+                                        {% if badge.level > 1 %}
+                  						    <div class="label-avatar bg-primary">{{ badge.level|default:1 }}</div>
+                                        {% endif %}
+                   					</div>
+                   					<div class="birthday-author-name">
+                  						<a href="#" class="h6 author-name">{{ badge.title }}</a>
+                  						<div class="birthday-date">{{ badge.description }}</div>
+                   					</div>
+                				</div>
+                 			</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            <!-- </div> -->
+        {% else %}
+            <div id="empty-feed" class="ui-block">
+                <div class="ui-block-title">
+                    <h6 class="title">
+                        {% if !profile.relations.isOpenForMe %}
+                            {{ profile.showName }} скрыл{{ profile.gender|gender }} свои записи.
+                        {% else %}
+                            Нет значков
+                        {% endif %}
+                    </h6>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

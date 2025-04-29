@@ -103,6 +103,17 @@
         <span class="notification-icon">
             <svg class="olymp-info-icon"><use xlink:href="#olymp-info-icon"></use></svg>
         </span>
+    {% elif ntf.type == "badge" %}
+        <div class="author-thumb"></div>
+        <div class="notification-event">
+            Тебе выдан <a href="/me/badges" class="notification-action">значок «{{ ntf.badge.title }}»</a>!
+            <span class="notification-date">
+                <time class="entry-date updated" datetime="{{ ntf.createdAt }}"></time>
+            </span>
+        </div>
+        <span class="notification-icon">
+            <svg class="olymp-badge-icon"><use xlink:href="#olymp-badge-icon"></use></svg>
+        </span>
     {% elif ntf.type == "info" %}
         <div class="author-thumb">
         </div>

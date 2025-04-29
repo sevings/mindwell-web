@@ -40,7 +40,7 @@ function setRelationFromMe(relation) {
             updateRelations()
         },
         error: showAjaxError,
-    })    
+    })
 
     return false
 }
@@ -71,7 +71,7 @@ function updateRelations() {
     var mePrivacy = $("body").data("mePrivacy")
     var relationToMe = profile.data("relToMe")
     var relationFromMe = profile.data("relFromMe")
-    
+
     var followed = relationFromMe == "followed"
 
     var followBtn = $("#follow")
@@ -88,7 +88,7 @@ function updateRelations() {
         else if(relationFromMe == "ignored" || relationFromMe == "hidden")
             followBtn.addClass("bg-grey")
         else
-            followBtn.addClass("bg-blue")        
+            followBtn.addClass("bg-blue")
     }
 
     var ignored = relationToMe == "ignored" || relationFromMe == "ignored" || relationFromMe == "hidden"
@@ -296,7 +296,7 @@ $("#send-invite").click(function(){
     return false
 })
 
-$(".upload-image").click(function() { 
+$(".upload-image").click(function() {
     var btn = $(this)
     if(btn.hasClass("disabled"))
         return false
@@ -443,3 +443,20 @@ function fullCalendar() {
 }
 
 $(fullCalendar)
+
+$(function() {
+    $(".user-badge").each(function() {
+        let badge = $(this);
+        let title = badge.data("title")
+        let desc = badge.data("description")
+        let at = formatDate(badge.data("givenAt")).toLowerCase()
+        let content = "<p>" + desc + "<p><p>Получен " + at + ".</p>"
+        badge.popover({
+            title: title,
+            content: content,
+            placement: "top",
+            html: true,
+            trigger: "focus",
+        })
+    })
+})

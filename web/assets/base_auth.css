@@ -235,7 +235,7 @@ div.post-add-icon:hover {
 }
 
 .post-content ul, .post-content ol {
-    font-size: .875rem;    
+    font-size: .875rem;
 }
 
 .post-tags {
@@ -333,7 +333,7 @@ li.cat-list__item > a {
 }
 
 .markdown-for-editor a:hover {
-    color: #ff5e3a; 
+    color: #ff5e3a;
 }
 
 .selectize-control {
@@ -600,4 +600,8 @@ div.profile-section {
 
 #feed.js-zoom-gallery {
     margin: -0.25rem;
+}
+
+.user-badge {
+    cursor: pointer;
 }

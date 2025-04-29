@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/gin-contrib/cors"
-	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils/pongo2"
 	"net/http"
 	"net/url"
 	"os"
 	"os/signal"
 	"strings"
 	"time"
+
+	"github.com/gin-contrib/cors"
+	"github.com/sevings/mindwell-web/internal/app/mindwell-web/utils/pongo2"
 
 	"github.com/gin-gonic/gin"
 	"github.com/patrickmn/go-cache"
@@ -98,20 +99,21 @@ func main() {
 	web.GET("/watching", watchingHandler(mdw))
 
 	web.GET("/users", topsHandler(mdw, "users/top_users"))
-	web.GET("/users/:name", tlogHandler(mdw, "/users", false))
+	web.GET("/users/:name", tlogHandler(mdw, false, false))
 	web.GET("/users/:name/tags", proxyNoKeyHandler(mdw))
 	web.GET("/users/:name/calendar", proxyNoKeyHandler(mdw))
-	web.GET("/users/:name/entries", tlogHandler(mdw, "/users", true))
+	web.GET("/users/:name/entries", tlogHandler(mdw, false, true))
 	web.GET("/users/:name/comments", authorCommentsHandler(mdw, "/users"))
 	web.GET("/users/:name/favorites", favoritesHandler(mdw))
 	web.GET("/users/:name/images", imagesHandler(mdw, "/users"))
+	web.GET("/users/:name/badges", badgesHandler(mdw))
 	web.GET("/users/:name/relations/:relation", usersHandler(mdw, "/users"))
 
 	web.GET("/themes", topsHandler(mdw, "users/top_themes"))
-	web.GET("/themes/:name", tlogHandler(mdw, "/themes", false))
+	web.GET("/themes/:name", tlogHandler(mdw, true, false))
 	web.GET("/themes/:name/tags", proxyNoKeyHandler(mdw))
 	web.GET("/themes/:name/calendar", proxyNoKeyHandler(mdw))
-	web.GET("/themes/:name/entries", tlogHandler(mdw, "/themes", true))
+	web.GET("/themes/:name/entries", tlogHandler(mdw, true, true))
 	web.GET("/themes/:name/comments", authorCommentsHandler(mdw, "/themes"))
 	web.GET("/themes/:name/images", imagesHandler(mdw, "/themes"))
 	web.GET("/themes/:name/relations/:relation", usersHandler(mdw, "/themes"))
@@ -120,6 +122,7 @@ func main() {
 
 	web.GET("/me", meHandler(mdw, ""))
 	web.GET("/me/entries", meHandler(mdw, "/entries"))
+	web.GET("/me/badges", meHandler(mdw, "/badges"))
 
 	web.POST("/profile/save", meSaverHandler(mdw))
 	web.POST("/profile/avatar", avatarSaverHandler(mdw))
@@ -884,8 +887,13 @@ func topsHandler(mdw *utils.Mindwell, templateName string) func(ctx *gin.Context
 	}
 }
 
-func tlogHandler(mdw *utils.Mindwell, baseApiPath string, isTlog bool) func(ctx *gin.Context) {
+func tlogHandler(mdw *utils.Mindwell, isTheme, isTlog bool) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
+		baseApiPath := "/users"
+		if isTheme {
+			baseApiPath = "/themes"
+		}
+
 		name := ctx.Param("name")
 		api := utils.NewRequest(mdw, ctx)
 
@@ -918,6 +926,10 @@ func tlogHandler(mdw *utils.Mindwell, baseApiPath string, isTlog bool) func(ctx 
 			api.SetFieldNoKey("tags", baseApiPath+"/"+name+"/tags")
 			api.SetQuery("limit", "9")
 			api.SetFieldNoKey("images", baseApiPath+"/"+name+"/images")
+			if !isTheme {
+				api.SetQuery("limit", "12")
+				api.SetFieldNoKey("badges", baseApiPath+"/"+name+"/badges")
+			}
 			api.SetQuery("limit", limit)
 
 			api.SetFieldNoKey("calendar", baseApiPath+"/"+name+"/calendar")
@@ -1037,6 +1049,54 @@ func imagesHandler(mdw *utils.Mindwell, baseApiPath string) func(ctx *gin.Contex
 			api.SetField("profile", baseApiPath+"/"+name)
 			api.WriteTemplate("images/profile_images")
 		}
+	}
+}
+
+func badgesHandler(mdw *utils.Mindwell) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		name := ctx.Param("name")
+		api := utils.NewRequest(mdw, ctx)
+
+		var profile interface{}
+		if !api.IsAjax() {
+			api.SetFieldNoKey("profile", "/users/"+name)
+			if api.Error() != nil {
+				if api.HasUserKey() {
+					api.WriteTemplate("error")
+				} else {
+					ctx.Redirect(http.StatusSeeOther, "/index.html?to="+api.NextRedirect())
+				}
+
+				return
+			}
+
+			profile = api.Data()["profile"]
+			api.ClearData()
+		}
+
+		limit := api.SetQuery("limit", "1000")
+		api.ForwardToNoKey("/users/" + name + "/badges")
+
+		if api.IsLargeScreen() {
+			api.SetQuery("limit", "100")
+			api.SetFieldNoKey("tags", "/users/"+name+"/tags")
+			api.SetQuery("limit", limit)
+
+			api.SetFieldNoKey("calendar", "/users/"+name+"/calendar")
+		}
+
+		api.SkipError()
+
+		api.SetData("profile", profile)
+		api.SetData("__feed", true)
+
+		if !api.HasUserKey() {
+			api.SetCsrfToken("/login")
+			api.SetCsrfToken("/register")
+		}
+
+		api.SetMe()
+		api.WriteTemplate("badges")
 	}
 }
 

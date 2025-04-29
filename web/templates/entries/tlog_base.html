@@ -104,6 +104,35 @@
                     </div>
                 </div>
                 {% if profile.relations.isOpenForMe %}
+                    {% if badges.data %}
+                        <div class="ui-block">
+                            <div class="ui-block-title">
+                                <h6 class="title">Значки</h6>
+                            </div>
+                            <div class="ui-block-content">
+                                <div class="widget">
+                                    <div class="container">
+                                        <div class="row">
+                                            {% for badge in badges.data %}
+                                                <div class="col col-xl-3 col-lg-2 col-md-3 col-sm-3 col-2 px-1">
+                                                    <a class="author-thumb user-badge" tabindex="{{ forloop.Counter }}"
+                                                            data-title="{{ badge.title }}"
+                                                            data-description="{{ badge.description }}"
+                                                            data-given-at="{{ badge.givenAt }}"
+                                                    >
+                                                        <img src="{{ badge.icon }}" alt="{{ badge.code }}" loading="lazy" class="w-100">
+                                                        {% if badge.level > 1 %}
+                                                            <div class="label-avatar bg-primary">{{ badge.level|default:1 }}</div>
+                                                        {% endif %}
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                     {% if images.data %}
                         <div class="ui-block">
                             <div class="ui-block-title">
