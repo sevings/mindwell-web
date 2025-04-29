@@ -26,7 +26,7 @@
 
                                 <div id="editormd" class="form-group">
                                     <textarea class="form-control" rows="20" cols="80" maxlength="30000"
-                                        name="content" placeholder="Текст поста" required>{{ editContent|safe }}</textarea>
+                                        name="content" placeholder="Текст поста" required>{{ editContent }}</textarea>
                                 </div>
 
                                 <input type="text" name="tags" value="{{ tags|join:',' }}"
@@ -110,7 +110,7 @@
 
                                 <input type="hidden" name="isDraft" value="false" />
 
-                                <input id="input-images" type="hidden" name="images" 
+                                <input id="input-images" type="hidden" name="images"
                                     value="{% for image in images %}{{ image.id }},{% endfor %}{% for image in insertedImages %}{{ image.id }},{% endfor %}"/>
 
                                 <div id="attached-images">
@@ -138,7 +138,7 @@
                                     </button>
 								</div>
                             </form>
-                            
+
                         </div>
                     </div>
                 </div>
